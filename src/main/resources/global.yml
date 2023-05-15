@@ -4,3 +4,4 @@
 
 # Messages can be added like so: (hint: remove the # to uncomment it)
 #plugin_prefix: '&f[&6PluginPrefix&f] '          # An example language string that isn't actually used.
+plugin_prefix: '&f[&6TownyProvinces&f]'
