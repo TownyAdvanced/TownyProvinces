@@ -3,6 +3,7 @@ package io.github.townyadvanced.townyprovinces;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;

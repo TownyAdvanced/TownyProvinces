@@ -1,9 +1,10 @@
-package io.github.townyadvanced.townyprovinces;
+package io.github.townyadvanced.townyprovinces.listeners;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
