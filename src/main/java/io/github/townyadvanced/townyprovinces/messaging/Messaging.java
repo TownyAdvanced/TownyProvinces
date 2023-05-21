@@ -1,4 +1,4 @@
-package io.github.townyadvanced.townyprovinces.util;
+package io.github.townyadvanced.townyprovinces.messaging;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
