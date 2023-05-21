@@ -24,7 +24,7 @@ import io.github.townyadvanced.townyprovinces.settings.Settings;
 public class TownyProvinces extends JavaPlugin {
 
 	private static TownyProvinces plugin;
-	private static final Version requiredTownyVersion = Version.fromString("0.99.0.6");
+	private static final Version requiredTownyVersion = Version.fromString("0.99.0.7");
 	
 	@Override
 	public void onEnable() {

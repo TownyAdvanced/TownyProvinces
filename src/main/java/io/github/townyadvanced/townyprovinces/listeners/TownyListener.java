@@ -24,8 +24,6 @@ public class TownyListener implements Listener {
 	@EventHandler
 	public void onTownyLoadLang(TranslationLoadEvent event) {
 		Plugin plugin = TownyProvinces.getPlugin();
-		if (!TownyProvinces.hasLocale())
-			return;
 		Path langFolderPath = Paths.get(plugin.getDataFolder().getPath()).resolve("lang");
 		TranslationLoader loader = new TranslationLoader(langFolderPath, plugin, TownyProvinces.class);
 		loader.load();
