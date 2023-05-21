@@ -98,7 +98,7 @@ public class ProvinceCreatorUtil {
 	
 	private static int calculateIdealNumberOfProvinces() {
 		double worldAreaSquareMetres = calculateWorldAreaSquareMetres();
-		double averageProvinceAreaSquareMetres = TownyProvincesSettings.getAverageProvinceSizeInSquareUnits();
+		double averageProvinceAreaSquareMetres = TownyProvincesSettings.getAverageProvinceSizeInSquareMetres();
 		int idealNumberOfProvinces = (int)(worldAreaSquareMetres / averageProvinceAreaSquareMetres);
 		TownyProvinces.info("Ideal num provinces: " + idealNumberOfProvinces);
 		return idealNumberOfProvinces;

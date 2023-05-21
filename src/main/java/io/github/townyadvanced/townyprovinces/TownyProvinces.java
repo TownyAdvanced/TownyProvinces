@@ -41,8 +41,8 @@ public class TownyProvinces extends JavaPlugin {
 			return;
 		}
 	
+		//If the map is blank and there was on error, generate new provinces
 		if(TownyProvincesDataHolder.getInstance().getNumProvinces() == 0) {
-			//Blank map. Generate the provinces
 			if(!ProvinceCreatorUtil.createProvinces()) {
 				onDisable();
 				return;
