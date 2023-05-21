@@ -86,7 +86,7 @@ public class ProvinceCreatorUtil {
 	
 	private static boolean validateProvinceHomeBlock(Coord coord) {
 		int minAllowedDistanceInMetres = TownyProvincesSettings.getMinAllowedDistanceBetweenProvinceHomeBlocks();
-		int minAllowedDistanceInChunks = minAllowedDistanceInMetres * TownySettings.getTownBlockSize();
+		int minAllowedDistanceInChunks = minAllowedDistanceInMetres / TownySettings.getTownBlockSize();
 		List<Province> provinceList = TownyProvincesDataHolder.getInstance().getProvinces();
 		for(Province province: provinceList) {
 			if(MathUtil.distance(coord, province.getHomeBlock()) < minAllowedDistanceInChunks) {
@@ -107,8 +107,8 @@ public class ProvinceCreatorUtil {
 	private static double calculateWorldAreaSquareMetres() {
 		Location topLeftCorner = TownyProvincesSettings.getTopLeftWorldCornerLocation();
 		Location bottomRightCorner = TownyProvincesSettings.getBottomRightWorldCornerLocation();
-		double sideLengthX = Math.sqrt(Math.pow(topLeftCorner.getX(),2) - Math.pow(bottomRightCorner.getX(),2));
-		double sideLengthZ = Math.sqrt(Math.pow(topLeftCorner.getZ(),2) - Math.pow(bottomRightCorner.getZ(),2));
+		double sideLengthX = Math.abs(topLeftCorner.getX() - bottomRightCorner.getX());
+		double sideLengthZ = Math.abs(topLeftCorner.getZ() - bottomRightCorner.getZ());
 		double worldAreaSquareMetres = sideLengthX * sideLengthZ;
 		TownyProvinces.info("World Area square metres: " + worldAreaSquareMetres);
 		return worldAreaSquareMetres;
