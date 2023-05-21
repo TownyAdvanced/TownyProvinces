@@ -42,12 +42,12 @@ public class ProvinceCreatorUtil {
 				//Province homeblock generated. Now create province
 				Province province = new Province();
 				province.setHomeBlock(provinceHomeBlock);
-				TownyProvincesDataHolder.getTownyProvincesDataHolder().addProvince(province);
+				TownyProvincesDataHolder.getInstance().addProvince(province);
 			} else {
 				//Could not generate a province homeblock
 				double allowedVariance = TownyProvincesSettings.getMaxAllowedVarianceBetweenIdealAndActualNumProvinces();
 				double minimumAllowedNumProvinces = ((double) idealNumberOfProvinces) * (1 - allowedVariance);
-				int actualNumProvinces = TownyProvincesDataHolder.getTownyProvincesDataHolder().getNumProvinces();
+				int actualNumProvinces = TownyProvincesDataHolder.getInstance().getNumProvinces();
 				if (actualNumProvinces < minimumAllowedNumProvinces) {
 					TownyProvinces.severe("ERROR: Could not create the minimum number of provinces. Required: " + minimumAllowedNumProvinces + ". Actual: " + actualNumProvinces);
 					return false;
@@ -87,7 +87,7 @@ public class ProvinceCreatorUtil {
 	private static boolean validateProvinceHomeBlock(Coord coord) {
 		int minAllowedDistanceInMetres = TownyProvincesSettings.getMinAllowedDistanceBetweenProvinceHomeBlocks();
 		int minAllowedDistanceInChunks = minAllowedDistanceInMetres * TownySettings.getTownBlockSize();
-		List<Province> provinceList = TownyProvincesDataHolder.getTownyProvincesDataHolder().getProvincesList();
+		List<Province> provinceList = TownyProvincesDataHolder.getInstance().getProvinces();
 		for(Province province: provinceList) {
 			if(MathUtil.distance(coord, province.getHomeBlock()) < minAllowedDistanceInChunks) {
 				return false;

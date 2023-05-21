@@ -3,7 +3,11 @@ package io.github.townyadvanced.townyprovinces;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
+import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
+import io.github.townyadvanced.townyprovinces.util.ProvinceCreatorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -20,34 +24,45 @@ import io.github.townyadvanced.townyprovinces.settings.Settings;
 public class TownyProvinces extends JavaPlugin {
 
 	private static TownyProvinces plugin;
-	private static Version requiredTownyVersion = Version.fromString("0.99.0.6");
-	boolean hasConfig = false;
-	boolean hasLocale = false;
-	boolean hasListeners = true;
-
+	private static final Version requiredTownyVersion = Version.fromString("0.99.0.6");
+	
 	@Override
 	public void onEnable() {
-
 		plugin = this;
 
-		if (!townyVersionCheck()) {
-			severe("Towny version does not meet required minimum version: " + requiredTownyVersion.toString());
-			onDisable();
-			return;
-		} else {
-			info("Towny version " + getTownyVersion() + " found.");
-		}
-
-		if ((hasConfig && !loadConfig())
-		|| (hasLocale && !loadLocalization(false))) {
+		//Setup Basics
+		if(!checkTownyVersion()
+				|| !loadConfig()
+				|| !loadLocalization(false)
+				|| !TownyProvincesSettings.isTownyProvincesEnabled() 
+				|| !TownyProvincesDataHolder.initialize()
+				|| !DataHandlerUtil.loadData()) {
 			onDisable();
 			return;
 		}
-
-		if (hasListeners)
-			registerListeners(Bukkit.getPluginManager());
+	
+		if(TownyProvincesDataHolder.getInstance().getNumProvinces() == 0) {
+			//Blank map. Generate the provinces
+			if(!ProvinceCreatorUtil.createProvinces()) {
+				onDisable();
+				return;
+			}
+		} 
+	
+		TownyProvinces.info("Provinces Created: " + TownyProvincesDataHolder.getInstance().getNumProvinces());
+		
 	}
 
+	private boolean checkTownyVersion() {
+		if (!townyVersionCheck()) {
+			severe("Towny version does not meet required minimum version: " + requiredTownyVersion.toString());
+			return false;
+		} else {
+			info("Towny version " + getTownyVersion() + " found.");
+			return true;
+		}
+	}
+	
 	private boolean loadConfig() {
 		try {
 			Settings.loadConfig();
@@ -109,9 +124,5 @@ public class TownyProvinces extends JavaPlugin {
 
 	public static void severe(String message) {
 		plugin.getLogger().severe(message);
-	}
-	
-	public static boolean hasLocale() {
-		return plugin.hasLocale;
 	}
 }

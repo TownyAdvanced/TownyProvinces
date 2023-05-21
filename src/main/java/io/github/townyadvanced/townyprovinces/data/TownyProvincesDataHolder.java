@@ -6,6 +6,7 @@ import io.github.townyadvanced.townyprovinces.objects.Region;
 import io.github.townyadvanced.townyprovinces.objects.TPChunk;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,28 +19,34 @@ public class TownyProvincesDataHolder {
 	private static TownyProvincesDataHolder dataHolder = null;
 
 	private TownyProvincesDataHolder() {
+		provinces = new ArrayList<>();
+		regions = new ArrayList<>();
+		tpChunks = new HashMap<>();
 	}
 	
-	public static TownyProvincesDataHolder getTownyProvincesDataHolder() {
-		if(dataHolder == null) {
-			dataHolder = new TownyProvincesDataHolder();
-		}
+	public static TownyProvincesDataHolder getInstance() {
 		return dataHolder;
 	}
-	private List<Province> provincesList;
-	private List<Region> regionsList;
-	private Map<WorldCoord, TPChunk> tpChunksMap;
+	
+	public static boolean initialize() {
+		dataHolder = new TownyProvincesDataHolder();
+		return true;
+	}
+	
+	private List<Province> provinces;
+	private List<Region> regions;
+	private Map<WorldCoord, TPChunk> tpChunks;
 
 	public void addProvince(Province province) {
-		provincesList.add(province);
+		provinces.add(province);
 	}
 
 
 	public int getNumProvinces() {
-		return provincesList.size();
+		return provinces.size();
 	}
 
-	public List<Province> getProvincesList() {
-		return new ArrayList<>(provincesList);
+	public List<Province> getProvinces() {
+		return new ArrayList<>(provinces);
 	}
 }

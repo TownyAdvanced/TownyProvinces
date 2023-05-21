@@ -7,11 +7,16 @@ import java.util.List;
 
 public class DataHandlerUtil {
 
-	public List<Province> loadProvincesList() {
+	public static boolean loadData() {
+		return true; //Loaded but blank
+		
+	}
+
+    public void loadProvincesList() {
 		
 	}
 	
-	public List<TPChunk> loadTPChunksMap() {
+	public void loadTPChunksMap() {
 		
 	}
 	
