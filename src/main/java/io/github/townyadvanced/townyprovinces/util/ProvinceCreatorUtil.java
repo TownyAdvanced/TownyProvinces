@@ -25,6 +25,7 @@ public class ProvinceCreatorUtil {
 		
 		//Fill each province wth chunks
 		
+		TownyProvinces.info("Provinces Created: " + TownyProvincesDataHolder.getInstance().getNumProvinces());
 		return true;
 	}
 
@@ -52,6 +53,7 @@ public class ProvinceCreatorUtil {
 					TownyProvinces.severe("ERROR: Could not create the minimum number of provinces. Required: " + minimumAllowedNumProvinces + ". Actual: " + actualNumProvinces);
 					return false;
 				} else {
+					TownyProvinces.info("" + actualNumProvinces + " province objects created, each one containing just homeblock info.");
 					return true;
 				}
 			}

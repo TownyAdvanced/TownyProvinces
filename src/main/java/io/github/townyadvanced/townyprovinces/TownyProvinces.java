@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegration;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
@@ -22,7 +23,6 @@ import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
 
 public class TownyProvinces extends JavaPlugin {
-
 	private static TownyProvinces plugin;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.0.7");
 	
@@ -47,12 +47,30 @@ public class TownyProvinces extends JavaPlugin {
 				onDisable();
 				return;
 			}
-		} 
-	
-		TownyProvinces.info("Provinces Created: " + TownyProvincesDataHolder.getInstance().getNumProvinces());
+		}
+		
+		//Load integrations 
+		loadIntegrations();
+		
 		
 	}
 
+	private boolean loadIntegrations() {
+		try {
+			if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
+				info("Found Dynmap plugin. Enabling Dynmap integration.");
+				new DynmapIntegration();
+				return true;
+			} else {
+				info("Did not find Dynmap plugin. Cannot enable Dynmap integration.");
+				return false;
+			}
+		} catch (Exception e) {
+			severe("Problem enabling Dynmap integration: " + e.getMessage());
+			return false;
+		}
+	}
+	
 	private boolean checkTownyVersion() {
 		if (!townyVersionCheck()) {
 			severe("Towny version does not meet required minimum version: " + requiredTownyVersion.toString());
