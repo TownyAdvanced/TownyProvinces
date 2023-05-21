@@ -12,8 +12,11 @@ public class TownyProvincesSettings {
 
 	//TODO - Later make this "get worlds" etc.
 	public static World getWorld() {
-		String worldName = Settings.getString(ConfigNodes.WORLD_NAME);
-		return Bukkit.getWorld(worldName);
+		return Bukkit.getWorld(getWorldName());
+	}
+	
+	public static String getWorldName() {
+		return Settings.getString(ConfigNodes.WORLD_NAME);
 	}
 
 	public static Location getTopLeftWorldCornerLocation() {

@@ -22,6 +22,10 @@
       <id>glaremasters repo</id>
       <url>https://repo.glaremasters.me/repository/towny/</url>
     </repository>
+      <repository>
+          <id>dynmap-repo</id>
+          <url>https://repo.mikeprimm.com/</url>
+      </repository>
   </repositories>
 
   <dependencies>
@@ -37,6 +41,11 @@
       <version>0.98.6.0</version>
       <scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>us.dynmap</groupId>
+          <artifactId>dynmap-api</artifactId>
+          <version>2.5</version>
+      </dependency>
   </dependencies>
 
   <build>
