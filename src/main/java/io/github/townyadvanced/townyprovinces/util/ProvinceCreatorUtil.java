@@ -31,8 +31,8 @@ public class ProvinceCreatorUtil {
 			return false;
 		}
 
-		//For province blocks on the border, set them to border=true
-		if(!setProvinceBorderAttributes()) {
+		//Setup province borders
+		if(!setupProvinceBorders()) {
 			return false;
 		}
 
@@ -41,26 +41,26 @@ public class ProvinceCreatorUtil {
 		return true;
 	}
 
-	private static boolean setProvinceBorderAttributes() {
+	private static boolean setupProvinceBorders() {
 		for(Map.Entry<Coord, ProvinceBlock> mapEntry: TownyProvincesDataHolder.getInstance().getProvinceBlocks().entrySet()) {
-			if(isProvinceBlockOnTheBorder(mapEntry.getKey(), mapEntry.getValue())) {
-				mapEntry.getValue().setBorder(true);				
+			if(shouldThisProvinceBlockBeAProvinceBorder(mapEntry.getKey(), mapEntry.getValue())) {
+				mapEntry.getValue().setProvinceBorder(true);				
 			}
 		}
 		return true;
 	}
 
-	private static boolean isProvinceBlockOnTheBorder(Coord provinceBlockCoord, ProvinceBlock provinceBlock) {
+	private static boolean shouldThisProvinceBlockBeAProvinceBorder(Coord provinceBlockCoord, ProvinceBlock provinceBlock) {
 		Coord adjacentCoord;
 		ProvinceBlock adjacentProvinceBlock;
 		Province province = provinceBlock.getProvince();
-		for(int x = -1; x <=1; x++) {
-			for(int z = -1; z <=1; z++) {
+		for(int z = -1; z <=1; z++) {
+			for(int x = -1; x <=1; x++) {
 				adjacentCoord = new Coord(provinceBlockCoord.getX() + x, provinceBlockCoord.getZ() + z);
 				adjacentProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
 				if(adjacentProvinceBlock == null) {
 					return true;
-				} else if (adjacentProvinceBlock.getProvince() != province) {
+				} else if (adjacentProvinceBlock.getProvince() != province && !adjacentProvinceBlock.isProvinceBorder()) {
 					return true;
 				}
 			}
@@ -76,8 +76,8 @@ public class ProvinceCreatorUtil {
 		}
 		
 		//Claim chunks
-		//Loop each brush 10 times //TODO parameterize num loops
-		for(int i = 0; i < 50; i++) {
+		//Loop each brush x times //TODO parameterize num loops
+		for(int i = 0; i < 200; i++) {
 			for(ProvinceClaimBrush provinceClaimBrush: provinceClaimBrushes) {
 				//Claim chunks at current position
 				claimChunksAtCurrentBrushPosition(provinceClaimBrush);				
@@ -111,15 +111,18 @@ public class ProvinceCreatorUtil {
 	}
 
 	/**
-	 * Claim the given chunk, unless another chunk is already there
+	 * Claim the given chunk, unless another province has already claimed it
+	 * Or an ocean chunk
 	 * @param coord co-ord of chunk
 	 * @param province the province doing the claiming
 	 */
 	private static void claimChunkIfPossible(Coord coord, Province province) {
-		ProvinceBlock provinceBlock = new ProvinceBlock();
-		provinceBlock.setProvince(province);
-		TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
-		
+		if (TownyProvincesDataHolder.getInstance().getProvinceBlock(coord) == null) {
+			ProvinceBlock provinceBlock = new ProvinceBlock();
+			provinceBlock.setProvince(province);
+			provinceBlock.setCoord(coord);
+			TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
+		}
 	}
 
 	/**

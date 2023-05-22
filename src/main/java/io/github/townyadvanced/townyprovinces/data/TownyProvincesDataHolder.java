@@ -50,8 +50,8 @@ public class TownyProvincesDataHolder {
 		return new ArrayList<>(provinces);
 	}
 
-	public void addProvinceBlock(Coord coord, ProvinceBlock tpChunk) {
-		provinceBlocks.put(coord, tpChunk);
+	public void addProvinceBlock(Coord coord, ProvinceBlock provinceBlock) {
+		provinceBlocks.put(coord, provinceBlock);
 	}
 
 	public Map<Coord, ProvinceBlock> getProvinceBlocks() {

@@ -158,35 +158,34 @@ public class DynmapIntegration {
 
 			{
 				//DRAW ALL PROVINCE BORDER
-				Coord provinceBlockCoord;
-				ProvinceBlock provinceBlock;
+				//Cycle through each province
 				String worldName = TownyProvincesSettings.getWorldName();
-				for (Map.Entry<Coord, ProvinceBlock> provinceBlockEntry : TownyProvincesDataHolder.getInstance().getProvinceBlocks().entrySet()) {
-					provinceBlockCoord = provinceBlockEntry.getKey();
-					provinceBlock = provinceBlockEntry.getValue();
-					if (provinceBlock.isBorder()) {
-						drawProvinceBorderBlock(worldName, provinceBlockCoord);
+				for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
+					for (ProvinceBlock provinceBlock : province.getProvinceBlocks()) {
+						if (provinceBlock.isProvinceBorder()) {
+							drawProvinceBorderBlock(worldName, provinceBlock);
+						}
 					}
 				}
 			}
 		}
 	}
 	
-	public void drawProvinceBorderBlock(String worldName, Coord provinceBlockCoord) {
+	public void drawProvinceBorderBlock(String worldName, ProvinceBlock provinceBlock) {
 		double[] xPoints = new double[4];
-		xPoints[0] = provinceBlockCoord.getX() * TownyProvincesSettings.getRegionBlockLength();
+		xPoints[0] = provinceBlock.getCoord().getX() * TownyProvincesSettings.getRegionBlockLength();
 		xPoints[1] = xPoints[0] + TownyProvincesSettings.getRegionBlockLength();
 		xPoints[2] = xPoints[1];
 		xPoints[3] = xPoints[0];
 
 		double[] zPoints = new double[4];
-		zPoints[0] = provinceBlockCoord.getZ() * TownyProvincesSettings.getRegionBlockLength();
+		zPoints[0] = provinceBlock.getCoord().getZ() * TownyProvincesSettings.getRegionBlockLength();
 		zPoints[1] = zPoints[0]; 
 		zPoints[2] = zPoints[1] + TownyProvincesSettings.getRegionBlockLength();;
 		zPoints[3] = zPoints[2];
 		
-		String markerId = "border_province_block_" + provinceBlockCoord.getX() + "-" + provinceBlockCoord.getZ();
-		String markerName = "Test";
+		String markerId = "border_province_block_" + provinceBlock.getCoord().getX() + "-" + provinceBlock.getCoord().getZ();
+		String markerName = "Province Homeblock: " + provinceBlock.getProvince().getHomeBlock().getX() + " - " + provinceBlock.getProvince().getHomeBlock().getZ();
 		
 		boolean unknown = false;
 		boolean unknown2 = false;
