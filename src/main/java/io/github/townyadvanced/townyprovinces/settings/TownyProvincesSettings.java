@@ -50,5 +50,8 @@ public class TownyProvincesSettings {
 	public static int getDefaultNumRegionsPerProvince() {
 		return 3;
 	}
-	
+
+	public static int getRegionBlockLength() {
+		return 16;
+	}
 }

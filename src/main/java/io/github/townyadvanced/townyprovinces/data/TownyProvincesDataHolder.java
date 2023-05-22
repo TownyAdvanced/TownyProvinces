@@ -1,9 +1,9 @@
 package io.github.townyadvanced.townyprovinces.data;
 
-import com.palmergames.bukkit.towny.object.WorldCoord;
+import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.Region;
-import io.github.townyadvanced.townyprovinces.objects.TPChunk;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class TownyProvincesDataHolder {
 	private TownyProvincesDataHolder() {
 		provinces = new ArrayList<>();
 		regions = new ArrayList<>();
-		tpChunks = new HashMap<>();
+		provinceBlocks = new HashMap<>();
 	}
 	
 	public static TownyProvincesDataHolder getInstance() {
@@ -35,7 +35,7 @@ public class TownyProvincesDataHolder {
 	
 	private List<Province> provinces;
 	private List<Region> regions;
-	private Map<WorldCoord, TPChunk> tpChunks;
+	private Map<Coord, ProvinceBlock> provinceBlocks;
 
 	public void addProvince(Province province) {
 		provinces.add(province);
@@ -48,5 +48,13 @@ public class TownyProvincesDataHolder {
 
 	public List<Province> getProvinces() {
 		return new ArrayList<>(provinces);
+	}
+
+	public void addProvinceBlock(Coord coord, ProvinceBlock tpChunk) {
+		provinceBlocks.put(coord, tpChunk);
+	}
+
+	public Map<Coord, ProvinceBlock> getProvinceBlocks() {
+		return provinceBlocks;
 	}
 }

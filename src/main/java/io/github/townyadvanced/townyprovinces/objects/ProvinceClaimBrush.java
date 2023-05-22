@@ -24,7 +24,7 @@ public class ProvinceClaimBrush {
 		return currentPosition;
 	}
 
-	public Object getProvince() {
+	public Province getProvince() {
 		return province;
 	}
 }

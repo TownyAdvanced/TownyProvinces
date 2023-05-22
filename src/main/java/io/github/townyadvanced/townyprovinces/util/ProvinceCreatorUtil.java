@@ -1,12 +1,12 @@
 package io.github.townyadvanced.townyprovinces.util;
 
-import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceClaimBrush;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.Location;
 
@@ -25,7 +25,7 @@ public class ProvinceCreatorUtil {
 			return false;
 		}
 		
-		//Claim all chunks for the provinces, in the given world area
+		//Claim all province blocks for the provinces, in the given world area
 		if(!claimAllChunksForProvinces()) {
 			return false;
 		}
@@ -55,6 +55,10 @@ public class ProvinceCreatorUtil {
 				provinceClaimBrush.moveBrush(moveAmountX, moveAmountZ);
 			}
 		}
+		
+		//TODO - Assign remaining chunks
+		
+		TownyProvinces.info("Total Province-Blocks Claimed: " + TownyProvincesDataHolder.getInstance().getProvinceBlocks().values().size());
 		return true;
 	}
 
@@ -71,6 +75,18 @@ public class ProvinceCreatorUtil {
 				claimChunkIfPossible(new Coord(x,z), brush.getProvince());
 			}
 		}
+	}
+
+	/**
+	 * Claim the given chunk, unless another chunk is already there
+	 * @param coord co-ord of chunk
+	 * @param province the province doing the claiming
+	 */
+	private static void claimChunkIfPossible(Coord coord, Province province) {
+		ProvinceBlock provinceBlock = new ProvinceBlock();
+		provinceBlock.setProvince(province);
+		TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
+		
 	}
 
 	/**
@@ -110,7 +126,7 @@ public class ProvinceCreatorUtil {
 	 * Return null if you fail - usually due to map being full up with provinces
 	 */
 	private static Coord generateProvinceHomeBlock() {
-		double townBlockSize = TownySettings.getTownBlockSize();
+		double tpChunkSideLength = TownyProvincesSettings.getRegionBlockLength();
 		for(int i = 0; i < 100; i++) {
 			double xLowest = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX();
 			double xHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX();
@@ -118,8 +134,8 @@ public class ProvinceCreatorUtil {
 			double zHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ();
 			double x = xLowest + (Math.random() * (xHighest - xLowest));
 			double z = zLowest + (Math.random() * (zHighest - zLowest));
-			int xCoord = (int)(x / townBlockSize);
-			int zCoord = (int)(z / townBlockSize);
+			int xCoord = (int)(x / tpChunkSideLength);
+			int zCoord = (int)(z / tpChunkSideLength);
 			Coord generatedHomeBlockCoord = new Coord(xCoord, zCoord);
 			if(validateProvinceHomeBlock(generatedHomeBlockCoord)) {
 				TownyProvinces.info("Province homeblock generated");
@@ -132,7 +148,7 @@ public class ProvinceCreatorUtil {
 	
 	private static boolean validateProvinceHomeBlock(Coord coord) {
 		int minAllowedDistanceInMetres = TownyProvincesSettings.getMinAllowedDistanceBetweenProvinceHomeBlocks();
-		int minAllowedDistanceInChunks = minAllowedDistanceInMetres / TownySettings.getTownBlockSize();
+		int minAllowedDistanceInChunks = minAllowedDistanceInMetres / TownyProvincesSettings.getRegionBlockLength();
 		List<Province> provinceList = TownyProvincesDataHolder.getInstance().getProvinces();
 		for(Province province: provinceList) {
 			if(MathUtil.distance(coord, province.getHomeBlock()) < minAllowedDistanceInChunks) {

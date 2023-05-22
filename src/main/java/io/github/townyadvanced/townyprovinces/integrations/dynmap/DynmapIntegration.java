@@ -1,6 +1,5 @@
 package io.github.townyadvanced.townyprovinces.integrations.dynmap;
 
-import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
@@ -137,8 +136,8 @@ public class DynmapIntegration {
 					try {
 
 						Coord homeBlock = province.getHomeBlock();
-						int realHomeBlockX = homeBlock.getX() * TownySettings.getTownBlockSize();
-						int realHomeBlockZ = homeBlock.getZ() * TownySettings.getTownBlockSize();
+						int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getRegionBlockLength();
+						int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getRegionBlockLength();
 
 						MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(TEMP_ICON);
 						String homeBlockMarkerId = "id" + homeBlock.getX() + "-" + homeBlock.getZ();
