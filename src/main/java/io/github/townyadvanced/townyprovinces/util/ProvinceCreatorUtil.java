@@ -12,6 +12,7 @@ import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ProvinceCreatorUtil {
 
@@ -29,9 +30,42 @@ public class ProvinceCreatorUtil {
 		if(!claimAllChunksForProvinces()) {
 			return false;
 		}
-		
+
+		//For province blocks on the border, set them to border=true
+		if(!setProvinceBorderAttributes()) {
+			return false;
+		}
+
+
 		TownyProvinces.info("Provinces Created: " + TownyProvincesDataHolder.getInstance().getNumProvinces());
 		return true;
+	}
+
+	private static boolean setProvinceBorderAttributes() {
+		for(Map.Entry<Coord, ProvinceBlock> mapEntry: TownyProvincesDataHolder.getInstance().getProvinceBlocks().entrySet()) {
+			if(isProvinceBlockOnTheBorder(mapEntry.getKey(), mapEntry.getValue())) {
+				mapEntry.getValue().setBorder(true);				
+			}
+		}
+		return true;
+	}
+
+	private static boolean isProvinceBlockOnTheBorder(Coord provinceBlockCoord, ProvinceBlock provinceBlock) {
+		Coord adjacentCoord;
+		ProvinceBlock adjacentProvinceBlock;
+		Province province = provinceBlock.getProvince();
+		for(int x = -1; x <=1; x++) {
+			for(int z = -1; z <=1; z++) {
+				adjacentCoord = new Coord(provinceBlockCoord.getX() + x, provinceBlockCoord.getZ() + z);
+				adjacentProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
+				if(adjacentProvinceBlock == null) {
+					return true;
+				} else if (adjacentProvinceBlock.getProvince() != province) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private static boolean claimAllChunksForProvinces() {
@@ -43,7 +77,7 @@ public class ProvinceCreatorUtil {
 		
 		//Claim chunks
 		//Loop each brush 10 times //TODO parameterize num loops
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < 50; i++) {
 			for(ProvinceClaimBrush provinceClaimBrush: provinceClaimBrushes) {
 				//Claim chunks at current position
 				claimChunksAtCurrentBrushPosition(provinceClaimBrush);				

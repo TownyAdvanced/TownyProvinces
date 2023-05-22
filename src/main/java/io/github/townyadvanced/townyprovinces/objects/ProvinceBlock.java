@@ -1,9 +1,9 @@
 package io.github.townyadvanced.townyprovinces.objects;
 
 public class ProvinceBlock {
-	public Province province;
-	public Region region;
-	boolean border;
+	private Province province;
+	private Region region;
+	private boolean border;
 	
 	public ProvinceBlock() {
 		this.province = null;
@@ -13,5 +13,17 @@ public class ProvinceBlock {
 
 	public void setProvince(Province province) {
 		this.province = province;
+	}
+
+	public boolean isBorder() {
+		return border;
+	}
+
+	public void setBorder(boolean b) {
+		this.border = b;
+	}
+
+	public Province getProvince() {
+		return province;
 	}
 }

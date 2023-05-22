@@ -57,4 +57,8 @@ public class TownyProvincesDataHolder {
 	public Map<Coord, ProvinceBlock> getProvinceBlocks() {
 		return provinceBlocks;
 	}
+
+	public ProvinceBlock getProvinceBlock(Coord coord) {
+		return provinceBlocks.get(coord);
+	}
 }

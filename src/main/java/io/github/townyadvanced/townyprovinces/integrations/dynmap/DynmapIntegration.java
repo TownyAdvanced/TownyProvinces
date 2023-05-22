@@ -144,7 +144,7 @@ public class DynmapIntegration {
 						if (homeBlockMarker == null) {
 							homeBlockMarker = markerSet.createMarker(
 								homeBlockMarkerId, name, TownyProvincesSettings.getWorldName(),
-								realHomeBlockX, 64, realHomeBlockZ, 
+								realHomeBlockX, 64, realHomeBlockZ,
 								homeBlockIcon, false);
 							homeBlockMarker.setLabel(name);
 							homeBlockMarker.setDescription("test description");
@@ -157,39 +157,44 @@ public class DynmapIntegration {
 			}
 
 			{
-				//TEMP DRAW ALL PROVINCE BLOCKS
+				//DRAW ALL PROVINCE BORDER
 				Coord provinceBlockCoord;
 				ProvinceBlock provinceBlock;
 				String worldName = TownyProvincesSettings.getWorldName();
-				for(Map.Entry<Coord, ProvinceBlock> provinceBlockEntry: TownyProvincesDataHolder.getInstance().getProvinceBlocks().entrySet()) {
+				for (Map.Entry<Coord, ProvinceBlock> provinceBlockEntry : TownyProvincesDataHolder.getInstance().getProvinceBlocks().entrySet()) {
 					provinceBlockCoord = provinceBlockEntry.getKey();
 					provinceBlock = provinceBlockEntry.getValue();
-					String markerName = null;
-					
-					double[] xPoints = new double[4];
-					xPoints[0] = provinceBlockCoord.getX() * TownyProvincesSettings.getRegionBlockLength();
-					xPoints[1] = xPoints[0] + TownyProvincesSettings.getRegionBlockLength();
-					xPoints[2] = xPoints[1];
-					xPoints[3] = xPoints[0];
-
-					double[] zPoints = new double[4];
-					zPoints[0] = provinceBlockCoord.getZ() * TownyProvincesSettings.getRegionBlockLength();
-					zPoints[1] = zPoints[0]; 
-					zPoints[2] = zPoints[1] + TownyProvincesSettings.getRegionBlockLength();;
-					zPoints[3] = zPoints[2];
-					
-					String markerId = "province_block_" + provinceBlockCoord.getX() + "-" + provinceBlockCoord.getZ();
-					
-					boolean unknown = false;
-					boolean unknown2 = false;
-					
-					AreaMarker areaMarker = markerSet.createAreaMarker(
-						markerId, markerName, unknown, worldName,
-						xPoints, zPoints, unknown2);
-					
-					areaMarker.setFillStyle(0.2, 100);
+					if (provinceBlock.isBorder()) {
+						drawProvinceBorderBlock(worldName, provinceBlockCoord);
+					}
 				}
 			}
 		}
+	}
+	
+	public void drawProvinceBorderBlock(String worldName, Coord provinceBlockCoord) {
+		double[] xPoints = new double[4];
+		xPoints[0] = provinceBlockCoord.getX() * TownyProvincesSettings.getRegionBlockLength();
+		xPoints[1] = xPoints[0] + TownyProvincesSettings.getRegionBlockLength();
+		xPoints[2] = xPoints[1];
+		xPoints[3] = xPoints[0];
+
+		double[] zPoints = new double[4];
+		zPoints[0] = provinceBlockCoord.getZ() * TownyProvincesSettings.getRegionBlockLength();
+		zPoints[1] = zPoints[0]; 
+		zPoints[2] = zPoints[1] + TownyProvincesSettings.getRegionBlockLength();;
+		zPoints[3] = zPoints[2];
+		
+		String markerId = "border_province_block_" + provinceBlockCoord.getX() + "-" + provinceBlockCoord.getZ();
+		String markerName = "Test";
+		
+		boolean unknown = false;
+		boolean unknown2 = false;
+		
+		AreaMarker areaMarker = markerSet.createAreaMarker(
+			markerId, markerName, unknown, worldName,
+			xPoints, zPoints, unknown2);
+		
+		areaMarker.setFillStyle(0.2, (int)(Math.random() * 250));
 	}
 }
