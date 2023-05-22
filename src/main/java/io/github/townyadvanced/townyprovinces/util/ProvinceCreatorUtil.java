@@ -6,9 +6,11 @@ import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceClaimBrush;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.Location;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProvinceCreatorUtil {
@@ -23,10 +25,42 @@ public class ProvinceCreatorUtil {
 			return false;
 		}
 		
-		//Fill each province wth chunks
+		//Claim all chunks for the provinces, in the given world area
+		if(!claimAllChunksForProvinces()) {
+			return false;
+		}
 		
 		TownyProvinces.info("Provinces Created: " + TownyProvincesDataHolder.getInstance().getNumProvinces());
 		return true;
+	}
+
+	private static boolean claimAllChunksForProvinces() {
+		//Create claim-brush objects
+		List<ProvinceClaimBrush> provinceClaimBrushes = new ArrayList<>();
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
+			provinceClaimBrushes.add(new ProvinceClaimBrush(province, 16));
+		}
+		
+		//Claim chunks
+		for(int i = 0; i < 10; i++) {
+			//Loop each brush 10 times TODO - parameterize the num loops
+			for(ProvinceClaimBrush provinceClaimBrush: provinceClaimBrushes) {
+				//Claim chunks at current position
+				claimChunksForProvince(provinceClaimBrush);				
+				
+				//Move brush
+				//Todo - parameterize the move amount
+				int moveAmountX = TownyProvincesMathUtil.generateRandomInteger(-8,8);
+				int moveAmountZ = TownyProvincesMathUtil.generateRandomInteger(-8,8);
+				provinceClaimBrush.moveBrush(moveAmountX, moveAmountZ);
+			}
+		}
+		return true;
+	}
+
+	private static void claimChunksForProvince(ProvinceClaimBrush provinceClaimBrush) {
+		
+		TODOOO
 	}
 
 	/**
