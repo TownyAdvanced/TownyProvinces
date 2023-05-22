@@ -38,7 +38,7 @@ public class ProvinceCreatorUtil {
 		//Create claim-brush objects
 		List<ProvinceClaimBrush> provinceClaimBrushes = new ArrayList<>();
 		for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
-			provinceClaimBrushes.add(new ProvinceClaimBrush(province, 16));
+			provinceClaimBrushes.add(new ProvinceClaimBrush(province, 8));
 		}
 		
 		//Claim chunks
@@ -46,21 +46,31 @@ public class ProvinceCreatorUtil {
 			//Loop each brush 10 times TODO - parameterize the num loops
 			for(ProvinceClaimBrush provinceClaimBrush: provinceClaimBrushes) {
 				//Claim chunks at current position
-				claimChunksForProvince(provinceClaimBrush);				
+				claimChunksAtCurrentBrushPosition(provinceClaimBrush);				
 				
 				//Move brush
 				//Todo - parameterize the move amount
-				int moveAmountX = TownyProvincesMathUtil.generateRandomInteger(-8,8);
-				int moveAmountZ = TownyProvincesMathUtil.generateRandomInteger(-8,8);
+				int moveAmountX = TownyProvincesMathUtil.generateRandomInteger(-4,4);
+				int moveAmountZ = TownyProvincesMathUtil.generateRandomInteger(-4,4);
 				provinceClaimBrush.moveBrush(moveAmountX, moveAmountZ);
 			}
 		}
 		return true;
 	}
 
-	private static void claimChunksForProvince(ProvinceClaimBrush provinceClaimBrush) {
-		
-		TODOOO
+	
+	private static void claimChunksAtCurrentBrushPosition(ProvinceClaimBrush brush) {
+		int startX = brush.getCurrentPosition().getX() - brush.getSquareRadius();
+		int endX = brush.getCurrentPosition().getX() + brush.getSquareRadius();
+		int startZ = brush.getCurrentPosition().getZ() - brush.getSquareRadius();
+		int endZ = brush.getCurrentPosition().getZ() + brush.getSquareRadius();
+
+		for(int x = startX; x <= endX; x++) {
+			for(int z = startZ; z <= endZ; z++) {
+				//Claim chunk if possible
+				claimChunkIfPossible(new Coord(x,z), brush.getProvince());
+			}
+		}
 	}
 
 	/**
