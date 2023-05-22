@@ -4,10 +4,12 @@ import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
 import org.dynmap.DynmapAPI;
+import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerIcon;
@@ -129,23 +131,21 @@ public class DynmapIntegration {
 	*/
 			{
 				//TEMP - Add markers showing province homeblocks
-
 				for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
-
 					String name = "test name";
 					try {
-
 						Coord homeBlock = province.getHomeBlock();
 						int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getRegionBlockLength();
 						int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getRegionBlockLength();
 
 						MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(TEMP_ICON);
-						String homeBlockMarkerId = "id" + homeBlock.getX() + "-" + homeBlock.getZ();
+						String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
 						Marker homeBlockMarker = markerSet.findMarker(homeBlockMarkerId);
 						if (homeBlockMarker == null) {
 							homeBlockMarker = markerSet.createMarker(
 								homeBlockMarkerId, name, TownyProvincesSettings.getWorldName(),
-								realHomeBlockX, 64, realHomeBlockZ, homeBlockIcon, false);
+								realHomeBlockX, 64, realHomeBlockZ, 
+								homeBlockIcon, false);
 							homeBlockMarker.setLabel(name);
 							homeBlockMarker.setDescription("test description");
 						}
@@ -153,6 +153,41 @@ public class DynmapIntegration {
 						TownyProvinces.severe("Problem adding homeblock marker");
 						ex.printStackTrace();
 					}
+				}
+			}
+
+			{
+				//TEMP DRAW ALL PROVINCE BLOCKS
+				Coord provinceBlockCoord;
+				ProvinceBlock provinceBlock;
+				String worldName = TownyProvincesSettings.getWorldName();
+				for(Map.Entry<Coord, ProvinceBlock> provinceBlockEntry: TownyProvincesDataHolder.getInstance().getProvinceBlocks().entrySet()) {
+					provinceBlockCoord = provinceBlockEntry.getKey();
+					provinceBlock = provinceBlockEntry.getValue();
+					String markerName = null;
+					
+					double[] xPoints = new double[4];
+					xPoints[0] = provinceBlockCoord.getX() * TownyProvincesSettings.getRegionBlockLength();
+					xPoints[1] = xPoints[0] + TownyProvincesSettings.getRegionBlockLength();
+					xPoints[2] = xPoints[1];
+					xPoints[3] = xPoints[0];
+
+					double[] zPoints = new double[4];
+					zPoints[0] = provinceBlockCoord.getZ() * TownyProvincesSettings.getRegionBlockLength();
+					zPoints[1] = zPoints[0]; 
+					zPoints[2] = zPoints[1] + TownyProvincesSettings.getRegionBlockLength();;
+					zPoints[3] = zPoints[2];
+					
+					String markerId = "province_block_" + provinceBlockCoord.getX() + "-" + provinceBlockCoord.getZ();
+					
+					boolean unknown = false;
+					boolean unknown2 = false;
+					
+					AreaMarker areaMarker = markerSet.createAreaMarker(
+						markerId, markerName, unknown, worldName,
+						xPoints, zPoints, unknown2);
+					
+					areaMarker.setFillStyle(0.2, 100);
 				}
 			}
 		}
