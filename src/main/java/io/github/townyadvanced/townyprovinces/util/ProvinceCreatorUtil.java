@@ -42,8 +42,8 @@ public class ProvinceCreatorUtil {
 		}
 		
 		//Claim chunks
+		//Loop each brush 10 times //TODO parameterize num loops
 		for(int i = 0; i < 10; i++) {
-			//Loop each brush 10 times TODO - parameterize the num loops
 			for(ProvinceClaimBrush provinceClaimBrush: provinceClaimBrushes) {
 				//Claim chunks at current position
 				claimChunksAtCurrentBrushPosition(provinceClaimBrush);				
@@ -57,8 +57,7 @@ public class ProvinceCreatorUtil {
 		}
 		
 		//TODO - Assign remaining chunks
-		
-		TownyProvinces.info("Total Province-Blocks Claimed: " + TownyProvincesDataHolder.getInstance().getProvinceBlocks().values().size());
+		TownyProvinces.info("Total Chunks Claimed: " + TownyProvincesDataHolder.getInstance().getProvinceBlocks().values().size());
 		return true;
 	}
 
