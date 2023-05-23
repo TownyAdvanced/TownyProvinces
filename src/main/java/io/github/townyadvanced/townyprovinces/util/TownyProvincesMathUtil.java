@@ -20,7 +20,6 @@ public class TownyProvincesMathUtil {
 		int range = (highest - lowest) + 1;
 		int randomPart = (int)(Math.random() * range);
 		int result = lowest + randomPart;
-		TownyProvinces.info("Random result: " + result);
 		return result;
 	}
 }

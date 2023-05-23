@@ -12,8 +12,8 @@ public class ProvinceClaimBrush {
 		this.currentPosition = province.getHomeBlock();
 	}
 
-	public void moveBrush(int moveAmountX, int moveAmountZ) {
-		this.currentPosition = new Coord(currentPosition.getX() + moveAmountX, currentPosition.getZ() + moveAmountZ);
+	public void moveBrush(Coord destination) {
+		this.currentPosition = destination;
 	}
 
 	public int getSquareRadius() {

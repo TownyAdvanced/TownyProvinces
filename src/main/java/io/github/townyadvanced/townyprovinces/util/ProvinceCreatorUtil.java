@@ -10,9 +10,9 @@ import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.Location;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ProvinceCreatorUtil {
 
@@ -26,7 +26,7 @@ public class ProvinceCreatorUtil {
 			return false;
 		}
 		
-		//Claim all province blocks for the provinces, in the given world area
+		//Claim all chunks in the target area (except isolated Ocean maybe)
 		if(!claimAllChunksForProvinces()) {
 			return false;
 		}
@@ -42,18 +42,21 @@ public class ProvinceCreatorUtil {
 	}
 
 	private static boolean setupProvinceBorders() {
-		for(Map.Entry<Coord, ProvinceBlock> mapEntry: TownyProvincesDataHolder.getInstance().getProvinceBlocks().entrySet()) {
-			if(shouldThisProvinceBlockBeAProvinceBorder(mapEntry.getKey(), mapEntry.getValue())) {
-				mapEntry.getValue().setProvinceBorder(true);				
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
+			for (ProvinceBlock provinceBlock : province.getProvinceBlocks()) {
+				if (shouldThisProvinceBlockBeAProvinceBorder(provinceBlock)) {
+					provinceBlock.setProvinceBorder(true);
+				}
 			}
 		}
 		return true;
 	}
 
-	private static boolean shouldThisProvinceBlockBeAProvinceBorder(Coord provinceBlockCoord, ProvinceBlock provinceBlock) {
+	private static boolean shouldThisProvinceBlockBeAProvinceBorder(ProvinceBlock provinceBlock) {
+		Coord provinceBlockCoord = provinceBlock.getCoord();
+		Province province = provinceBlock.getProvince();
 		Coord adjacentCoord;
 		ProvinceBlock adjacentProvinceBlock;
-		Province province = provinceBlock.getProvince();
 		for(int z = -1; z <=1; z++) {
 			for(int x = -1; x <=1; x++) {
 				adjacentCoord = new Coord(provinceBlockCoord.getX() + x, provinceBlockCoord.getZ() + z);
@@ -75,32 +78,165 @@ public class ProvinceCreatorUtil {
 			provinceClaimBrushes.add(new ProvinceClaimBrush(province, 8));
 		}
 		
-		//Claim chunks
+		//Do claim competition
 		//Loop each brush x times //TODO parameterize num loops
 		for(int i = 0; i < 200; i++) {
 			for(ProvinceClaimBrush provinceClaimBrush: provinceClaimBrushes) {
 				//Claim chunks at current position
-				claimChunksAtCurrentBrushPosition(provinceClaimBrush);				
+				claimChunksIfPossible(provinceClaimBrush);				
 				
 				//Move brush
 				//Todo - parameterize the move amount
 				int moveAmountX = TownyProvincesMathUtil.generateRandomInteger(-4,4);
 				int moveAmountZ = TownyProvincesMathUtil.generateRandomInteger(-4,4);
-				provinceClaimBrush.moveBrush(moveAmountX, moveAmountZ);
+				Coord destination = new Coord(provinceClaimBrush.getCurrentPosition().getX() + moveAmountX, provinceClaimBrush.getCurrentPosition().getZ() + moveAmountZ);
+				moveBrushIfPossible(provinceClaimBrush, destination);
 			}
 		}
 		
-		//TODO - Assign remaining chunks
+		if(TownyProvincesDataHolder.getInstance().getProvinceBlocks().size() > 0) {
+			claimRemainingChunks();
+		} else {
+			TownyProvinces.severe("Unamble to claim remaining chunks as there are no claimed chunks");
+			return false;
+		}
+
+		
 		TownyProvinces.info("Total Chunks Claimed: " + TownyProvincesDataHolder.getInstance().getProvinceBlocks().values().size());
 		return true;
 	}
 
-	
-	private static void claimChunksAtCurrentBrushPosition(ProvinceClaimBrush brush) {
+	private static void claimRemainingChunks() {
+
+		//Create claim queue
+		List<Coord> claimQueue = new ArrayList<>();
+		int minX = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
+		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
+		int minZ = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
+		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
+		Coord coord;
+		for(int x = minX; x <= maxX; x++) {
+			for(int z = minZ; z <= maxZ; z++) {
+				coord = new Coord(x,z);
+				ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
+				if(provinceBlock == null) {
+					claimQueue.add(coord);
+				}
+			}
+		}
+		
+		//Process claim queue
+		while(true) {
+			if(processClaimQueue(claimQueue)) {
+				break;
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param claimQueue
+	 * @return true if the queue was cleared
+	 */
+	private static boolean processClaimQueue(List<Coord> claimQueue) {
+		TownyProvinces.info("Claim Queue Size: " + claimQueue.size());
+		
+		List<Coord> copyOfClaimQueue = new ArrayList<>(claimQueue);
+		
+		Province adjacentProvince;
+		for(Coord coord: copyOfClaimQueue) {
+			adjacentProvince = getAdjacentProvince(coord);
+			if(adjacentProvince != null) {
+				//Claim chunk and remove coord from queue
+				ProvinceBlock provinceBlock = new ProvinceBlock();
+				provinceBlock.setProvince(adjacentProvince);
+				provinceBlock.setCoord(coord);
+				TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
+				claimQueue.remove(coord);
+				TownyProvinces.info("Chunk Claimed");
+			} else {
+				//Send coord to back of queue
+				claimQueue.remove(coord);
+				claimQueue.add(coord);
+			}
+		}
+		return claimQueue.size() == 0;
+	}
+
+	private static @Nullable Province getAdjacentProvince(Coord unclaimedChunkCoord) {
+		Coord adjacentCoord;
+		ProvinceBlock provinceBlock;
+		for(int x = unclaimedChunkCoord.getX() -1; x <= unclaimedChunkCoord.getX() + 1; x++) {
+			for (int z = unclaimedChunkCoord.getZ() - 1; z <= unclaimedChunkCoord.getZ() + 1; z++) {
+				adjacentCoord = new Coord(x, z);
+				if (adjacentCoord.equals(unclaimedChunkCoord)) {
+					continue;
+				}
+				provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
+				if (provinceBlock != null) {
+					return provinceBlock.getProvince();	
+				}
+			}
+		}
+		return null;
+	}
+
+
+	//Don't move if any of the brush would overlap another province
+	private static void moveBrushIfPossible(ProvinceClaimBrush brush, Coord destination) {
+		int startX = destination.getX() - brush.getSquareRadius();
+		int endX = destination.getX() + brush.getSquareRadius();
+		int startZ = destination.getZ() - brush.getSquareRadius();
+		int endZ = destination.getZ() + brush.getSquareRadius();
+
+		Coord coord;
+		for(int x = startX; x <= endX; x++) {
+			for(int z = startZ; z <= endZ; z++) {
+				coord = new Coord(x,z);
+				ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
+				if(provinceBlock != null && provinceBlock.getProvince() != brush.getProvince()) {
+					return; //Can't move, different province
+				}
+			}
+		}
+
+		brush.moveBrush(destination);
+	}
+
+	private static void claimChunkForNearestProvince(Coord chunkCoord) {
+		Province nearestProvince = null;
+		double nearestProvinceDistance = 9999999999999999d;
+		double candidateProvinceDistance;
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
+			candidateProvinceDistance = MathUtil.distance(chunkCoord, province.getHomeBlock());
+			if(candidateProvinceDistance < nearestProvinceDistance) {
+				nearestProvince = province;
+				nearestProvinceDistance = candidateProvinceDistance;
+			}
+		}
+		ProvinceBlock provinceBlock = new ProvinceBlock();
+		provinceBlock.setProvince(nearestProvince);
+		provinceBlock.setCoord(chunkCoord);
+		TownyProvincesDataHolder.getInstance().addProvinceBlock(chunkCoord, provinceBlock);
+	}
+
+
+	private static void claimChunksIfPossible(ProvinceClaimBrush brush) {
 		int startX = brush.getCurrentPosition().getX() - brush.getSquareRadius();
 		int endX = brush.getCurrentPosition().getX() + brush.getSquareRadius();
 		int startZ = brush.getCurrentPosition().getZ() - brush.getSquareRadius();
 		int endZ = brush.getCurrentPosition().getZ() + brush.getSquareRadius();
+
+		Coord coord;
+		for(int x = startX; x <= endX; x++) {
+			for(int z = startZ; z <= endZ; z++) {
+				//return if theres another province there
+				coord = new Coord(x,z);
+				ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
+				if(provinceBlock != null && provinceBlock.getProvince() != provinceBlock.getProvince())
+					return;
+			}
+		}
 
 		for(int x = startX; x <= endX; x++) {
 			for(int z = startZ; z <= endZ; z++) {
@@ -117,12 +253,27 @@ public class ProvinceCreatorUtil {
 	 * @param province the province doing the claiming
 	 */
 	private static void claimChunkIfPossible(Coord coord, Province province) {
-		if (TownyProvincesDataHolder.getInstance().getProvinceBlock(coord) == null) {
-			ProvinceBlock provinceBlock = new ProvinceBlock();
-			provinceBlock.setProvince(province);
-			provinceBlock.setCoord(coord);
-			TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
-		}
+		if (TownyProvincesDataHolder.getInstance().getProvinceBlock(coord) != null)
+			return;
+
+		int minX = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
+		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
+		int minZ = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
+		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
+		
+		if(coord.getX() < minX)
+			return;
+		else if (coord.getX() > maxX)
+			return;
+		else if (coord.getZ() < minZ)
+			return;
+		else if (coord.getZ() > maxZ)
+			return;
+		
+		ProvinceBlock provinceBlock = new ProvinceBlock();
+		provinceBlock.setProvince(province);
+		provinceBlock.setCoord(coord);
+		TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
 	}
 
 	/**

@@ -15,6 +15,7 @@ import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -85,7 +86,8 @@ public class DynmapIntegration {
 	 */
 	void displayTownyProvinces() {
 		Map<UUID, Marker> townUUIDToSiegeMarkerMapCopy = new HashMap<>(townUUIDToSiegeMarkerMap);
-
+		String worldName = TownyProvincesSettings.getWorldName();
+		
 		{
 			//Cleanup markers ....... This would involve activating/de-activating roads etc.
 			//Region/Province borders probably don't need to be re-done on a task
@@ -156,14 +158,72 @@ public class DynmapIntegration {
 				}
 			}
 
+			//Draw all province blocks
+			//DRAW ALL PROVINCE BORDER
+			//Cycle through each province
+			/*
+			{
+			 
+				String worldName = TownyProvincesSettings.getWorldName();
+				for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
+					for (ProvinceBlock provinceBlock : province.getProvinceBlocks()) {
+						drawProvinceBorderBlock(worldName, provinceBlock);
+					}
+				}
+			}
+			*/
 			{
 				//DRAW ALL PROVINCE BORDER
 				//Cycle through each province
-				String worldName = TownyProvincesSettings.getWorldName();
 				for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
 					for (ProvinceBlock provinceBlock : province.getProvinceBlocks()) {
 						if (provinceBlock.isProvinceBorder()) {
 							drawProvinceBorderBlock(worldName, provinceBlock);
+						}
+					}
+				}
+			}
+
+			{
+				//DRAW Any Unclaimed chunks
+				//Cycle through each province
+				int minX = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
+				int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
+				int minZ = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
+				int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
+				Coord coord;
+				for(int x = minX; x <= maxX; x++) {
+					for(int z = minZ; z <= maxZ; z++) {
+						coord = new Coord(x,z);
+						ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
+						if(provinceBlock == null) {
+							double[] xPoints = new double[4];
+							xPoints[0] = coord.getX() * TownyProvincesSettings.getRegionBlockLength();
+							xPoints[1] = xPoints[0] + TownyProvincesSettings.getRegionBlockLength();
+							xPoints[2] = xPoints[1];
+							xPoints[3] = xPoints[0];
+
+							double[] zPoints = new double[4];
+							zPoints[0] = coord.getZ() * TownyProvincesSettings.getRegionBlockLength();
+							zPoints[1] = zPoints[0];
+							zPoints[2] = zPoints[1] + TownyProvincesSettings.getRegionBlockLength();;
+							zPoints[3] = zPoints[2];
+
+							String markerId = "unclaimed_block_" + coord.getX() + "-" + coord.getZ();
+							String markerName = "Unclaimed Block";
+							//markerName += " Is Border: " + provinceBlock.isProvinceBorder();
+
+							boolean unknown = false;
+							boolean unknown2 = false;
+
+							AreaMarker areaMarker = markerSet.createAreaMarker(
+								markerId, markerName, unknown, worldName,
+								xPoints, zPoints, unknown2);
+
+							areaMarker.setFillStyle(0.2, 700000);
+							
+							
+							
 						}
 					}
 				}
@@ -186,6 +246,7 @@ public class DynmapIntegration {
 		
 		String markerId = "border_province_block_" + provinceBlock.getCoord().getX() + "-" + provinceBlock.getCoord().getZ();
 		String markerName = "Province Homeblock: " + provinceBlock.getProvince().getHomeBlock().getX() + " - " + provinceBlock.getProvince().getHomeBlock().getZ();
+		//markerName += " Is Border: " + provinceBlock.isProvinceBorder();
 		
 		boolean unknown = false;
 		boolean unknown2 = false;
@@ -194,6 +255,6 @@ public class DynmapIntegration {
 			markerId, markerName, unknown, worldName,
 			xPoints, zPoints, unknown2);
 		
-		areaMarker.setFillStyle(0.2, (int)(Math.random() * 250));
+		areaMarker.setFillStyle(0.2, 500000);
 	}
 }
