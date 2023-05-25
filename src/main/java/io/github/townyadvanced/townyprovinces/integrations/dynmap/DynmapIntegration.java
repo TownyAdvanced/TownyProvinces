@@ -1,8 +1,11 @@
 package io.github.townyadvanced.townyprovinces.integrations.dynmap;
 
 import com.palmergames.bukkit.towny.object.Coord;
+import com.palmergames.bukkit.towny.object.TownyInventory;
+import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.objects.CoordLine;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -14,10 +17,15 @@ import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
+import org.dynmap.markers.PolyLineMarker;
 
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class DynmapIntegration {
@@ -85,9 +93,8 @@ public class DynmapIntegration {
 	 * Display all TownyProvinces items, including province boundaries, region boundaries etc.
 	 */
 	void displayTownyProvinces() {
-		Map<UUID, Marker> townUUIDToSiegeMarkerMapCopy = new HashMap<>(townUUIDToSiegeMarkerMap);
-		String worldName = TownyProvincesSettings.getWorldName();
-		
+		//Map<UUID, Marker> townUUIDToSiegeMarkerMapCopy = new HashMap<>(townUUIDToSiegeMarkerMap);
+
 		{
 			//Cleanup markers ....... This would involve activating/de-activating roads etc.
 			//Region/Province borders probably don't need to be re-done on a task
@@ -137,8 +144,8 @@ public class DynmapIntegration {
 					String name = "test name";
 					try {
 						Coord homeBlock = province.getHomeBlock();
-						int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getRegionBlockLength();
-						int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getRegionBlockLength();
+						int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getProvinceBlockSideLength();
+						int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getProvinceBlockSideLength();
 
 						MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(TEMP_ICON);
 						String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
@@ -161,90 +168,464 @@ public class DynmapIntegration {
 			//Draw all province blocks
 			//DRAW ALL PROVINCE BORDER
 			//Cycle through each province
-			/*
-			{
+			
+			//{
 			 
 				String worldName = TownyProvincesSettings.getWorldName();
 				for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
 					for (ProvinceBlock provinceBlock : province.getProvinceBlocks()) {
-						drawProvinceBorderBlock(worldName, provinceBlock);
-					}
-				}
-			}
-			*/
-			{
-				//DRAW ALL PROVINCE BORDER
-				//Cycle through each province
-				for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
-					for (ProvinceBlock provinceBlock : province.getProvinceBlocks()) {
-						if (provinceBlock.isProvinceBorder()) {
+						if (provinceBlock.isProvinceBorder())
 							drawProvinceBorderBlock(worldName, provinceBlock);
-						}
 					}
 				}
-			}
-
+			//}
+			
+				//drawTestArea();
+			
 			{
-				//DRAW Any Unclaimed chunks
-				//Cycle through each province
-				int minX = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
-				int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
-				int minZ = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
-				int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
-				Coord coord;
-				for(int x = minX; x <= maxX; x++) {
-					for(int z = minZ; z <= maxZ; z++) {
-						coord = new Coord(x,z);
-						ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
-						if(provinceBlock == null) {
-							double[] xPoints = new double[4];
-							xPoints[0] = coord.getX() * TownyProvincesSettings.getRegionBlockLength();
-							xPoints[1] = xPoints[0] + TownyProvincesSettings.getRegionBlockLength();
-							xPoints[2] = xPoints[1];
-							xPoints[3] = xPoints[0];
+				//drawProvinceBorders();
 
-							double[] zPoints = new double[4];
-							zPoints[0] = coord.getZ() * TownyProvincesSettings.getRegionBlockLength();
-							zPoints[1] = zPoints[0];
-							zPoints[2] = zPoints[1] + TownyProvincesSettings.getRegionBlockLength();;
-							zPoints[3] = zPoints[2];
+				//for()
 
-							String markerId = "unclaimed_block_" + coord.getX() + "-" + coord.getZ();
-							String markerName = "Unclaimed Block";
-							//markerName += " Is Border: " + provinceBlock.isProvinceBorder();
+				//drawProvinceBorders2();
+				
+				////Cycle through each province
+				//for (ProvinceBlock provinceBlock : TownyProvincesDataHolder.getInstance().getProvinceBorderBlocks()) {
+				//	drawProvinceBorderBlock(TownyProvincesSettings.getWorldName(), provinceBlock);
+			//	}
+			}
 
-							boolean unknown = false;
-							boolean unknown2 = false;
+		}
+	}
 
-							AreaMarker areaMarker = markerSet.createAreaMarker(
-								markerId, markerName, unknown, worldName,
-								xPoints, zPoints, unknown2);
+	private void drawTestArea() {
+		double[] xPoints = new double[10];
+		xPoints[0] = 0;
+		xPoints[1] = 100;
+		xPoints[2] = 100;
+		xPoints[3] = 0;
+		xPoints[4] = 0;
+		xPoints[5] = 500;
+		xPoints[6] = 600;
+		xPoints[7] = 600;
+		xPoints[8] = 500;
+		xPoints[9] = 500;
 
-							areaMarker.setFillStyle(0.2, 700000);
-							
-							
-							
-						}
-					}
+		double[] zPoints = new double[10];
+		zPoints[0] = 0;
+		zPoints[1] = 0;
+		zPoints[2] = 100;
+		zPoints[3] = 100;
+		zPoints[4] = 0;
+
+		zPoints[5] = 500;
+		zPoints[6] = 500;
+		zPoints[7] = 600;
+		zPoints[8] = 600;
+		zPoints[9] = 500;
+
+
+		String worldName = TownyProvincesSettings.getWorldName();
+		String markerId = "tEST mARKER";
+		String markerName = "tEST MARKER";
+		//markerName += " Is Border: " + provinceBlock.isProvinceBorder();
+
+		boolean unknown = false;
+		boolean unknown2 = false;
+
+		AreaMarker areaMarker = markerSet.createAreaMarker(
+			markerId, markerName, unknown, worldName,
+			xPoints, zPoints, unknown2);
+
+		//PolyLineMarker polyLineMarker =  markerSet.createPolyLineMarker(
+		//	markerId, markerName, unknown, worldName,
+		//	xPoints, zPoints, zPoints, unknown2);
+
+//polyLineMarker.setLineStyle(4,1, 300000);
+//polyLineMarker.set
+		areaMarker.setFillStyle(0.2, 500000);
+	}
+	
+	public void drawProvinceBorders() {
+		Set<CoordLine> borderLines = calculateBorderLinesForDrawing();
+		TownyProvinces.info("Num or border lines: " + borderLines.size());
+		drawBorderLines(borderLines);
+		
+		//for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
+		//	drawProvinceBorders(province);
+		//}
+	}
+
+	private void drawBorderLines(Set<CoordLine> borderLines) {
+		//For now lets be simple and draw each line as a poly line
+		for(CoordLine borderLine: borderLines) {
+			
+			
+			TownyProvinces.info("Border Line Size: " + borderLine.getPoints().size());
+			String worldName = TownyProvincesSettings.getWorldName();
+			List<Coord> borderCoords = borderLine.getPoints();
+
+			double[] xPoints = new double[borderCoords.size()];
+			double[] yPoints = new double[borderCoords.size()];
+			double[] zPoints = new double[borderCoords.size()];
+
+			Coord coord;
+			for (int i = 0; i < borderCoords.size(); i++) {
+				coord = borderCoords.get(i);
+				xPoints[i] = coord.getX() * TownyProvincesSettings.getProvinceBlockSideLength();
+				yPoints[i] = 64;
+				zPoints[i] = coord.getZ() * TownyProvincesSettings.getProvinceBlockSideLength();;
+			}
+
+			String markerId = "Border_Line" 
+				+ "_x" + xPoints[0] + "_z" + zPoints[0] 
+				+ "_x" + xPoints[xPoints.length-1] + "_z" + zPoints[zPoints.length-1];
+			String markerName = "Border Line";
+			boolean unknown = false;
+			boolean unknown2 = false;
+
+			PolyLineMarker polyLineMarker = markerSet.createPolyLineMarker(
+				markerId, markerName, unknown, worldName,
+				xPoints, yPoints, zPoints, unknown2);
+
+			polyLineMarker.setLineStyle(4, 0.3, 300000);
+		}
+		
+		
+	}
+
+	private Set<CoordLine> calculateBorderLinesForDrawing() {
+		
+		//First arrange the border coords into lines
+		Set<Coord> allBorderCoords = TownyProvincesDataHolder.getInstance().getProvinceBorderCoords();
+		Set<Coord> usedBorderCoords = new HashSet<>();
+		List<CoordLine> borderLineQueue = new ArrayList<>();
+		CoordLine activeBorderLine = null;
+		Set<CoordLine> borderLinesReadyForDrawing = new HashSet<>();
+		Coord starterCoord ;
+		CoordLine newBorderLine ;
+		
+		//boolean allBordersFound = false; //TODO - use this if you get trouble with the while loop
+		//TODO - need to create one line here.....
+		
+		//Grow all lines until they cannot grow any more
+		while(usedBorderCoords.size() < allBorderCoords.size()) {
+			
+			//Grow a single line
+			
+			if(activeBorderLine == null) {
+				//Pick the next one off the queue
+				if(borderLineQueue.size() > 0) {
+					activeBorderLine = borderLineQueue.get(0);
+					borderLineQueue.remove(0);
+					continue;
+				} else {
+					//Queue is empty. Start a random new line
+					Set<Coord> unusedBorderCoords = new HashSet<>(allBorderCoords);
+					unusedBorderCoords.removeAll(usedBorderCoords);
+					starterCoord = (new ArrayList<>(unusedBorderCoords)).get(0);
+					newBorderLine = new CoordLine(starterCoord);
+					usedBorderCoords.add(starterCoord);
+					activeBorderLine = newBorderLine;
+					continue;
 				}
 			}
+
+			//TownyProvinces.info("Growing line now");
+			//A border line is active. Grow it now
+			
+			List<Coord> borderCoordsInFrontOfLine = calculateCoordsInFrontOfLine(activeBorderLine, allBorderCoords);
+				
+			if(borderCoordsInFrontOfLine.size() == 0) {
+				//End of the line
+				borderLinesReadyForDrawing.add(activeBorderLine);
+				activeBorderLine = null;
+				//TownyProvinces.info("End of the line");
+			} else {
+
+				//Queue other lines if required
+				for(int i = 1; i < borderCoordsInFrontOfLine.size(); i++) {
+					Coord targetPoint = borderCoordsInFrontOfLine.get(i);
+					newBorderLine = new CoordLine(activeBorderLine.getLineHead(), targetPoint);
+					if (usedBorderCoords.contains(targetPoint)) {
+						//Point is already used by another line
+						//This means we just met another line. This line is ready for use
+						borderLinesReadyForDrawing.add(newBorderLine);
+					} else {
+						//Queue the new line
+						borderLineQueue.add(newBorderLine);
+						//Register point as used
+						usedBorderCoords.add(targetPoint);
+					}
+				}
+				//TownyProvinces.info("Now growing line itself");
+				//TownyProvinces.info("Line head: " + activeBorderLine.getLineHead());
+				//TownyProvinces.info("Coord ahead: " + borderCoordsInFrontOfLine.get(0));
+
+
+				//Grow the line itself
+				Coord targetPoint = borderCoordsInFrontOfLine.get(0);
+				activeBorderLine.setLineHead(targetPoint);
+				activeBorderLine.addPoint(targetPoint);
+				if (usedBorderCoords.contains(targetPoint)) {
+					//Point is already used by another line
+					//This means we just met another line. Stop drawing
+					borderLinesReadyForDrawing.add(activeBorderLine);
+					activeBorderLine = null;
+				} else {
+					//Register point as used
+					usedBorderCoords.add(targetPoint);
+				}
+
+
+			}
+
+			TownyProvinces.info("Lines ready for drawing: " + borderLinesReadyForDrawing.size());
+		}
+		
+		//for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
+		//	drawProvinceBorders(province);
+		//}
+		TownyProvinces.info("Lines ready for drawing: " + borderLinesReadyForDrawing.size());
+		return borderLinesReadyForDrawing;
+	}
+
+	
+	public List<Coord> calculateCoordsInFrontOfLine(CoordLine coordLine, Set<Coord> allCoords) {
+		//Make candidate set
+		Set<Coord> candidates = new HashSet<>(allCoords);
+		// Remove from candidates the line head
+		candidates.remove(coordLine.getLineHead());
+		// Remove from candidates the coord which is just behind the line head (if any)
+		if(coordLine.getPoints().size() > 1) {
+			candidates.remove(coordLine.getPoints().get(coordLine.getPoints().size() -2));
+		}
+		// Calculate coords in front of line
+		List<Coord> coordsInFrontOfLine = getAdjacentCardinalCoords(coordLine.getLineHead(), candidates);
+		return coordsInFrontOfLine;
+	}
+
+	private List<Coord> getAdjacentCardinalCoords(Coord target, Set<Coord> candidates) {
+		List<Coord> result = new ArrayList<>();
+		for(Coord candidate: candidates) {
+			if(Math.abs(MathUtil.distance(target, candidate)) == 1) {
+				result.add(candidate);
+			}
+		}
+		return result;
+	}
+
+	public void drawProvinceBorders(Province province) {
+		String worldName = TownyProvincesSettings.getWorldName();
+		List<Coord> unsortedBorderCoords = new ArrayList<>(getAdjacentForeignCoords(province));
+		List<Coord> borderCoords = arrangeCoordsIntoDrawableLine(unsortedBorderCoords);
+
+		double[] xPoints = new double[borderCoords.size()];
+		double[] yPoints = new double[borderCoords.size()];
+		double[] zPoints = new double[borderCoords.size()];
+
+		Coord coord;
+		for (int i = 0; i < borderCoords.size(); i++) {
+			coord = borderCoords.get(i);
+			xPoints[i] = coord.getX() * TownyProvincesSettings.getProvinceBlockSideLength();
+			yPoints[i] = 64;
+			zPoints[i] = coord.getZ() * TownyProvincesSettings.getProvinceBlockSideLength();;
+		}
+
+		String markerId = "province border " + province.getHomeBlock().getX() + "_" + province.getHomeBlock().getZ();
+		String markerName = "province border name";
+		boolean unknown = false;
+		boolean unknown2 = false;
+
+		PolyLineMarker polyLineMarker = markerSet.createPolyLineMarker(
+			markerId, markerName, unknown, worldName,
+			xPoints, yPoints, zPoints, unknown2);
+
+		polyLineMarker.setLineStyle(4, 0.3, 300000);
+	}
+	
+	
+	
+	public void drawProvinceBorders2() {
+		Set<Coord> usedCoords = new HashSet<>();
+		
+		//Calculate border lines
+		Set<CoordLine> borderLines = new HashSet<>();
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
+			borderLines.addAll(calculateProvinceBorderLines(province, usedCoords));
+		}
+		TownyProvinces.info("Border Lines Num: " + borderLines.size());
+		
+		//Draw border lines
+		drawBorderLines(borderLines);
+	}
+
+	/**
+	 * @param province the province
+	 * @return used coords
+	 */
+	private List<CoordLine> calculateProvinceBorderLines(Province province, Set<Coord> usedCoords) {
+		
+		//Get list of available coords
+		Set<Coord> availableCoords = new HashSet<>();
+		for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
+			if(provinceBlock.isProvinceBorder()) {
+				availableCoords.add(provinceBlock.getCoord());
+			}
+		}
+		availableCoords.removeAll(usedCoords);
+		TownyProvinces.info("Available Coords for province: " + availableCoords.size());
+		
+		//Now generate lines
+		List<CoordLine> result = new ArrayList<>();
+		CoordLine activeLine = null;
+		while(availableCoords.size() > 0) {
+			
+			if(activeLine == null) {
+				Coord starterCoord = (new ArrayList<>(availableCoords)).get(0);
+				activeLine = new CoordLine(starterCoord);
+				usedCoords.add(starterCoord);
+				availableCoords.remove(starterCoord);
+				continue;
+			}
+			
+			//Now we have an active line
+			List<Coord> coordsInFrontOfLine = calculateCoordsInFrontOfLine(activeLine, availableCoords);
+			if(coordsInFrontOfLine.size() == 0) {
+				//End of line
+				result.add(activeLine);
+				activeLine = null;
+			} else {
+				//Grow line
+				activeLine.setLineHead(coordsInFrontOfLine.get(0));
+				activeLine.addPoint(coordsInFrontOfLine.get(0));
+				usedCoords.add(coordsInFrontOfLine.get(0));
+				availableCoords.remove(coordsInFrontOfLine.get(0));
+			}
+		}
+
+		TownyProvinces.info("Lines Created for province " + result.size());
+		return result;
+	}
+	
+	
+	private List<Coord> arrangeCoordsIntoDrawableLine(List<Coord> unorderedCoordsList) {
+		List<Coord> queue = new ArrayList<>(unorderedCoordsList);
+		List<Coord> result = new ArrayList<>();
+		Coord lineHead = null;
+		
+		while (result.size() < unorderedCoordsList.size()) {
+			lineHead = findNextLineHead(queue, lineHead, result);
+			queue.remove(lineHead);
+			result.add(lineHead);
+		}
+	
+		return result;
+	}
+
+	private Coord findNextLineHead(List<Coord> queue, Coord lineHead, List<Coord> line) {
+		if(lineHead == null) {
+			return queue.get(0);
+		}
+		for(Coord candidate: queue) {
+			if(areCoordsCardinallyAdjacent(candidate, lineHead)) {
+				return candidate;
+			}
+		}
+		return line.get(0);
+	}
+	
+		
+		
+		//	DrawableLineMaker drawableLineMaker = new DrawableLineMaker();
+	//	unorderedCoordsList.sort(drawableLineMaker);
+	
+
+	private boolean areCoordsCardinallyAdjacent(Coord c1, Coord c2) {
+		return MathUtil.distance(c1,c2) == 1;
+	}
+
+
+	private class DrawableLineMaker implements Comparator<Coord>{
+		private Coord lineHead;
+		private Set<Coord> alreadyDrawn;
+		private DrawableLineMaker() {
+			lineHead = null;
+		}
+		@Override
+		public int compare(Coord c1, Coord c2) {
+			//Create line head if needed
+			if(lineHead == null) {
+				lineHead = c1;
+			}
+			//If we are adjacent the line head, return 1 otherwise -1
+			if(isAdjacent(c1,lineHead)) {
+				//We become the line head
+				lineHead = c1;
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+		
+		
+		private boolean isAdjacent(Coord c1, Coord c2) {
+			return MathUtil.distance(c1,c2) < 2;			
 		}
 	}
 	
+	/**
+	 * Calculate the border coords. These will be just outside the province
+	 * This list will need to be ordered later to make a sensible line
+	 */
+	private static Set<Coord> getAdjacentForeignCoords(Province province) {
+		Set<Coord> result = new HashSet<>();
+		for (ProvinceBlock provinceBlock : province.getProvinceBlocks()) {
+			result.addAll(getAdjacentForeignCoords(provinceBlock));
+		}
+		TownyProvinces.info("BORDER COORDS FOUND FOR PROVINCE: " + result.size());
+		return result;
+	}
+	
+	public static Set<Coord> getAdjacentForeignCoords(ProvinceBlock provinceBlock) {
+		Set<Coord> result = new HashSet<>();
+		Coord candidateCoord;
+		ProvinceBlock candidateProvinceBlock;
+		for (int z = -1; z <= 1; z++) {
+			for (int x = -1; x <= 1; x++) {
+				candidateCoord = new Coord(provinceBlock.getCoord().getX() + x, provinceBlock.getCoord().getZ() + z);
+				if(candidateCoord.equals(provinceBlock.getCoord()))
+					continue;
+				candidateProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(candidateCoord);
+				if (candidateProvinceBlock == null) {
+					result.add(candidateCoord);   //Not assigned somehow
+				} else if (candidateProvinceBlock.getProvince() == null) {
+					result.add(candidateCoord);   //A border tile
+				}
+				
+				//I don't think there's any more possibilities here at present
+			}
+		}
+		return result;
+	}
+		
+		
+	
 	public void drawProvinceBorderBlock(String worldName, ProvinceBlock provinceBlock) {
 		double[] xPoints = new double[4];
-		xPoints[0] = provinceBlock.getCoord().getX() * TownyProvincesSettings.getRegionBlockLength();
-		xPoints[1] = xPoints[0] + TownyProvincesSettings.getRegionBlockLength();
+		xPoints[0] = provinceBlock.getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength();
+		xPoints[1] = xPoints[0] + TownyProvincesSettings.getProvinceBlockSideLength();
 		xPoints[2] = xPoints[1];
 		xPoints[3] = xPoints[0];
 
 		double[] zPoints = new double[4];
-		zPoints[0] = provinceBlock.getCoord().getZ() * TownyProvincesSettings.getRegionBlockLength();
+		zPoints[0] = provinceBlock.getCoord().getZ() * TownyProvincesSettings.getProvinceBlockSideLength();
 		zPoints[1] = zPoints[0]; 
-		zPoints[2] = zPoints[1] + TownyProvincesSettings.getRegionBlockLength();;
+		zPoints[2] = zPoints[1] + TownyProvincesSettings.getProvinceBlockSideLength();;
 		zPoints[3] = zPoints[2];
 		
 		String markerId = "border_province_block_" + provinceBlock.getCoord().getX() + "-" + provinceBlock.getCoord().getZ();
+		//String markerName = "xx";
 		String markerName = "Province Homeblock: " + provinceBlock.getProvince().getHomeBlock().getX() + " - " + provinceBlock.getProvince().getHomeBlock().getZ();
 		//markerName += " Is Border: " + provinceBlock.isProvinceBorder();
 		
@@ -254,7 +635,13 @@ public class DynmapIntegration {
 		AreaMarker areaMarker = markerSet.createAreaMarker(
 			markerId, markerName, unknown, worldName,
 			xPoints, zPoints, unknown2);
-		
+
+		//PolyLineMarker polyLineMarker =  markerSet.createPolyLineMarker(
+		//	markerId, markerName, unknown, worldName,
+		//	xPoints, zPoints, zPoints, unknown2);
+
+//polyLineMarker.setLineStyle(4,1, 300000);
+//polyLineMarker.set
 		areaMarker.setFillStyle(0.2, 500000);
 	}
 }

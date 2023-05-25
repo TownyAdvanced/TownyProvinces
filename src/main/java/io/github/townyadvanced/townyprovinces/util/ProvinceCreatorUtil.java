@@ -12,7 +12,9 @@ import org.bukkit.Location;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ProvinceCreatorUtil {
 
@@ -42,16 +44,84 @@ public class ProvinceCreatorUtil {
 	}
 
 	private static boolean setupProvinceBorders() {
-		for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
-			for (ProvinceBlock provinceBlock : province.getProvinceBlocks()) {
-				if (shouldThisProvinceBlockBeAProvinceBorder(provinceBlock)) {
-					provinceBlock.setProvinceBorder(true);
-				}
-			}
+		//Process all provinces, starting with the ones which have the least amount of processed neighbors
+		List<Province> allProvinces = TownyProvincesDataHolder.getInstance().getProvinces();
+		List<Province> unProcessedProvinces = new ArrayList<>(allProvinces);
+		List<Province> processedProvinces = new ArrayList<>();
+		while(processedProvinces.size() < unProcessedProvinces.size()) {
+			Province province = findProvinceWithLeastAmountOfProcessedNeighbors(unProcessedProvinces, processedProvinces);
+			setupProvinceBorders(province);
+			unProcessedProvinces.remove(province);
+			processedProvinces.add(province);
 		}
 		return true;
 	}
 
+	private static Province findProvinceWithLeastAmountOfProcessedNeighbors(List<Province> unProcessedProvinces, List<Province> processedProvinces) {
+		Province winner = null;
+		int winnerNumberOfProcessedNeighbors =  999999999;
+		for(Province candidate: unProcessedProvinces) {
+			int candidateNumberOfProcessedNeighbors = calculateNumberOfProcessedNeighbors(candidate, processedProvinces);
+			if(winner == null || candidateNumberOfProcessedNeighbors < winnerNumberOfProcessedNeighbors) {
+				winner = candidate;
+				winnerNumberOfProcessedNeighbors = candidateNumberOfProcessedNeighbors;
+			}
+		}
+		return winner;
+	}
+
+	private static int calculateNumberOfProcessedNeighbors(Province province, List<Province> processedProvinces) {
+		int result = 0;
+		Set<Province> neighboringProvinces = calculateNeigboringProvinces(province);
+		for(Province neighborProvince: neighboringProvinces) {
+			if(processedProvinces.contains(neighborProvince)) {
+				result++;
+			}
+		}
+		return result;
+	}
+	
+	public static Set<Province> calculateNeigboringProvinces(Province province) {
+		Set<Province> result = new HashSet<>();
+		for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
+			result.addAll(calculateNeigboringProvinces(provinceBlock));
+		}
+		return result;
+	}
+
+	public static Set<Province> calculateNeigboringProvinces(ProvinceBlock givenProvinceBlock) {
+		Coord givenProvinceBlockCoord = givenProvinceBlock.getCoord();
+		Province givenProvince = givenProvinceBlock.getProvince();
+		Coord adjacentCoord;
+		ProvinceBlock adjacentProvinceBlock;
+		Set<Province> result = new HashSet<>();
+		for(int z = -1; z <=1; z++) {
+			for(int x = -1; x <=1; x++) {
+				if(x == 0 && z == 0) {
+					continue;
+				}
+				adjacentCoord = new Coord(givenProvinceBlockCoord.getX() + x, givenProvinceBlockCoord.getZ() + z);
+				adjacentProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
+				if (adjacentProvinceBlock != null && adjacentProvinceBlock.getProvince() != givenProvince) {
+					result.add(adjacentProvinceBlock.getProvince());
+				}
+			}
+		}
+		return result;
+	}
+
+
+
+	private static boolean setupProvinceBorders(Province province) {
+		for (ProvinceBlock provinceBlock : province.getProvinceBlocks()) {
+			if (shouldThisProvinceBlockBeAProvinceBorder(provinceBlock)) {
+				provinceBlock.setProvinceBorder(true);
+				//provinceBlock.setProvince(null); //Todo - probably remove this line
+			}
+		}
+		return true;
+	}
+	
 	private static boolean shouldThisProvinceBlockBeAProvinceBorder(ProvinceBlock provinceBlock) {
 		Coord provinceBlockCoord = provinceBlock.getCoord();
 		Province province = provinceBlock.getProvince();
@@ -95,7 +165,7 @@ public class ProvinceCreatorUtil {
 		}
 		
 		if(TownyProvincesDataHolder.getInstance().getProvinceBlocks().size() > 0) {
-			claimRemainingChunks();
+			claimRemainingNonBorderChunks();
 		} else {
 			TownyProvinces.severe("Unamble to claim remaining chunks as there are no claimed chunks");
 			return false;
@@ -106,14 +176,14 @@ public class ProvinceCreatorUtil {
 		return true;
 	}
 
-	private static void claimRemainingChunks() {
+	private static void claimRemainingNonBorderChunks() {
 
 		//Create claim queue
 		List<Coord> claimQueue = new ArrayList<>();
-		int minX = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
-		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
-		int minZ = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
+		int minX = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minZ = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		Coord coord;
 		for(int x = minX; x <= maxX; x++) {
 			for(int z = minZ; z <= maxZ; z++) {
@@ -230,7 +300,7 @@ public class ProvinceCreatorUtil {
 		Coord coord;
 		for(int x = startX; x <= endX; x++) {
 			for(int z = startZ; z <= endZ; z++) {
-				//return if theres another province there
+				//return if this would claim over another province
 				coord = new Coord(x,z);
 				ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
 				if(provinceBlock != null && provinceBlock.getProvince() != provinceBlock.getProvince())
@@ -256,10 +326,10 @@ public class ProvinceCreatorUtil {
 		if (TownyProvincesDataHolder.getInstance().getProvinceBlock(coord) != null)
 			return;
 
-		int minX = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
-		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getRegionBlockLength();
-		int minZ = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getRegionBlockLength();
+		int minX = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minZ = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		
 		if(coord.getX() < minX)
 			return;
@@ -313,7 +383,7 @@ public class ProvinceCreatorUtil {
 	 * Return null if you fail - usually due to map being full up with provinces
 	 */
 	private static Coord generateProvinceHomeBlock() {
-		double tpChunkSideLength = TownyProvincesSettings.getRegionBlockLength();
+		double tpChunkSideLength = TownyProvincesSettings.getProvinceBlockSideLength();
 		for(int i = 0; i < 100; i++) {
 			double xLowest = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX();
 			double xHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX();
@@ -335,7 +405,7 @@ public class ProvinceCreatorUtil {
 	
 	private static boolean validateProvinceHomeBlock(Coord coord) {
 		int minAllowedDistanceInMetres = TownyProvincesSettings.getMinAllowedDistanceBetweenProvinceHomeBlocks();
-		int minAllowedDistanceInChunks = minAllowedDistanceInMetres / TownyProvincesSettings.getRegionBlockLength();
+		int minAllowedDistanceInChunks = minAllowedDistanceInMetres / TownyProvincesSettings.getProvinceBlockSideLength();
 		List<Province> provinceList = TownyProvincesDataHolder.getInstance().getProvinces();
 		for(Province province: provinceList) {
 			if(MathUtil.distance(coord, province.getHomeBlock()) < minAllowedDistanceInChunks) {

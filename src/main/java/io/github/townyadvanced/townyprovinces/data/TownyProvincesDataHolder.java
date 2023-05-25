@@ -7,8 +7,10 @@ import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The In-Memory data holder class for TownyProvinces
@@ -36,6 +38,27 @@ public class TownyProvincesDataHolder {
 	private List<Province> provinces;
 	private List<Region> regions;
 	private Map<Coord, ProvinceBlock> provinceBlocks;
+
+	public List<ProvinceBlock> getProvinceBorderBlocks() {
+		List<ProvinceBlock> result = new ArrayList<>();
+		for(ProvinceBlock provinceBlock: getProvinceBlocks().values()) {
+			if(provinceBlock.isProvinceBorder()) {
+				result.add(provinceBlock);
+			}
+		}
+		return result;
+	}
+
+	public Set<Coord> getProvinceBorderCoords() {
+		Set<Coord> result = new HashSet<>();
+		for(ProvinceBlock provinceBlock: getProvinceBlocks().values()) {
+			if(provinceBlock.isProvinceBorder()) {
+				result.add(provinceBlock.getCoord());
+			}
+		}
+		return result;
+	}
+
 
 	public void addProvince(Province province) {
 		provinces.add(province);

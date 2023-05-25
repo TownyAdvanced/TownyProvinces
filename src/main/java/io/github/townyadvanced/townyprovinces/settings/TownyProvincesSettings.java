@@ -51,7 +51,7 @@ public class TownyProvincesSettings {
 		return 3;
 	}
 
-	public static int getRegionBlockLength() {
+	public static int getProvinceBlockSideLength() {
 		return 16;
 	}
 }
