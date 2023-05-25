@@ -1,7 +1,6 @@
 package io.github.townyadvanced.townyprovinces.integrations.dynmap;
 
 import com.palmergames.bukkit.towny.object.Coord;
-import com.palmergames.bukkit.towny.object.TownyInventory;
 import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
@@ -170,15 +169,19 @@ public class DynmapIntegration {
 			//Cycle through each province
 			
 			//{
-			 
+
+/*			
 				String worldName = TownyProvincesSettings.getWorldName();
 				for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
-					for (ProvinceBlock provinceBlock : province.getProvinceBlocks()) {
+
+					for (ProvinceBlock provinceBlock : findBorderBlocks(province)) {
 						if (provinceBlock.isProvinceBorder())
 							drawProvinceBorderBlock(worldName, provinceBlock);
-					}
-				}
+					//}
+				//}
 			//}
+			
+ */
 			
 				//drawTestArea();
 			
@@ -194,36 +197,95 @@ public class DynmapIntegration {
 				//	drawProvinceBorderBlock(TownyProvincesSettings.getWorldName(), provinceBlock);
 			//	}
 			}
+			
+			drawProvinceBorders3();
 
 		}
 	}
 
+	private void drawProvinceBorders3() {
+		for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
+			Set<Coord> provinceBorderCoords = findAdjacentForeignCoords(province);
+			List<Coord> drawableLineOfProvinceBordersCoords = generateDrawableLineOfProvinceBorderCoords(province, provinceBorderCoords);
+			drawProvinceBorders(province, drawableLineOfProvinceBorders);
+		}			
+	}
+
+
+	/**
+	 * Discover all province borders
+	 * 
+	 * TODO - Right now we have an extra step of determining the real province
+	 * Which says that "home" coords are those which belong to the province, but are not border coords
+	 * 
+	 * get rid of this if it stops making sense at any point
+	 */
+	private Set<Coord> findAdjacentForeignCoords(Province homeProvince) {
+		Set<Coord> result = new HashSet<>();
+		Set<Coord> homeProvinceCoords = new HashSet<>();
+		for(ProvinceBlock provinceBlock: homeProvince.getProvinceBlocks()) {
+			if(!provinceBlock.isProvinceBorder()) {
+				homeProvinceCoords.add(provinceBlock.getCoord());
+			}
+		}
+		for(Coord homeProvinceCoord: homeProvinceCoords) {
+			result.addAll(findAdjacentForeignCoords(homeProvinceCoord, homeProvince));
+			
+		}
+		return result;
+	}
+	
+	private Set<Coord> findAdjacentForeignCoords(Coord homeCoord, Province homeProvince) {
+		Set<Coord> result = new HashSet<>();
+		Set<Coord> allAdjacentCoords = findAllAdjacentCoords(homeCoord);
+		ProvinceBlock candidateProvinceBlock;
+		for(Coord candidateCoord: allAdjacentCoords) {
+			candidateProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(candidateCoord);
+			if(candidateProvinceBlock == null || !candidateProvinceBlock.getProvince().equals(homeProvince)) {
+				result.add(candidateCoord);
+			}
+		}
+		return result;
+	}
+
+	private Set<Coord> findAllAdjacentCoords(Coord targetCoord) {
+		Set<Coord> result = new HashSet<>();
+		for(int x = -1; x <= targetCoord.getX() + 1; x++) {
+			for(int z = -1; z <= targetCoord.getZ() + 1; z++) {
+				if(x != 0 && z != 0) {
+					result.add(new Coord(x,z));
+				}
+			}
+		}
+		return result;
+	}
+
+
 	private void drawTestArea() {
-		double[] xPoints = new double[10];
+		double[] xPoints = new double[5];
 		xPoints[0] = 0;
 		xPoints[1] = 100;
 		xPoints[2] = 100;
 		xPoints[3] = 0;
 		xPoints[4] = 0;
-		xPoints[5] = 500;
-		xPoints[6] = 600;
-		xPoints[7] = 600;
-		xPoints[8] = 500;
-		xPoints[9] = 500;
+		//xPoints[5] = 500;
+		//xPoints[6] = 600;
+		//xPoints[7] = 600;
+		//xPoints[8] = 500;
+		//xPoints[9] = 500;
 
-		double[] zPoints = new double[10];
+		double[] zPoints = new double[5];
 		zPoints[0] = 0;
 		zPoints[1] = 0;
 		zPoints[2] = 100;
 		zPoints[3] = 100;
 		zPoints[4] = 0;
 
-		zPoints[5] = 500;
-		zPoints[6] = 500;
-		zPoints[7] = 600;
-		zPoints[8] = 600;
-		zPoints[9] = 500;
-
+		//zPoints[5] = 500;
+		//zPoints[6] = 500;
+		//zPoints[7] = 600;
+		//zPoints[8] = 600;
+		//zPoints[9] = 500;
 
 		String worldName = TownyProvincesSettings.getWorldName();
 		String markerId = "tEST mARKER";
@@ -233,17 +295,17 @@ public class DynmapIntegration {
 		boolean unknown = false;
 		boolean unknown2 = false;
 
-		AreaMarker areaMarker = markerSet.createAreaMarker(
+		//AreaMarker areaMarker = markerSet.createAreaMarker(
+	//		markerId, markerName, unknown, worldName,
+	//		xPoints, zPoints, unknown2);
+
+		PolyLineMarker polyLineMarker =  markerSet.createPolyLineMarker(
 			markerId, markerName, unknown, worldName,
-			xPoints, zPoints, unknown2);
+			xPoints, zPoints, zPoints, unknown2);
 
-		//PolyLineMarker polyLineMarker =  markerSet.createPolyLineMarker(
-		//	markerId, markerName, unknown, worldName,
-		//	xPoints, zPoints, zPoints, unknown2);
-
-//polyLineMarker.setLineStyle(4,1, 300000);
+polyLineMarker.setLineStyle(8,0.4, 300000);
 //polyLineMarker.set
-		areaMarker.setFillStyle(0.2, 500000);
+		//areaMarker.setFillStyle(0.2, 500000);
 	}
 	
 	public void drawProvinceBorders() {
@@ -642,6 +704,7 @@ public class DynmapIntegration {
 
 //polyLineMarker.setLineStyle(4,1, 300000);
 //polyLineMarker.set
-		areaMarker.setFillStyle(0.2, 500000);
+		areaMarker.setFillStyle(0, 300000);
+		areaMarker.setLineStyle(11, 0.2, 300000);
 	}
 }

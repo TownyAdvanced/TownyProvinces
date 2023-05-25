@@ -18,6 +18,7 @@ import java.util.Set;
 
 public class ProvinceCreatorUtil {
 
+	private static int estimatedNumLinesRequired = 0;
 	/**
 	 * Create all provinces in the world
 	 */
@@ -58,6 +59,7 @@ public class ProvinceCreatorUtil {
 		}
 		
 		TownyProvinces.info("PROVINCES PROCESSED: " + processedProvinces.size());
+		TownyProvinces.info("ESTIMATED NUM LINES REQUIRED: " + estimatedNumLinesRequired);
 		return true;
 	}
 
@@ -70,6 +72,12 @@ public class ProvinceCreatorUtil {
 				winner = candidate;
 				winnerNumberOfProcessedNeighbors = candidateNumberOfProcessedNeighbors;
 			}
+		}
+		if(winnerNumberOfProcessedNeighbors == 0) {
+			estimatedNumLinesRequired += 1;
+		} else {
+			estimatedNumLinesRequired += winnerNumberOfProcessedNeighbors;
+			
 		}
 		return winner;
 	}
@@ -120,7 +128,7 @@ public class ProvinceCreatorUtil {
 		for (ProvinceBlock provinceBlock : province.getProvinceBlocks()) {
 			if (shouldThisProvinceBlockBeAProvinceBorder(provinceBlock)) {
 				provinceBlock.setProvinceBorder(true);
-				//provinceBlock.setProvince(null); //Todo - probably remove this line
+				provinceBlock.setProvince(null);
 			}
 		}
 		return true;
