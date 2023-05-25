@@ -141,7 +141,6 @@ public class DynmapIntegration {
 			{
 				//TEMP - Add markers showing province homeblocks
 				for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
-					String name = "test name";
 					try {
 						Coord homeBlock = province.getHomeBlock();
 						int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getProvinceBlockSideLength();
@@ -149,6 +148,7 @@ public class DynmapIntegration {
 
 						MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(TEMP_ICON);
 						String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
+						String name = homeBlockMarkerId;
 						Marker homeBlockMarker = markerSet.findMarker(homeBlockMarkerId);
 						if (homeBlockMarker == null) {
 							homeBlockMarker = markerSet.createMarker(

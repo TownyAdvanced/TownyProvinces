@@ -45,19 +45,23 @@ public class ProvinceCreatorUtil {
 
 	private static boolean setupProvinceBorders() {
 		//Process all provinces, starting with the ones which have the least amount of processed neighbors
-		List<Province> allProvinces = TownyProvincesDataHolder.getInstance().getProvinces();
-		List<Province> unProcessedProvinces = new ArrayList<>(allProvinces);
-		List<Province> processedProvinces = new ArrayList<>();
-		while(processedProvinces.size() < unProcessedProvinces.size()) {
-			Province province = findProvinceWithLeastAmountOfProcessedNeighbors(unProcessedProvinces, processedProvinces);
+		Set<Province> allProvinces = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvinces());
+		Set<Province> unProcessedProvinces = new HashSet<>(allProvinces);
+		Set<Province> processedProvinces = new HashSet<>();
+		while(unProcessedProvinces.size() > 0) {
+			TownyProvinces.info("PROC_PROVINCES: " + processedProvinces.size());
+			TownyProvinces.info("UNPROC_PROVINCES: " + unProcessedProvinces.size());
+			Province province = findUnProcessedProvinceWithLeastAmountOfProcessedNeighbors(unProcessedProvinces, processedProvinces);
 			setupProvinceBorders(province);
 			unProcessedProvinces.remove(province);
 			processedProvinces.add(province);
 		}
+		
+		TownyProvinces.info("PROVINCES PROCESSED: " + processedProvinces.size());
 		return true;
 	}
 
-	private static Province findProvinceWithLeastAmountOfProcessedNeighbors(List<Province> unProcessedProvinces, List<Province> processedProvinces) {
+	private static Province findUnProcessedProvinceWithLeastAmountOfProcessedNeighbors(Set<Province> unProcessedProvinces, Set<Province> processedProvinces) {
 		Province winner = null;
 		int winnerNumberOfProcessedNeighbors =  999999999;
 		for(Province candidate: unProcessedProvinces) {
@@ -70,7 +74,7 @@ public class ProvinceCreatorUtil {
 		return winner;
 	}
 
-	private static int calculateNumberOfProcessedNeighbors(Province province, List<Province> processedProvinces) {
+	private static int calculateNumberOfProcessedNeighbors(Province province, Set<Province> processedProvinces) {
 		int result = 0;
 		Set<Province> neighboringProvinces = calculateNeigboringProvinces(province);
 		for(Province neighborProvince: neighboringProvinces) {
