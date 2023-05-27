@@ -16,6 +16,11 @@ public class ProvinceBlock {
 		this.coord = null;
 	}
 
+	public ProvinceBlock(Coord coord, Province province, boolean provinceBorder) {
+		this.coord = coord;
+		this.province = province;
+		this.provinceBorder = provinceBorder;
+	}
 	public void setProvince(Province province) {
 		this.province = province;
 	}

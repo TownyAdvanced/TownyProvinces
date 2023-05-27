@@ -10,6 +10,12 @@ public class Province {
 	
 	private Coord homeBlock;
 	
+	public boolean equals(Object provinceToCompare) {
+		if(!(provinceToCompare instanceof Province))
+			return false;
+		return homeBlock.equals(((Province)provinceToCompare).getHomeBlock());
+	}
+	
 	public Province() {
 		
 	}
