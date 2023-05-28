@@ -8,10 +8,10 @@ import io.github.townyadvanced.townyprovinces.objects.CoordLine;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.util.ProvinceCreatorUtil;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
 import org.dynmap.DynmapAPI;
-import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerIcon;
@@ -138,30 +138,7 @@ public class DynmapIntegration {
         }
 	*/
 			{
-				//TEMP - Add markers showing province homeblocks
-				for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
-					try {
-						Coord homeBlock = province.getHomeBlock();
-						int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getProvinceBlockSideLength();
-						int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getProvinceBlockSideLength();
 
-						MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(TEMP_ICON);
-						String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
-						String name = homeBlockMarkerId;
-						Marker homeBlockMarker = markerSet.findMarker(homeBlockMarkerId);
-						if (homeBlockMarker == null) {
-							homeBlockMarker = markerSet.createMarker(
-								homeBlockMarkerId, name, TownyProvincesSettings.getWorldName(),
-								realHomeBlockX, 64, realHomeBlockZ,
-								homeBlockIcon, false);
-							homeBlockMarker.setLabel(name);
-							homeBlockMarker.setDescription("test description");
-						}
-					} catch (Exception ex) {
-						TownyProvinces.severe("Problem adding homeblock marker");
-						ex.printStackTrace();
-					}
-				}
 			}
 
 			//Draw all province blocks
@@ -198,28 +175,99 @@ public class DynmapIntegration {
 			//	}
 			}
 			
-			debugDrawProvinceBorders();
+			debugDrawProvinceHomeBlocks();
 			
-			//drawProvinceBorders3();
+			//debugDrawProvinceBorders();
+			
+			drawProvinceBorders4();
 
 		}
 	}
 	
+	
+	private void debugDrawProvinceHomeBlocks() {
+		//TEMP - Add markers showing province homeblocks
+		for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
+			try {
+				Coord homeBlock = province.getHomeBlock();
+				int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getProvinceBlockSideLength();
+				int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getProvinceBlockSideLength();
+
+				MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(TEMP_ICON);
+				String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
+				String name = homeBlockMarkerId;
+				Marker homeBlockMarker = markerSet.findMarker(homeBlockMarkerId);
+				if (homeBlockMarker == null) {
+					homeBlockMarker = markerSet.createMarker(
+						homeBlockMarkerId, name, TownyProvincesSettings.getWorldName(),
+						realHomeBlockX, 64, realHomeBlockZ,
+						homeBlockIcon, false);
+					homeBlockMarker.setLabel(name);
+					homeBlockMarker.setDescription("test description");
+				}
+			} catch (Exception ex) {
+				TownyProvinces.severe("Problem adding homeblock marker");
+				ex.printStackTrace();
+			}
+		}
+	}
 	
 	//Shows all borders. But not for production
 	private void debugDrawProvinceBorders() {
 		String worldName = TownyProvincesSettings.getWorldName();
 		
 		for (ProvinceBlock provinceBlock : TownyProvincesDataHolder.getInstance().getProvinceBorderBlocks()) {
-			drawProvinceBorderBlock(worldName, provinceBlock);
+			debugDrawProvinceBorderBlock(worldName, provinceBlock);
 		}
 	}
+
+
+	private void drawProvinceBorders4() {
+		//Find and draw the borders around each province
+		for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
+
+			//Get border coords
+			Set<Coord> borderCoords = findAllBorderCoords(province);
+			
+			//Validate that they are already marker as borders
+			ProvinceBlock provinceBlock;
+			for(Coord borderCoord: borderCoords) {
+				provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(borderCoord);
+				if(provinceBlock == null) {
+					throw new RuntimeException("Error: A province border coord was not on the block map");
+				} else if (!provinceBlock.isProvinceBorder()) {
+					throw new RuntimeException("Error: A province border block was not marked as a province");
+				}
+			}
+
+			//DEBUG DRAW
+			String worldName = TownyProvincesSettings.getWorldName();
+			for (Coord borderCoord : borderCoords) {
+				provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(borderCoord);
+				debugDrawProvinceBorderBlock(worldName, provinceBlock);
+			}
+			
+			//List<Coord> drawableProvinceBordersCoords = generateDrawableProvinceBorderCoords(provinceBorderCoords);
+			//drawProvinceBorders(province, drawableProvinceBordersCoords);
+		}
+	}
+	
 	
 
 	private void drawProvinceBorders3() {
 		for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
-			Set<Coord> provinceBorderCoords = findBorderCoords(province);
-			List<Coord> drawableProvinceBordersCoords = generateDrawableProvinceBorderCoords(provinceBorderCoords);
+			//Get border coords
+			Set<Coord> coords = findAllBorderCoords(province);
+			//Validate that they are already marker as border
+			//for(Coord)
+			
+			//DEBUG
+			//String worldName = TownyProvincesSettings.getWorldName();
+			//for (ProvinceBlock provinceBlock : provinceBorderCoords) {
+			//	drawProvinceBorderBlock(worldName, provinceBlock);
+			//}
+			
+			//List<Coord> drawableProvinceBordersCoords = generateDrawableProvinceBorderCoords(provinceBorderCoords);
 			//drawProvinceBorders(province, drawableProvinceBordersCoords);
 		}			
 	}
@@ -250,34 +298,45 @@ public class DynmapIntegration {
 
 	/**
 	 * Discover all province borders
-	 * 
-	 * TODO - Right now we have an extra step of determining the real province
-	 * Which says that "home" coords are those which belong to the province, but are not border coords
-	 * 
-	 * get rid of this if it stops making sense at any point
 	 */
-	private Set<Coord> findBorderCoords(Province homeProvince) {
-		Set<Coord> result = new HashSet<>();
-		Set<Coord> homeProvinceCoords = new HashSet<>();
-		for(ProvinceBlock provinceBlock: homeProvince.getProvinceBlocks()) {
-			if(!provinceBlock.isProvinceBorder()) {
-				homeProvinceCoords.add(provinceBlock.getCoord());
+	private Set<Coord> findAllBorderCoords(Province province) {
+		Set<Coord> resultSet = new HashSet<>();
+		for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
+			if(isProvinceBlockOnBorder(provinceBlock)) {
+				resultSet.add(provinceBlock.getCoord());
 			}
 		}
-		for(Coord homeProvinceCoord: homeProvinceCoords) {
-			result.addAll(findBorderCoords(homeProvinceCoord, homeProvince));
-			
-		}
-		return result;
+		return resultSet;
 	}
-	
-	private Set<Coord> findBorderCoords(Coord homeCoord, Province homeProvince) {
-		Set<Coord> result = new HashSet<>();
-		Set<Coord> allAdjacentCoords = findAllAdjacentCoords(homeCoord);
+
+	private boolean isProvinceBlockOnBorder(ProvinceBlock givenProvinceBlock) {
+		Set<Coord> allAdjacentCoords = ProvinceCreatorUtil.findAllAdjacentCoords(givenProvinceBlock.getCoord());
 		ProvinceBlock candidateProvinceBlock;
 		for(Coord candidateCoord: allAdjacentCoords) {
 			candidateProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(candidateCoord);
-			if(candidateProvinceBlock == null || !candidateProvinceBlock.getProvince().equals(homeProvince)) {
+			if(candidateProvinceBlock == null) {
+				//Is on edge of map
+				return true;
+			} else if (!candidateProvinceBlock.getProvince().equals(givenProvinceBlock.getProvince())) {
+				//Borders another province
+				return true;
+			}
+		}
+		//No adjacent foreign province found
+		return false;
+	}
+
+	private Set<Coord> findAllBorderCoords(ProvinceBlock givenProvinceBlock) {
+		Set<Coord> result = new HashSet<>();
+		Set<Coord> allAdjacentCoords = ProvinceCreatorUtil.findAllAdjacentCoords(givenProvinceBlock.getCoord());
+		ProvinceBlock candidateProvinceBlock;
+		for(Coord candidateCoord: allAdjacentCoords) {
+			candidateProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(candidateCoord);
+			if(candidateProvinceBlock == null) {
+				//edge of map
+				result.add(candidateCoord);
+			} else if (!candidateProvinceBlock.getProvince().equals(givenProvinceBlock.getProvince())) {
+				//Borders another province
 				result.add(candidateCoord);
 			}
 		}
@@ -710,7 +769,7 @@ polyLineMarker.setLineStyle(8,0.4, 300000);
 		
 		
 	
-	public void drawProvinceBorderBlock(String worldName, ProvinceBlock provinceBlock) {
+	public void debugDrawProvinceBorderBlock(String worldName, ProvinceBlock provinceBlock) {
 		double[] xPoints = new double[5];
 		xPoints[0] = provinceBlock.getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength();
 		xPoints[1] = xPoints[0] + TownyProvincesSettings.getProvinceBlockSideLength();

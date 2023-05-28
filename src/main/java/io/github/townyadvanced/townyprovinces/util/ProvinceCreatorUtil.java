@@ -152,7 +152,7 @@ public class ProvinceCreatorUtil {
 		return new ArrayList<>(result);
 	}
 
-	private static Set<Coord> findAllAdjacentCoords(Coord targetCoord) {
+	public static Set<Coord> findAllAdjacentCoords(Coord targetCoord) {
 		Set<Coord> result = new HashSet<>();
 		int[] x = new int[]{-1,0,1,-1,1,-1,0,1};
 		int[] z = new int[]{-1,-1,-1,0,0,1,1,1};
