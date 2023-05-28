@@ -39,8 +39,8 @@ public class TownyProvincesDataHolder {
 	private List<Region> regions;
 	private Map<Coord, ProvinceBlock> provinceBlocks;
 
-	public List<ProvinceBlock> getProvinceBorderBlocks() {
-		List<ProvinceBlock> result = new ArrayList<>();
+	public Set<ProvinceBlock> getProvinceBorderBlocks() {
+		Set<ProvinceBlock> result = new HashSet<>();
 		for(ProvinceBlock provinceBlock: getProvinceBlocks().values()) {
 			if(provinceBlock.isProvinceBorder()) {
 				result.add(provinceBlock);

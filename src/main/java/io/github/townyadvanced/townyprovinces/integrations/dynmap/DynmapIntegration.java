@@ -226,25 +226,13 @@ public class DynmapIntegration {
 		//Find and draw the borders around each province
 		for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
 
-			//Get border coords
-			Set<Coord> borderCoords = findAllBorderCoords(province);
-			
-			//Validate that they are already marker as borders
-			ProvinceBlock provinceBlock;
-			for(Coord borderCoord: borderCoords) {
-				provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(borderCoord);
-				if(provinceBlock == null) {
-					throw new RuntimeException("Error: A province border coord was not on the block map");
-				} else if (!provinceBlock.isProvinceBorder()) {
-					throw new RuntimeException("Error: A province border block was not marked as a province");
-				}
-			}
+			//Get border blocks
+			Set<ProvinceBlock> borderBlocks = findAllBorderBlocks(province);
 
 			//DEBUG DRAW
 			String worldName = TownyProvincesSettings.getWorldName();
-			for (Coord borderCoord : borderCoords) {
-				provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(borderCoord);
-				debugDrawProvinceBorderBlock(worldName, provinceBlock);
+			for (ProvinceBlock borderBlock : borderBlocks) {
+				debugDrawProvinceBorderBlock(worldName, borderBlock);
 			}
 			
 			//List<Coord> drawableProvinceBordersCoords = generateDrawableProvinceBorderCoords(provinceBorderCoords);
@@ -257,7 +245,7 @@ public class DynmapIntegration {
 	private void drawProvinceBorders3() {
 		for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
 			//Get border coords
-			Set<Coord> coords = findAllBorderCoords(province);
+			//Set<Coord> coords = findAllBorderCoords(province);
 			//Validate that they are already marker as border
 			//for(Coord)
 			
@@ -297,17 +285,35 @@ public class DynmapIntegration {
 
 
 	/**
-	 * Discover all province borders
+	 * Find the border coords around the given province
+	 * 
+	 * Note that these co-cords will not actually belong to the province
+	 * Rather they will all have provinceBorder=true, and province=null
 	 */
-	private Set<Coord> findAllBorderCoords(Province province) {
-		Set<Coord> resultSet = new HashSet<>();
-		for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
-			if(isProvinceBlockOnBorder(provinceBlock)) {
-				resultSet.add(provinceBlock.getCoord());
+	private Set<ProvinceBlock> findAllBorderBlocks(Province province) {
+		Set<ProvinceBlock> resultSet = new HashSet<>();
+		for(ProvinceBlock borderBlock: TownyProvincesDataHolder.getInstance().getProvinceBorderBlocks()) {
+			if(doesBorderBlockBorderProvince(borderBlock, province)) {
+				resultSet.add(borderBlock);
 			}
 		}
 		return resultSet;
 	}
+
+	private boolean doesBorderBlockBorderProvince(ProvinceBlock givenBorderBlock, Province givenProvince) {
+		Set<Coord> allAdjacentCoords = ProvinceCreatorUtil.findAllAdjacentCoords(givenBorderBlock.getCoord());
+		ProvinceBlock candidateProvinceBlock;
+		for(Coord candidateCoord: allAdjacentCoords) {
+			candidateProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(candidateCoord);
+			if(candidateProvinceBlock != null 
+					&& !candidateProvinceBlock.isProvinceBorder()
+					&& candidateProvinceBlock.getProvince().equals(givenProvince)) {
+				return true;  //The given block borders the given province	
+			}
+		}
+		return false; //The given block does not border the given province
+	}
+
 
 	private boolean isProvinceBlockOnBorder(ProvinceBlock givenProvinceBlock) {
 		Set<Coord> allAdjacentCoords = ProvinceCreatorUtil.findAllAdjacentCoords(givenProvinceBlock.getCoord());
