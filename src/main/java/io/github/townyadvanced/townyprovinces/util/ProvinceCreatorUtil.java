@@ -34,8 +34,12 @@ public class ProvinceCreatorUtil {
 			return false;
 		}
 		
-		//Allocate unclaimed chunks. This is where borders are created
-		if(!assignAllUnclaimedChunks()) {
+		//Allocate unclaimed chunks to provinces. Do not create borders yet
+		if(!assignUnclaimedChunksToProvinces()) {
+			return false;
+		}
+
+		if(!createProvinceBorderBlocks()) {
 			return false;
 		}
 		
@@ -44,8 +48,9 @@ public class ProvinceCreatorUtil {
 		return true;
 	}
 
-	private static boolean createProvinceBorderBlocks() {
-		//This is fairly simple. Just turn everything remaining in the target area, into a border block
+	
+	private static Set<Coord> findAllUnclaimedCoords(){
+		Set<Coord> result = new HashSet<>();
 		int minX = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
 		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
 		int minZ = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
@@ -58,12 +63,20 @@ public class ProvinceCreatorUtil {
 				provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
 				if(provinceBlock == null) {
 					//This means the chunk is unclaimed
-					provinceBlock = new ProvinceBlock(coord, null, true);
-					TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
+					result.add(coord);
 				}
 			}
 		}
-		
+		return result;
+	}
+	
+	private static boolean createProvinceBorderBlocks() {
+		//This is fairly simple. Just turn everything remaining in the target area, into a border bloc
+		ProvinceBlock provinceBlock;
+		for(Coord unclaimedCoord: findAllUnclaimedCoords()) {
+			provinceBlock = new ProvinceBlock(unclaimedCoord, null, true);
+			TownyProvincesDataHolder.getInstance().addProvinceBlock(unclaimedCoord, provinceBlock);
+		}
 		return true;
 	}
 
@@ -71,35 +84,102 @@ public class ProvinceCreatorUtil {
 	 * If an unclaimed coord is NOT on a border, allocate it to a province
 	 * @return
 	 */
-	private static boolean assignAllUnclaimedChunks() {
-		TownyProvinces.info("Now allocating non-border unclaimed chunks to provinces");
+	private static boolean assignUnclaimedChunksToProvinces() {
+		List<Coord> coordsEligibleForProvinceAssignment;
+		int indexOfCoordToAssign;
+		Coord coordToAssign;
+		Province province;
+		ProvinceBlock newProvinceBlock;
+		while((coordsEligibleForProvinceAssignment = findCoordsEligibleForProvinceAssignment()).size() > 0) {
+			TownyProvinces.info("Num Coords Eligible For Province Assignment: " + coordsEligibleForProvinceAssignment.size());
+			//Pick a random coord to assign
+			indexOfCoordToAssign = (int)(Math.random() * coordsEligibleForProvinceAssignment.size());
+			coordToAssign = coordsEligibleForProvinceAssignment.get(indexOfCoordToAssign);
+			//Assign the cord to the (assumed) single adjacent province
+			province = findAdjacentProvinces(coordToAssign).get(0);
+			newProvinceBlock = new ProvinceBlock(coordToAssign, province, false);
+			TownyProvincesDataHolder.getInstance().addProvinceBlock(coordToAssign, newProvinceBlock);
+		}
+		return true;
+	}
+	
+	private static List<Coord> findCoordsEligibleForProvinceAssignment() {
+		int minX = (TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength()) + 1;
+		int maxX  = (TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength()) - 1;
+		int minZ = (TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength()) + 1;
+		int maxZ  = (TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength()) - 1;
+		Set<Coord> resultSet = new HashSet<>();
+		Set<Coord> allUnclaimedCoords = findAllUnclaimedCoords();
 		
-		//Find all unclaimed coords
-		Set<Coord> unclaimedCoords = new HashSet<>();
-		int minX = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int minZ = TownyProvincesSettings.getTopLeftWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
-		Coord coord;
-		for(int x = minX; x <= maxX; x++) {
-			for(int z = minZ; z <= maxZ; z++) {
-				coord = new Coord(x,z);
-				ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
-				if(provinceBlock == null) {
-					//This means the chunk is unclaimed
-					unclaimedCoords.add(coord);
+		for(Coord candidateCoord: allUnclaimedCoords) {
+			
+			//Filter out chunk if it is at edge of map
+			if(candidateCoord.getX() <= minX)
+				continue;
+			else if (candidateCoord.getX() >= maxX)
+				continue;
+			else if (candidateCoord.getZ() <= minZ)
+				continue;
+			else if (candidateCoord.getZ() >= maxZ)
+				continue;
+			
+			//Filter out chunk if it does not have exactly 1 adjacent province
+			if(findAdjacentProvinces(candidateCoord).size() != 1)
+				continue;
+			
+			//Filter out chunk if the adjacent province is NOT on a cardinal direction
+			if(findCardinallyAdjacentProvinces(candidateCoord).size() != 1)
+				continue;
+			
+			//Add candidate coord to result set
+			resultSet.add(candidateCoord);
+		}
+		return new ArrayList<>(resultSet);
+	}
+
+	private static List<Province> findAdjacentProvinces(Coord givenCoord) {
+		Set<Province> result = new HashSet<>();
+		Province adjacentProvince;
+		for (int x = -1; x <= 1; x++) {
+			for(int z = -1; z <=1; z++) {
+				if (x != 0 && z != 0) {
+					adjacentProvince = findAdjacentProvince(givenCoord, x, z);
+					if(adjacentProvince != null) {
+						result.add(adjacentProvince);
+					}
 				}
 			}
 		}
-
-		//Allocate unclaimed chunks
-		assignAllUnclaimedChunks(unclaimedCoords);
-
-		TownyProvinces.info("Finished allocating non-border unclaimed chunks to provinces");
-		
-		return true;
-
+		return new ArrayList<>(result);
 	}
+	
+	private static List<Province> findCardinallyAdjacentProvinces(Coord givenCoord) {
+		Set<Province> resultSet = new HashSet<>();
+		Province[] cardinalResultArray = new Province[4];
+
+		cardinalResultArray[0] = findAdjacentProvince(givenCoord, 0 , -1);
+		cardinalResultArray[1] = findAdjacentProvince(givenCoord, 0 , 1);
+		cardinalResultArray[2] = findAdjacentProvince(givenCoord, 1 , 0);
+		cardinalResultArray[3] = findAdjacentProvince(givenCoord, -1 , 0);
+
+		for(Province cardinalResult: cardinalResultArray) {
+			if(cardinalResult != null) {
+				resultSet.add(cardinalResult);
+			}
+		}
+		return new ArrayList<>(resultSet);
+	}
+
+	private static Province findAdjacentProvince(Coord givenCoord, int xDelta, int zDelta) {
+		Coord adjacentCoord = new Coord(givenCoord.getX() + xDelta, givenCoord.getZ() + zDelta);
+		ProvinceBlock adjacentProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
+		if(adjacentProvinceBlock == null || adjacentProvinceBlock.isProvinceBorder()) {
+			return null;
+		} else {
+			return adjacentProvinceBlock.getProvince();
+		}
+	}
+
 
 	/**
 	 * 
@@ -108,7 +188,7 @@ public class ProvinceCreatorUtil {
 	 * @param unclaimedCoords set of all unclaimed coords
 	 * @return true if success
 	 */
-	private static boolean assignAllUnclaimedChunks(Set<Coord> unclaimedCoords) {
+	private static boolean assignUnclaimedChunksToProvinces(Set<Coord> unclaimedCoords) {
 		while (unclaimedCoords.size() > 0) {
 			Coord coordToAssign = assignOneUnclaimedChunkToAProvince(unclaimedCoords);
 			if(coordToAssign != null) {
@@ -437,7 +517,6 @@ public class ProvinceCreatorUtil {
 				coord = new Coord(x,z);
 				provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
 				if(provinceBlock != null && provinceBlock.getProvince() != brush.getProvince()) {
-					TownyProvinces.info("Cannot move, different province");
 					return;
 				}
 			}
