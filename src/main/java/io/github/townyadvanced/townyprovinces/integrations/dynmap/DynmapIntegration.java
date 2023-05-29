@@ -184,6 +184,7 @@ public class DynmapIntegration {
 
 	private void drawBorderLine(List<ProvinceBlock> drawableListOfBorderBlocks, Province province) {
 		int provinceBorderWidth = 2;
+		Coord borderCoord;
 		String worldName = TownyProvincesSettings.getWorldName();
 		double[] xPoints = new double[drawableListOfBorderBlocks.size()];
 		double[] zPoints = new double[drawableListOfBorderBlocks.size()];
@@ -203,17 +204,21 @@ public class DynmapIntegration {
 			 * if z is negative, add 6
 			 * if z is positive, add 10
 			 */
-			Coord pullStrengthFromNearbyProvince = calculatePullStrengthFromNearbyProvince(new Coord((int) xPoints[i], (int) zPoints[i]), province);
+			
+			Coord pullStrengthFromNearbyProvince = calculatePullStrengthFromNearbyProvince(drawableListOfBorderBlocks.get(i).getCoord(), province);
+			
 			if (pullStrengthFromNearbyProvince.getX() < 0) {
-				xPoints[i] += 8 - provinceBorderWidth;
+				xPoints[i] = xPoints[i] + 8 - provinceBorderWidth;
 			} else if (pullStrengthFromNearbyProvince.getX() > 0) {
-				xPoints[i] += 8 + provinceBorderWidth;
+				xPoints[i] = xPoints[i] + 8 + provinceBorderWidth;
 			}
 			if (pullStrengthFromNearbyProvince.getZ() < 0) {
-				zPoints[i] += 8 - provinceBorderWidth;
+				zPoints[i] = zPoints[i] + 8 - provinceBorderWidth;
 			} else if (pullStrengthFromNearbyProvince.getZ() > 0) {
-				zPoints[i] += 8 + provinceBorderWidth;
+				zPoints[i] = zPoints[i] + 8 + provinceBorderWidth;
 			}
+			
+			 
 		}
 		
 		String markerId = "border_of_province_x" + province.getHomeBlock().getX() + "_y" + province.getHomeBlock().getZ();
@@ -235,17 +240,19 @@ public class DynmapIntegration {
 		polyLineMarker.setLineStyle(provinceBorderWidth, 0.3, 300000);
 	}
 
-	private Coord calculatePullStrengthFromNearbyProvince(Coord pulledCoord, Province province) {
+	private Coord calculatePullStrengthFromNearbyProvince(Coord borderCoordBeingPulled, Province provinceDoingThePulling) {
 		int pullStrengthX = 0;
 		int pullStrengthZ = 0;
-		Set<Coord> adjacentCoords = ProvinceCreatorUtil.findAllAdjacentCoords(pulledCoord);
+		Set<Coord> adjacentCoords = ProvinceCreatorUtil.findAllAdjacentCoords(borderCoordBeingPulled);
+		ProvinceBlock adjacentProvinceBlock;
 		for(Coord adjacentCoord: adjacentCoords) {
-			ProvinceBlock candidateProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
-			if(candidateProvinceBlock != null && !candidateProvinceBlock.isProvinceBorder() && candidateProvinceBlock.getProvince().equals(province)) {
-				pullStrengthX += (adjacentCoord.getX() - pulledCoord.getX());
-				pullStrengthZ += (adjacentCoord.getZ() - pulledCoord.getZ());
+			adjacentProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
+			if(adjacentProvinceBlock != null && !adjacentProvinceBlock.isProvinceBorder() && adjacentProvinceBlock.getProvince().equals(provinceDoingThePulling)) {
+				pullStrengthX += (adjacentCoord.getX() - borderCoordBeingPulled.getX());
+				pullStrengthZ += (adjacentCoord.getZ() - borderCoordBeingPulled.getZ());
 			}
 		}
+		TownyProvinces.info("Pull Strength: x_" + pullStrengthX + "_y" + pullStrengthZ);
 		return new Coord(pullStrengthX, pullStrengthZ);
 	}
 
