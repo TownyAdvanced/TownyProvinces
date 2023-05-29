@@ -8,6 +8,7 @@ import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegrat
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
+import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import io.github.townyadvanced.townyprovinces.util.ProvinceCreatorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -25,7 +26,6 @@ import io.github.townyadvanced.townyprovinces.settings.Settings;
 public class TownyProvinces extends JavaPlugin {
 	private static TownyProvinces plugin;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.0.7");
-	
 	@Override
 	public void onEnable() {
 		plugin = this;
@@ -36,23 +36,22 @@ public class TownyProvinces extends JavaPlugin {
 				|| !loadLocalization(false)
 				|| !TownyProvincesSettings.isTownyProvincesEnabled() 
 				|| !TownyProvincesDataHolder.initialize()
+				|| !DataHandlerUtil.setupDataFoldersIfRequired()
 				|| !DataHandlerUtil.loadData()) {
 			onDisable();
 			return;
 		}
 	
-		//If the map is blank and there was on error, generate new provinces
-		if(TownyProvincesDataHolder.getInstance().getNumProvinces() == 0) {
-			if(!ProvinceCreatorUtil.createProvinces()) {
-				onDisable();
-				return;
-			}
-		}
+		//If the map is blank and there was no error, generate new provinces
+		//if(TownyProvincesDataHolder.getInstance().getNumProvinces() == 0) {
+		//	if(!ProvinceCreatorUtil.createProvinces()) {
+		//		onDisable();
+		//		return;
+		//	}
+		//}
 		
 		//Load integrations 
-		loadIntegrations();
-		
-		
+		//loadIntegrations();
 	}
 
 	private boolean loadIntegrations() {

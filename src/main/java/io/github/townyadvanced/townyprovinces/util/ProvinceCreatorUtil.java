@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class ProvinceCreatorUtil {
 	
@@ -365,7 +366,7 @@ public class ProvinceCreatorUtil {
 			provinceHomeBlock = generateProvinceHomeBlock();
 			if(provinceHomeBlock != null) { 
 				//Province homeblock generated. Now create province
-				Province province = new Province(provinceHomeBlock);
+				Province province = new Province(provinceHomeBlock, UUID.randomUUID());
 				TownyProvincesDataHolder.getInstance().addProvince(province);
 			} else {
 				//Could not generate a province homeblock

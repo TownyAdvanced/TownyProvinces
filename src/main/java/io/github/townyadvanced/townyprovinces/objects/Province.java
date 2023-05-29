@@ -11,7 +11,7 @@ public class Province {
 	
 	private UUID uuid;
 	private final Coord homeBlock;
-	private int newTownCost = 0;
+	private int newTownPrice = 0;
 	private int townUpkeep = 0;
 	
 	public boolean equals(Object object) {
@@ -20,8 +20,8 @@ public class Province {
 		return homeBlock.equals(((Province)object).getHomeBlock());
 	}
 	
-	public Province(Coord homeBlock) {
-		this.uuid = UUID.randomUUID();
+	public Province(Coord homeBlock, UUID uuid) {
+		this.uuid = uuid;
 		this.homeBlock = homeBlock;
 	}
 
@@ -37,6 +37,18 @@ public class Province {
 			}
 		}
 		return result;
+	}
+
+	public void setNewTownPrice(int i) {
+		this.newTownPrice = i;
+	}
+
+	public void setTownUpkeep(int i) {
+		this.townUpkeep = i;
+	}
+
+	public int getNewTownPrice() {
+		return newTownPrice;
 	}
 }
  
