@@ -89,99 +89,11 @@ public class DynmapIntegration {
 	}
 
 	/**
-	 * Display all TownyProvinces items, including province boundaries, region boundaries etc.
+	 * Display all TownyProvinces items
 	 */
 	void displayTownyProvinces() {
-		//Map<UUID, Marker> townUUIDToSiegeMarkerMapCopy = new HashMap<>(townUUIDToSiegeMarkerMap);
-
-		{
-			//Cleanup markers ....... This would involve activating/de-activating roads etc.
-			//Region/Province borders probably don't need to be re-done on a task
-			/*
-            UUID townUUID = null;
-            Marker marker = null;
-            for (Map.Entry<UUID, Marker> mapEntry : townUUIDToSiegeMarkerMapCopy.entrySet()) {
-                try {
-                    marker = null;
-                    townUUID = null;
-                    townUUID = mapEntry.getKey();
-                    marker = mapEntry.getValue();
-                    Siege siege = SiegeController.getSiegeByTownUUID(townUUID);
-
-                    if (siege == null || siege.getStatus() != SiegeStatus.IN_PROGRESS) {
-                        //Delete marker if siege is not in progress
-                        marker.deleteMarker();
-                        townUUIDToSiegeMarkerMap.remove(townUUID);
-
-                    } else if (marker.getMarkerIcon().getMarkerIconID().equals(TEMP_ICON)) {
-                        /*
-                         * Change to battle icon if siege is active.
-                         */
-			/*
-                        if(!isSiegeDormant(siege))
-                            marker.setMarkerIcon(markerapi.getMarkerIcon(BATTLE_BANNER_ICON_ID));                             
-                    } else if (marker.getMarkerIcon().getMarkerIconID().equals(BATTLE_BANNER_ICON_ID)) {
-                        /*
-                         * Change to peaceful icon if siege is dormant
-                         */
-			
-			/*
-                        if (isSiegeDormant(siege))
-                            marker.setMarkerIcon(markerapi.getMarkerIcon(TEMP_ICON));                      
-                    }
-                } catch (Exception e) {
-                    if (marker != null)
-                        marker.deleteMarker();
-                    townUUIDToSiegeMarkerMap.remove(townUUID);
-                }
-            }
-        }
-	*/
-			{
-
-			}
-
-			//Draw all province blocks
-			//DRAW ALL PROVINCE BORDER
-			//Cycle through each province
-			
-			//{
-
-/*			
-				String worldName = TownyProvincesSettings.getWorldName();
-				for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
-
-					for (ProvinceBlock provinceBlock : findBorderBlocks(province)) {
-						if (provinceBlock.isProvinceBorder())
-							drawProvinceBorderBlock(worldName, provinceBlock);
-					//}
-				//}
-			//}
-			
- */
-			
-				//drawTestArea();
-			
-			{
-				//drawProvinceBorders();
-
-				//for()
-
-				//drawProvinceBorders2();
-				
-				////Cycle through each province
-				//for (ProvinceBlock provinceBlock : TownyProvincesDataHolder.getInstance().getProvinceBorderBlocks()) {
-				//	drawProvinceBorderBlock(TownyProvincesSettings.getWorldName(), provinceBlock);
-			//	}
-			}
-			
-			debugDrawProvinceHomeBlocks();
-			
-			//debugDrawProvinceBorders();
-			
-			drawProvinceBorders4();
-
-		}
+		debugDrawProvinceHomeBlocks();
+		drawProvinceBorders4();
 	}
 	
 	
@@ -225,23 +137,12 @@ public class DynmapIntegration {
 	private void drawProvinceBorders4() {
 		//Find and draw the borders around each province
 		for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
-
 			//Get border blocks
 			Set<ProvinceBlock> borderBlocks = findAllBorderBlocks(province);
 			//Arrange border blocks into drawable line
 			List<ProvinceBlock> drawableLineOfBorderBlocks = arrangeBorderBlocksIntoDrawableLine(borderBlocks);
 			//Draw line
 			drawBorderLine(drawableLineOfBorderBlocks, province);
-
-
-
-			//DEBUG DRAW
-			//String worldName = TownyProvincesSettings.getWorldName();
-			//for (ProvinceBlock borderBlock : drawableLineOfBorderBlocks) {
-			//	debugDrawProvinceBorderBlock(worldName, borderBlock);
-			//}
-
-			
 		}
 	}
 	
@@ -371,17 +272,7 @@ public class DynmapIntegration {
 		return result;
 	}
 
-	private Set<Coord> findAllAdjacentCoords(Coord targetCoord) {
-		Set<Coord> result = new HashSet<>();
-		for(int x = -1; x <= targetCoord.getX() + 1; x++) {
-			for(int z = -1; z <= targetCoord.getZ() + 1; z++) {
-				if(x != 0 && z != 0) {
-					result.add(new Coord(x,z));
-				}
-			}
-		}
-		return result;
-	}
+
 
 
 	private void drawTestArea() {
@@ -721,10 +612,6 @@ polyLineMarker.setLineStyle(8,0.4, 300000);
 		throw new RuntimeException("Could not find next line head. Check province borders for errors");
 	}
 	
-		
-		
-		//	DrawableLineMaker drawableLineMaker = new DrawableLineMaker();
-	//	unorderedCoordsList.sort(drawableLineMaker);
 	
 
 	private boolean areCoordsCardinallyAdjacent(Coord c1, Coord c2) {
@@ -732,33 +619,7 @@ polyLineMarker.setLineStyle(8,0.4, 300000);
 	}
 
 
-	private class DrawableLineMaker implements Comparator<Coord>{
-		private Coord lineHead;
-		private Set<Coord> alreadyDrawn;
-		private DrawableLineMaker() {
-			lineHead = null;
-		}
-		@Override
-		public int compare(Coord c1, Coord c2) {
-			//Create line head if needed
-			if(lineHead == null) {
-				lineHead = c1;
-			}
-			//If we are adjacent the line head, return 1 otherwise -1
-			if(isAdjacent(c1,lineHead)) {
-				//We become the line head
-				lineHead = c1;
-				return 1;
-			} else {
-				return -1;
-			}
-		}
-		
-		
-		private boolean isAdjacent(Coord c1, Coord c2) {
-			return MathUtil.distance(c1,c2) < 2;			
-		}
-	}
+	
 	
 	/**
 	 * Calculate the border coords. These will be just outside the province
@@ -796,14 +657,32 @@ polyLineMarker.setLineStyle(8,0.4, 300000);
 	}
 		
 		
-	private void drawBorderLine(List<ProvinceBlock> borderBlocks, Province province) {
+	private void drawBorderLine(List<ProvinceBlock> drawableListOfBorderBlocks, Province province) {
 		String worldName = TownyProvincesSettings.getWorldName();
-		double[] xPoints = new double[borderBlocks.size()];
-		double[] zPoints = new double[borderBlocks.size()];
-		for(int i = 0; i < borderBlocks.size(); i++) {
-			xPoints[i] = (borderBlocks.get(i).getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength());
-			zPoints[i] = (borderBlocks.get(i).getCoord().getZ() * TownyProvincesSettings.getProvinceBlockSideLength());
+		double[] xPoints = new double[drawableListOfBorderBlocks.size()];
+		double[] zPoints = new double[drawableListOfBorderBlocks.size()];
+		for(int i = 0; i < drawableListOfBorderBlocks.size(); i++) {
+			xPoints[i] = (drawableListOfBorderBlocks.get(i).getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength());
+			zPoints[i] = (drawableListOfBorderBlocks.get(i).getCoord().getZ() * TownyProvincesSettings.getProvinceBlockSideLength());
+
+			//Pull coords towards any adjacent blocks belonging to the given province
+			Coord borderCoord = drawableListOfBorderBlocks.get(0).getCoord();			
+			Set<Coord> adjacentCoords = ProvinceCreatorUtil.findAllAdjacentCoords(borderCoord);
+			for(Coord adjacentCoord: adjacentCoords) {
+				ProvinceBlock candidateProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
+				if(candidateProvinceBlock != null && !candidateProvinceBlock.isProvinceBorder() && candidateProvinceBlock.getProvince() == province) {
+					xPoints[i] += (adjacentCoord.getX() - borderCoord.getX()) * 2;
+					zPoints[i] += (adjacentCoord.getZ() - borderCoord.getZ()) * 2;
+				}
+			}
+			TODO: FIX THIS UP WE NEED TO SHIFT x,y from the corner left into its correct position
+			THE ABOVE CODE ISN'T DOING THAT	
+				
+			
 		}
+
+	
+		
 		String markerId = "border_of_province_x" + province.getHomeBlock().getX() + "_y" + province.getHomeBlock().getZ();
 		//String markerName = "xx";
 		String markerName = "ID: " + markerId;
@@ -820,7 +699,7 @@ polyLineMarker.setLineStyle(8,0.4, 300000);
 			markerId, markerName, unknown, worldName,
 			xPoints, zPoints, zPoints, unknown2);
 
-		polyLineMarker.setLineStyle(3, 0.3, 300000);
+		polyLineMarker.setLineStyle(2, 0.3, 300000);
 	}
 	
 	public void debugDrawProvinceBorderBlock(String worldName, ProvinceBlock provinceBlock) {
