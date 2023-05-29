@@ -42,15 +42,6 @@ public class TownyProvincesSettings {
 	public static double getMaxAllowedVarianceBetweenIdealAndActualNumProvinces() {
 		return Settings.getDouble(ConfigNodes.MAX_ALLOWED_VARIANCE_BETWEEN_IDEAL_AND_ACTUAL_NUM_PROVINCES);
 	}
-	
-	public static int getMinAllowedDistanceBetweenRegionHomeBlocks() {
-		return 50;
-	}
-	
-	public static int getDefaultNumRegionsPerProvince() {
-		return 3;
-	}
-
 	public static int getProvinceBlockSideLength() {
 		return 16;
 	}

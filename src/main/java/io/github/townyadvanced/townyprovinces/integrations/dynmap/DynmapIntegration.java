@@ -617,9 +617,6 @@ polyLineMarker.setLineStyle(8,0.4, 300000);
 	private boolean areCoordsCardinallyAdjacent(Coord c1, Coord c2) {
 		return MathUtil.distance(c1,c2) == 1;
 	}
-
-
-	
 	
 	/**
 	 * Calculate the border coords. These will be just outside the province
@@ -654,10 +651,10 @@ polyLineMarker.setLineStyle(8,0.4, 300000);
 			}
 		}
 		return result;
-	}
-		
+	}		
 		
 	private void drawBorderLine(List<ProvinceBlock> drawableListOfBorderBlocks, Province province) {
+		int provinceBorderWidth = 2;
 		String worldName = TownyProvincesSettings.getWorldName();
 		double[] xPoints = new double[drawableListOfBorderBlocks.size()];
 		double[] zPoints = new double[drawableListOfBorderBlocks.size()];
@@ -665,23 +662,30 @@ polyLineMarker.setLineStyle(8,0.4, 300000);
 			xPoints[i] = (drawableListOfBorderBlocks.get(i).getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength());
 			zPoints[i] = (drawableListOfBorderBlocks.get(i).getCoord().getZ() * TownyProvincesSettings.getProvinceBlockSideLength());
 
-			//Pull coords towards any adjacent blocks belonging to the given province
-			Coord borderCoord = drawableListOfBorderBlocks.get(0).getCoord();			
-			Set<Coord> adjacentCoords = ProvinceCreatorUtil.findAllAdjacentCoords(borderCoord);
-			for(Coord adjacentCoord: adjacentCoords) {
-				ProvinceBlock candidateProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
-				if(candidateProvinceBlock != null && !candidateProvinceBlock.isProvinceBorder() && candidateProvinceBlock.getProvince() == province) {
-					xPoints[i] += (adjacentCoord.getX() - borderCoord.getX()) * 2;
-					zPoints[i] += (adjacentCoord.getZ() - borderCoord.getZ()) * 2;
-				}
+			/*
+			 * At this point,the draw location is at the top left of the block.
+			 * We need to move it towards the middle
+			 *
+			 * First we find the x,y pull strength from the nearby province
+			 * 
+			 * Then we apply the following modifiers
+			 * if x is negative, add 6
+			 * if x is positive, add 10
+			 * if z is negative, add 6
+			 * if z is positive, add 10
+			 */
+			Coord pullStrengthFromNearbyProvince = calculatePullStrengthFromNearbyProvince(new Coord((int) xPoints[i], (int) zPoints[i]), province);
+			if (pullStrengthFromNearbyProvince.getX() < 0) {
+				xPoints[i] += 8 - provinceBorderWidth;
+			} else if (pullStrengthFromNearbyProvince.getX() > 0) {
+				xPoints[i] += 8 + provinceBorderWidth;
 			}
-			TODO: FIX THIS UP WE NEED TO SHIFT x,y from the corner left into its correct position
-			THE ABOVE CODE ISN'T DOING THAT	
-				
-			
+			if (pullStrengthFromNearbyProvince.getZ() < 0) {
+				zPoints[i] += 8 - provinceBorderWidth;
+			} else if (pullStrengthFromNearbyProvince.getZ() > 0) {
+				zPoints[i] += 8 + provinceBorderWidth;
+			}
 		}
-
-	
 		
 		String markerId = "border_of_province_x" + province.getHomeBlock().getX() + "_y" + province.getHomeBlock().getZ();
 		//String markerName = "xx";
@@ -699,9 +703,23 @@ polyLineMarker.setLineStyle(8,0.4, 300000);
 			markerId, markerName, unknown, worldName,
 			xPoints, zPoints, zPoints, unknown2);
 
-		polyLineMarker.setLineStyle(2, 0.3, 300000);
+		polyLineMarker.setLineStyle(provinceBorderWidth, 0.3, 300000);
 	}
-	
+
+	private Coord calculatePullStrengthFromNearbyProvince(Coord pulledCoord, Province province) {
+		int pullStrengthX = 0;
+		int pullStrengthZ= 0;
+		Set<Coord> adjacentCoords = ProvinceCreatorUtil.findAllAdjacentCoords(pulledCoord);
+		for(Coord adjacentCoord: adjacentCoords) {
+			ProvinceBlock candidateProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
+			if(candidateProvinceBlock != null && !candidateProvinceBlock.isProvinceBorder() && candidateProvinceBlock.getProvince() == province) {
+				pullStrengthX += adjacentCoord.getX() - pulledCoord.getX();
+				pullStrengthZ += adjacentCoord.getZ() - pulledCoord.getZ();
+			}
+		}
+		return new Coord(pullStrengthX, pullStrengthZ);
+	}
+
 	public void debugDrawProvinceBorderBlock(String worldName, ProvinceBlock provinceBlock) {
 		double[] xPoints = new double[5];
 		xPoints[0] = provinceBlock.getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength();
