@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * The In-Memory data holder class for TownyProvinces
@@ -73,5 +74,15 @@ public class TownyProvincesDataHolder {
 
 	public void deleteProvince(Province province) {
 		provinces.remove(province);
+	}
+
+	public Province getProvince(UUID provinceUuid) {
+		for(Province province: provinces) {
+			if(province.getUuid().equals(provinceUuid)) {
+				return province;
+			}
+		}
+		return null;
+		
 	}
 }

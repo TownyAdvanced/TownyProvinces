@@ -5,6 +5,7 @@ import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 
 import java.io.File;
 import java.util.List;
@@ -30,11 +31,11 @@ public class DataHandlerUtil {
 	
 	public static boolean loadData() {
 		loadProvinces();
+		loadProvinceBlocks();
 		return true; //Loaded but blank
-		
 	}
 
-    public static void loadProvinces() {
+	public static void loadProvinces() {
 		TownyProvinces.info("Now Loading Province Files");
 		List<File> provinceFiles = FileUtil.readListOfFiles(provincesFolderPath);
 		for(File provinceFile: provinceFiles) {
@@ -50,6 +51,25 @@ public class DataHandlerUtil {
 		}
 		TownyProvinces.info("Province Files Loaded");
 	}
+
+
+	private static void loadProvinceBlocks() {
+		TownyProvinces.info("Now Loading Province Block Files");
+		List<File> provinceBlockFiles = FileUtil.readListOfFiles(provinceBlocksFolderPath);
+		for(File provinceBlockFile: provinceBlockFiles) {
+			//Load file
+			Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(provinceBlockFile);
+			Coord coord = unpackCoord(fileEntries.get("coord"));
+			UUID provinceUuid = UUID.fromString(fileEntries.get("province_uuid"));
+			Province province = TownyProvincesDataHolder.getInstance().getProvince(provinceUuid);
+			boolean border = Boolean.parseBoolean(fileEntries.get("border"));
+			ProvinceBlock provinceBlock = new ProvinceBlock(coord, province, border);
+			//Add province block to TP universe
+			TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
+		}
+		TownyProvinces.info("Province Block Files Loaded");
+	}
+
 
 	private static Coord unpackCoord(String coordAsString) {
 		String[] xz = coordAsString.split(",");

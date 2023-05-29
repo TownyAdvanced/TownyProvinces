@@ -47,8 +47,8 @@ public class Province {
 		this.townUpkeep = i;
 	}
 
-	public int getNewTownPrice() {
-		return newTownPrice;
+	public UUID getUuid() {
+		return uuid;
 	}
 }
  
