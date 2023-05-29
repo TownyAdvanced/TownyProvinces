@@ -228,17 +228,18 @@ public class DynmapIntegration {
 
 			//Get border blocks
 			Set<ProvinceBlock> borderBlocks = findAllBorderBlocks(province);
-
+			//Arrange border blocks into drawable line
 			List<ProvinceBlock> drawableLineOfBorderBlocks = arrangeBorderBlocksIntoDrawableLine(borderBlocks);
-			//drawBorderLine(drawableLineOfBorderBlocks);
+			//Draw line
+			drawBorderLine(drawableLineOfBorderBlocks, province);
 
 
 
 			//DEBUG DRAW
-			String worldName = TownyProvincesSettings.getWorldName();
-			for (ProvinceBlock borderBlock : drawableLineOfBorderBlocks) {
-				debugDrawProvinceBorderBlock(worldName, borderBlock);
-			}
+			//String worldName = TownyProvincesSettings.getWorldName();
+			//for (ProvinceBlock borderBlock : drawableLineOfBorderBlocks) {
+			//	debugDrawProvinceBorderBlock(worldName, borderBlock);
+			//}
 
 			
 		}
@@ -795,6 +796,32 @@ polyLineMarker.setLineStyle(8,0.4, 300000);
 	}
 		
 		
+	private void drawBorderLine(List<ProvinceBlock> borderBlocks, Province province) {
+		String worldName = TownyProvincesSettings.getWorldName();
+		double[] xPoints = new double[borderBlocks.size()];
+		double[] zPoints = new double[borderBlocks.size()];
+		for(int i = 0; i < borderBlocks.size(); i++) {
+			xPoints[i] = (borderBlocks.get(i).getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength());
+			zPoints[i] = (borderBlocks.get(i).getCoord().getZ() * TownyProvincesSettings.getProvinceBlockSideLength());
+		}
+		String markerId = "border_of_province_x" + province.getHomeBlock().getX() + "_y" + province.getHomeBlock().getZ();
+		//String markerName = "xx";
+		String markerName = "ID: " + markerId;
+		//markerName += " Is Border: " + provinceBlock.isProvinceBorder();
+
+		boolean unknown = false;
+		boolean unknown2 = false;
+
+		//AreaMarker areaMarker = markerSet.createAreaMarker(
+		//	markerId, markerName, unknown, worldName,
+		//		xPoints, zPoints, unknown2);
+
+		PolyLineMarker polyLineMarker =  markerSet.createPolyLineMarker(
+			markerId, markerName, unknown, worldName,
+			xPoints, zPoints, zPoints, unknown2);
+
+		polyLineMarker.setLineStyle(3, 0.3, 300000);
+	}
 	
 	public void debugDrawProvinceBorderBlock(String worldName, ProvinceBlock provinceBlock) {
 		double[] xPoints = new double[5];
