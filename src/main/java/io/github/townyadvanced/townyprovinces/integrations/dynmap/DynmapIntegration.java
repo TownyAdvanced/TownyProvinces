@@ -205,7 +205,8 @@ public class DynmapIntegration {
 			 * 
 			 * Result:
 			 * 1. Each province border is inset from the chunk border by 4 blocks
-			 * 2. The border between 2 provinces takes the appearance of a double line,
+			 * 2. The border on the sea takes the appearance of a single line
+			 * 3. The border between 2 provinces takes the appearance of a double line,
 			 *    with 8 blocks in between each line.
 			 *
 			 * NOTE ABOUT THE DOUBLE LINE:
