@@ -184,7 +184,6 @@ public class DynmapIntegration {
 
 	private void drawBorderLine(List<ProvinceBlock> drawableListOfBorderBlocks, Province province) {
 		int provinceBorderWidth = 2;
-		Coord borderCoord;
 		String worldName = TownyProvincesSettings.getWorldName();
 		double[] xPoints = new double[drawableListOfBorderBlocks.size()];
 		double[] zPoints = new double[drawableListOfBorderBlocks.size()];
@@ -199,26 +198,40 @@ public class DynmapIntegration {
 			 * First we find the x,y pull strength from the nearby province
 			 * 
 			 * Then we apply the following modifiers
-			 * if x is negative, add 6
-			 * if x is positive, add 10
-			 * if z is negative, add 6
-			 * if z is positive, add 10
-			 */
-			
+			 * if x is negative, add 4
+			 * if x is positive, add 12
+			 * if z is negative, add 4
+			 * if z is positive, add 12
+			 * 
+			 * Result:
+			 * 1. Each province border is inset from the chunk border by 4 blocks
+			 * 2. The border between 2 provinces takes the appearance of a double line,
+			 *    with 8 blocks in between each line.
+			 *
+			 * NOTE ABOUT THE DOUBLE LINE:
+			 * I was initially aiming for a single line but it migth not be worth it because
+			 * 1. A double line has benefits:
+			 *   - It's very friendly to the processor
+			 *   - It looks cool
+			 *   - The single-line sea border looks like it was done on purpose
+			 * 2. A single line has problems:
+			 *   - If you simply bring the lines together, you'll probably get visual artefacts
+			 *   - If you move the lines next to each other, you'll probably get visual artefacts
+			 *   - If you try to do draw the lines using area markers, you'll increase processor load, and probably still get visual artefacts. 
+			 *   - On a sea border, the expected single line will either look slightly weaker or slightly thinner,
+			 *     while will most likely appear to users as a bug.
+			 * */
 			Coord pullStrengthFromNearbyProvince = calculatePullStrengthFromNearbyProvince(drawableListOfBorderBlocks.get(i).getCoord(), province);
-			
 			if (pullStrengthFromNearbyProvince.getX() < 0) {
-				xPoints[i] = xPoints[i] + 8 - provinceBorderWidth;
+				xPoints[i] = xPoints[i] + 4;
 			} else if (pullStrengthFromNearbyProvince.getX() > 0) {
-				xPoints[i] = xPoints[i] + 8 + provinceBorderWidth;
+				xPoints[i] = xPoints[i] + 12;
 			}
 			if (pullStrengthFromNearbyProvince.getZ() < 0) {
-				zPoints[i] = zPoints[i] + 8 - provinceBorderWidth;
+				zPoints[i] = zPoints[i] + 4;
 			} else if (pullStrengthFromNearbyProvince.getZ() > 0) {
-				zPoints[i] = zPoints[i] + 8 + provinceBorderWidth;
+				zPoints[i] = zPoints[i] + 12;
 			}
-			
-			 
 		}
 		
 		String markerId = "border_of_province_x" + province.getHomeBlock().getX() + "_y" + province.getHomeBlock().getZ();
@@ -237,7 +250,7 @@ public class DynmapIntegration {
 			markerId, markerName, unknown, worldName,
 			xPoints, zPoints, zPoints, unknown2);
 
-		polyLineMarker.setLineStyle(provinceBorderWidth, 0.3, 300000);
+		polyLineMarker.setLineStyle(2, 0.3, 300000);
 	}
 
 	private Coord calculatePullStrengthFromNearbyProvince(Coord borderCoordBeingPulled, Province provinceDoingThePulling) {
@@ -252,14 +265,11 @@ public class DynmapIntegration {
 				pullStrengthZ += (adjacentCoord.getZ() - borderCoordBeingPulled.getZ());
 			}
 		}
-		TownyProvinces.info("Pull Strength: x_" + pullStrengthX + "_y" + pullStrengthZ);
 		return new Coord(pullStrengthX, pullStrengthZ);
 	}
-
 	
 	////////////////////////// DEBUG SECTION ////////////////////////
-
-
+	
 	//Shows all borders. But not for production
 	private void debugDrawProvinceBorders() {
 		String worldName = TownyProvincesSettings.getWorldName();
@@ -268,7 +278,6 @@ public class DynmapIntegration {
 			debugDrawProvinceBorderBlock(worldName, provinceBlock);
 		}
 	}
-
 	
 	private void debugDrawProvinceBorderBlock(String worldName, ProvinceBlock provinceBlock) {
 		double[] xPoints = new double[5];
