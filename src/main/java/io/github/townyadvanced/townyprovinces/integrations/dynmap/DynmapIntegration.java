@@ -92,7 +92,7 @@ public class DynmapIntegration {
 	
 	private void debugDrawProvinceHomeBlocks() {
 		//TEMP - Add markers showing province homeblocks
-		for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
+		for (Province province : TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
 			try {
 				Coord homeBlock = province.getHomeBlock();
 				int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getProvinceBlockSideLength();
@@ -119,7 +119,7 @@ public class DynmapIntegration {
 
 	private void drawProvinceBorders4() {
 		//Find and draw the borders around each province
-		for (Province province : TownyProvincesDataHolder.getInstance().getProvinces()) {
+		for (Province province : TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
 			//Get border blocks
 			Set<ProvinceBlock> borderBlocks = findAllBorderBlocks(province);
 			//Arrange border blocks into drawable line

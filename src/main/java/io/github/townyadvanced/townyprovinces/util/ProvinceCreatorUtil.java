@@ -8,7 +8,9 @@ import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceClaimBrush;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Biome;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,6 +39,10 @@ public class ProvinceCreatorUtil {
 			return false;
 		}
 
+		if(!cullProvincesContainingJustOcean()) {
+			return false;
+		}
+		
 		//Create all border blocks
 		if(!createProvinceBorderBlocks()) {
 			return false;
@@ -47,6 +53,38 @@ public class ProvinceCreatorUtil {
 		return true;
 	}
 
+	/**
+	 * Cull all provinces which have ONLY ocean biomes
+	 * 
+	 * @return true if there's no error
+	 */
+	private static boolean cullProvincesContainingJustOcean() {
+		TownyProvinces.info("Now Deleting Provinces Containing Just Ocean.");
+		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
+			if(!doesProvinceHaveAnyNonOceanBiomes(province)) {
+				TownyProvincesDataHolder.getInstance().deleteProvince(province);
+			}
+		}
+		TownyProvinces.info("Ocean provinces deleted.");
+		return true;
+	}
+
+	private static boolean doesProvinceHaveAnyNonOceanBiomes(Province province) {
+		String worldName = TownyProvincesSettings.getWorldName();
+		Biome biome;
+		int x;
+		int y = 64;
+		int z;
+		for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
+			x = provinceBlock.getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength();
+			z = provinceBlock.getCoord().getZ() * TownyProvincesSettings.getProvinceBlockSideLength();
+			biome = Bukkit.getWorld(worldName).getBiome(x, y, z);
+			if(!biome.getKey().getKey().toLowerCase().contains("ocean")) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	private static Set<Coord> findAllUnclaimedCoords() {
 		Set<Coord> result = new HashSet<>();
@@ -189,7 +227,7 @@ public class ProvinceCreatorUtil {
 		
 		//Create claim-brush objects
 		List<ProvinceClaimBrush> provinceClaimBrushes = new ArrayList<>();
-		for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
+		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
 			provinceClaimBrushes.add(new ProvinceClaimBrush(province, 8));
 		}
 		
@@ -311,9 +349,7 @@ public class ProvinceCreatorUtil {
 			return;
 		
 		//Claim chunk
-		ProvinceBlock newProvinceBlock = new ProvinceBlock();
-		newProvinceBlock.setProvince(province);
-		newProvinceBlock.setCoord(coord);
+		ProvinceBlock newProvinceBlock = new ProvinceBlock(coord, province, false);
 		TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, newProvinceBlock);
 	}
 
@@ -329,8 +365,7 @@ public class ProvinceCreatorUtil {
 			provinceHomeBlock = generateProvinceHomeBlock();
 			if(provinceHomeBlock != null) { 
 				//Province homeblock generated. Now create province
-				Province province = new Province();
-				province.setHomeBlock(provinceHomeBlock);
+				Province province = new Province(provinceHomeBlock);
 				TownyProvincesDataHolder.getInstance().addProvince(province);
 			} else {
 				//Could not generate a province homeblock
@@ -377,7 +412,7 @@ public class ProvinceCreatorUtil {
 	private static boolean validateProvinceHomeBlock(Coord coord) {
 		int minAllowedDistanceInMetres = TownyProvincesSettings.getMinAllowedDistanceBetweenProvinceHomeBlocks();
 		int minAllowedDistanceInChunks = minAllowedDistanceInMetres / TownyProvincesSettings.getProvinceBlockSideLength();
-		List<Province> provinceList = TownyProvincesDataHolder.getInstance().getProvinces();
+		List<Province> provinceList = TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList();
 		for(Province province: provinceList) {
 			if(MathUtil.distance(coord, province.getHomeBlock()) < minAllowedDistanceInChunks) {
 				return false;

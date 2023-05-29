@@ -3,9 +3,11 @@ package io.github.townyadvanced.townyprovinces.objects;
 import com.palmergames.bukkit.towny.object.Coord;
 
 public class ProvinceClaimBrush {
+	
 	private final int squareRadius;
 	private Coord currentPosition;
 	private final Province province;
+	
 	public ProvinceClaimBrush(Province province, int squareRadius) {
 		this.squareRadius = squareRadius;
 		this.province = province;

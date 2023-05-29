@@ -2,7 +2,6 @@ package io.github.townyadvanced.townyprovinces.data;
 
 import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.objects.Region;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 
 import java.util.ArrayList;
@@ -19,10 +18,12 @@ public class TownyProvincesDataHolder {
 	
 	//Singleton
 	private static TownyProvincesDataHolder dataHolder = null;
-
+	//Attributes
+	private Set<Province> provinces;
+	private Map<Coord, ProvinceBlock> provinceBlocks;
+	
 	private TownyProvincesDataHolder() {
-		provinces = new ArrayList<>();
-		regions = new ArrayList<>();
+		provinces = new HashSet<>();
 		provinceBlocks = new HashMap<>();
 	}
 	
@@ -34,10 +35,6 @@ public class TownyProvincesDataHolder {
 		dataHolder = new TownyProvincesDataHolder();
 		return true;
 	}
-	
-	private List<Province> provinces;
-	private List<Region> regions;
-	private Map<Coord, ProvinceBlock> provinceBlocks;
 
 	public Set<ProvinceBlock> getProvinceBorderBlocks() {
 		Set<ProvinceBlock> result = new HashSet<>();
@@ -48,18 +45,7 @@ public class TownyProvincesDataHolder {
 		}
 		return result;
 	}
-
-	public Set<Coord> getProvinceBorderCoords() {
-		Set<Coord> result = new HashSet<>();
-		for(ProvinceBlock provinceBlock: getProvinceBlocks().values()) {
-			if(provinceBlock.isProvinceBorder()) {
-				result.add(provinceBlock.getCoord());
-			}
-		}
-		return result;
-	}
-
-
+	
 	public void addProvince(Province province) {
 		provinces.add(province);
 	}
@@ -69,7 +55,7 @@ public class TownyProvincesDataHolder {
 		return provinces.size();
 	}
 
-	public List<Province> getProvinces() {
+	public List<Province> getCopyOfProvincesSetAsList() {
 		return new ArrayList<>(provinces);
 	}
 
@@ -85,5 +71,7 @@ public class TownyProvincesDataHolder {
 		return provinceBlocks.get(coord);
 	}
 
-
+	public void deleteProvince(Province province) {
+		provinces.remove(province);
+	}
 }
