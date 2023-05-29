@@ -5,8 +5,8 @@ import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.objects.ProvinceClaimBrush;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceClaimBrush;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.Location;
 
@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ProvinceCreatorUtil {
-
-	private static int estimatedNumLinesRequired = 0;
+	
 	/**
 	 * Create all provinces in the world
 	 */
@@ -38,6 +37,7 @@ public class ProvinceCreatorUtil {
 			return false;
 		}
 
+		//Create all border blocks
 		if(!createProvinceBorderBlocks()) {
 			return false;
 		}
@@ -402,7 +402,6 @@ public class ProvinceCreatorUtil {
 		double worldAreaSquareMetres = sideLengthX * sideLengthZ;
 		TownyProvinces.info("World Area square metres: " + worldAreaSquareMetres);
 		return worldAreaSquareMetres;
-
 	}
 }
 
