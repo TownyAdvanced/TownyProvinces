@@ -4,7 +4,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.event.PreNewTownEvent;
+import com.palmergames.bukkit.towny.object.Translatable;
+import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
+import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.messaging.Messaging;
+import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
+import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -27,9 +36,51 @@ public class TownyListener implements Listener {
 		Path langFolderPath = Paths.get(plugin.getDataFolder().getPath()).resolve("lang");
 		TranslationLoader loader = new TranslationLoader(langFolderPath, plugin, TownyProvinces.class);
 		loader.load();
-		Map<String, Map<String, String>>  translations = loader.getTranslations();
+		Map<String, Map<String, String>> translations = loader.getTranslations();
 		for (String language : translations.keySet())
 			for (Map.Entry<String, String> map : translations.get(language).entrySet())
 				event.addTranslation(language, map.getKey(), map.getValue());
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void onNewTownAttempt(PreNewTownEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		//No restriction if it is not in the TP-enabled world
+		if (!event.getTownWorldCoord().getWorldName().equalsIgnoreCase(TownyProvincesSettings.getWorldName())) {
+			return;
+		}
+		//Can't place new town outside of a province
+		ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(event.getTownWorldCoord());
+		if (provinceBlock == null) {
+			event.setCancelled(true);
+			Messaging.sendErrorMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_town_outside_province"));
+			return;
+		}
+		//Can't place new town on a province border
+		if (provinceBlock.isProvinceBorder()) {
+			event.setCancelled(true);
+			Messaging.sendErrorMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_town_on_province_border"));
+			return;
+		}
+		//Can't place new town is province-at-location already has one
+		if (doesProvinceContainTown(provinceBlock.getProvince())) {
+			event.setCancelled(true);
+			Messaging.sendErrorMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_town_in_full_province"));
+			return;
+		}
+	}
+
+	private boolean doesProvinceContainTown(Province province) {
+		String worldName = TownyProvincesSettings.getWorldName();
+		WorldCoord worldCoord;
+		for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
+			worldCoord = new WorldCoord(worldName, provinceBlock.getCoord());
+			if(!TownyAPI.getInstance().isWilderness(worldCoord)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

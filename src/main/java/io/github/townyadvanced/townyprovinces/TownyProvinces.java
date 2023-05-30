@@ -36,7 +36,8 @@ public class TownyProvinces extends JavaPlugin {
 				|| !TownyProvincesSettings.isTownyProvincesEnabled() 
 				|| !TownyProvincesDataHolder.initialize()
 				|| !DataHandlerUtil.setupPluginSubFoldersIfRequired()
-				|| !DataHandlerUtil.loadAllData()) {
+				|| !DataHandlerUtil.loadAllData()
+				|| !registerListeners()) {
 			onDisable();
 			return;
 		}
@@ -112,8 +113,10 @@ public class TownyProvinces extends JavaPlugin {
 		return true;
 	}
 
-	private void registerListeners(PluginManager pm) {
-		pm.registerEvents(new TownyListener(), this);
+	private boolean registerListeners() {
+		PluginManager pluginManager = this.getServer().getPluginManager();
+		pluginManager.registerEvents(new TownyListener(), this);
+		return true;
 	}
 
 
