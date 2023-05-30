@@ -1,7 +1,6 @@
 package io.github.townyadvanced.townyprovinces.util;
 
 import com.palmergames.bukkit.towny.object.Coord;
-import com.palmergames.util.FileMgmt;
 import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,7 +37,7 @@ public class ProvinceGeneratorUtil {
 			}
 		}
 		
-		//Cleanups abd borders
+		//Cleanups and borders
 		TownyProvincesSettings.setProvinceGenerationInstructions(provinceGeneratorFiles.get(0));
 		
 		//Allocate unclaimed chunks to provinces.
@@ -64,8 +62,8 @@ public class ProvinceGeneratorUtil {
 		//Setup settings with correct instructions
 		TownyProvincesSettings.setProvinceGenerationInstructions(provinceGeneratorFile);
 
-		//Delete existing provinces whose homeblocks are in the given area
-		if(!deleteProvincesWithHomeBlocksInSpecifiedArea()) {
+		//Delete existing provinces which are mostly in the given area
+		if(!deleteExistingProvincesWhichAreMostlyInSpecifiedArea()) {
 			return false;
 		}
 		
@@ -84,29 +82,36 @@ public class ProvinceGeneratorUtil {
 		return true;
 	}
 
-	private static boolean deleteProvincesWithHomeBlocksInSpecifiedArea() {
-		TownyProvinces.info("Now deleting provinces with home blocks in specified area.");
-		int numDeleted = 0;
+	private static boolean deleteExistingProvincesWhichAreMostlyInSpecifiedArea() {
+		TownyProvinces.info("Now deleting provinces which are mostly in the specified area.");
+		int numProvincesDeleted = 0;
 		int minX = TownyProvincesSettings.getTopLeftCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
 		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
 		int minZ = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
-			Coord homeBlock = province.getHomeBlock();
-			if(homeBlock.getX() < minX)
-				continue;
-			else if (homeBlock.getX() > maxX)
-				continue;
-			else if (homeBlock.getZ() < minZ)
-				continue;
-			else if (homeBlock.getZ() > maxZ)
-				continue;
-			TownyProvincesDataHolder.getInstance().deleteProvince(province);
-			for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
-				TownyProvincesDataHolder.getInstance().deleteProvinceBlock(provinceBlock);
+			List<ProvinceBlock> provinceBlocks = province.getProvinceBlocks();
+			int numProvinceBlocksInSpecifiedArea = 0;
+			for (ProvinceBlock provinceBlock : provinceBlocks) {
+				if (provinceBlock.getCoord().getX() < minX)
+					continue;
+				else if (provinceBlock.getCoord().getX() > maxX)
+					continue;
+				else if (provinceBlock.getCoord().getZ() < minZ)
+					continue;
+				else if (provinceBlock.getCoord().getZ() > maxZ)
+					continue;
+				numProvinceBlocksInSpecifiedArea++;
+			}
+			if(numProvinceBlocksInSpecifiedArea > (provinceBlocks.size() / 2)) {
+				TownyProvincesDataHolder.getInstance().deleteProvince(province);
+				for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
+					TownyProvincesDataHolder.getInstance().deleteProvinceBlock(provinceBlock);
+				}
+				numProvincesDeleted++;
 			}
 		}
-		TownyProvinces.info("" + numDeleted + " provinces deleted.");
+		TownyProvinces.info("" + numProvincesDeleted + " provinces deleted.");
 		return true;
 	}
 
