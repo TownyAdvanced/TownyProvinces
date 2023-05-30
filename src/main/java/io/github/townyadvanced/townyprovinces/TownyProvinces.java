@@ -118,8 +118,6 @@ public class TownyProvinces extends JavaPlugin {
 		pluginManager.registerEvents(new TownyListener(), this);
 		return true;
 	}
-
-
 	public String getVersion() {
 		return this.getDescription().getVersion();
 	}

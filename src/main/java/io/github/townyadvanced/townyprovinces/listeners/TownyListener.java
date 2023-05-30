@@ -1,16 +1,15 @@
 package io.github.townyadvanced.townyprovinces.listeners;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
+import com.palmergames.bukkit.towny.event.TownyLoadedDatabaseEvent;
+import com.palmergames.bukkit.towny.event.TranslationLoadEvent;
+import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Translatable;
+import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -18,9 +17,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
-import com.palmergames.bukkit.towny.event.TownyLoadedDatabaseEvent;
-import com.palmergames.bukkit.towny.event.TranslationLoadEvent;
-import com.palmergames.bukkit.towny.object.TranslationLoader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Locale;
+import java.util.Map;
 
 public class TownyListener implements Listener {
 
@@ -52,22 +52,23 @@ public class TownyListener implements Listener {
 			return;
 		}
 		//Can't place new town outside of a province
-		ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(event.getTownWorldCoord());
+		Coord coord = Coord.parseCoord(event.getTownLocation());
+		ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
 		if (provinceBlock == null) {
 			event.setCancelled(true);
-			Messaging.sendErrorMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_town_outside_province"));
+			event.setCancelMessage(Translatable.of("msg_err_cannot_create_town_outside_province").translate(Locale.ROOT));
 			return;
 		}
 		//Can't place new town on a province border
 		if (provinceBlock.isProvinceBorder()) {
 			event.setCancelled(true);
-			Messaging.sendErrorMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_town_on_province_border"));
+			event.setCancelMessage(Translatable.of("msg_err_cannot_create_town_on_province_border").translate(Locale.ROOT));
 			return;
 		}
 		//Can't place new town is province-at-location already has one
 		if (doesProvinceContainTown(provinceBlock.getProvince())) {
 			event.setCancelled(true);
-			Messaging.sendErrorMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_town_in_full_province"));
+			event.setCancelMessage(Translatable.of("msg_err_cannot_create_town_in_full_province").translate(Locale.ROOT));
 			return;
 		}
 	}
