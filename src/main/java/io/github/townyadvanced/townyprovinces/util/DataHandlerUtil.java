@@ -105,6 +105,11 @@ public class DataHandlerUtil {
 			fileEntries.put("coord", "" + coord.getX() + "," + coord.getZ());
 			fileEntries.put("province_uuid", provinceBlock.getProvince() == null ? "" : provinceBlock.getProvince().getUuid().toString());
 			fileEntries.put("border", "" + provinceBlock.isProvinceBorder());
+			
+			if(!provinceBlock.isProvinceBorder() && provinceBlock.getProvince() == null) {
+				throw new RuntimeException("WARNING: Province block is not right + x_" + coord.getX() + "_z_" + coord.getZ());
+			}
+			
 			FileUtil.saveHashMapIntoFile(fileEntries, fileName);
 		}
 		TownyProvinces.info("Province Blocks Saved");
@@ -122,6 +127,7 @@ public class DataHandlerUtil {
 			if(border) {
 				province = null;
 			} else {
+				//TownyProvinces.info("Now loading province: x_" + coord.getX() + "_z_" + coord.getZ());
 				UUID provinceUuid = UUID.fromString(fileEntries.get("province_uuid"));
 				province = TownyProvincesDataHolder.getInstance().getProvince(provinceUuid);
 			}
@@ -129,6 +135,14 @@ public class DataHandlerUtil {
 			ProvinceBlock provinceBlock = new ProvinceBlock(coord, province, border);
 			//Add province block to TP universe
 			TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
+
+
+			if(!provinceBlock.isProvinceBorder() && provinceBlock.getProvince() == null) {
+				throw new RuntimeException("WARNING: Province block is not right + x_" + coord.getX() + "_z_" + coord.getZ() + " --- UUID in file: " + fileEntries.get("province_uuid"));
+			}
+
+			
+			
 		}
 		TownyProvinces.info("Province Blocks Loaded");
 	}
