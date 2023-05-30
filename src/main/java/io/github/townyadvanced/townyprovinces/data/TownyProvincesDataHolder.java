@@ -88,4 +88,8 @@ public class TownyProvincesDataHolder {
 	public Set<Province> getProvinces() {
 		return provinces;
 	}
+
+	public void deleteProvinceBlock(ProvinceBlock provinceBlock) {
+		provinceBlocks.remove(provinceBlock.getCoord());
+	}
 }

@@ -15,33 +15,59 @@ import org.bukkit.block.Biome;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class ProvinceCreatorUtil {
+public class ProvinceGeneratorUtil {
 	
 	/**
 	 * Generate all provinces in the world
 	 */
 	public static boolean generateProvinces() {
 		List<File> provinceGeneratorFiles = FileUtil.readProvinceGeneratorFiles();
+		Collections.sort(provinceGeneratorFiles);
+		
+		//Paint all Provinces
 		for (File provinceGeneratorFile : provinceGeneratorFiles) {
-			Map<String,String> provinceGenerationInstructions = FileMgmt.loadFileIntoHashMap(provinceGeneratorFile);
-			TownyProvinces.info("Now Generating Provinces In Region: " + provinceGenerationInstructions.get("region_name"));
-			if(!generateProvinces(provinceGenerationInstructions)) {
+			TownyProvinces.info("Now Generating Provinces In Region: " + provinceGeneratorFile.getName());
+			if(!generateProvinces(provinceGeneratorFile)) {
 				return false;
 			}
 		}
+		
+		//Cleanups abd borders
+		TownyProvincesSettings.setProvinceGenerationInstructions(provinceGeneratorFiles.get(0));
+		
+		//Allocate unclaimed chunks to provinces.
+		if(!assignUnclaimedChunksToProvinces()) {
+			return false;
+		}
+
+		//Cull provinces containing just ocean
+		if(!cullProvincesContainingJustOcean()) {
+			return false;
+		}
+
+		//Create all border blocks
+		if(!createProvinceBorderBlocks()) {
+			return false;
+		}
+		
 		return true;
 	}
 	
-	private static boolean generateProvinces(Map<String,String> provinceGenerationInstructions) {
-		
-		//Setup settings class with province generation instructions
-		TownyProvincesSettings.setProvinceGenerationInstructions(provinceGenerationInstructions);
+	private static boolean generateProvinces(File provinceGeneratorFile) {
+		//Setup settings with correct instructions
+		TownyProvincesSettings.setProvinceGenerationInstructions(provinceGeneratorFile);
+
+		//Delete existing provinces whose homeblocks are in the given area
+		if(!deleteProvincesWithHomeBlocksInSpecifiedArea()) {
+			return false;
+		}
 		
 		//Create province objects - empty except for the homeblocks
 		if(!createProvinceObjects()) {
@@ -53,23 +79,34 @@ public class ProvinceCreatorUtil {
 			return false;
 		}
 		
-		//Allocate unclaimed chunks to provinces.
-		if(!assignUnclaimedChunksToProvinces()) {
-			return false;
-		}
-
-		//Cull provinces containing just ocean
-		if(!cullProvincesContainingJustOcean()) {
-			return false;
-		}
-		
-		//Create all border blocks
-		if(!createProvinceBorderBlocks()) {
-			return false;
-		}
-		
 		TownyProvinces.info("Provinces Created: " + TownyProvincesDataHolder.getInstance().getNumProvinces());
 		TownyProvinces.info("Province Blocks Created: " + TownyProvincesDataHolder.getInstance().getProvinceBlocks().size());
+		return true;
+	}
+
+	private static boolean deleteProvincesWithHomeBlocksInSpecifiedArea() {
+		TownyProvinces.info("Now deleting provinces with home blocks in specified area.");
+		int numDeleted = 0;
+		int minX = TownyProvincesSettings.getTopLeftCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minZ = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
+			Coord homeBlock = province.getHomeBlock();
+			if(homeBlock.getX() < minX)
+				continue;
+			else if (homeBlock.getX() > maxX)
+				continue;
+			else if (homeBlock.getZ() < minZ)
+				continue;
+			else if (homeBlock.getZ() > maxZ)
+				continue;
+			TownyProvincesDataHolder.getInstance().deleteProvince(province);
+			for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
+				TownyProvincesDataHolder.getInstance().deleteProvinceBlock(provinceBlock);
+			}
+		}
+		TownyProvinces.info("" + numDeleted + " provinces deleted.");
 		return true;
 	}
 
@@ -390,7 +427,7 @@ public class ProvinceCreatorUtil {
 				Province province = new Province(provinceHomeBlock, UUID.randomUUID());
 				TownyProvincesDataHolder.getInstance().addProvince(province);
 			} else {
-				//Could not generate a province homeblock
+				//Could not generate a province homeblock. Ran out of space on the map
 				double allowedVariance = TownyProvincesSettings.getMaxAllowedVarianceBetweenIdealAndActualNumProvinces();
 				double minimumAllowedNumProvinces = ((double) idealNumberOfProvinces) * (1 - allowedVariance);
 				int actualNumProvinces = TownyProvincesDataHolder.getInstance().getNumProvinces();
@@ -413,15 +450,26 @@ public class ProvinceCreatorUtil {
 	private static Coord generateProvinceHomeBlock() {
 		double tpChunkSideLength = TownyProvincesSettings.getProvinceBlockSideLength();
 		for(int i = 0; i < 100; i++) {
+			
+			//Establish boundaries
 			double xLowest = TownyProvincesSettings.getTopLeftCornerLocation().getBlockX();
 			double xHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX();
 			double zLowest = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ();
 			double zHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ();
+			//Don't put homeblocks right at edge of map
+			xLowest += ((xHighest - xLowest) * 0.01); 
+			zLowest += ((zHighest - zLowest) * 0.01);
+			xHighest -= ((xHighest - xLowest) * 0.01); 
+			zHighest -= ((zHighest - zLowest) * 0.01);
+			
+			//Generate coords
 			double x = xLowest + (Math.random() * (xHighest - xLowest));
 			double z = zLowest + (Math.random() * (zHighest - zLowest));
 			int xCoord = (int)(x / tpChunkSideLength);
 			int zCoord = (int)(z / tpChunkSideLength);
 			Coord generatedHomeBlockCoord = new Coord(xCoord, zCoord);
+			
+			//Validate
 			if(validateProvinceHomeBlock(generatedHomeBlockCoord)) {
 				TownyProvinces.info("Province homeblock generated");
 				return generatedHomeBlockCoord;

@@ -1,9 +1,11 @@
 package io.github.townyadvanced.townyprovinces.settings;
 
+import com.palmergames.util.FileMgmt;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.io.File;
 import java.util.Map;
 
 public class TownyProvincesSettings {
@@ -13,10 +15,10 @@ public class TownyProvincesSettings {
 	/**
 	 * Set this before generating a province
 	 * 
-	 * @param givenProvinceGenerationInstructions set of instructions
+	 * @param provinceGenerationFile set of instructions
 	 */
-	public static void setProvinceGenerationInstructions(Map<String,String> givenProvinceGenerationInstructions) {
-		provinceGenerationInstructions = givenProvinceGenerationInstructions; 
+	public static void setProvinceGenerationInstructions(File provinceGenerationFile) {
+		provinceGenerationInstructions = FileMgmt.loadFileIntoHashMap(provinceGenerationFile);
 	}
 	
 	public static boolean isTownyProvincesEnabled() {
@@ -39,7 +41,7 @@ public class TownyProvincesSettings {
 	}
 	
 	public static Location getBottomRightWorldCornerLocation() {
-		String locationString = provinceGenerationInstructions.get("top_right_corner_location");
+		String locationString = provinceGenerationInstructions.get("bottom_right_corner_location");
 		String[] locationArray = locationString.split(",");
 		return new Location(getWorld(), Integer.parseInt(locationArray[0].trim()),0,Integer.parseInt(locationArray[1].trim()));
 	}
@@ -74,7 +76,7 @@ public class TownyProvincesSettings {
 	}
 
 	public static int getProvinceCreatorBrushSquareRadiusInChunks() {
-		String numString = provinceGenerationInstructions.get("province_creator_brush_size_in_chunks");
+		String numString = provinceGenerationInstructions.get("province_creator_brush_square_radius_in_chunks");
 		return Integer.parseInt(numString);
 	}
 

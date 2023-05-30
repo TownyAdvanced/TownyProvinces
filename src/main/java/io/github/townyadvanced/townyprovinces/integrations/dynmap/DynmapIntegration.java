@@ -7,7 +7,7 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.util.ProvinceCreatorUtil;
+import io.github.townyadvanced.townyprovinces.util.ProvinceGeneratorUtil;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
 import org.dynmap.DynmapAPI;
@@ -157,15 +157,15 @@ public class DynmapIntegration {
 	private Set<ProvinceBlock> findAllBorderBlocks(Province province) {
 		Set<ProvinceBlock> resultSet = new HashSet<>();
 		for(ProvinceBlock borderBlock: TownyProvincesDataHolder.getInstance().getProvinceBorderBlocks()) {
-			if(doesBorderBlockBorderProvince(borderBlock, province)) {
+			if(isBorderBlockAdjacentToProvince(borderBlock, province)) {
 				resultSet.add(borderBlock);
 			}
 		}
 		return resultSet;
 	}
 
-	private boolean doesBorderBlockBorderProvince(ProvinceBlock givenBorderBlock, Province givenProvince) {
-		Set<Coord> allAdjacentCoords = ProvinceCreatorUtil.findAllAdjacentCoords(givenBorderBlock.getCoord());
+	private boolean isBorderBlockAdjacentToProvince(ProvinceBlock givenBorderBlock, Province givenProvince) {
+		Set<Coord> allAdjacentCoords = ProvinceGeneratorUtil.findAllAdjacentCoords(givenBorderBlock.getCoord());
 		ProvinceBlock candidateProvinceBlock;
 		for(Coord candidateCoord: allAdjacentCoords) {
 			candidateProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(candidateCoord);
@@ -257,7 +257,7 @@ public class DynmapIntegration {
 	private Coord calculatePullStrengthFromNearbyProvince(Coord borderCoordBeingPulled, Province provinceDoingThePulling) {
 		int pullStrengthX = 0;
 		int pullStrengthZ = 0;
-		Set<Coord> adjacentCoords = ProvinceCreatorUtil.findAllAdjacentCoords(borderCoordBeingPulled);
+		Set<Coord> adjacentCoords = ProvinceGeneratorUtil.findAllAdjacentCoords(borderCoordBeingPulled);
 		ProvinceBlock adjacentProvinceBlock;
 		for(Coord adjacentCoord: adjacentCoords) {
 			adjacentProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);

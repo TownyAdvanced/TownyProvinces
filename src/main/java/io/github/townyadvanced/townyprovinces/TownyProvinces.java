@@ -8,7 +8,7 @@ import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegrat
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
-import io.github.townyadvanced.townyprovinces.util.ProvinceCreatorUtil;
+import io.github.townyadvanced.townyprovinces.util.ProvinceGeneratorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -44,7 +44,7 @@ public class TownyProvinces extends JavaPlugin {
 		//If the map is blank and there was no error, generate new provinces
 		//This is useful as either a demo, or a way to regenerate all provinces
 		if(TownyProvincesDataHolder.getInstance().getNumProvinces() == 0) {
-			if(!ProvinceCreatorUtil.generateProvinces()) {
+			if(!ProvinceGeneratorUtil.generateProvinces()) {
 				onDisable();
 				return;
 			}
