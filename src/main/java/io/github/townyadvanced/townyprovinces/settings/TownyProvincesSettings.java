@@ -4,7 +4,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.util.Map;
+
 public class TownyProvincesSettings {
+	
+	private static Map<String,String> provinceGenerationInstructions = null;
+
+	/**
+	 * Set this before generating a province
+	 * 
+	 * @param givenProvinceGenerationInstructions set of instructions
+	 */
+	public static void setProvinceGenerationInstructions(Map<String,String> givenProvinceGenerationInstructions) {
+		provinceGenerationInstructions = givenProvinceGenerationInstructions; 
+	}
 	
 	public static boolean isTownyProvincesEnabled() {
 		return Settings.getBoolean(ConfigNodes.ENABLED);
@@ -19,30 +32,59 @@ public class TownyProvincesSettings {
 		return Settings.getString(ConfigNodes.WORLD_NAME);
 	}
 
-	public static Location getTopLeftWorldCornerLocation() {
-		String locationString = Settings.getString(ConfigNodes.TOP_LEFT_WORLD_CORNER_LOCATION);
+	public static Location getTopLeftCornerLocation() {
+		String locationString = provinceGenerationInstructions.get("top_left_corner_location");
 		String[] locationArray = locationString.split(",");		
 		return new Location(getWorld(), Integer.parseInt(locationArray[0].trim()),0,Integer.parseInt(locationArray[1].trim()));	
 	}
 	
 	public static Location getBottomRightWorldCornerLocation() {
-		String locationString = Settings.getString(ConfigNodes.BOTTOM_RIGHT_WORLD_CORNER_LOCATION);
+		String locationString = provinceGenerationInstructions.get("top_right_corner_location");
 		String[] locationArray = locationString.split(",");
 		return new Location(getWorld(), Integer.parseInt(locationArray[0].trim()),0,Integer.parseInt(locationArray[1].trim()));
 	}
 	
 	public static int getAverageProvinceSizeInSquareMetres() {
-		return Settings.getInt(ConfigNodes.AVERAGE_PROVINCE_SIZE_IN_SQUARE_METRES);
+		String numString = provinceGenerationInstructions.get("average_province_size_in_square_metres");
+		return Integer.parseInt(numString);
 	}
 	
 	public static int getMinAllowedDistanceBetweenProvinceHomeBlocks() {
-		return Settings.getInt(ConfigNodes.MIN_ALLOWED_DISTANCE_BETWEEN_PROVINCE_HOMEBLOCKS);
+		String numString = provinceGenerationInstructions.get("min_allowed_distance_between_province_home_blocks");
+		return Integer.parseInt(numString);
 	}
 	
 	public static double getMaxAllowedVarianceBetweenIdealAndActualNumProvinces() {
-		return Settings.getDouble(ConfigNodes.MAX_ALLOWED_VARIANCE_BETWEEN_IDEAL_AND_ACTUAL_NUM_PROVINCES);
+		String numString = provinceGenerationInstructions.get("max_allowed_variance_between_ideal_and_actual_num_provinces");
+		return Double.parseDouble(numString);
 	}
+	
 	public static int getProvinceBlockSideLength() {
-		return 16;
+		return 16; //Same as a chunk. Best not to change
+	}
+
+	public static boolean isDeleteProvincesContainingJustOcean() {
+		String booleanString = provinceGenerationInstructions.get("delete_ocean_provinces");
+		return Boolean.parseBoolean(booleanString);
+	}
+
+	public static int getNumberOfProvincePaintingCycles() {
+		String numString = provinceGenerationInstructions.get("number_of_province_painting_cycles");
+		return Integer.parseInt(numString);
+	}
+
+	public static int getProvinceCreatorBrushSquareRadiusInChunks() {
+		String numString = provinceGenerationInstructions.get("province_creator_brush_size_in_chunks");
+		return Integer.parseInt(numString);
+	}
+
+	public static int getProvinceCreatorBrushMinMoveInChunks() {
+		String numString = provinceGenerationInstructions.get("province_creator_brush_min_move_in_chunks");
+		return Integer.parseInt(numString);
+	}
+
+	public static int getProvinceCreatorBrushMaxMoveInChunks() {
+		String numString = provinceGenerationInstructions.get("province_creator_brush_max_move_in_chunks");
+		return Integer.parseInt(numString);
 	}
 }
