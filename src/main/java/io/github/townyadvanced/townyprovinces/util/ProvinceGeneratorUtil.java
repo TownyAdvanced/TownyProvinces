@@ -104,11 +104,6 @@ public class ProvinceGeneratorUtil {
 				numProvinceBlocksInSpecifiedArea++;
 			}
 			if(numProvinceBlocksInSpecifiedArea > (provinceBlocks.size() / 2)) {
-				//Delete Province Block (NOTE: Important to do this before province)
-				for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
-					TownyProvincesDataHolder.getInstance().deleteProvinceBlock(provinceBlock);
-				}
-				//Delete Province
 				TownyProvincesDataHolder.getInstance().deleteProvince(province);
 				numProvincesDeleted++;
 			}

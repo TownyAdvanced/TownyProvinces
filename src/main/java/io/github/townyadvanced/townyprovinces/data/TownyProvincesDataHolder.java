@@ -73,6 +73,11 @@ public class TownyProvincesDataHolder {
 	}
 
 	public void deleteProvince(Province province) {
+		//Delete Province Block (NOTE: Important to do this before province)
+		for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
+			deleteProvinceBlock(provinceBlock);
+		}
+		//Delete province
 		provinces.remove(province);
 	}
 
