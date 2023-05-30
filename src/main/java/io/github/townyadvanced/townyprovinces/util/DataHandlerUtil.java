@@ -8,6 +8,7 @@ import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import java.util.UUID;
 public class DataHandlerUtil {
 	private static final String dataFolderPath = "data";
 	private static final String provincesFolderPath = "data/provinces";
-	private static final String provinceBlocksFolderPath = "data/provinceblocks";
+	private static final String provinceBlocksFolderPath = "data/province_blocks";
 
 
 	public static boolean setupDataFoldersIfRequired() {
@@ -29,14 +30,44 @@ public class DataHandlerUtil {
 		return true;
 	}
 	
-	public static boolean loadData() {
+	public static boolean loadAllData() {
 		loadProvinces();
 		loadProvinceBlocks();
-		return true; //Loaded but blank
+		return true; 
 	}
 
-	public static void loadProvinces() {
-		TownyProvinces.info("Now Loading Province Files");
+	public static boolean saveAllData() {
+		saveProvinces();
+		saveProvinceBlocks();
+		return true; 
+	}
+
+
+	private static void saveProvinces() {
+		TownyProvinces.info("Now Saving Provinces");
+		String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(provincesFolderPath).toString();
+
+		//Delete existing files
+		List<File> provinceFiles = FileUtil.readListOfFiles(provincesFolderPath);
+		for(File file: provinceFiles) {
+			file.delete();
+		}
+		
+		//Save all province files
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
+			String fileName = folderPath + "/province_" + province.getUuid().toString() + ".yml";
+			Map<String,String> fileEntries = new HashMap<>(); 
+			fileEntries.put("home_block", "" + province.getHomeBlock().getX() + "," + province.getHomeBlock().getZ());
+			fileEntries.put("uuid", "" + province.getUuid().toString());
+			fileEntries.put("new_town_price", "" + province.getNewTownPrice());
+			fileEntries.put("town_upkeep", "" + province.getTownUpkeep());
+			FileUtil.saveHashMapIntoFile(fileEntries, fileName);
+		}
+		TownyProvinces.info("Provinces Saved");
+	}
+
+	private static void loadProvinces() {
+		TownyProvinces.info("Now Loading Provinces");
 		List<File> provinceFiles = FileUtil.readListOfFiles(provincesFolderPath);
 		for(File provinceFile: provinceFiles) {
 			//Load province file
@@ -49,25 +80,56 @@ public class DataHandlerUtil {
 			//Add province to TP universe
 			TownyProvincesDataHolder.getInstance().addProvince(province);
 		}
-		TownyProvinces.info("Province Files Loaded");
+		TownyProvinces.info("Provinces Loaded");
 	}
 
+	private static void saveProvinceBlocks() {
+		TownyProvinces.info("Now Saving Province Blocks");
+		String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(provinceBlocksFolderPath).toString();
+		
+		//Delete existing files
+		List<File> provinceBlockFiles = FileUtil.readListOfFiles(provinceBlocksFolderPath);
+		for(File file: provinceBlockFiles) {
+			file.delete();
+		}
+
+		//Save all province block files
+		for(Map.Entry<Coord,ProvinceBlock> provinceBlockEntry: TownyProvincesDataHolder.getInstance().getProvinceBlocks().entrySet()) {
+			//Make file name
+			Coord coord = provinceBlockEntry.getKey();
+			ProvinceBlock provinceBlock = provinceBlockEntry.getValue();
+			String fileName = folderPath + "/province_block_x" + coord.getX() + "_z" + coord.getZ() + ".yml";
+			//Make content
+			Map<String,String> fileEntries = new HashMap<>();
+			fileEntries.put("coord", "" + coord.getX() + "," + coord.getZ());
+			fileEntries.put("province_uuid", provinceBlock.getProvince() == null ? "" : provinceBlock.getProvince().getUuid().toString());
+			fileEntries.put("border", "" + provinceBlock.isProvinceBorder());
+			FileUtil.saveHashMapIntoFile(fileEntries, fileName);
+		}
+		TownyProvinces.info("Province Blocks Saved");
+	}
 
 	private static void loadProvinceBlocks() {
-		TownyProvinces.info("Now Loading Province Block Files");
+		TownyProvinces.info("Now Loading Province Blocks");
 		List<File> provinceBlockFiles = FileUtil.readListOfFiles(provinceBlocksFolderPath);
 		for(File provinceBlockFile: provinceBlockFiles) {
 			//Load file
 			Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(provinceBlockFile);
 			Coord coord = unpackCoord(fileEntries.get("coord"));
-			UUID provinceUuid = UUID.fromString(fileEntries.get("province_uuid"));
-			Province province = TownyProvincesDataHolder.getInstance().getProvince(provinceUuid);
 			boolean border = Boolean.parseBoolean(fileEntries.get("border"));
+			Province province;
+			if(border) {
+				province = null;
+			} else {
+				UUID provinceUuid = UUID.fromString(fileEntries.get("province_uuid"));
+				province = TownyProvincesDataHolder.getInstance().getProvince(provinceUuid);
+			}
+			//Create province block
 			ProvinceBlock provinceBlock = new ProvinceBlock(coord, province, border);
 			//Add province block to TP universe
 			TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
 		}
-		TownyProvinces.info("Province Block Files Loaded");
+		TownyProvinces.info("Province Blocks Loaded");
 	}
 
 
@@ -78,10 +140,5 @@ public class DataHandlerUtil {
 		return new Coord(x,z);
 	}
 
-
-	public void loadTPChunksMap() {
-		
-	}
-	
 	
 }

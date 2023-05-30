@@ -50,5 +50,13 @@ public class Province {
 	public UUID getUuid() {
 		return uuid;
 	}
+
+	public int getNewTownPrice() {
+		return newTownPrice;
+	}
+
+	public int getTownUpkeep() {
+		return townUpkeep;
+	}
 }
  

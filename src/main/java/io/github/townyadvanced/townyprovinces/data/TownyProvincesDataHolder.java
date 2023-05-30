@@ -83,6 +83,9 @@ public class TownyProvincesDataHolder {
 			}
 		}
 		return null;
-		
+	}
+
+	public Set<Province> getProvinces() {
+		return provinces;
 	}
 }

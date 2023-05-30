@@ -8,7 +8,6 @@ import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegrat
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
-import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import io.github.townyadvanced.townyprovinces.util.ProvinceCreatorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -37,21 +36,25 @@ public class TownyProvinces extends JavaPlugin {
 				|| !TownyProvincesSettings.isTownyProvincesEnabled() 
 				|| !TownyProvincesDataHolder.initialize()
 				|| !DataHandlerUtil.setupDataFoldersIfRequired()
-				|| !DataHandlerUtil.loadData()) {
+				|| !DataHandlerUtil.loadAllData()) {
 			onDisable();
 			return;
 		}
 	
 		//If the map is blank and there was no error, generate new provinces
-		//if(TownyProvincesDataHolder.getInstance().getNumProvinces() == 0) {
-		//	if(!ProvinceCreatorUtil.createProvinces()) {
-		//		onDisable();
-		//		return;
-		//	}
-		//}
+		//This is as a kind of demo, so that server owners can
+		//Immediately see the provinces on the dynmap
+		if(TownyProvincesDataHolder.getInstance().getNumProvinces() == 0) {
+			if(!ProvinceCreatorUtil.createProvinces()) {
+				onDisable();
+				return;
+			}
+		}
+		
+		DataHandlerUtil.saveAllData();
 		
 		//Load integrations 
-		//loadIntegrations();
+		loadIntegrations();
 	}
 
 	private boolean loadIntegrations() {
