@@ -66,19 +66,19 @@ public class TownyListener implements Listener {
 		ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
 		if (provinceBlock == null) {
 			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getPrefix() + Translatable.of("msg_err_cannot_create_town_outside_province").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getPrefix() + " " + Translatable.of("msg_err_cannot_create_town_outside_province").translate(Locale.ROOT));
 			return;
 		}
 		//Can't place new town on a province border
 		if (provinceBlock.isProvinceBorder()) {
 			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getPrefix() + Translatable.of("msg_err_cannot_create_town_on_province_border").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getPrefix() + " " + Translatable.of("msg_err_cannot_create_town_on_province_border").translate(Locale.ROOT));
 			return;
 		}
 		//Can't place new town is province-at-location already has one
 		if (doesProvinceContainTown(provinceBlock.getProvince())) {
 			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getPrefix() + Translatable.of("msg_err_cannot_create_town_in_full_province").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getPrefix() + " " + Translatable.of("msg_err_cannot_create_town_in_full_province").translate(Locale.ROOT));
 			return;
 		}
 	}
