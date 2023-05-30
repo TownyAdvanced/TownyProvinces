@@ -32,7 +32,7 @@ public class ProvinceGeneratorUtil {
 		//Paint all Provinces
 		for (File provinceGeneratorFile : provinceGeneratorFiles) {
 			TownyProvinces.info("Now Generating Provinces In Region: " + provinceGeneratorFile.getName());
-			if(!generateProvinces(provinceGeneratorFile)) {
+			if(!paintProvincesInGivenRegion(provinceGeneratorFile)) {
 				return false;
 			}
 		}
@@ -46,7 +46,7 @@ public class ProvinceGeneratorUtil {
 		}
 
 		//Cull provinces containing just ocean
-		if(!cullProvincesContainingJustOcean()) {
+		if(!cullProvincesContainingJustOceanOrBeach()) {
 			return false;
 		}
 
@@ -58,7 +58,7 @@ public class ProvinceGeneratorUtil {
 		return true;
 	}
 	
-	private static boolean generateProvinces(File provinceGeneratorFile) {
+	private static boolean paintProvincesInGivenRegion(File provinceGeneratorFile) {
 		//Setup settings with correct instructions
 		TownyProvincesSettings.setProvinceGenerationInstructions(provinceGeneratorFile);
 
@@ -113,15 +113,18 @@ public class ProvinceGeneratorUtil {
 	}
 
 	/**
-	 * Cull all provinces which have ONLY ocean biomes
+	 * Cull all provinces which have ONLY ocean or beach biomes
+	 * 
+	 * FYI The reason beach is included is that sometimes a beach biome can naturally have no land,
+	 * thus allow all-water provinces.
 	 * 
 	 * @return true if there's no error
 	 */
-	private static boolean cullProvincesContainingJustOcean() {
+	private static boolean cullProvincesContainingJustOceanOrBeach() {
 		if(!TownyProvincesSettings.isDeleteProvincesContainingJustOcean())
 			return true;
 		
-		TownyProvinces.info("Now Deleting Provinces Containing Just Ocean.");
+		TownyProvinces.info("Now Deleting Provinces Containing Just Ocean or Beach.");
 		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
 			if(!doesProvinceHaveAnyNonOceanBiomes(province)) {
 				TownyProvincesDataHolder.getInstance().deleteProvince(province);
@@ -141,7 +144,7 @@ public class ProvinceGeneratorUtil {
 			x = provinceBlock.getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength();
 			z = provinceBlock.getCoord().getZ() * TownyProvincesSettings.getProvinceBlockSideLength();
 			biome = Bukkit.getWorld(worldName).getBiome(x, y, z);
-			if(!biome.getKey().getKey().toLowerCase().contains("ocean")) {
+			if(!biome.getKey().getKey().toLowerCase().contains("ocean") && !biome.getKey().getKey().toLowerCase().equals("beach")) {
 				return true;
 			}
 		}
@@ -193,7 +196,7 @@ public class ProvinceGeneratorUtil {
 		Province province;
 		ProvinceBlock newProvinceBlock;
 		while((coordsEligibleForProvinceAssignment = findCoordsEligibleForProvinceAssignment()).size() > 0) {
-			TownyProvinces.info("Num Coords Eligible For Province Assignment: " + coordsEligibleForProvinceAssignment.size());
+			TownyProvinces.info("Num Coords waiting to be assigned to provinces: " + coordsEligibleForProvinceAssignment.size());
 			//Pick a random coord to assign
 			indexOfCoordToAssign = (int)(Math.random() * coordsEligibleForProvinceAssignment.size());
 			coordToAssign = coordsEligibleForProvinceAssignment.get(indexOfCoordToAssign);

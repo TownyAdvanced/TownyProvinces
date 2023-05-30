@@ -20,7 +20,12 @@ public enum ConfigNodes {
 				"world",
 				"",
 				"# The name of the world where TownyProvinces appplies.",
-				"# TIP: TP does not yet support multiple worlds");
+				"# TownyProvinces does not yet support multiple worlds"),
+	BORDER_COLOUR(
+			"border_color",
+				"300000",
+				"",
+				"# This value determines the color of the border.");
 	
 	private final String Root;
 	private final String Default;

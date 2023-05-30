@@ -246,12 +246,16 @@ public class DynmapIntegration {
 		//AreaMarker areaMarker = markerSet.createAreaMarker(
 		//	markerId, markerName, unknown, worldName,
 		//		xPoints, zPoints, unknown2);
+		
+		PolyLineMarker polyLineMarker = markerSet.findPolyLineMarker(markerId);
+		
+		if(polyLineMarker == null) {
+			polyLineMarker = markerSet.createPolyLineMarker(
+				markerId, markerName, unknown, worldName,
+				xPoints, zPoints, zPoints, unknown2);
 
-		PolyLineMarker polyLineMarker =  markerSet.createPolyLineMarker(
-			markerId, markerName, unknown, worldName,
-			xPoints, zPoints, zPoints, unknown2);
-
-		polyLineMarker.setLineStyle(2, 0.3, 300000);
+			polyLineMarker.setLineStyle(2, 0.3, TownyProvincesSettings.getBorderColour());
+		}
 	}
 
 	private Coord calculatePullStrengthFromNearbyProvince(Coord borderCoordBeingPulled, Province provinceDoingThePulling) {

@@ -89,4 +89,8 @@ public class TownyProvincesSettings {
 		String numString = provinceGenerationInstructions.get("province_creator_brush_max_move_in_chunks");
 		return Integer.parseInt(numString);
 	}
+	
+	public static int getBorderColour() {
+		return Settings.getInt(ConfigNodes.BORDER_COLOUR);
+	}
 }
