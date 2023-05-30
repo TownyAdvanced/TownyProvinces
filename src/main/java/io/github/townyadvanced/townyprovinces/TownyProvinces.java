@@ -35,17 +35,16 @@ public class TownyProvinces extends JavaPlugin {
 				|| !loadLocalization(false)
 				|| !TownyProvincesSettings.isTownyProvincesEnabled() 
 				|| !TownyProvincesDataHolder.initialize()
-				|| !DataHandlerUtil.setupDataFoldersIfRequired()
+				|| !DataHandlerUtil.setupPluginSubFoldersIfRequired()
 				|| !DataHandlerUtil.loadAllData()) {
 			onDisable();
 			return;
 		}
 	
 		//If the map is blank and there was no error, generate new provinces
-		//This is as a kind of demo, so that server owners can
-		//Immediately see the provinces on the dynmap
+		//This is useful as either a demo, or a way to regenerate all provinces
 		if(TownyProvincesDataHolder.getInstance().getNumProvinces() == 0) {
-			if(!ProvinceCreatorUtil.createProvinces()) {
+			if(!ProvinceCreatorUtil.generateProvinces()) {
 				onDisable();
 				return;
 			}

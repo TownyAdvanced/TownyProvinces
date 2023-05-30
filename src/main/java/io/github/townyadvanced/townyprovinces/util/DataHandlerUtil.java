@@ -14,18 +14,19 @@ import java.util.Map;
 import java.util.UUID;
 
 public class DataHandlerUtil {
-	private static final String dataFolderPath = "data";
-	private static final String provincesFolderPath = "data/provinces";
-	private static final String provinceBlocksFolderPath = "data/province_blocks";
-
-
-	public static boolean setupDataFoldersIfRequired() {
+	public static final String dataFolderPath = "data";
+	public static final String provinceGeneratorsFolderPath = "province_generators";
+	public static final String provincesFolderPath = "data/provinces";
+	public static final String provinceBlocksFolderPath = "data/province_blocks";
+	
+	public static boolean setupPluginSubFoldersIfRequired() {
 		try {
 			FileUtil.setupFolderIfRequired(dataFolderPath);
 			FileUtil.setupFolderIfRequired(provincesFolderPath);
 			FileUtil.setupFolderIfRequired(provinceBlocksFolderPath);
+			FileUtil.setupFolderIfRequired(provinceGeneratorsFolderPath);
 		} catch (Exception e) {
-			TownyProvinces.severe("Problem Setting up data folders");
+			TownyProvinces.severe("Problem Setting up plugin sub-folders");
 		}
 		return true;
 	}

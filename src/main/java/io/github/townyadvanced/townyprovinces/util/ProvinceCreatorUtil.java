@@ -1,6 +1,7 @@
 package io.github.townyadvanced.townyprovinces.util;
 
 import com.palmergames.bukkit.towny.object.Coord;
+import com.palmergames.util.FileMgmt;
 import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
@@ -12,35 +13,48 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 public class ProvinceCreatorUtil {
 	
 	/**
-	 * Create all provinces in the world
+	 * Generate all provinces in the world
 	 */
-	public static boolean createProvinces() {
+	public static boolean generateProvinces() {
+		List<File> provinceGeneratorFiles = FileUtil.readProvinceGeneratorFiles();
+		for (File provinceGeneratorFile : provinceGeneratorFiles) {
+			Map<String,String> provinceGenerationInstructions = FileMgmt.loadFileIntoHashMap(provinceGeneratorFile);
+			TownyProvinces.info("Now Generating Provinces In Region: " + provinceGenerationInstructions.get("region_name"));
+			if(!generateProvinces(provinceGenerationInstructions)) {
+				return false;
+			}
+		}
+		return true;
+	}
 	
+	private static boolean generateProvinces(Map<String,String> provinceGenerationInstructions) {
 		//Create province objects - empty except for the homeblocks
-		if(!createProvinceObjects()) {
+		if(!createProvinceObjects(provinceGenerationInstructions)) {
 			return false;
 		}
 		
 		//Execute chunk claim competition
-		if(!executeChunkClaimCompetition()) {
+		if(!executeChunkClaimCompetition(provinceGenerationInstructions)) {
 			return false;
 		}
 		
 		//Allocate unclaimed chunks to provinces. Do not create borders yet
-		if(!assignUnclaimedChunksToProvinces()) {
+		if(!assignUnclaimedChunksToProvinces(provinceGenerationInstructions)) {
 			return false;
 		}
 
-		if(!cullProvincesContainingJustOcean()) {
+		if(!cullProvincesContainingJustOcean(provinceGenerationInstructions)) {
 			return false;
 		}
 		
@@ -59,7 +73,7 @@ public class ProvinceCreatorUtil {
 	 * 
 	 * @return true if there's no error
 	 */
-	private static boolean cullProvincesContainingJustOcean() {
+	private static boolean cullProvincesContainingJustOcean(Map<String,String> provinceGenerationInstructions) {
 		TownyProvinces.info("Now Deleting Provinces Containing Just Ocean.");
 		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
 			if(!doesProvinceHaveAnyNonOceanBiomes(province)) {
@@ -123,7 +137,7 @@ public class ProvinceCreatorUtil {
 	 * 
 	 * @return true on method success
 	 */
-	private static boolean assignUnclaimedChunksToProvinces() {
+	private static boolean assignUnclaimedChunksToProvinces(Map<String,String> provinceGenerationInstructions) {
 		TownyProvinces.info("Now assigning unclaimed chunks to provinces. This could take a few minutes...");
 		//Todo - more efficient progress indicator pls
 		List<Coord> coordsEligibleForProvinceAssignment;
@@ -223,7 +237,7 @@ public class ProvinceCreatorUtil {
 		return result;
 	}
 	
-	private static boolean executeChunkClaimCompetition() {
+	private static boolean executeChunkClaimCompetition(Map<String,String> provinceGenerationInstructions) {
 		TownyProvinces.info("Chunk Claim Competition Started");
 		
 		//Create claim-brush objects
@@ -359,7 +373,7 @@ public class ProvinceCreatorUtil {
 	 * 
 	 * @return false if we failed to create sufficient provinces
 	 */
-	private static boolean createProvinceObjects() {
+	private static boolean createProvinceObjects(Map<String,String> provinceGenerationInstructions) {
 		Coord provinceHomeBlock;
 		int idealNumberOfProvinces = calculateIdealNumberOfProvinces();
 		for (int provinceIndex = 0; provinceIndex < idealNumberOfProvinces; provinceIndex++) {

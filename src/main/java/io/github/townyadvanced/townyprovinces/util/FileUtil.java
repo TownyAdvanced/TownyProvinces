@@ -44,4 +44,8 @@ public class FileUtil {
 		}
 		return result;
 	}
+
+	public static List<File> readProvinceGeneratorFiles() {
+		return readListOfFiles(DataHandlerUtil.provinceGeneratorsFolderPath);
+	}
 }
