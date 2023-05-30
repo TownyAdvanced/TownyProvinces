@@ -44,14 +44,14 @@ public class ProvinceGeneratorUtil {
 		if(!assignUnclaimedChunksToProvinces()) {
 			return false;
 		}
-
-		//Cull provinces containing just ocean
-		if(!cullProvincesContainingJustOceanOrBeach()) {
+		
+		//Create all border blocks
+		if(!createProvinceBorderBlocks()) {
 			return false;
 		}
 
-		//Create all border blocks
-		if(!createProvinceBorderBlocks()) {
+		//Cull provinces containing just ocean
+		if(!cullProvincesContainingJustOceanOrBeach()) {
 			return false;
 		}
 		

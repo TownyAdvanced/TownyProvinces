@@ -90,7 +90,16 @@ public class TownyProvincesSettings {
 		return Integer.parseInt(numString);
 	}
 	
+	public static int getBorderWeight() {
+		return Settings.getInt(ConfigNodes.BORDER_WEIGHT);
+	}
+
+	public static double getBorderOpacity() {
+		return Settings.getDouble(ConfigNodes.BORDER_OPACITY);
+	}
+
 	public static int getBorderColour() {
 		return Settings.getInt(ConfigNodes.BORDER_COLOUR);
 	}
+	
 }

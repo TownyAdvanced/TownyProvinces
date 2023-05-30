@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
 import com.palmergames.bukkit.towny.event.TownyLoadedDatabaseEvent;
 import com.palmergames.bukkit.towny.event.TranslationLoadEvent;
+import com.palmergames.bukkit.towny.event.town.TownPreMergeEvent;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.object.TranslationLoader;
@@ -43,6 +44,15 @@ public class TownyListener implements Listener {
 	}
 
 	@EventHandler(ignoreCancelled = true)
+	public void onTownMergeAttempt(TownPreMergeEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		event.setCancelled(true);
+		event.setCancelMessage(TownyProvinces.getPrefix() + Translatable.of("msg_err_cannot_merge_towns").translate(Locale.ROOT));
+	}
+	
+	@EventHandler(ignoreCancelled = true)
 	public void onNewTownAttempt(PreNewTownEvent event) {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
 			return;
@@ -56,19 +66,19 @@ public class TownyListener implements Listener {
 		ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
 		if (provinceBlock == null) {
 			event.setCancelled(true);
-			event.setCancelMessage(Translatable.of("msg_err_cannot_create_town_outside_province").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getPrefix() + Translatable.of("msg_err_cannot_create_town_outside_province").translate(Locale.ROOT));
 			return;
 		}
 		//Can't place new town on a province border
 		if (provinceBlock.isProvinceBorder()) {
 			event.setCancelled(true);
-			event.setCancelMessage(Translatable.of("msg_err_cannot_create_town_on_province_border").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getPrefix() + Translatable.of("msg_err_cannot_create_town_on_province_border").translate(Locale.ROOT));
 			return;
 		}
 		//Can't place new town is province-at-location already has one
 		if (doesProvinceContainTown(provinceBlock.getProvince())) {
 			event.setCancelled(true);
-			event.setCancelMessage(Translatable.of("msg_err_cannot_create_town_in_full_province").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getPrefix() + Translatable.of("msg_err_cannot_create_town_in_full_province").translate(Locale.ROOT));
 			return;
 		}
 	}

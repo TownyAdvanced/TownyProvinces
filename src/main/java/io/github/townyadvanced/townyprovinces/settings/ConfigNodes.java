@@ -21,6 +21,16 @@ public enum ConfigNodes {
 				"",
 				"# The name of the world where TownyProvinces appplies.",
 				"# TownyProvinces does not yet support multiple worlds"),
+	BORDER_WEIGHT(
+		"border_weight",
+		"2",
+		"",
+		"# This value determines the weight of the border."),
+	BORDER_OPACITY(
+		"border_opacity",
+		"0.3",
+		"",
+		"# This value determines the opcacity of the border."),
 	BORDER_COLOUR(
 			"border_color",
 				"300000",

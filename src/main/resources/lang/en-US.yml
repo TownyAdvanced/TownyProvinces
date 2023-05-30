@@ -25,4 +25,5 @@ description: >
 
 msg_err_cannot_create_town_outside_province: "Towns cannot be created outside provinces."
 msg_err_cannot_create_town_on_province_border: "Towns cannot be created on province borders."
-msg_err_cannot_create_town_in_full_province: "This province already contains a town. Only 1 town is allowed in each province."
+msg_err_cannot_create_town_in_full_province: "Only 1 town is allowed in each province. This province already contains a town."
+msg_err_cannot_merge_towns: "Town merging is not possible."
