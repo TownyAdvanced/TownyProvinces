@@ -2,6 +2,7 @@ package io.github.townyadvanced.townyprovinces;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegration;
@@ -126,10 +127,23 @@ public class TownyProvinces extends JavaPlugin {
 		return plugin;
 	}
 
+	/**
+	 * Use this for debugging
+	 * 
+	 * @return plugin prefix
+	 */
 	public static String getPrefix() {
 		return "&6[" + plugin.getName() + "]";
 	}
 
+	/**
+	 * Use this in most cases, as it looks better
+	 * @return plugin prefix
+	 */
+	public static String getTranslatedPrefix() {
+		return Translatable.of("plugin_prefix").translate(Locale.ROOT);
+	}
+	
 	private boolean townyVersionCheck() {
 		return Version.fromString(getTownyVersion()).compareTo(requiredTownyVersion) >= 0;
 	}

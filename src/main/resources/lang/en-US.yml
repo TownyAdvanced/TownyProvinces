@@ -23,6 +23,10 @@ description: >
 # DarkPurple = &9, LightGreen = &a, LightBlue = &b
 # Rose = &c, LightPurple = &d, Yellow = &e, White = &f
 
+# Plugin prefix
+
+plugin_prefix: '&6[Towny Provinces]'
+
 # New towns
 
 msg_err_cannot_create_town_outside_province: "&cTowns cannot be created outside provinces."
