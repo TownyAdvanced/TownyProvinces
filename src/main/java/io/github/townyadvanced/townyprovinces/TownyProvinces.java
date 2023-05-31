@@ -127,7 +127,7 @@ public class TownyProvinces extends JavaPlugin {
 	}
 
 	public static String getPrefix() {
-		return "[" + plugin.getName() + "]";
+		return "&6[" + plugin.getName() + "]";
 	}
 
 	private boolean townyVersionCheck() {

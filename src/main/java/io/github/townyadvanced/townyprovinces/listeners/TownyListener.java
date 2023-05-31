@@ -2,6 +2,7 @@ package io.github.townyadvanced.townyprovinces.listeners;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
+import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
 import com.palmergames.bukkit.towny.event.TownyLoadedDatabaseEvent;
 import com.palmergames.bukkit.towny.event.TranslationLoadEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreMergeEvent;
@@ -83,6 +84,44 @@ public class TownyListener implements Listener {
 		}
 	}
 
+
+	@EventHandler(ignoreCancelled = true)
+	public void onTownClaimAttempt(TownPreClaimEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		//No restriction if it is not in the TP-enabled world
+		if (!event.getTownBlock().getWorld().getName().equalsIgnoreCase(TownyProvincesSettings.getWorldName())) {
+			return;
+		}
+		//Can't claim outside of a province
+		ProvinceBlock provinceAtClaimLocation = TownyProvincesDataHolder.getInstance().getProvinceBlock(event.getTownBlock().getCoord());
+		if (provinceAtClaimLocation == null) {
+			event.setCancelled(true);
+			event.setCancelMessage(TownyProvinces.getPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_outside_province").translate(Locale.ROOT));
+			return;
+		}
+		//Can't claim on a province border
+		if (provinceAtClaimLocation.isProvinceBorder()) {
+			event.setCancelled(true);
+			event.setCancelMessage(TownyProvinces.getPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_on_province_border").translate(Locale.ROOT));
+			return;
+		}
+		//Can't claim without homeblock
+		if(!event.getTown().hasHomeBlock()) {
+			event.setCancelled(true);
+			event.setCancelMessage(TownyProvinces.getPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_without_homeblock").translate(Locale.ROOT));
+			return;
+		}
+		//Can't claim outside town's province
+		Province provinceOfClaimingTown = TownyProvincesDataHolder.getInstance().getProvinceBlock(event.getTown().getHomeBlockOrNull().getCoord()).getProvince();
+		if(!provinceOfClaimingTown.equals(provinceAtClaimLocation)) {
+			event.setCancelled(true);
+			event.setCancelMessage(TownyProvinces.getPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_outside_own_province").translate(Locale.ROOT));
+			return;
+		}
+	}
+		
 	private boolean doesProvinceContainTown(Province province) {
 		String worldName = TownyProvincesSettings.getWorldName();
 		WorldCoord worldCoord;
@@ -94,14 +133,5 @@ public class TownyListener implements Listener {
 		}
 		return false;
 	}
-	
-	
-	TODO - CANNOT MOVE TOWN HOMEBLOCK OUTSIDE OF CURRENT PROVINCE
-		
-		
-		
-	TODO - CANNOT CLAIM OUTSIDE OF PROVINCE THE HOMEBLOCK IS IN
-	
-	
-	TODO - CANNOT SETUP OUTPOST OUTSIDE OF PROVINCE THE HOMEBLOCK IS IN
+
 }

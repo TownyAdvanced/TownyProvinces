@@ -23,7 +23,16 @@ description: >
 # DarkPurple = &9, LightGreen = &a, LightBlue = &b
 # Rose = &c, LightPurple = &d, Yellow = &e, White = &f
 
+# New towns
+
 msg_err_cannot_create_town_outside_province: "&cTowns cannot be created outside provinces."
 msg_err_cannot_create_town_on_province_border: "&cTowns cannot be created on province borders."
 msg_err_cannot_create_town_in_full_province: "&cOnly 1 town is allowed in each province. This province already contains a town."
 msg_err_cannot_merge_towns: "&cTown merging is not possible."
+
+# Claiming
+
+msg_err_cannot_claim_land_outside_province: "&cTowns cannot claim land outside provinces."
+msg_err_cannot_claim_land_on_province_border: "&cTowns cannot claim land on province borders."
+msg_err_cannot_claim_land_without_homeblock: "&cTowns without homeblocks cannot claim land."
+msg_err_cannot_claim_land_outside_own_province: "&cA town cannot claim land outside its own province."
