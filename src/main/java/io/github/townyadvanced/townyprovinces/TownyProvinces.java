@@ -128,7 +128,7 @@ public class TownyProvinces extends JavaPlugin {
 	}
 
 	/**
-	 * Use this for debugging
+	 * Use this for debugging  TODO - Maybe remove, because for debugging we tend to use TownyProvinces.info() / severe()
 	 * 
 	 * @return plugin prefix
 	 */
