@@ -65,9 +65,9 @@ public class TownyProvincesSettings {
 		return 16; //Same as a chunk. Best not to change
 	}
 
-	public static boolean isDeleteProvincesContainingJustOcean() {
-		String booleanString = provinceGenerationInstructions.get("delete_ocean_provinces");
-		return Boolean.parseBoolean(booleanString);
+	public static double getOceanBiomeThresholdForProvinceDeletion() {
+		String doubleString = provinceGenerationInstructions.get("ocean_biome_threshold_for_province_deletion");
+		return Double.parseDouble(doubleString);
 	}
 
 	public static int getNumberOfProvincePaintingCycles() {
@@ -87,6 +87,11 @@ public class TownyProvincesSettings {
 
 	public static int getProvinceCreatorBrushMaxMoveInChunks() {
 		String numString = provinceGenerationInstructions.get("province_creator_brush_max_move_in_chunks");
+		return Integer.parseInt(numString);
+	}
+
+	public static int getProvinceCreatorBrushClaimLimitInSquareMetres() {
+		String numString = provinceGenerationInstructions.get("province_creator_brush_claim_limit_in_square_metres");
 		return Integer.parseInt(numString);
 	}
 	

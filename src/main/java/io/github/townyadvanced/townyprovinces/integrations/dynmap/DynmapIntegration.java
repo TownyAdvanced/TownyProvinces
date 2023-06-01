@@ -32,7 +32,7 @@ public class DynmapIntegration {
 		DynmapAPI dynmapAPI = (DynmapAPI) TownyProvinces.getPlugin().getServer().getPluginManager().getPlugin("dynmap");
 		markerapi = dynmapAPI.getMarkerAPI();
 		addMarkerSet();
-		registerDynmapTownyListener();
+		//registerDynmapTownyListener();
 		startDynmapTask();
 		TownyProvinces.info("Dynmap support enabled.");
 	}
@@ -71,7 +71,9 @@ public class DynmapIntegration {
 	}
 
 	public void startDynmapTask() {
+		TownyProvinces.info("Dynmap Task Starting");
 		dynmapTask = new DynmapTask(this).runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, 300);
+		TownyProvinces.info("Dynmap Task Started");
 	}
 
 	public void endDynmapTask() {
@@ -82,7 +84,7 @@ public class DynmapIntegration {
 	 * Display all TownyProvinces items
 	 */
 	void displayTownyProvinces() {
-		//debugDrawProvinceHomeBlocks();
+		debugDrawProvinceHomeBlocks();
 		drawProvinceBorders();
 	}
 
@@ -118,14 +120,35 @@ public class DynmapIntegration {
 
 	private void drawProvinceBorders() {
 		//Find and draw the borders around each province
-		for (Province province : TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
-			//Get border blocks
-			Set<ProvinceBlock> borderBlocks = findAllBorderBlocks(province);
-			//Arrange border blocks into drawable line
-			List<ProvinceBlock> drawableLineOfBorderBlocks = arrangeBorderBlocksIntoDrawableLine(borderBlocks);
-			//Draw line
-			drawBorderLine(drawableLineOfBorderBlocks, province);
+		for (Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
+			try {
+				String markerId = "border_of_province_" + province.getUuid().toString();
+				PolyLineMarker borderMarker = markerSet.findPolyLineMarker(markerId);
+				if(province.isDeleted()) {
+					//If deleted province is on map, remove it
+					if (borderMarker != null) {
+						borderMarker.deleteMarker();
+					}
+				} else {
+					//If province is not on map, add it
+					if (borderMarker == null) {
+						drawProvinceBorder(province, markerId);
+					}
+				}
+			} catch (Throwable t) {
+				TownyProvinces.severe("Could not draw province borders for province " + province.getUuid());
+				t.printStackTrace();
+			}
 		}
+	}
+	
+	private void drawProvinceBorder(Province province, String markerId) {
+		//Get border blocks
+		Set<ProvinceBlock> borderBlocks = findAllBorderBlocks(province);
+		//Arrange border blocks into drawable line
+		List<ProvinceBlock> drawableLineOfBorderBlocks = arrangeBorderBlocksIntoDrawableLine(borderBlocks);
+		//Draw line
+		drawBorderLine(drawableLineOfBorderBlocks, province, markerId);
 	}
 	
 	private List<ProvinceBlock> arrangeBorderBlocksIntoDrawableLine(Set<ProvinceBlock> unsortedBorderBlocks) {
@@ -153,7 +176,7 @@ public class DynmapIntegration {
 	 * Note that these co-cords will not actually belong to the province
 	 * Rather they will all have provinceBorder=true, and province=null
 	 */
-	private Set<ProvinceBlock> findAllBorderBlocks(Province province) {
+	public static Set<ProvinceBlock> findAllBorderBlocks(Province province) {
 		Set<ProvinceBlock> resultSet = new HashSet<>();
 		for(ProvinceBlock borderBlock: TownyProvincesDataHolder.getInstance().getProvinceBorderBlocks()) {
 			if(isBorderBlockAdjacentToProvince(borderBlock, province)) {
@@ -163,7 +186,7 @@ public class DynmapIntegration {
 		return resultSet;
 	}
 
-	private boolean isBorderBlockAdjacentToProvince(ProvinceBlock givenBorderBlock, Province givenProvince) {
+	private static boolean isBorderBlockAdjacentToProvince(ProvinceBlock givenBorderBlock, Province givenProvince) {
 		Set<Coord> allAdjacentCoords = ProvinceGeneratorUtil.findAllAdjacentCoords(givenBorderBlock.getCoord());
 		ProvinceBlock candidateProvinceBlock;
 		for(Coord candidateCoord: allAdjacentCoords) {
@@ -181,7 +204,7 @@ public class DynmapIntegration {
 		return MathUtil.distance(c1,c2) == 1;
 	}
 
-	private void drawBorderLine(List<ProvinceBlock> drawableListOfBorderBlocks, Province province) {
+	private void drawBorderLine(List<ProvinceBlock> drawableListOfBorderBlocks, Province province, String markerId) {
 		String worldName = TownyProvincesSettings.getWorldName();
 		double[] xPoints = new double[drawableListOfBorderBlocks.size()];
 		double[] zPoints = new double[drawableListOfBorderBlocks.size()];
@@ -233,7 +256,6 @@ public class DynmapIntegration {
 			}
 		}
 		
-		String markerId = "border_of_province_x" + province.getHomeBlock().getX() + "_y" + province.getHomeBlock().getZ();
 		String markerName = "ID: " + markerId;
 
 		boolean unknown = false;

@@ -9,10 +9,11 @@ import java.util.UUID;
 
 public class Province {
 	
-	private UUID uuid;
+	private final UUID uuid;
 	private final Coord homeBlock;
-	private int newTownPrice = 0;
-	private int townUpkeep = 0;
+	private int newTownPrice;
+	private int townUpkeep;
+	private boolean deleted;
 	
 	public boolean equals(Object object) {
 		if(!(object instanceof Province))
@@ -23,6 +24,7 @@ public class Province {
 	public Province(Coord homeBlock, UUID uuid) {
 		this.uuid = uuid;
 		this.homeBlock = homeBlock;
+		this.deleted = false;
 	}
 
 	public Coord getHomeBlock() {
@@ -58,5 +60,14 @@ public class Province {
 	public int getTownUpkeep() {
 		return townUpkeep;
 	}
+	
+	public boolean isDeleted() { 
+		return deleted; 
+	}
+	
+	public void setDeleted(boolean b) {
+		this.deleted = b;
+	}
+	
 }
  

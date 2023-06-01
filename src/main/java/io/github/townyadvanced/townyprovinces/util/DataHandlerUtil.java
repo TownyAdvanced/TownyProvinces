@@ -32,8 +32,8 @@ public class DataHandlerUtil {
 	}
 	
 	public static boolean loadAllData() {
-		loadProvinces();
-		loadProvinceBlocks();
+		//loadProvinces();
+		//loadProvinceBlocks();
 		return true; 
 	}
 
@@ -118,29 +118,32 @@ public class DataHandlerUtil {
 	private static void loadProvinceBlocks() {
 		TownyProvinces.info("Now Loading Province Blocks");
 		List<File> provinceBlockFiles = FileUtil.readListOfFiles(provinceBlocksFolderPath);
+		Map<String,String> fileEntries;
+		Coord coord;
+		boolean border;
+		Province province;
+		UUID provinceUuid;
+		ProvinceBlock provinceBlock;
 		for(File provinceBlockFile: provinceBlockFiles) {
 			//Load file
-			Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(provinceBlockFile);
-			Coord coord = unpackCoord(fileEntries.get("coord"));
-			boolean border = Boolean.parseBoolean(fileEntries.get("border"));
-			Province province;
+			fileEntries = FileMgmt.loadFileIntoHashMap(provinceBlockFile);
+			coord = unpackCoord(fileEntries.get("coord"));
+			border = Boolean.parseBoolean(fileEntries.get("border"));
 			if(border) {
 				province = null;
 			} else {
 				//TownyProvinces.info("Now loading province: x_" + coord.getX() + "_z_" + coord.getZ());
-				UUID provinceUuid = UUID.fromString(fileEntries.get("province_uuid"));
+				provinceUuid = UUID.fromString(fileEntries.get("province_uuid"));
 				province = TownyProvincesDataHolder.getInstance().getProvince(provinceUuid);
 			}
 			//Create province block
-			ProvinceBlock provinceBlock = new ProvinceBlock(coord, province, border);
+			provinceBlock = new ProvinceBlock(coord, province, border);
 			//Add province block to TP universe
 			TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
-
-
+			
 			if(!provinceBlock.isProvinceBorder() && provinceBlock.getProvince() == null) {
 				throw new RuntimeException("WARNING: Province block is not right + x_" + coord.getX() + "_z_" + coord.getZ() + " --- UUID in file: " + fileEntries.get("province_uuid"));
 			}
-
 			
 			
 		}
