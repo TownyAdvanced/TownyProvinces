@@ -245,14 +245,14 @@ public class DynmapIntegration {
 			 * */
 			Coord pullStrengthFromNearbyProvince = calculatePullStrengthFromNearbyProvince(drawableListOfBorderBlocks.get(i).getCoord(), province);
 			if (pullStrengthFromNearbyProvince.getX() < 0) {
-				xPoints[i] = xPoints[i] + 4;
+				xPoints[i] = xPoints[i] + 7;
 			} else if (pullStrengthFromNearbyProvince.getX() > 0) {
-				xPoints[i] = xPoints[i] + 12;
+				xPoints[i] = xPoints[i] + 9;
 			}
 			if (pullStrengthFromNearbyProvince.getZ() < 0) {
-				zPoints[i] = zPoints[i] + 4;
+				zPoints[i] = zPoints[i] + 7;
 			} else if (pullStrengthFromNearbyProvince.getZ() > 0) {
-				zPoints[i] = zPoints[i] + 12;
+				zPoints[i] = zPoints[i] + 9;
 			}
 		}
 		
@@ -271,7 +271,7 @@ public class DynmapIntegration {
 			polyLineMarker.setLineStyle(TownyProvincesSettings.getBorderWeight(), TownyProvincesSettings.getBorderOpacity(), TownyProvincesSettings.getBorderColour());
 		}
 	}
-
+	
 	private Coord calculatePullStrengthFromNearbyProvince(Coord borderCoordBeingPulled, Province provinceDoingThePulling) {
 		int pullStrengthX = 0;
 		int pullStrengthZ = 0;

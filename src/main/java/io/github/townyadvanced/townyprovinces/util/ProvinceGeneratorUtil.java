@@ -71,7 +71,7 @@ public class ProvinceGeneratorUtil {
 		}
 		
 		//Create province objects - empty except for the homeblocks
-		if(!createProvinceObjects()) {
+		if(!createProvinceHomeBlocks()) {
 			return false;
 		}
 		
@@ -130,7 +130,7 @@ public class ProvinceGeneratorUtil {
 		@Override
 		public void run() {
 			TownyProvinces.info("Now Deleting Ocean Provinces.");
-			int numProvincesProcessed = 0;
+			double numProvincesProcessed = 0;
 			int provincesDeleted = 0;
 			List<Province> provinces = TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList();
 			for(Province province: provinces) {
@@ -139,7 +139,8 @@ public class ProvinceGeneratorUtil {
 					provincesDeleted++;
 				}
 				numProvincesProcessed ++;
-				TownyProvinces.info("Now Deleting Ocean Provinces. Total/Processed/Deleted: " + provinces.size() + "/" + numProvincesProcessed + "/" + provincesDeleted);
+				int percentCompletion = (int)((numProvincesProcessed / provinces.size()) * 100); 
+				TownyProvinces.info("Ocean Province Deletion Job Progress: " +percentCompletion + "%");
 			}
 			TownyProvinces.info("Finished Deleting Ocean Provinces.");
 		}
@@ -200,7 +201,7 @@ public class ProvinceGeneratorUtil {
 
 
 			try {
-				Thread.sleep(100);
+				Thread.sleep(3000);
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			}
@@ -261,27 +262,6 @@ public class ProvinceGeneratorUtil {
 	
 	
 
-	private static void waitUntilNoChunksAreLoaded(World world) {
-		Chunk[] loadedChunks;
-		while(true) {
-			loadedChunks = world.getLoadedChunks();
-			TownyProvinces.info("Num Loaded Chunks: " + loadedChunks.length);
-			if(loadedChunks.length <= 10) {
-				return;
-			} else {
-					for(int i = 0; i < loadedChunks.length; i++) {
-						if(loadedChunks[i].isForceLoaded()) {
-							loadedChunks[i].setForceLoaded(false);
-						}
-						//for(Plugin plugin: loadedChunks[i].getPluginChunkTickets()) {
-						//	TownyProvinces.info("Chunk was loaded by: " + plugin);
-							//loadedChunks[i].addPluginChunkTicket(TownyProvinces.getPlugin());
-						//}
-						loadedChunks[i].unload(true);
-					}
-			}
-		}
-	}
 
 	private static Set<Coord> findAllUnclaimedCoords() {
 		Set<Coord> result = new HashSet<>();
@@ -322,7 +302,7 @@ public class ProvinceGeneratorUtil {
 	 * @return true on method success
 	 */
 	private static boolean assignUnclaimedChunksToProvinces() {
-		TownyProvinces.info("Now assigning unclaimed chunks to provinces. This could take a few minutes...");
+		TownyProvinces.info("Now assigning unclaimed chunks to provinces.");
 		List<Coord> coordsEligibleForProvinceAssignment;
 		Province province;
 		ProvinceBlock newProvinceBlock;
@@ -581,11 +561,13 @@ public class ProvinceGeneratorUtil {
 	}
 
 	/**
-	 * Create province object - empty except for the homeblocks
+	 * Create province homeblocks.
+	 * Also create the homeblock objects at this point
 	 * 
 	 * @return false if we failed to create sufficient provinces
 	 */
-	private static boolean createProvinceObjects() {
+	private static boolean createProvinceHomeBlocks() {
+		TownyProvinces.info("Now generating province homeblocks");
 		Coord provinceHomeBlock;
 		int idealNumberOfProvinces = calculateIdealNumberOfProvinces();
 		for (int provinceIndex = 0; provinceIndex < idealNumberOfProvinces; provinceIndex++) {
@@ -603,11 +585,12 @@ public class ProvinceGeneratorUtil {
 					TownyProvinces.severe("ERROR: Could not create the minimum number of provinces. Required: " + minimumAllowedNumProvinces + ". Actual: " + actualNumProvinces);
 					return false;
 				} else {
-					TownyProvinces.info("" + actualNumProvinces + " province objects created, each one containing just homeblock info.");
+					TownyProvinces.info("" + actualNumProvinces + " province homeblocks created.");
 					return true;
 				}
 			}
 		}
+		TownyProvinces.info("" + TownyProvincesDataHolder.getInstance().getNumProvinces() + " province homeblocks created.");
 		return true;
 	}
 
@@ -620,15 +603,10 @@ public class ProvinceGeneratorUtil {
 		for(int i = 0; i < 100; i++) {
 			
 			//Establish boundaries
-			double xLowest = TownyProvincesSettings.getTopLeftCornerLocation().getBlockX();
-			double xHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX();
-			double zLowest = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ();
-			double zHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ();
-			//Don't put homeblocks right at edge of map
-			xLowest += ((xHighest - xLowest) * 0.01); 
-			zLowest += ((zHighest - zLowest) * 0.01);
-			xHighest -= ((xHighest - xLowest) * 0.01); 
-			zHighest -= ((zHighest - zLowest) * 0.01);
+			double xLowest = TownyProvincesSettings.getTopLeftCornerLocation().getBlockX() +1;
+			double xHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() -1;
+			double zLowest = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ() +1;
+			double zHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() -1;
 			
 			//Generate coords
 			double x = xLowest + (Math.random() * (xHighest - xLowest));
@@ -639,7 +617,6 @@ public class ProvinceGeneratorUtil {
 			
 			//Validate
 			if(validateProvinceHomeBlock(generatedHomeBlockCoord)) {
-				TownyProvinces.info("Province homeblock generated");
 				return generatedHomeBlockCoord;
 			}
 		}
@@ -661,7 +638,7 @@ public class ProvinceGeneratorUtil {
 	
 	private static int calculateIdealNumberOfProvinces() {
 		double worldAreaSquareMetres = calculateWorldAreaSquareMetres();
-		double averageProvinceAreaSquareMetres = TownyProvincesSettings.getAverageProvinceSizeInSquareMetres();
+		double averageProvinceAreaSquareMetres = TownyProvincesSettings.getProvinceSizeEstimateForPopulatingInSquareMetres();
 		int idealNumberOfProvinces = (int)(worldAreaSquareMetres / averageProvinceAreaSquareMetres);
 		TownyProvinces.info("Ideal num provinces: " + idealNumberOfProvinces);
 		return idealNumberOfProvinces;

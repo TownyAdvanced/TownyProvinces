@@ -1,0 +1,11 @@
+region_name: Europe
+top_left_corner_location: -570,-1515
+bottom_right_corner_location: 700,-715
+province_size_estimate_for_populating_in_square_metres: 20000
+min_allowed_distance_between_province_home_blocks: 80
+max_allowed_variance_between_ideal_and_actual_num_provinces: 0.1
+province_creator_brush_square_radius_in_chunks: 2
+province_creator_brush_min_move_in_chunks: 4
+province_creator_brush_max_move_in_chunks: 1
+province_creator_brush_claim_limit_in_square_metres: 5000
+number_of_province_painting_cycles: 100

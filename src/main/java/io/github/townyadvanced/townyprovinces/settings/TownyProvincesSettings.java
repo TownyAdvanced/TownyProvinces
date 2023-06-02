@@ -46,8 +46,8 @@ public class TownyProvincesSettings {
 		return new Location(getWorld(), Integer.parseInt(locationArray[0].trim()),0,Integer.parseInt(locationArray[1].trim()));
 	}
 	
-	public static int getAverageProvinceSizeInSquareMetres() {
-		String numString = provinceGenerationInstructions.get("average_province_size_in_square_metres");
+	public static int getProvinceSizeEstimateForPopulatingInSquareMetres() {
+		String numString = provinceGenerationInstructions.get("province_size_estimate_for_populating_in_square_metres");
 		return Integer.parseInt(numString);
 	}
 	
