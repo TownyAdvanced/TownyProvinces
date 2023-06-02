@@ -84,7 +84,7 @@ public class DynmapIntegration {
 	 * Display all TownyProvinces items
 	 */
 	void displayTownyProvinces() {
-		debugDrawProvinceHomeBlocks();
+		//debugDrawProvinceHomeBlocks();
 		drawProvinceBorders();
 	}
 
