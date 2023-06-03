@@ -6,3 +6,7 @@ author: LlmDl
 website: 'http://townyadvanced.github.io'
 prefix: ${project.artifactId}
 depend: [Towny]
+
+commands:
+    townyprovincesadmin:
+        aliases: [tpa]

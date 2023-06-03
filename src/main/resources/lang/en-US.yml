@@ -27,6 +27,14 @@ description: >
 
 plugin_prefix: '&6[Towny Provinces]'
 
+# Admin
+msg_err_invalid_province_location: "&cThe given co-ordinate was either mis-formatted, on a border, or outside the map."
+msg_province_successfully_deleted: "&bProvince Successfully Deleted. The map will be updated shortly."
+msg_province_already_deleted: "&cProvince Already Deleted."
+msg_province_successfully_restored: "&bProvince Successfully Restored. The map will be updated shortly."
+msg_province_already_restored: "&cProvince Already Restored."
+
+
 # New towns
 
 msg_err_cannot_create_town_outside_province: "&cTowns cannot be created outside provinces."

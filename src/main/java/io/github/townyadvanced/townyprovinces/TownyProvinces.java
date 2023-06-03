@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 
+import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegration;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
@@ -38,7 +39,8 @@ public class TownyProvinces extends JavaPlugin {
 				|| !TownyProvincesDataHolder.initialize()
 				|| !DataHandlerUtil.setupPluginSubFoldersIfRequired()
 				|| !DataHandlerUtil.loadAllData()
-				|| !registerListeners()) {
+				|| !registerListeners()
+				|| !registerAdminCommands()) {
 			onDisable();
 			return;
 		}
@@ -53,9 +55,13 @@ public class TownyProvinces extends JavaPlugin {
 			//DataHandlerUtil.saveAllData();
 		}
 		
-		
 		//Load integrations 
 		loadIntegrations();
+	}
+
+	private boolean registerAdminCommands() {
+		getCommand("townyprovincesadmin").setExecutor(new TownyProvincesAdminCommand());
+		return true;
 	}
 
 	private boolean loadIntegrations() {
