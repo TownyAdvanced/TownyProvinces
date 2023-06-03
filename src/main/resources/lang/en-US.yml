@@ -24,8 +24,7 @@ description: >
 # Rose = &c, LightPurple = &d, Yellow = &e, White = &f
 
 # Plugin prefix
-
-plugin_prefix: '&6[Towny Provinces]'
+plugin_prefix: '&6[Towny Provinces] '
 
 # Admin
 msg_err_invalid_province_location: "&cThe given co-ordinate was either mis-formatted, on a border, or outside the map."

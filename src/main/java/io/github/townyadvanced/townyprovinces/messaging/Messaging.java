@@ -1,6 +1,7 @@
 package io.github.townyadvanced.townyprovinces.messaging;
 
 import com.palmergames.bukkit.towny.object.Translatable;
+import com.palmergames.bukkit.towny.object.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,8 +13,8 @@ import io.github.townyadvanced.townyprovinces.TownyProvinces;
 
 public class Messaging {
 
-    final static String prefix = TownyProvinces.getPrefix();
-    
+    final static String prefix = Translation.of("plugin_prefix");
+	
     public static void sendErrorMsg(CommandSender sender, String message) {
         //Ensure the sender is not null (i.e. is an online player who is not an npc)
         if(sender != null)

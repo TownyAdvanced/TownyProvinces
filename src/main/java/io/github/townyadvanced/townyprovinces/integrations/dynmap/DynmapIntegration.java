@@ -145,10 +145,12 @@ public class DynmapIntegration {
 	private void drawProvinceBorder(Province province, String markerId) {
 		//Get border blocks
 		Set<ProvinceBlock> borderBlocks = findAllBorderBlocks(province);
-		//Arrange border blocks into drawable line
-		List<ProvinceBlock> drawableLineOfBorderBlocks = arrangeBorderBlocksIntoDrawableLine(borderBlocks);
-		//Draw line
-		drawBorderLine(drawableLineOfBorderBlocks, province, markerId);
+		if(borderBlocks.size() > 0) {
+			//Arrange border blocks into drawable line
+			List<ProvinceBlock> drawableLineOfBorderBlocks = arrangeBorderBlocksIntoDrawableLine(borderBlocks);
+			//Draw line
+			drawBorderLine(drawableLineOfBorderBlocks, province, markerId);
+		}
 	}
 	
 	private List<ProvinceBlock> arrangeBorderBlocksIntoDrawableLine(Set<ProvinceBlock> unsortedBorderBlocks) {

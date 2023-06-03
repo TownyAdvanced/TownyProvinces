@@ -141,7 +141,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				return;
 			}
 			Province province = provinceBlock.getProvince();
-			if(province.isDeleted()) {
+			if(!province.isDeleted()) {
 				Messaging.sendMsg(sender, Translatable.of("msg_province_already_restored"));
 				return;
 			}
