@@ -22,44 +22,44 @@ public enum ConfigNodes {
 				"# The name of the world where TownyProvinces appplies.",
 				"# TownyProvinces does not yet support multiple worlds"),
 
-	ACTIVE_BORDER(
-		"active_border",
+	LAND_PROVINCE_BORDER(
+		"land_province_border",
 		"",
 		""),
-	ACTIVE_BORDER_WEIGHT(
-		"active_border.weight",
+	LAND_PROVINCE_BORDER_WEIGHT(
+		"land_province_border.weight",
 		"1",
 		"",
 		"# This value determines the weight of the border."),
-	ACTIVE_BORDER_OPACITY(
-		"active_border.opacity",
+	LAND_PROVINCE_BORDER_OPACITY(
+		"land_province_border.opacity",
 		"1",
 		"",
-		"# This value determines the opcacity of the border."),
-	ACTIVE_BORDER_COLOUR(
-		"active_border.color",
+		"# This value determines the opacity of the border."),
+	LAND_PROVINCE_BORDER_COLOUR(
+		"land_province_border.color",
 		"0",
 		"",
-		"# This value determines the color of the border."),
-	DELETED_BORDER(
-		"deleted_border",
+		"# This value, in hex format, determines the color of the border."),
+	SEA_PROVINCE_BORDER(
+		"sea_province_border",
 			"",
 			""),
-	DELETED_BORDER_WEIGHT(
-		"deleted_border.weight",
+	SEA_PROVINCE_BORDER_WEIGHT(
+		"sea_province_border.weight",
 			"1",
 			"",
 			"# This value determines the weight of the border."),
-	DELETED_BORDER_OPACITY(
-		"deleted_border.opacity",
+	SEA_PROVINCE_BORDER_OPACITY(
+		"sea_province_border.opacity",
 			"0.1",
 			"",
 			"# This value determines the opcacity of the border."),
-	DELETED_BORDER_COLOUR(
-		"deleted_border.color",
+	SEA_PROVINCE_BORDER_COLOUR(
+		"sea_province_border.color",
 			"33FFFF",
 			"",
-			"# This value determines the color of the border.");
+			"# This value, in hex format, determines the color of the border.");
 	private final String Root;
 	private final String Default;
 	private String[] comments;

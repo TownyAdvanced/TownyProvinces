@@ -95,28 +95,28 @@ public class TownyProvincesSettings {
 		return Integer.parseInt(numString);
 	}
 	
-	public static int getActiveBorderWeight() {
-		return Settings.getInt(ConfigNodes.ACTIVE_BORDER_WEIGHT);
+	public static int getLandProvinceBorderWeight() {
+		return Settings.getInt(ConfigNodes.LAND_PROVINCE_BORDER_WEIGHT);
 	}
 
-	public static double getActiveBorderOpacity() {
-		return Settings.getDouble(ConfigNodes.ACTIVE_BORDER_OPACITY);
+	public static double getLandProvinceBorderOpacity() {
+		return Settings.getDouble(ConfigNodes.LAND_PROVINCE_BORDER_OPACITY);
 	}
 
-	public static int getActiveBorderColour() {
-		return Settings.getInt(ConfigNodes.ACTIVE_BORDER_COLOUR);
+	public static int getLandProvinceBorderColour() {
+		return Settings.getInt(ConfigNodes.LAND_PROVINCE_BORDER_COLOUR);
 	}
 
-	public static int getDeletedBorderWeight() {
-		return Settings.getInt(ConfigNodes.DELETED_BORDER_WEIGHT);
+	public static int getSeaProvinceBorderWeight() {
+		return Settings.getInt(ConfigNodes.SEA_PROVINCE_BORDER_WEIGHT);
 	}
 
-	public static double getDeletedBorderOpacity() {
-		return Settings.getDouble(ConfigNodes.DELETED_BORDER_OPACITY);
+	public static double getSeaProvinceBorderOpacity() {
+		return Settings.getDouble(ConfigNodes.SEA_PROVINCE_BORDER_OPACITY);
 	}
 
-	public static int getDeletedBorderColour() {
-		return Integer.parseInt(Settings.getString(ConfigNodes.DELETED_BORDER_COLOUR),16);
+	public static int getSeaProvinceBorderColour() {
+		return Integer.parseInt(Settings.getString(ConfigNodes.SEA_PROVINCE_BORDER_COLOUR),16);
 	}
 
 }

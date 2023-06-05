@@ -109,12 +109,12 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				showHelp(sender);
 				return;
 			}
-			if(province.isDeleted()) {
+			if(province.isSea()) {
 				Messaging.sendMsg(sender, Translatable.of("msg_province_already_deleted"));
 				return;
 			}
 			//Delete province
-			province.setDeleted(true);
+			province.setSea(true);
 			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_deleted"));
 		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
@@ -140,12 +140,12 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				showHelp(sender);
 				return;
 			}
-			if(!province.isDeleted()) {
+			if(!province.isSea()) {
 				Messaging.sendMsg(sender, Translatable.of("msg_province_already_restored"));
 				return;
 			}
 			///Restore province
-			province.setDeleted(false);
+			province.setSea(false);
 			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_restored"));
 		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));

@@ -12,7 +12,7 @@ public class Province {
 	private final Coord homeBlock;
 	private int newTownPrice;
 	private int townUpkeep;
-	private boolean deleted;
+	private boolean isSea;
 	
 	public boolean equals(Object object) {
 		if(!(object instanceof Province))
@@ -23,7 +23,7 @@ public class Province {
 	public Province(Coord homeBlock, UUID uuid) {
 		this.uuid = uuid;
 		this.homeBlock = homeBlock;
-		this.deleted = false;
+		this.isSea = false;
 	}
 
 	public Coord getHomeBlock() {
@@ -50,12 +50,12 @@ public class Province {
 		return townUpkeep;
 	}
 	
-	public boolean isDeleted() { 
-		return deleted; 
+	public boolean isSea() { 
+		return isSea; 
 	}
 	
-	public void setDeleted(boolean b) {
-		this.deleted = b;
+	public void setSea(boolean b) {
+		this.isSea = b;
 	}
 
 	public List<Coord> getCoordsInProvince() {

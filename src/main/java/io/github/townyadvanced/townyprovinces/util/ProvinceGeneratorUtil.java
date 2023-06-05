@@ -125,8 +125,8 @@ public class ProvinceGeneratorUtil {
 			int provincesDeleted = 0;
 			List<Province> provinces = TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList();
 			for(Province province: provinces) {
-				if(!province.isDeleted() && isProvinceMainlyOcean(province)) {
-					province.setDeleted(true);
+				if(!province.isSea() && isProvinceMainlyOcean(province)) {
+					province.setSea(true);
 					provincesDeleted++;
 				}
 				numProvincesProcessed ++;
