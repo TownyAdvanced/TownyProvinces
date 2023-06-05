@@ -28,10 +28,10 @@ plugin_prefix: '&6[Towny Provinces] '
 
 # Admin
 msg_err_invalid_province_location: "&cThe given co-ordinate was either mis-formatted, on a border, or outside the map."
-msg_province_successfully_deleted: "&bProvince Successfully Deleted. The map will be updated shortly."
-msg_province_already_deleted: "&cProvince Already Deleted."
-msg_province_successfully_restored: "&bProvince Successfully Restored. The map will be updated shortly."
-msg_province_already_restored: "&cProvince Already Restored."
+msg_province_successfully_set_to_sea: "&bProvince Type set to Sea. The map will be updated shortly."
+msg_province_already_sea: "&cProvince Type is already Sea."
+msg_province_successfully_set_to_land: "&bProvince Type set to Land. The map will be updated shortly."
+msg_province_already_land: "&cProvince Type is already Land."
 
 
 # New towns

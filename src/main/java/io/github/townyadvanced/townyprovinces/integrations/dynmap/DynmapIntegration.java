@@ -172,7 +172,6 @@ public class DynmapIntegration {
 		}
 		//Add last block to line, to make a circuit
 		result.add(result.get(0));
-		//Return result
 		return result;
 	}
 

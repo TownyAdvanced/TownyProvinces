@@ -22,7 +22,7 @@ import java.util.List;
 public class TownyProvincesAdminCommand implements TabExecutor {
 
 	private static final List<String> adminTabCompletes = Arrays.asList("province");
-	private static final List<String> adminTabCompletesProvince = Arrays.asList("delete","restore");
+	private static final List<String> adminTabCompletesProvince = Arrays.asList("set_type_sea","set_type_land");
 
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 
@@ -82,16 +82,16 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			showHelp(sender);
 			return;
 		}
-		if (args[0].equalsIgnoreCase("delete")) {
-			parseProvinceDeleteCommand(sender, args);
-		} else if (args[0].equalsIgnoreCase("restore")) {
-			parseProvinceRestoreCommand(sender,args);
+		if (args[0].equalsIgnoreCase("set_type_sea")) {
+			parseProvinceSetToSeaCommand(sender, args);
+		} else if (args[0].equalsIgnoreCase("set_type_land")) {
+			parseProvinceSetToLandCommand(sender,args);
 		} else {
 			showHelp(sender);
 		}
 	}
 	
-	private void parseProvinceDeleteCommand(CommandSender sender, String[] args) {
+	private void parseProvinceSetToSeaCommand(CommandSender sender, String[] args) {
 		try {	
 			String[] locationAsArray = args[1].split(",");
 			if(locationAsArray.length != 2) {
@@ -110,19 +110,19 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				return;
 			}
 			if(province.isSea()) {
-				Messaging.sendMsg(sender, Translatable.of("msg_province_already_deleted"));
+				Messaging.sendMsg(sender, Translatable.of("msg_province_already_sea"));
 				return;
 			}
-			//Delete province
+			//Set province to be sea
 			province.setSea(true);
-			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_deleted"));
+			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_sea"));
 		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
 			showHelp(sender);
 		}
 	}
 
-	private void parseProvinceRestoreCommand(CommandSender sender, String[] args) {
+	private void parseProvinceSetToLandCommand(CommandSender sender, String[] args) {
 		try {
 			String[] locationAsArray = args[1].split(",");
 			if(locationAsArray.length != 2) {
@@ -141,12 +141,12 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				return;
 			}
 			if(!province.isSea()) {
-				Messaging.sendMsg(sender, Translatable.of("msg_province_already_restored"));
+				Messaging.sendMsg(sender, Translatable.of("msg_province_already_land"));
 				return;
 			}
-			///Restore province
+			//Set province to be land
 			province.setSea(false);
-			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_restored"));
+			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_land"));
 		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
 			showHelp(sender);
