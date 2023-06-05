@@ -144,9 +144,9 @@ public class DynmapIntegration {
 		} else {
 			//Re-evaluate colour 
 			if (province.isSea()) {
-				if (polyLineMarker.getLineColor() != TownyProvincesSettings.getDeletedBorderColour()) {
+				if (polyLineMarker.getLineColor() != TownyProvincesSettings.getSeaProvinceBorderColour()) {
 					//Change colour of marker
-					polyLineMarker.setLineStyle(TownyProvincesSettings.getDeletedBorderWeight(), TownyProvincesSettings.getDeletedBorderOpacity(), TownyProvincesSettings.getDeletedBorderColour());
+					polyLineMarker.setLineStyle(TownyProvincesSettings.getSeaProvinceBorderWeight(), TownyProvincesSettings.getSeaProvinceBorderOpacity(), TownyProvincesSettings.getSeaProvinceBorderColour());
 				}
 			} else {
 				if (polyLineMarker.getLineColor() != TownyProvincesSettings.getLandProvinceBorderColour()) {
