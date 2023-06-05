@@ -123,18 +123,7 @@ public class DynmapIntegration {
 		for (Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
 			try {
 				String markerId = "border_of_province_" + province.getUuid().toString();
-				PolyLineMarker borderMarker = markerSet.findPolyLineMarker(markerId);
-				if(province.isDeleted()) {
-					//If deleted province is on map, remove it
-					if (borderMarker != null) {
-						borderMarker.deleteMarker();
-					}
-				} else {
-					//If province is not on map, add it
-					if (borderMarker == null) {
-						drawProvinceBorder(province, markerId);
-					}
-				}
+				drawProvinceBorder(province, markerId);
 			} catch (Throwable t) {
 				TownyProvinces.severe("Could not draw province borders for province " + province.getUuid());
 				t.printStackTrace();
@@ -143,14 +132,30 @@ public class DynmapIntegration {
 	}
 	
 	private void drawProvinceBorder(Province province, String markerId) {
-		//Get border blocks
-		Set<ProvinceBlock> borderBlocks = findAllBorderBlocks(province);
-		if(borderBlocks.size() > 0) {
-			//Arrange border blocks into drawable line
-			List<ProvinceBlock> drawableLineOfBorderBlocks = arrangeBorderBlocksIntoDrawableLine(borderBlocks);
-			//Draw line
-			drawBorderLine(drawableLineOfBorderBlocks, province, markerId);
-		}
+		PolyLineMarker polyLineMarker = markerSet.findPolyLineMarker(markerId);
+		if(polyLineMarker == null) {
+			//Get border blocks
+			Set<ProvinceBlock> borderBlocks = findAllBorderBlocks(province);
+			if(borderBlocks.size() > 0) {
+				//Arrange border blocks into drawable line
+				List<ProvinceBlock> drawableLineOfBorderBlocks = arrangeBorderBlocksIntoDrawableLine(borderBlocks);
+				//Draw line
+				drawBorderLine(drawableLineOfBorderBlocks, province, markerId);
+			}
+		} else {
+			//Re-evaluate colour 
+			if (province.isDeleted()) {
+				if (polyLineMarker.getLineColor() != TownyProvincesSettings.getDeletedBorderColour()) {
+					//Change colour of marker
+					polyLineMarker.setLineStyle(TownyProvincesSettings.getDeletedBorderWeight(), TownyProvincesSettings.getDeletedBorderOpacity(), TownyProvincesSettings.getDeletedBorderColour());
+				}
+			} else {
+				if (polyLineMarker.getLineColor() != TownyProvincesSettings.getActiveBorderColour()) {
+					//Change colour of marker
+					polyLineMarker.setLineStyle(TownyProvincesSettings.getActiveBorderWeight(), TownyProvincesSettings.getActiveBorderOpacity(), TownyProvincesSettings.getActiveBorderColour());
+				}
+			}
+		} 
 	}
 	
 	private List<ProvinceBlock> arrangeBorderBlocksIntoDrawableLine(Set<ProvinceBlock> unsortedBorderBlocks) {
@@ -208,9 +213,16 @@ public class DynmapIntegration {
 
 	private void drawBorderLine(List<ProvinceBlock> drawableListOfBorderBlocks, Province province, String markerId) {
 		String worldName = TownyProvincesSettings.getWorldName();
+		int borderColour = TownyProvincesSettings.getActiveBorderColour();
+		int borderWeight = TownyProvincesSettings.getActiveBorderWeight();
+		double borderOpacity = TownyProvincesSettings.getActiveBorderOpacity();
+		int deletedBorderColour = TownyProvincesSettings.getDeletedBorderColour();
+		int deletedBorderWeight = TownyProvincesSettings.getDeletedBorderWeight();
+		double deletedBorderOpacity = TownyProvincesSettings.getDeletedBorderOpacity();
+
 		double[] xPoints = new double[drawableListOfBorderBlocks.size()];
 		double[] zPoints = new double[drawableListOfBorderBlocks.size()];
-		for(int i = 0; i < drawableListOfBorderBlocks.size(); i++) {
+		for (int i = 0; i < drawableListOfBorderBlocks.size(); i++) {
 			xPoints[i] = (drawableListOfBorderBlocks.get(i).getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength());
 			zPoints[i] = (drawableListOfBorderBlocks.get(i).getCoord().getZ() * TownyProvincesSettings.getProvinceBlockSideLength());
 
@@ -219,29 +231,29 @@ public class DynmapIntegration {
 			 * We need to move it towards the middle
 			 *
 			 * First we find the x,y pull strength from the nearby province
-			 * 
+			 *
 			 * Then we apply the following modifiers
-			 * if x is negative, add 4
-			 * if x is positive, add 12
-			 * if z is negative, add 4
-			 * if z is positive, add 12
-			 * 
+			 * if x is negative, add 7
+			 * if x is positive, add 9
+			 * if z is negative, add 7
+			 * if z is positive, add 9
+			 *
 			 * Result:
-			 * 1. Each province border is inset from the chunk border by 4 blocks
+			 * 1. Each province border is inset from the chunk border by 6 blocks
 			 * 2. The border on the sea takes the appearance of a single line
 			 * 3. The border between 2 provinces takes the appearance of a double line,
-			 *    with 8 blocks in between each line.
+			 *    with 2 blocks in between each line.
 			 *
 			 * NOTE ABOUT THE DOUBLE LINE:
-			 * I was initially aiming for a single line but it migth not be worth it because
+			 * I was initially aiming for a single line but it might not be worth it because:
 			 * 1. A double line has benefits:
-			 *   - It's very friendly to the processor
+			 *   - It's friendly to the processor
 			 *   - It looks cool
 			 *   - The single-line sea border looks like it was done on purpose
 			 * 2. A single line has problems:
 			 *   - If you simply bring the lines together, you'll probably get visual artefacts
 			 *   - If you move the lines next to each other, you'll probably get visual artefacts
-			 *   - If you try to do draw the lines using area markers, you'll increase processor load, and probably still get visual artefacts. 
+			 *   - If you try to do draw the lines using area markers, you'll increase processor load, and probably still get visual artefacts.
 			 *   - On a sea border, the expected single line will either look slightly weaker or slightly thinner,
 			 *     while will most likely appear to users as a bug.
 			 * */
@@ -257,22 +269,26 @@ public class DynmapIntegration {
 				zPoints[i] = zPoints[i] + 9;
 			}
 		}
-		
+
 		String markerName = "ID: " + markerId;
 
 		boolean unknown = false;
 		boolean unknown2 = false;
 
-		PolyLineMarker polyLineMarker = markerSet.findPolyLineMarker(markerId);
+		//Draw border line
+		PolyLineMarker polyLineMarker = markerSet.createPolyLineMarker(
+			markerId, markerName, unknown, worldName,
+			xPoints, zPoints, zPoints, unknown2);
 		
-		if(polyLineMarker == null) {
-			polyLineMarker = markerSet.createPolyLineMarker(
-				markerId, markerName, unknown, worldName,
-				xPoints, zPoints, zPoints, unknown2);
-
-			polyLineMarker.setLineStyle(TownyProvincesSettings.getBorderWeight(), TownyProvincesSettings.getBorderOpacity(), TownyProvincesSettings.getBorderColour());
+		//Set colour
+		if (province.isDeleted()) {
+			polyLineMarker.setLineStyle(deletedBorderWeight, deletedBorderOpacity, deletedBorderColour);
+		} else {
+			polyLineMarker.setLineStyle(borderWeight, borderOpacity, borderColour);
 		}
 	}
+
+	
 	
 	private Coord calculatePullStrengthFromNearbyProvince(Coord borderCoordBeingPulled, Province provinceDoingThePulling) {
 		int pullStrengthX = 0;

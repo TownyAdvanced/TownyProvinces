@@ -21,22 +21,45 @@ public enum ConfigNodes {
 				"",
 				"# The name of the world where TownyProvinces appplies.",
 				"# TownyProvinces does not yet support multiple worlds"),
-	BORDER_WEIGHT(
-		"border_weight",
-		"2",
+
+	ACTIVE_BORDER(
+		"active_border",
+		"",
+		""),
+	ACTIVE_BORDER_WEIGHT(
+		"active_border.weight",
+		"1",
 		"",
 		"# This value determines the weight of the border."),
-	BORDER_OPACITY(
-		"border_opacity",
-		"0.3",
+	ACTIVE_BORDER_OPACITY(
+		"active_border.opacity",
+		"1",
 		"",
 		"# This value determines the opcacity of the border."),
-	BORDER_COLOUR(
-			"border_color",
-				"300000",
-				"",
-				"# This value determines the color of the border.");
-	
+	ACTIVE_BORDER_COLOUR(
+		"active_border.color",
+		"0",
+		"",
+		"# This value determines the color of the border."),
+	DELETED_BORDER(
+		"deleted_border",
+			"",
+			""),
+	DELETED_BORDER_WEIGHT(
+		"deleted_border.weight",
+			"1",
+			"",
+			"# This value determines the weight of the border."),
+	DELETED_BORDER_OPACITY(
+		"deleted_border.opacity",
+			"0.1",
+			"",
+			"# This value determines the opcacity of the border."),
+	DELETED_BORDER_COLOUR(
+		"deleted_border.color",
+			"33FFFF",
+			"",
+			"# This value determines the color of the border.");
 	private final String Root;
 	private final String Default;
 	private String[] comments;

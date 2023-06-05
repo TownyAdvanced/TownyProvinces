@@ -75,7 +75,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 
 	private void showHelp(CommandSender sender) {
 		TownyMessaging.sendMessage(sender, ChatTools.formatTitle("/townyprovincesadmin"));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "province [x,z] [delete|restore]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "province [delete|restore] [x,z]", ""));
 	}
 
 	private void parseProvinceCommand(CommandSender sender, String[] args) {
@@ -98,6 +98,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			if(locationAsArray.length != 2) {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
 				showHelp(sender);
+				return;
 			}
 			int x = Integer.parseInt(locationAsArray[0]);
 			int y = Integer.parseInt(locationAsArray[1]);
@@ -129,6 +130,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			if(locationAsArray.length != 2) {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
 				showHelp(sender);
+				return;
 			}
 			int x = Integer.parseInt(locationAsArray[0]);
 			int y = Integer.parseInt(locationAsArray[1]);

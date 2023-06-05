@@ -95,16 +95,28 @@ public class TownyProvincesSettings {
 		return Integer.parseInt(numString);
 	}
 	
-	public static int getBorderWeight() {
-		return Settings.getInt(ConfigNodes.BORDER_WEIGHT);
+	public static int getActiveBorderWeight() {
+		return Settings.getInt(ConfigNodes.ACTIVE_BORDER_WEIGHT);
 	}
 
-	public static double getBorderOpacity() {
-		return Settings.getDouble(ConfigNodes.BORDER_OPACITY);
+	public static double getActiveBorderOpacity() {
+		return Settings.getDouble(ConfigNodes.ACTIVE_BORDER_OPACITY);
 	}
 
-	public static int getBorderColour() {
-		return Settings.getInt(ConfigNodes.BORDER_COLOUR);
+	public static int getActiveBorderColour() {
+		return Settings.getInt(ConfigNodes.ACTIVE_BORDER_COLOUR);
 	}
-	
+
+	public static int getDeletedBorderWeight() {
+		return Settings.getInt(ConfigNodes.DELETED_BORDER_WEIGHT);
+	}
+
+	public static double getDeletedBorderOpacity() {
+		return Settings.getDouble(ConfigNodes.DELETED_BORDER_OPACITY);
+	}
+
+	public static int getDeletedBorderColour() {
+		return Integer.parseInt(Settings.getString(ConfigNodes.DELETED_BORDER_COLOUR),16);
+	}
+
 }
