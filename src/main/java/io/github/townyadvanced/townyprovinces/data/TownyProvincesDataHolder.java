@@ -1,10 +1,7 @@
 package io.github.townyadvanced.townyprovinces.data;
 
 import com.palmergames.bukkit.towny.object.Coord;
-import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
-import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,12 +19,12 @@ public class TownyProvincesDataHolder {
 	//Singleton
 	private static TownyProvincesDataHolder dataHolder = null;
 	//Attributes
-	private Set<Province> provinces;
-	private Map<Coord, ProvinceBlock> provinceBlocks;
+	private Set<Province> provincesSet;
+	private Map<Coord, Province> coordProvinceMap;
 	
 	private TownyProvincesDataHolder() {
-		provinces = new HashSet<>();
-		provinceBlocks = new HashMap<>();
+		provincesSet = new HashSet<>();
+		coordProvinceMap = new HashMap<>();
 	}
 	
 	public static TownyProvincesDataHolder getInstance() {
@@ -39,65 +36,63 @@ public class TownyProvincesDataHolder {
 		return true;
 	}
 
-	public Set<ProvinceBlock> getProvinceBorderBlocks() {
-		Set<ProvinceBlock> result = new HashSet<>();
-		for(ProvinceBlock provinceBlock: getProvinceBlocks().values()) {
-			if(provinceBlock.isProvinceBorder()) {
-				result.add(provinceBlock);
+	public List<Coord> getCoordsInProvince(Province province) {
+		List<Coord> result = new ArrayList<>();
+		for(Map.Entry<Coord,Province> mapEntry: coordProvinceMap.entrySet()) {
+			if(mapEntry.getValue() == province) {
+				result.add(mapEntry.getKey());
 			}
 		}
 		return result;
 	}
+
 	
 	public void addProvince(Province province) {
-		provinces.add(province);
+		provincesSet.add(province);
 	}
 
 
 	public int getNumProvinces() {
-		return provinces.size();
+		return provincesSet.size();
 	}
 
 	public List<Province> getCopyOfProvincesSetAsList() {
-		return new ArrayList<>(provinces);
+		return new ArrayList<>(provincesSet);
 	}
 
-	public void addProvinceBlock(Coord coord, ProvinceBlock provinceBlock) {
-		provinceBlocks.put(coord, provinceBlock);
+	public void claimCoordForProvince(Coord coord, Province province) {
+		coordProvinceMap.put(coord, province);
 	}
 
-	public Map<Coord, ProvinceBlock> getProvinceBlocks() {
-		return provinceBlocks;
+	public Map<Coord, Province> getCoordProvinceMap() {
+		return coordProvinceMap;
 	}
 
-	public ProvinceBlock getProvinceBlock(Coord coord) {
-		return provinceBlocks.get(coord);
+	public Province getProvinceAt(Coord coord) {
+		return coordProvinceMap.get(coord);
 	}
 	
-	public void deleteProvince(Province province) {
-		//Delete Province Block (NOTE: Important to do this before province)
-		for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
-			deleteProvinceBlock(provinceBlock);
-		}
-		//Delete province
-		provinces.remove(province);
-	}
 
+	/*
 	public Province getProvince(UUID provinceUuid) {
-		for(Province province: provinces) {
+		for(Province province: provincesSet) {
 			if(province.getUuid().equals(provinceUuid)) {
 				return province;
 			}
 		}
 		return null;
 	}
-
-	public Set<Province> getProvinces() {
-		return provinces;
+	*/
+	public Set<Province> getProvincesSet() {
+		return provincesSet;
 	}
 
-	public void deleteProvinceBlock(ProvinceBlock provinceBlock) {
-		provinceBlocks.remove(provinceBlock.getCoord());
-	}
 
+	public void deleteProvince(Province province) {
+		List<Coord> coordsInProvince = province.getCoordsInProvince();
+		for(Coord coord: coordsInProvince) {
+			getCoordProvinceMap().remove(coord);
+		}
+		provincesSet.remove(province);
+	}
 }

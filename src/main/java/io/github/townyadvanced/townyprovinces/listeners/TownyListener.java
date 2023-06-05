@@ -13,7 +13,6 @@ import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -62,22 +61,21 @@ public class TownyListener implements Listener {
 		if (!event.getTownWorldCoord().getWorldName().equalsIgnoreCase(TownyProvincesSettings.getWorldName())) {
 			return;
 		}
-		//Can't place new town outside of a province
+		/* 
+		 * Can't place new town outside a province
+		 * Note: unless some hacking has occurred,
+		 * the only possible place, this can occur,
+		 * is on a province border.
+		 */
 		Coord coord = Coord.parseCoord(event.getTownLocation());
-		ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
-		if (provinceBlock == null) {
-			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_create_town_outside_province").translate(Locale.ROOT));
-			return;
-		}
-		//Can't place new town on a province border
-		if (provinceBlock.isProvinceBorder()) {
+		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord);
+		if (province == null) {
 			event.setCancelled(true);
 			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_create_town_on_province_border").translate(Locale.ROOT));
 			return;
 		}
 		//Can't place new town is province-at-location already has one
-		if (doesProvinceContainTown(provinceBlock.getProvince())) {
+		if (doesProvinceContainTown(province)) {
 			event.setCancelled(true);
 			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_create_town_in_full_province").translate(Locale.ROOT));
 			return;
@@ -94,15 +92,14 @@ public class TownyListener implements Listener {
 		if (!event.getTownBlock().getWorld().getName().equalsIgnoreCase(TownyProvincesSettings.getWorldName())) {
 			return;
 		}
-		//Can't claim outside of a province
-		ProvinceBlock provinceBlockAtClaimLocation = TownyProvincesDataHolder.getInstance().getProvinceBlock(event.getTownBlock().getCoord());
-		if (provinceBlockAtClaimLocation == null) {
-			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_outside_province").translate(Locale.ROOT));
-			return;
-		}
-		//Can't claim on a province border
-		if (provinceBlockAtClaimLocation.isProvinceBorder()) {
+		/*
+		 * Can't clam outside a province
+		 * Note: unless some hacking has occurred,
+		 * the only possible place, this can occur,
+		 * is on a province border.
+		 */
+		Province provinceAtClaimLocation = TownyProvincesDataHolder.getInstance().getProvinceAt(event.getTownBlock().getCoord());
+		if (provinceAtClaimLocation == null) {
 			event.setCancelled(true);
 			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_on_province_border").translate(Locale.ROOT));
 			return;
@@ -114,8 +111,7 @@ public class TownyListener implements Listener {
 			return;
 		}
 		//Can't claim outside town's province
-		Province provinceAtClaimLocation = provinceBlockAtClaimLocation.getProvince();
-		Province provinceOfClaimingTown = TownyProvincesDataHolder.getInstance().getProvinceBlock(event.getTown().getHomeBlockOrNull().getCoord()).getProvince();
+		Province provinceOfClaimingTown = TownyProvincesDataHolder.getInstance().getProvinceAt(event.getTown().getHomeBlockOrNull().getCoord());
 		if(!provinceOfClaimingTown.equals(provinceAtClaimLocation)) {
 			event.setCancelled(true);
 			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_outside_own_province").translate(Locale.ROOT));
@@ -126,8 +122,8 @@ public class TownyListener implements Listener {
 	private boolean doesProvinceContainTown(Province province) {
 		String worldName = TownyProvincesSettings.getWorldName();
 		WorldCoord worldCoord;
-		for(ProvinceBlock provinceBlock: province.getProvinceBlocks()) {
-			worldCoord = new WorldCoord(worldName, provinceBlock.getCoord());
+		for(Coord coord: province.getCoordsInProvince()) {
+			worldCoord = new WorldCoord(worldName, coord);
 			if(!TownyAPI.getInstance().isWilderness(worldCoord)) {
 				return true;
 			}

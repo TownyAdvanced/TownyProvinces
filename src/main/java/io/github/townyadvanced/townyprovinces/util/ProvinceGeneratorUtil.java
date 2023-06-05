@@ -5,16 +5,12 @@ import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceClaimBrush;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,11 +44,6 @@ public class ProvinceGeneratorUtil {
 			return false;
 		}
 		
-		//Create all border blocks
-		if(!createProvinceBorderBlocks()) {
-			return false;
-		}
-
 		//Cull ocean provinces
 		Bukkit.getScheduler().runTaskAsynchronously(TownyProvinces.getPlugin(), new CullOceanProvincesTask() );
 		
@@ -92,20 +83,20 @@ public class ProvinceGeneratorUtil {
 		int minZ = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
-			List<ProvinceBlock> provinceBlocks = province.getProvinceBlocks();
+			List<Coord> coordsInProvince = province.getCoordsInProvince();
 			int numProvinceBlocksInSpecifiedArea = 0;
-			for (ProvinceBlock provinceBlock : provinceBlocks) {
-				if (provinceBlock.getCoord().getX() < minX)
+			for (Coord coordInProvince : coordsInProvince) {
+				if (coordInProvince.getX() < minX)
 					continue;
-				else if (provinceBlock.getCoord().getX() > maxX)
+				else if (coordInProvince.getX() > maxX)
 					continue;
-				else if (provinceBlock.getCoord().getZ() < minZ)
+				else if (coordInProvince.getZ() < minZ)
 					continue;
-				else if (provinceBlock.getCoord().getZ() > maxZ)
+				else if (coordInProvince.getZ() > maxZ)
 					continue;
 				numProvinceBlocksInSpecifiedArea++;
 			}
-			if(numProvinceBlocksInSpecifiedArea > (provinceBlocks.size() / 2)) {
+			if(numProvinceBlocksInSpecifiedArea > (coordsInProvince.size() / 2)) {
 				TownyProvincesDataHolder.getInstance().deleteProvince(province);
 				numProvincesDeleted++;
 			}
@@ -156,103 +147,22 @@ public class ProvinceGeneratorUtil {
 	}
 
 	private static boolean isProvinceMainlyOcean(Province province) {
-		List<ProvinceBlock> provinceBlocks = province.getProvinceBlocks();
+		List<Coord> coordsInProvince = province.getCoordsInProvince();
 		String worldName = TownyProvincesSettings.getWorldName();
 		World world = Bukkit.getWorld(worldName);
 		Biome biome;
-		ProvinceBlock provinceBlock;
-		ChunkSnapshot chunkSnapshot;
-		Chunk chunk;
-		Block block;
+		Coord coordToTest;
 		for(int i = 0; i < 10; i++) {
-			provinceBlock = provinceBlocks.get((int)(Math.random() * provinceBlocks.size()));
-			int x = (provinceBlock.getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;
-			int z = (provinceBlock.getCoord().getZ() * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;
-			//location = new Location(world, x,y,z);
-			//Load chunk to ensure correct biome is read
-			
-			
-			//THIS WORKS!!!
-			//biome = world.getHighestBlockAt(x,z).getBiome();
-		//	waitUntilNoChunksAreLoaded(world);
-		//	System.gc();
-			//world.get
-			//chunk = world.getChunkAt(x,z);
-			//boolean wasLoaded = chunk.isLoaded();
-			//chunk.load(false);
-			//block = chunk.getBlock(8,64,8);
-			//biome = block.getBiome();
-			
-			//if(!wasLoaded) {
-				//world.loadChunk(x,z,false);
-				//chunk.load(false);
-			//}
-			//world.loadChunk(x,z,false);
-			//}
-			//chunkSnapshot = world.getEmptyChunkSnapshot(x,z,true,false);
-			//biome = world.getChunkAt(x,z).getChunkSnapshot(false,true,false).getBiome(8,64,8);
-			//try (FileWriter ChunkSnapshot chunkSnapshot = world.getChunkAt(x,z).getChunkSnapshot(false,true,false)) {
-			//	
-			//}
+			coordToTest = coordsInProvince.get((int)(Math.random() * coordsInProvince.size()));
+			int x = (coordToTest.getX() * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;
+			int z = (coordToTest.getZ() * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;
 			biome = world.getHighestBlockAt(x,z).getBiome();
-			//biome = chunkSnapshot.getBiome(8,64, 8);
-			//waitUntilNoChunksAreLoaded(world);
-
-
-
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			}
-			
-			/*
-			if(!wasLoaded) {
-				while(true) {
-					if(chunk.isLoaded()) {
-						TownyProvinces.info("Chunk stil loaded");
-						chunk.unload(false);
-						//world.unloadChunkRequest(x,z);
-						//world.unloadChunk(x,z, false);
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							throw new RuntimeException(e);
-						}
-					} else {
-						break;
-					}
-				}
-			}
-			*/
-			 
 			System.gc();
-			
-			 
-			
-			 
-
-
-			
-			//biome = location.getBlock().getBiome();
-
-			//World world = Bukkit.getWorld(worldName);
-			//location = new Location(world, x,y,z);
-			//biome = chunkSnapshot.getBiome(8,64, 8);
-			//Chunk chunk = world.getChunkAt(x,z);
-			//biome = chunk.getBlock(8,64, 8).getBiome();
-			//try {
-//				Thread.sleep(600);
-//			} catch (InterruptedException e) {
-//				throw new RuntimeException(e);
-//			}
-			//DynmapAPI a;
-			//DynmapCommonAPI c;
-			//DynmapTask dynmapTask;
-			//dynmapTask.
-			
-
-			//TownyProvinces.info("BIOME NAME: " + biome.name());
 			if(!biome.name().toLowerCase().contains("ocean") && !biome.name().toLowerCase().contains("beach")) {
 				return false;
 			}
@@ -260,9 +170,6 @@ public class ProvinceGeneratorUtil {
 		return true;
 	}
 	
-	
-
-
 	private static Set<Coord> findAllUnclaimedCoords() {
 		Set<Coord> result = new HashSet<>();
 		int minX = TownyProvincesSettings.getTopLeftCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
@@ -270,12 +177,12 @@ public class ProvinceGeneratorUtil {
 		int minZ = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		Coord coord;
-		ProvinceBlock provinceBlock;
+		Province province;
 		for(int x = minX; x <= maxX; x++) {
 			for(int z = minZ; z <= maxZ; z++) {
 				coord = new Coord(x,z);
-				provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
-				if(provinceBlock == null) {
+				province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord);
+				if(province == null) {
 					//This means the chunk is unclaimed
 					result.add(coord);
 				}
@@ -284,18 +191,6 @@ public class ProvinceGeneratorUtil {
 		return result;
 	}
 	
-	private static boolean createProvinceBorderBlocks() {
-		TownyProvinces.info("Now Creating border blocks");
-		//This is fairly simple. Just turn everything remaining in the target area, into a border bloc
-		ProvinceBlock provinceBlock;
-		for(Coord unclaimedCoord: findAllUnclaimedCoords()) {
-			provinceBlock = new ProvinceBlock(unclaimedCoord, null, true);
-			TownyProvincesDataHolder.getInstance().addProvinceBlock(unclaimedCoord, provinceBlock);
-		}
-		TownyProvinces.info("Finished Creating border blocks");
-		return true;
-	}
-
 	/**
 	 * Assign unclaimed chunks to provinces where possible
 	 * 
@@ -305,7 +200,6 @@ public class ProvinceGeneratorUtil {
 		TownyProvinces.info("Now assigning unclaimed chunks to provinces.");
 		List<Coord> coordsEligibleForProvinceAssignment;
 		Province province;
-		ProvinceBlock newProvinceBlock;
 		Set<Coord> unclaimedCoords = findAllUnclaimedCoords();
 		while((coordsEligibleForProvinceAssignment = findCoordsEligibleForProvinceAssignment(unclaimedCoords)).size() > 0) {
 			TownyProvinces.info("Num Unclaimed Chunks: " + unclaimedCoords.size());
@@ -315,9 +209,8 @@ public class ProvinceGeneratorUtil {
 			 */
 			for(Coord coord: coordsEligibleForProvinceAssignment) {
 				if((province = getProvinceIfCoordIsEligibleForProvinceAssignment(coord)) != null) {
-					newProvinceBlock = new ProvinceBlock(coord, province, false);
-					TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, newProvinceBlock);
-					unclaimedCoords.remove(newProvinceBlock.getCoord());
+					TownyProvincesDataHolder.getInstance().claimCoordForProvince(coord, province);
+					unclaimedCoords.remove(coord);
 				}
 			}
 		}
@@ -371,11 +264,11 @@ public class ProvinceGeneratorUtil {
 	
 	private static List<Province> findAllAdjacentProvinces(Coord givenCoord) {
 		Set<Province> result = new HashSet<>();
-		ProvinceBlock adjacentProvinceBlock;
+		Province adjacentProvince;
 		for(Coord adjacentCoord: findAllAdjacentCoords(givenCoord)) {
-			adjacentProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
-			if(adjacentProvinceBlock != null && adjacentProvinceBlock.getProvince() != null) {
-				result.add(adjacentProvinceBlock.getProvince());
+			adjacentProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord);
+			if(adjacentProvince != null) {
+				result.add(adjacentProvince);
 			}
 		}
 		return new ArrayList<>(result);
@@ -393,11 +286,11 @@ public class ProvinceGeneratorUtil {
 
 	private static List<Province> findCardinallyAdjacentProvinces(Coord givenCoord) {
 		Set<Province> result = new HashSet<>();
-		ProvinceBlock adjacentProvinceBlock;
+		Province adjacentProvince;
 		for(Coord adjacentCoord: findCardinallyAdjacentCoords(givenCoord)) {
-			adjacentProvinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
-			if(adjacentProvinceBlock != null && adjacentProvinceBlock.getProvince() != null) {
-				result.add(adjacentProvinceBlock.getProvince());
+			adjacentProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord);
+			if(adjacentProvince != null) {
+				result.add(adjacentProvince);
 			}
 		}
 		return new ArrayList<>(result);
@@ -452,13 +345,13 @@ public class ProvinceGeneratorUtil {
 				}
 			}
 		}
-		TownyProvinces.info("Chunk Claim Competition Complete. Total Chunks Claimed: " + TownyProvincesDataHolder.getInstance().getProvinceBlocks().values().size());
+		TownyProvinces.info("Chunk Claim Competition Complete. Total Chunks Claimed: " + TownyProvincesDataHolder.getInstance().getCoordProvinceMap().size());
 		return true;
 	}
 
 	private static boolean hasBrushHitClaimLimit(ProvinceClaimBrush provinceClaimBrush) {
 		double chunkArea = Math.pow(TownyProvincesSettings.getProvinceBlockSideLength(), 2);
-		double currentClaimArea = provinceClaimBrush.getProvince().getProvinceBlocks().size() * chunkArea; 
+		double currentClaimArea = provinceClaimBrush.getProvince().getCoordsInProvince().size() * chunkArea; 
 		double claimAreaLimit = TownyProvincesSettings.getProvinceCreatorBrushClaimLimitInSquareMetres();
 		return currentClaimArea > claimAreaLimit;
 	}
@@ -477,7 +370,7 @@ public class ProvinceGeneratorUtil {
 		int provinceWorldMaxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		
 		Coord coord;
-		ProvinceBlock provinceBlock;
+		Province province;
 		for(int x = brushMinX -3; x <= (brushMaxX +3); x++) {
 			for(int z = brushMinZ -3; z <= (brushMaxZ +3); z++) {
 				
@@ -493,8 +386,8 @@ public class ProvinceGeneratorUtil {
 				
 				//Don't move near different province
 				coord = new Coord(x,z);
-				provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
-				if(provinceBlock != null && provinceBlock.getProvince() != brush.getProvince()) {
+				province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord);
+				if(province != null && province != brush.getProvince()) {
 					return;
 				}
 			}
@@ -528,15 +421,15 @@ public class ProvinceGeneratorUtil {
 	 */
 	private static void claimChunk(Coord coord, Province province) {
 		//Don't claim if already claimed
-		if (TownyProvincesDataHolder.getInstance().getProvinceBlock(coord) != null)
+		if (TownyProvincesDataHolder.getInstance().getProvinceAt(coord) != null)
 			return;
 
 		//Don't claim near other province
 		Set<Coord> adjacentCoords = findAllAdjacentCoords(coord);
-		ProvinceBlock provinceBlock;
+		Province adjacentProvince;
 		for(Coord adjacentCoord: adjacentCoords) {
-			provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(adjacentCoord);
-			if(provinceBlock != null && provinceBlock.getProvince() != province) {
+			adjacentProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord);
+			if(adjacentProvince != null &&adjacentProvince != province) {
 				return;
 			}
 		}
@@ -555,9 +448,8 @@ public class ProvinceGeneratorUtil {
 		else if (coord.getZ() > maxZ)
 			return;
 		
-		//Claim chunk
-		ProvinceBlock newProvinceBlock = new ProvinceBlock(coord, province, false);
-		TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, newProvinceBlock);
+		//Claim coord
+		TownyProvincesDataHolder.getInstance().claimCoordForProvince(coord, province);
 	}
 
 	/**

@@ -5,7 +5,6 @@ import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 
 import java.io.File;
 import java.util.HashMap;
@@ -38,8 +37,8 @@ public class DataHandlerUtil {
 	}
 
 	public static boolean saveAllData() {
-		saveProvinces();
-		saveProvinceBlocks();
+		//saveProvinces();
+		//saveProvinceBlocks();
 		return true; 
 	}
 
@@ -55,7 +54,7 @@ public class DataHandlerUtil {
 		}
 		
 		//Save all province files
-		for(Province province: TownyProvincesDataHolder.getInstance().getProvinces()) {
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			String fileName = folderPath + "/province_" + province.getUuid().toString() + ".yml";
 			Map<String,String> fileEntries = new HashMap<>(); 
 			fileEntries.put("home_block", "" + province.getHomeBlock().getX() + "," + province.getHomeBlock().getZ());
@@ -66,6 +65,7 @@ public class DataHandlerUtil {
 		}
 		TownyProvinces.info("Provinces Saved");
 	}
+	/*
 
 	private static void loadProvinces() {
 		TownyProvinces.info("Now Loading Provinces");
@@ -84,6 +84,9 @@ public class DataHandlerUtil {
 		TownyProvinces.info("Provinces Loaded");
 	}
 
+*/
+	 
+	/*
 	private static void saveProvinceBlocks() {
 		TownyProvinces.info("Now Saving Province Blocks");
 		String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(provinceBlocksFolderPath).toString();
@@ -139,7 +142,7 @@ public class DataHandlerUtil {
 			//Create province block
 			provinceBlock = new ProvinceBlock(coord, province, border);
 			//Add province block to TP universe
-			TownyProvincesDataHolder.getInstance().addProvinceBlock(coord, provinceBlock);
+			TownyProvincesDataHolder.getInstance().claimCoordForProvince(coord, provinceBlock);
 			
 			if(!provinceBlock.isProvinceBorder() && provinceBlock.getProvince() == null) {
 				throw new RuntimeException("WARNING: Province block is not right + x_" + coord.getX() + "_z_" + coord.getZ() + " --- UUID in file: " + fileEntries.get("province_uuid"));
@@ -158,5 +161,5 @@ public class DataHandlerUtil {
 		return new Coord(x,z);
 	}
 
-	
+	*/
 }

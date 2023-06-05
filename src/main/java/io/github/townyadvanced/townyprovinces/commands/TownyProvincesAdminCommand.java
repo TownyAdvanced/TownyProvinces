@@ -9,7 +9,6 @@ import com.palmergames.util.StringMgmt;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.objects.ProvinceBlock;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -103,20 +102,19 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			int x = Integer.parseInt(locationAsArray[0]);
 			int y = Integer.parseInt(locationAsArray[1]);
 			Coord coord = Coord.parseCoord(x,y);
-			ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
+			Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord);
 			//Validate action
-			if(provinceBlock == null || provinceBlock.isProvinceBorder()) {
+			if(province == null) {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
 				showHelp(sender);
 				return;
 			}
-			Province province = provinceBlock.getProvince();
 			if(province.isDeleted()) {
 				Messaging.sendMsg(sender, Translatable.of("msg_province_already_deleted"));
 				return;
 			}
 			//Delete province
-			provinceBlock.getProvince().setDeleted(true);
+			province.setDeleted(true);
 			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_deleted"));
 		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
@@ -135,20 +133,19 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			int x = Integer.parseInt(locationAsArray[0]);
 			int y = Integer.parseInt(locationAsArray[1]);
 			Coord coord = Coord.parseCoord(x,y);
-			ProvinceBlock provinceBlock = TownyProvincesDataHolder.getInstance().getProvinceBlock(coord);
+			Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord);
 			//Validate action
-			if(provinceBlock == null || provinceBlock.isProvinceBorder()) {
+			if(province == null) {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
 				showHelp(sender);
 				return;
 			}
-			Province province = provinceBlock.getProvince();
 			if(!province.isDeleted()) {
 				Messaging.sendMsg(sender, Translatable.of("msg_province_already_restored"));
 				return;
 			}
 			///Restore province
-			provinceBlock.getProvince().setDeleted(false);
+			province.setDeleted(false);
 			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_restored"));
 		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));

@@ -3,7 +3,6 @@ package io.github.townyadvanced.townyprovinces.objects;
 import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,17 +29,7 @@ public class Province {
 	public Coord getHomeBlock() {
 		return homeBlock;
 	}
-
-	public List<ProvinceBlock> getProvinceBlocks() {
-		List<ProvinceBlock> result = new ArrayList<>();
-		for(ProvinceBlock provinceBlock: TownyProvincesDataHolder.getInstance().getProvinceBlocks().values()) {
-			if(provinceBlock.getProvince() == this) {
-				result.add(provinceBlock);
-			}
-		}
-		return result;
-	}
-
+	
 	public void setNewTownPrice(int i) {
 		this.newTownPrice = i;
 	}
@@ -68,6 +57,9 @@ public class Province {
 	public void setDeleted(boolean b) {
 		this.deleted = b;
 	}
-	
+
+	public List<Coord> getCoordsInProvince() {
+		return TownyProvincesDataHolder.getInstance().getCoordsInProvince(this);
+	}
 }
  
