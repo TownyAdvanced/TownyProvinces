@@ -74,6 +74,12 @@ public class TownyListener implements Listener {
 			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_create_town_on_province_border").translate(Locale.ROOT));
 			return;
 		}
+		//Can't place town in Sea province
+		if(province.isSea()) {
+			event.setCancelled(true);
+			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_create_town_in_sea_provinces").translate(Locale.ROOT));
+			return;
+		}
 		//Can't place new town is province-at-location already has one
 		if (doesProvinceContainTown(province)) {
 			event.setCancelled(true);
@@ -81,8 +87,7 @@ public class TownyListener implements Listener {
 			return;
 		}
 	}
-
-
+	
 	@EventHandler(ignoreCancelled = true)
 	public void onTownClaimAttempt(TownPreClaimEvent event) {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {

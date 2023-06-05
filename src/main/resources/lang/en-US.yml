@@ -37,6 +37,7 @@ msg_province_already_land: "&cProvince Type is already Land."
 # New towns
 
 msg_err_cannot_create_town_on_province_border: "&cTowns cannot be created on province borders."
+msg_err_cannot_create_town_in_sea_provinces: "&cTowns cannot be created in Sea provinces."
 msg_err_cannot_create_town_in_full_province: "&cOnly 1 town is allowed in each province. This province already contains a town."
 msg_err_cannot_merge_towns: "&cTown merging is not possible."
 
