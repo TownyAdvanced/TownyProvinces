@@ -52,7 +52,7 @@ public class TownyProvinces extends JavaPlugin {
 				onDisable();
 				return;
 			}
-			//DataHandlerUtil.saveAllData();
+			DataHandlerUtil.saveAllData();
 		}
 		
 		//Load integrations 

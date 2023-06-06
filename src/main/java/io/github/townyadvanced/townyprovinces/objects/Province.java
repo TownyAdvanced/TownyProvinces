@@ -2,6 +2,7 @@ package io.github.townyadvanced.townyprovinces.objects;
 
 import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
 
 import java.util.List;
 import java.util.UUID;
@@ -60,6 +61,10 @@ public class Province {
 
 	public List<Coord> getCoordsInProvince() {
 		return TownyProvincesDataHolder.getInstance().getCoordsInProvince(this);
+	}
+
+	public void saveData() {
+		DataHandlerUtil.saveProvince(this);
 	}
 }
  

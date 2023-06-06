@@ -1,7 +1,6 @@
 package io.github.townyadvanced.townyprovinces.util;
 
 import com.palmergames.bukkit.towny.object.Coord;
-import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
@@ -10,60 +9,79 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class DataHandlerUtil {
 	public static final String dataFolderPath = "data";
 	public static final String provinceGeneratorsFolderPath = "province_generators";
 	public static final String provincesFolderPath = "data/provinces";
-	public static final String provinceBlocksFolderPath = "data/province_blocks";
-	
+
 	public static boolean setupPluginSubFoldersIfRequired() {
 		try {
 			FileUtil.setupFolderIfRequired(dataFolderPath);
 			FileUtil.setupFolderIfRequired(provincesFolderPath);
-			FileUtil.setupFolderIfRequired(provinceBlocksFolderPath);
 			FileUtil.setupFolderIfRequired(provinceGeneratorsFolderPath);
 		} catch (Exception e) {
 			TownyProvinces.severe("Problem Setting up plugin sub-folders");
 		}
 		return true;
 	}
-	
+
 	public static boolean loadAllData() {
 		//loadProvinces();
 		//loadProvinceBlocks();
-		return true; 
+		return true;
 	}
 
 	public static boolean saveAllData() {
-		//saveProvinces();
+		saveAllProvinces();
 		//saveProvinceBlocks();
-		return true; 
+		return true;
 	}
 
 
-	private static void saveProvinces() {
+	private static void saveAllProvinces() {
 		TownyProvinces.info("Now Saving Provinces");
-		String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(provincesFolderPath).toString();
-
 		//Delete existing files
 		List<File> provinceFiles = FileUtil.readListOfFiles(provincesFolderPath);
-		for(File file: provinceFiles) {
+		for (File file : provinceFiles) {
 			file.delete();
 		}
-		
-		//Save all province files
-		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			String fileName = folderPath + "/province_" + province.getUuid().toString() + ".yml";
-			Map<String,String> fileEntries = new HashMap<>(); 
-			fileEntries.put("home_block", "" + province.getHomeBlock().getX() + "," + province.getHomeBlock().getZ());
-			fileEntries.put("uuid", "" + province.getUuid().toString());
-			fileEntries.put("new_town_price", "" + province.getNewTownPrice());
-			fileEntries.put("town_upkeep", "" + province.getTownUpkeep());
-			FileUtil.saveHashMapIntoFile(fileEntries, fileName);
+		//Save all provinces
+		for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+			saveProvince(province);
 		}
-		TownyProvinces.info("Provinces Saved");
+		TownyProvinces.info("All Provinces Saved");
+	}
+
+	public static void saveProvince(Province province) {
+		String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(provincesFolderPath).toString();
+		String fileName = folderPath + "/province_x" + province.getHomeBlock().getX() + "_z" + province.getHomeBlock().getZ() + ".yml";
+		Map<String, String> fileEntries = new HashMap<>();
+		fileEntries.put("home_block", "" + province.getHomeBlock().getX() + "," + province.getHomeBlock().getZ());
+		fileEntries.put("uuid", "" + province.getUuid().toString());
+		fileEntries.put("new_town_price", "" + province.getNewTownPrice());
+		fileEntries.put("town_upkeep", "" + province.getTownUpkeep());
+		fileEntries.put("coords", "" + getCoordsAsWriteableString(province));
+		FileUtil.saveHashMapIntoFile(fileEntries, fileName);
+	}
+
+	/**
+	 * 
+	 * @param province province
+	 * @return
+	 */
+	private static String getCoordsAsWriteableString(Province province) {
+		StringBuilder result = new StringBuilder();
+		boolean firstCoord = true;
+		for(Coord coord: province.getCoordsInProvince()) {
+			if(firstCoord) {
+				firstCoord = false;
+			} else {
+				result.append("|");
+			}
+			result.append(coord.getX()).append(",").append(coord.getZ());
+		}
+		return  result.toString();
 	}
 	/*
 

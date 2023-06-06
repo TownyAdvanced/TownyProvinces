@@ -115,6 +115,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			}
 			//Set province to be sea
 			province.setSea(true);
+			province.saveData();
 			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_sea"));
 		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
@@ -146,6 +147,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			}
 			//Set province to be land
 			province.setSea(false);
+			province.saveData();
 			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_land"));
 		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));

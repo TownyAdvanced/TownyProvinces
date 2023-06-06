@@ -28,6 +28,9 @@ public class FileUtil {
 		try {
 			List<String> linesToWrite = transformFileEntriesMapToListOfLines(fileEntries);
 			File file = new File(filePath);
+			if(file.exists()) {
+				file.delete();
+			}
 			file.createNewFile();
 			FileMgmt.listToFile(linesToWrite, filePath);
 		} catch (IOException e) {
