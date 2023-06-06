@@ -47,8 +47,15 @@ public class FileUtil {
 	}
 
 	public static void saveHashMapIntoFile(Map<String, String> fileEntries, String filePath) {
+		List<String> linesToWrite = new ArrayList<>();
+		for(Map.Entry<String,String> mapEntry: fileEntries.entrySet()) {
+			linesToWrite.add(mapEntry.getKey() + ": " + mapEntry.getValue());
+		}
+		saveListIntoFile(linesToWrite, filePath);
+	}
+
+	public static void saveListIntoFile(List<String> linesToWrite, String filePath) {
 		try {
-			List<String> linesToWrite = transformFileEntriesMapToListOfLines(fileEntries);
 			File file = new File(filePath);
 			if(file.exists()) {
 				file.delete();
@@ -61,14 +68,6 @@ public class FileUtil {
 		}
 	}
 
-	private static List<String> transformFileEntriesMapToListOfLines(Map<String, String> fileEntriesMap) {
-		List<String> result = new ArrayList<>();
-		for(Map.Entry<String,String> mapEntry: fileEntriesMap.entrySet()) {
-			result.add(mapEntry.getKey() + ": " + mapEntry.getValue());
-		}
-		return result;
-	}
-
 	public static List<File> readRegionDefinitionFiles() {
 		return readListOfFiles(REGION_DEFINITIONS_FOLDER_PATH);
 	}
@@ -78,27 +77,43 @@ public class FileUtil {
 		try {
 			boolean folderAlreadyExisted = FileUtil.createFolderIfRequired(REGION_DEFINITIONS_FOLDER_PATH);
 			if (folderAlreadyExisted) {
+				
 				//Sample file 1
 				fileName = "Region_1_Earth.yml";
 				List<String> fileEntries = new ArrayList<>();
-				fileEntries.add("region_name", "Earth");
-				fileEntries.add("top_left_corner_location", "-2434,-2049");
-				fileEntries.add("bottom_right_corner_location", "4064,2056");
-				fileEntries.add("province_size_estimate_for_populating_in_square_metres", "80000");
-				fileEntries.add("min_allowed_distance_between_province_home_blocks", "160");
-				fileEntries.add("max_allowed_variance_between_ideal_and_actual_num_provinces", "0.1");
-				fileEntries.add("province_creator_brush_square_radius_in_chunks", "4");
-				fileEntries.add("province_creator_brush_min_move_in_chunks", "4");
-				fileEntries.put("province_creator_brush_max_move_in_chunks", "2");
-				fileEntries.put("province_creator_brush_claim_limit_in_square_metres", "10000");
-				fileEntries.put("number_of_province_painting_cycles", "100");
+				fileEntries.add("region_name : Earth");
+				fileEntries.add("top_left_corner_location: -2434,-2049");
+				fileEntries.add("bottom_right_corner_location: 4064,2056");
+				fileEntries.add("province_size_estimate_for_populating_in_square_metres: 80000");
+				fileEntries.add("min_allowed_distance_between_province_home_blocks: 160");
+				fileEntries.add("max_allowed_variance_between_ideal_and_actual_num_provinces: 0.1");
+				fileEntries.add("province_creator_brush_square_radius_in_chunks: 4");
+				fileEntries.add("province_creator_brush_min_move_in_chunks: 4");
+				fileEntries.add("province_creator_brush_max_move_in_chunks: 2");
+				fileEntries.add("province_creator_brush_claim_limit_in_square_metres: 10000");
+				fileEntries.add("number_of_province_painting_cycles: 100");
 				String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(FileUtil.REGION_DEFINITIONS_FOLDER_PATH).toString();
 				String filePath = folderPath + "/" + fileName;
-				saveHashMapIntoFile(fileEntries, filePath);}
-			
-			
-			
-			
+				saveListIntoFile(fileEntries, filePath);
+				
+				//Sample file 2
+				fileName = "Region_2_Europe.yml";
+				fileEntries.clear();
+				fileEntries.add("region_name: Europe");
+				fileEntries.add("top_left_corner_location: -570,-1515");
+				fileEntries.add("bottom_right_corner_location: 900,-630");
+				fileEntries.add("province_size_estimate_for_populating_in_square_metres: 20000");
+				fileEntries.add("min_allowed_distance_between_province_home_blocks: 80");
+				fileEntries.add("max_allowed_variance_between_ideal_and_actual_num_provinces: 0.1");
+				fileEntries.add("province_creator_brush_square_radius_in_chunks: 2");
+				fileEntries.add("province_creator_brush_min_move_in_chunks: 4");
+				fileEntries.add("province_creator_brush_max_move_in_chunks: 1");
+				fileEntries.add("province_creator_brush_claim_limit_in_square_metres: 5000");
+				fileEntries.add("number_of_province_painting_cycles: 100");
+				folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(FileUtil.REGION_DEFINITIONS_FOLDER_PATH).toString();
+				filePath = folderPath + "/" + fileName;
+				saveListIntoFile(fileEntries, filePath);
+			}
 			return true;
 		} catch (Exception e) {
 			TownyProvinces.severe("Problem creating sample resource definition file: " + fileName + ". " + e.getMessage());
