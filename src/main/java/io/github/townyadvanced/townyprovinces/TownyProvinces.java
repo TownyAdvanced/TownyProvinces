@@ -10,6 +10,7 @@ import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegrat
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
+import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import io.github.townyadvanced.townyprovinces.util.ProvinceGeneratorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -37,7 +38,7 @@ public class TownyProvinces extends JavaPlugin {
 				|| !loadLocalization(false)
 				|| !TownyProvincesSettings.isTownyProvincesEnabled() 
 				|| !TownyProvincesDataHolder.initialize()
-				|| !DataHandlerUtil.setupPluginSubFoldersIfRequired()
+				|| !FileUtil.setupPluginSubFoldersIfRequired()
 				|| !DataHandlerUtil.loadAllData()
 				|| !registerListeners()
 				|| !registerAdminCommands()) {

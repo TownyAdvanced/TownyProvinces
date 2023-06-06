@@ -13,6 +13,24 @@ import java.util.Map;
 import java.util.Objects;
 
 public class FileUtil {
+
+	public static final String DATA_FOLDER_PATH = "data";
+	public static final String REGION_DEFINITIONS_FOLDER_PATH = "region_definitions";
+	public static final String PROVINCES_FOLDER_PATH = "data/provinces";
+
+	public static boolean setupPluginSubFoldersIfRequired() {
+		try {
+			TownyProvinces.info("Now setting up plugin sub-folders");
+			setupFolderIfRequired(DATA_FOLDER_PATH);
+			FileUtil.setupFolderIfRequired(PROVINCES_FOLDER_PATH);
+			FileUtil.setupFolderIfRequired(REGION_DEFINITIONS_FOLDER_PATH);
+		} catch (Exception e) {
+			TownyProvinces.severe("Problem setting up plugin sub-folders: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
 	public static void setupFolderIfRequired(String relativeFolderPath) {
 		Path folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(relativeFolderPath);
 		FileMgmt.checkOrCreateFolder(folderPath.toString());
@@ -48,7 +66,7 @@ public class FileUtil {
 		return result;
 	}
 
-	public static List<File> readProvinceGeneratorFiles() {
-		return readListOfFiles(DataHandlerUtil.provinceGeneratorsFolderPath);
+	public static List<File> readRegionDefinitionFiles() {
+		return readListOfFiles(FileUtil.REGION_DEFINITIONS_FOLDER_PATH);
 	}
 }

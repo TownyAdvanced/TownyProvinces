@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 public class ProvinceGeneratorUtil {
 	
@@ -26,35 +25,32 @@ public class ProvinceGeneratorUtil {
 	 * Generate all provinces in the world
 	 */
 	public static boolean generateProvinces() {
-		List<File> provinceGeneratorFiles = FileUtil.readProvinceGeneratorFiles();
-		Collections.sort(provinceGeneratorFiles);
+		List<File> regionDefinitionFiles = FileUtil.readRegionDefinitionFiles();
+		Collections.sort(regionDefinitionFiles);
 		
 		//Paint all Provinces
-		for (File provinceGeneratorFile : provinceGeneratorFiles) {
-			if(!paintProvincesInRegion(provinceGeneratorFile)) {
+		for (File regionDefinitionFile : regionDefinitionFiles) {
+			if(!paintProvincesInRegion(regionDefinitionFile)) {
 				return false;
 			}
 		}
 		
-		//Cleanups and borders
-		
 		//Allocate unclaimed chunks to provinces.
-		TownyProvincesSettings.setProvinceGenerationInstructions(provinceGeneratorFiles.get(0));
+		TownyProvincesSettings.setProvinceGenerationInstructions(regionDefinitionFiles.get(0));
 		if(!assignUnclaimedChunksToProvinces()) {
 			return false;
 		}
 		
 		//Cull ocean provinces
 		Bukkit.getScheduler().runTaskAsynchronously(TownyProvinces.getPlugin(), new CullOceanProvincesTask() );
-		
 		return true;
 	}
 	
-	private static boolean paintProvincesInRegion(File provinceGeneratorFile) {
-		TownyProvinces.info("Now Painting Provinces In Region: " + provinceGeneratorFile.getName());
+	private static boolean paintProvincesInRegion(File regionDefinitionFile) {
+		TownyProvinces.info("Now Painting Provinces In Region: " + regionDefinitionFile.getName());
 
 		//Setup settings with correct instructions
-		TownyProvincesSettings.setProvinceGenerationInstructions(provinceGeneratorFile);
+		TownyProvincesSettings.setProvinceGenerationInstructions(regionDefinitionFile);
 
 		//Delete existing provinces which are mostly in the given area
 		if(!deleteExistingProvincesWhichAreMostlyInSpecifiedArea()) {
@@ -71,7 +67,7 @@ public class ProvinceGeneratorUtil {
 			return false;
 		}
 
-		TownyProvinces.info("Finished Painting Provinces In Region: " + provinceGeneratorFile.getName());
+		TownyProvinces.info("Finished Painting Provinces In Region: " + regionDefinitionFile.getName());
 		return true;
 	}
 

@@ -14,20 +14,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class DataHandlerUtil {
-	public static final String dataFolderPath = "data";
-	public static final String provinceGeneratorsFolderPath = "province_generators";
-	public static final String provincesFolderPath = "data/provinces";
-
-	public static boolean setupPluginSubFoldersIfRequired() {
-		try {
-			FileUtil.setupFolderIfRequired(dataFolderPath);
-			FileUtil.setupFolderIfRequired(provincesFolderPath);
-			FileUtil.setupFolderIfRequired(provinceGeneratorsFolderPath);
-		} catch (Exception e) {
-			TownyProvinces.severe("Problem Setting up plugin sub-folders");
-		}
-		return true;
-	}
 
 	public static boolean loadAllData() {
 		loadAllProvinces();
@@ -43,7 +29,7 @@ public class DataHandlerUtil {
 	private static void saveAllProvinces() {
 		TownyProvinces.info("Now Saving Provinces");
 		//Delete existing files
-		List<File> provinceFiles = FileUtil.readListOfFiles(provincesFolderPath);
+		List<File> provinceFiles = FileUtil.readListOfFiles(FileUtil.PROVINCES_FOLDER_PATH);
 		for (File file : provinceFiles) {
 			file.delete();
 		}
@@ -55,7 +41,7 @@ public class DataHandlerUtil {
 	}
 
 	public static void saveProvince(Province province) {
-		String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(provincesFolderPath).toString();
+		String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(FileUtil.PROVINCES_FOLDER_PATH).toString();
 		String fileName = folderPath + "/" + province.getId() + ".yml";
 		Map<String, String> fileEntries = new HashMap<>();
 		fileEntries.put("home_block", "" + province.getHomeBlock().getX() + "," + province.getHomeBlock().getZ());
@@ -87,7 +73,7 @@ public class DataHandlerUtil {
 
 	private static void loadAllProvinces() {
 		TownyProvinces.info("Now Loading Provinces");
-		List<File> provinceFiles = FileUtil.readListOfFiles(provincesFolderPath);
+		List<File> provinceFiles = FileUtil.readListOfFiles(FileUtil.PROVINCES_FOLDER_PATH);
 		for(File provinceFile: provinceFiles) {
 			loadProvince(provinceFile);
 		}
