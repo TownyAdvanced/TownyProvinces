@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,22 +19,25 @@ public class FileUtil {
 	public static final String REGION_DEFINITIONS_FOLDER_PATH = "region_definitions";
 	public static final String PROVINCES_FOLDER_PATH = "data/provinces";
 
-	public static boolean setupPluginSubFoldersIfRequired() {
+	public static boolean setupPluginDataFoldersIfRequired() {
 		try {
 			TownyProvinces.info("Now setting up plugin sub-folders");
-			setupFolderIfRequired(DATA_FOLDER_PATH);
-			FileUtil.setupFolderIfRequired(PROVINCES_FOLDER_PATH);
-			FileUtil.setupFolderIfRequired(REGION_DEFINITIONS_FOLDER_PATH);
+			createFolderIfRequired(DATA_FOLDER_PATH);
+			createFolderIfRequired(PROVINCES_FOLDER_PATH);
 		} catch (Exception e) {
 			TownyProvinces.severe("Problem setting up plugin sub-folders: " + e.getMessage());
 			e.printStackTrace();
 		}
 		return true;
 	}
-	
-	public static void setupFolderIfRequired(String relativeFolderPath) {
+
+	/**
+	 * @param relativeFolderPath given folder path
+	 * @return true if folder already existed
+	 */
+	public static boolean createFolderIfRequired(String relativeFolderPath) {
 		Path folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(relativeFolderPath);
-		FileMgmt.checkOrCreateFolder(folderPath.toString());
+		return FileMgmt.checkOrCreateFolder(folderPath.toString());
 	}
 
 	public static List<File> readListOfFiles(String relativeFolderPath) {
@@ -52,9 +56,8 @@ public class FileUtil {
 			file.createNewFile();
 			FileMgmt.listToFile(linesToWrite, filePath);
 		} catch (IOException e) {
-			String provinceId = fileEntries.getOrDefault("uuid", "?");
-			String provinceHomeBlock = fileEntries.getOrDefault("home_block", "?"); 
-			TownyProvinces.severe("Problem Saving Province To File. Province ID: " + provinceId + ". Province HomeBlock: " + provinceHomeBlock + ". Error: " + e.getMessage());
+			TownyProvinces.severe("Problem Saving Hash Map to File." + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -67,6 +70,40 @@ public class FileUtil {
 	}
 
 	public static List<File> readRegionDefinitionFiles() {
-		return readListOfFiles(FileUtil.REGION_DEFINITIONS_FOLDER_PATH);
+		return readListOfFiles(REGION_DEFINITIONS_FOLDER_PATH);
+	}
+
+	public static boolean createResourceDefinitionsFolderAndSampleFiles() {
+		String fileName = "???";
+		try {
+			boolean folderAlreadyExisted = FileUtil.createFolderIfRequired(REGION_DEFINITIONS_FOLDER_PATH);
+			if (folderAlreadyExisted) {
+				//Sample file 1
+				fileName = "Region_1_Earth.yml";
+				List<String> fileEntries = new ArrayList<>();
+				fileEntries.add("region_name", "Earth");
+				fileEntries.add("top_left_corner_location", "-2434,-2049");
+				fileEntries.add("bottom_right_corner_location", "4064,2056");
+				fileEntries.add("province_size_estimate_for_populating_in_square_metres", "80000");
+				fileEntries.add("min_allowed_distance_between_province_home_blocks", "160");
+				fileEntries.add("max_allowed_variance_between_ideal_and_actual_num_provinces", "0.1");
+				fileEntries.add("province_creator_brush_square_radius_in_chunks", "4");
+				fileEntries.add("province_creator_brush_min_move_in_chunks", "4");
+				fileEntries.put("province_creator_brush_max_move_in_chunks", "2");
+				fileEntries.put("province_creator_brush_claim_limit_in_square_metres", "10000");
+				fileEntries.put("number_of_province_painting_cycles", "100");
+				String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(FileUtil.REGION_DEFINITIONS_FOLDER_PATH).toString();
+				String filePath = folderPath + "/" + fileName;
+				saveHashMapIntoFile(fileEntries, filePath);}
+			
+			
+			
+			
+			return true;
+		} catch (Exception e) {
+			TownyProvinces.severe("Problem creating sample resource definition file: " + fileName + ". " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

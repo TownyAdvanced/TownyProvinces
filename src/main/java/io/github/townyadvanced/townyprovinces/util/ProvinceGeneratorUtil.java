@@ -118,12 +118,10 @@ public class ProvinceGeneratorUtil {
 		public void run() {
 			TownyProvinces.info("Now Deleting Ocean Provinces.");
 			double numProvincesProcessed = 0;
-			int provincesDeleted = 0;
 			List<Province> provinces = TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList();
 			for(Province province: provinces) {
 				if(!province.isSea() && isProvinceMainlyOcean(province)) {
 					province.setSea(true);
-					provincesDeleted++;
 				}
 				numProvincesProcessed ++;
 				int percentCompletion = (int)((numProvincesProcessed / provinces.size()) * 100); 
@@ -131,15 +129,6 @@ public class ProvinceGeneratorUtil {
 			}
 			TownyProvinces.info("Finished Deleting Ocean Provinces.");
 		}
-	}
-	
-	public static void debugShowBiome(int coordX, int coordZ) {
-		int x = (coordX * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;
-		int z = (coordZ * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;
-		String worldName = TownyProvincesSettings.getWorldName();
-		World world = Bukkit.getWorld(worldName);
-		Biome biome = world.getHighestBlockAt(x,z).getBiome();
-		TownyProvinces.info("Method 1 Biome at coord " + coordX + ", " + coordZ + " and location " + x + ", " + z + "is " + biome.name());
 	}
 
 	private static boolean isProvinceMainlyOcean(Province province) {
