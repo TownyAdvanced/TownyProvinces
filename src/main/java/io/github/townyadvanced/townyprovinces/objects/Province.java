@@ -2,6 +2,7 @@ package io.github.townyadvanced.townyprovinces.objects;
 
 import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
 
 import java.util.List;
@@ -9,11 +10,11 @@ import java.util.UUID;
 
 public class Province {
 	
-	private final UUID uuid;
 	private final Coord homeBlock;
 	private int newTownPrice;
 	private int townUpkeep;
 	private boolean isSea;
+	private String id; //convenience variable. In memory only. Used for dynmap and file operations
 	
 	public boolean equals(Object object) {
 		if(!(object instanceof Province))
@@ -21,12 +22,16 @@ public class Province {
 		return homeBlock.equals(((Province)object).getHomeBlock());
 	}
 	
-	public Province(Coord homeBlock, UUID uuid) {
-		this.uuid = uuid;
+	public Province(Coord homeBlock) {
 		this.homeBlock = homeBlock;
 		this.isSea = false;
+		this.id = "province_x" + homeBlock.getX() + "_y_" + homeBlock.getZ();  
 	}
 
+	public String getId() {
+		return id;
+	}
+	
 	public Coord getHomeBlock() {
 		return homeBlock;
 	}
@@ -37,10 +42,6 @@ public class Province {
 
 	public void setTownUpkeep(int i) {
 		this.townUpkeep = i;
-	}
-
-	public UUID getUuid() {
-		return uuid;
 	}
 
 	public int getNewTownPrice() {

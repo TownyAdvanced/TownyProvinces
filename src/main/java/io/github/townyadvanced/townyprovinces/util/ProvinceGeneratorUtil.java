@@ -466,7 +466,7 @@ public class ProvinceGeneratorUtil {
 			provinceHomeBlock = generateProvinceHomeBlock();
 			if(provinceHomeBlock != null) { 
 				//Province homeblock generated. Now create province
-				Province province = new Province(provinceHomeBlock, UUID.randomUUID());
+				Province province = new Province(provinceHomeBlock);
 				TownyProvincesDataHolder.getInstance().addProvince(province);
 			} else {
 				//Could not generate a province homeblock. Ran out of space on the map

@@ -22,7 +22,7 @@ import java.util.List;
 public class TownyProvincesAdminCommand implements TabExecutor {
 
 	private static final List<String> adminTabCompletes = Arrays.asList("province");
-	private static final List<String> adminTabCompletesProvince = Arrays.asList("set_type_sea","set_type_land");
+	private static final List<String> adminTabCompletesProvince = Arrays.asList("setsea","setland");
 
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 
@@ -74,7 +74,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 
 	private void showHelp(CommandSender sender) {
 		TownyMessaging.sendMessage(sender, ChatTools.formatTitle("/townyprovincesadmin"));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "province [delete|restore] [x,z]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "province [setsea|setland] [x,z]", ""));
 	}
 
 	private void parseProvinceCommand(CommandSender sender, String[] args) {
@@ -82,9 +82,9 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			showHelp(sender);
 			return;
 		}
-		if (args[0].equalsIgnoreCase("set_type_sea")) {
+		if (args[0].equalsIgnoreCase("setsea")) {
 			parseProvinceSetToSeaCommand(sender, args);
-		} else if (args[0].equalsIgnoreCase("set_type_land")) {
+		} else if (args[0].equalsIgnoreCase("setland")) {
 			parseProvinceSetToLandCommand(sender,args);
 		} else {
 			showHelp(sender);

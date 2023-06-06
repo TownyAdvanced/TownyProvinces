@@ -121,10 +121,9 @@ public class DynmapIntegration {
 		//Find and draw the borders around each province
 		for (Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
 			try {
-				String markerId = "border_of_province_" + province.getUuid().toString();
-				drawProvinceBorder(province, markerId);
+				drawProvinceBorder(province, province.getId());
 			} catch (Throwable t) {
-				TownyProvinces.severe("Could not draw province borders for province " + province.getUuid());
+				TownyProvinces.severe("Could not draw province borders for province at x " + province.getHomeBlock().getX() + " z " + province.getHomeBlock().getZ());
 				t.printStackTrace();
 			}
 		}

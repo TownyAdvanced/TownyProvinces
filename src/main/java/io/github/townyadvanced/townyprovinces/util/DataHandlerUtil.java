@@ -55,10 +55,10 @@ public class DataHandlerUtil {
 
 	public static void saveProvince(Province province) {
 		String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(provincesFolderPath).toString();
-		String fileName = folderPath + "/province_x" + province.getHomeBlock().getX() + "_z" + province.getHomeBlock().getZ() + ".yml";
+		String fileName = folderPath + "/" + province.getId() + ".yml";
 		Map<String, String> fileEntries = new HashMap<>();
 		fileEntries.put("home_block", "" + province.getHomeBlock().getX() + "," + province.getHomeBlock().getZ());
-		fileEntries.put("uuid", "" + province.getUuid().toString());
+		fileEntries.put("sea", "" + province.isSea());
 		fileEntries.put("new_town_price", "" + province.getNewTownPrice());
 		fileEntries.put("town_upkeep", "" + province.getTownUpkeep());
 		fileEntries.put("coords", "" + getCoordsAsWriteableString(province));
