@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * The In-Memory data holder class for TownyProvinces
@@ -50,8 +49,7 @@ public class TownyProvincesDataHolder {
 	public void addProvince(Province province) {
 		provincesSet.add(province);
 	}
-
-
+	
 	public int getNumProvinces() {
 		return provincesSet.size();
 	}
@@ -71,18 +69,7 @@ public class TownyProvincesDataHolder {
 	public Province getProvinceAt(Coord coord) {
 		return coordProvinceMap.get(coord);
 	}
-	
 
-	/*
-	public Province getProvince(UUID provinceUuid) {
-		for(Province province: provincesSet) {
-			if(province.getUuid().equals(provinceUuid)) {
-				return province;
-			}
-		}
-		return null;
-	}
-	*/
 	public Set<Province> getProvincesSet() {
 		return provincesSet;
 	}

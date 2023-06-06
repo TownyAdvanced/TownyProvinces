@@ -45,6 +45,7 @@ public class TownyProvinces extends JavaPlugin {
 			return;
 		}
 	
+		//TODO - Remove this later. Let this be command only
 		//If the map is blank and there was no error, generate new provinces
 		//This is useful as either a demo, or a way to regenerate all provinces
 		if(TownyProvincesDataHolder.getInstance().getNumProvinces() == 0) {

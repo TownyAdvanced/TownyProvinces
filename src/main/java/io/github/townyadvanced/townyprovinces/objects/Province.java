@@ -2,11 +2,9 @@ package io.github.townyadvanced.townyprovinces.objects;
 
 import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
 
 import java.util.List;
-import java.util.UUID;
 
 public class Province {
 	
@@ -25,6 +23,8 @@ public class Province {
 	public Province(Coord homeBlock) {
 		this.homeBlock = homeBlock;
 		this.isSea = false;
+		this.newTownPrice = 0;
+		this.townUpkeep = 0;
 		this.id = "province_x" + homeBlock.getX() + "_y_" + homeBlock.getZ();  
 	}
 
