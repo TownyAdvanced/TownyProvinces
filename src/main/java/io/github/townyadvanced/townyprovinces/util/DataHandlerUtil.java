@@ -48,7 +48,7 @@ public class DataHandlerUtil {
 		fileEntries.put("is_sea", "" + province.isSea());
 		fileEntries.put("is_land_validation_requested", "" + province.isLandValidationRequested());
 		fileEntries.put("new_town_price", "" + province.getNewTownCost());
-		fileEntries.put("town_upkeep", "" + province.getUpkeepTownCost());
+		fileEntries.put("upkeep_town_price", "" + province.getUpkeepTownCost());
 		fileEntries.put("coords", "" + getCoordsAsWriteableString(province));
 		FileUtil.saveHashMapIntoFile(fileEntries, fileName);
 	}
