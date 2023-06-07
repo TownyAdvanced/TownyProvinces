@@ -7,8 +7,10 @@ import java.util.Locale;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegration;
+import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapTask;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.tasks.LandValidationJob;
 import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import io.github.townyadvanced.townyprovinces.util.ProvinceGeneratorUtil;
@@ -28,6 +30,7 @@ import io.github.townyadvanced.townyprovinces.settings.Settings;
 public class TownyProvinces extends JavaPlugin {
 	private static TownyProvinces plugin;
 	private static DynmapIntegration dynmapIntegration; 
+	private static LandValidationJob landValidationJob;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.0.7");
 	@Override
 	public void onEnable() {
@@ -44,13 +47,20 @@ public class TownyProvinces extends JavaPlugin {
 				|| !TownyProvincesSettings.loadRegionDefinitions()
 				|| !DataHandlerUtil.loadAllData()
 				|| !registerListeners()
-				|| !registerAdminCommands()) {
+				|| !registerAdminCommands()
+				|| !startLandValidationJob()) {
 			onDisable();
 			return;
 		}
 		
 		//Load integrations 
 		loadIntegrations();
+	}
+	
+	public boolean startLandValidationJob() {
+		landValidationJob = new LandValidationJob();
+		landValidationJob.runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, 300);
+		return true;
 	}
 
 	private boolean registerAdminCommands() {

@@ -13,7 +13,8 @@ public class Province {
 	private int townUpkeep;
 	private boolean isSea;
 	private String id; //convenience variable. In memory only. Used for dynmap and file operations
-	
+	private boolean landValidationRequested;
+
 	public boolean equals(Object object) {
 		if(!(object instanceof Province))
 			return false;
@@ -25,7 +26,8 @@ public class Province {
 		this.isSea = false;
 		this.newTownPrice = 0;
 		this.townUpkeep = 0;
-		this.id = "province_x" + homeBlock.getX() + "_y_" + homeBlock.getZ();  
+		this.id = "province_x" + homeBlock.getX() + "_y_" + homeBlock.getZ();
+		this.landValidationRequested = false;
 	}
 
 	public String getId() {
@@ -66,6 +68,14 @@ public class Province {
 
 	public void saveData() {
 		DataHandlerUtil.saveProvince(this);
+	}
+
+	public boolean isLandValidationRequested() {
+		return landValidationRequested;
+	}
+
+	public void setLandValidationRequested(boolean landValidationRequested) {
+		this.landValidationRequested = landValidationRequested;
 	}
 }
  

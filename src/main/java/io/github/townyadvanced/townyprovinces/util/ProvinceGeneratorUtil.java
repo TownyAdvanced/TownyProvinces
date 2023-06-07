@@ -109,60 +109,8 @@ public class ProvinceGeneratorUtil {
 		TownyProvinces.info("" + numProvincesDeleted + " provinces deleted.");
 		return true;
 	}
+	
 
-	/**
-	 * Cull provinces which are mainly ocean
-	 * <p>
-	 * This method will not always work perfectly
-	 * because it checks the biomes just on the border,
-	 * to avoid potentially hours of biome checking per world generation
-	 * <p>
-	 * Mistakes are expected,
-	 * which is why server owners can run /tp province undelete
-	 *
-	 * @return true if there's no error
-	 */
-	private static class CullOceanProvincesTask implements Runnable {
-		@Override
-		public void run() {
-			TownyProvinces.info("Now Deleting Ocean Provinces.");
-			double numProvincesProcessed = 0;
-			List<Province> provinces = TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList();
-			for(Province province: provinces) {
-				if(!province.isSea() && isProvinceMainlyOcean(province)) {
-					province.setSea(true);
-				}
-				numProvincesProcessed ++;
-				int percentCompletion = (int)((numProvincesProcessed / provinces.size()) * 100); 
-				TownyProvinces.info("Ocean Province Deletion Job Progress: " +percentCompletion + "%");
-			}
-			TownyProvinces.info("Finished Deleting Ocean Provinces.");
-		}
-	}
-
-	private static boolean isProvinceMainlyOcean(Province province) {
-		List<Coord> coordsInProvince = province.getCoordsInProvince();
-		String worldName = TownyProvincesSettings.getWorldName();
-		World world = Bukkit.getWorld(worldName);
-		Biome biome;
-		Coord coordToTest;
-		for(int i = 0; i < 10; i++) {
-			coordToTest = coordsInProvince.get((int)(Math.random() * coordsInProvince.size()));
-			int x = (coordToTest.getX() * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;
-			int z = (coordToTest.getZ() * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;
-			biome = world.getHighestBlockAt(x,z).getBiome();
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-			System.gc();
-			if(!biome.name().toLowerCase().contains("ocean") && !biome.name().toLowerCase().contains("beach")) {
-				return false;
-			}
-		}
-		return true;
-	}
 	
 	private static Set<Coord> findAllUnclaimedCoords() {
 		String regionName = new ArrayList<>(TownyProvincesSettings.getRegionDefinitions().keySet()).get(0);

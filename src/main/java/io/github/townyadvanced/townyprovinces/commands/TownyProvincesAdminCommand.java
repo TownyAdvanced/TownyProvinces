@@ -8,7 +8,6 @@ import com.palmergames.bukkit.util.ChatTools;
 import com.palmergames.util.StringMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegration;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
@@ -27,9 +26,10 @@ import java.util.List;
 
 public class TownyProvincesAdminCommand implements TabExecutor {
 
-	private static final List<String> adminTabCompletes = Arrays.asList("province","region");
+	private static final List<String> adminTabCompletes = Arrays.asList("province","region", "seaprovincesjob");
 	private static final List<String> adminTabCompletesProvince = Arrays.asList("sea","land");
 	private static final List<String> adminTabCompletesRegion = Arrays.asList("regenerate");
+	private static final List<String> adminTabCompletesSeaProvincesJob = Arrays.asList("start", "stop", "restart", "pause", "continue");
 
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 
@@ -49,6 +49,10 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 					regionOptions.addAll(regionNames);
 					return NameUtil.filterByStart(regionOptions, args[2]);
 				}
+				break;
+			case "seaprovincejob":
+				if (args.length == 2)
+					return NameUtil.filterByStart(adminTabCompletesSeaProvincesJob, args[1]);
 				break;
 			default:
 				if (args.length == 1)
@@ -77,6 +81,9 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 					break;
 				case "region":
 					parseRegionCommand(sender, StringMgmt.remFirstArg(args));
+					break;
+				case "seaprovincesjob":
+					parseSeaProvincesJob(sender, StringMgmt.remFirstArg(args));
 					break;
 
 				/*
@@ -113,7 +120,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			showHelp(sender);
 		}
 	}
-
+	
 	private void parseRegionCommand(CommandSender sender, String[] args) {
 		if (args.length < 2) {
 			showHelp(sender);
@@ -125,6 +132,25 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			showHelp(sender);
 		}
 	}
+
+	private void parseSeaProvincesJob(CommandSender sender, String[] args) {
+		if (args.length < 2) {
+			showHelp(sender);
+			return;
+		}
+		if (args[0].equalsIgnoreCase("start")) {
+			
+			
+			parseProvinceSetToSeaCommand(sender, args);
+		} else if (args[0].equalsIgnoreCase("land")) {
+			parseProvinceSetToLandCommand(sender,args);
+		} else {
+			showHelp(sender);
+		}
+	}
+
+
+	
 	
 	private void parseProvinceSetToSeaCommand(CommandSender sender, String[] args) {
 		try {	
