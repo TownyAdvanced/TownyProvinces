@@ -27,6 +27,7 @@ import io.github.townyadvanced.townyprovinces.settings.Settings;
 
 public class TownyProvinces extends JavaPlugin {
 	private static TownyProvinces plugin;
+	private static DynmapIntegration dynmapIntegration; 
 	private static final Version requiredTownyVersion = Version.fromString("0.99.0.7");
 	@Override
 	public void onEnable() {
@@ -39,23 +40,13 @@ public class TownyProvinces extends JavaPlugin {
 				|| !TownyProvincesSettings.isTownyProvincesEnabled() 
 				|| !TownyProvincesDataHolder.initialize()
 				|| !FileUtil.setupPluginDataFoldersIfRequired()
-				|| !FileUtil.createResourceDefinitionsFolderAndSampleFiles()
+				|| !FileUtil.createRegionDefinitionsFolderAndSampleFiles()
+				|| !TownyProvincesSettings.loadRegionDefinitions()
 				|| !DataHandlerUtil.loadAllData()
 				|| !registerListeners()
 				|| !registerAdminCommands()) {
 			onDisable();
 			return;
-		}
-	
-		//TODO - Remove this later. Let this be command only
-		//If the map is blank and there was no error, generate new provinces
-		//This is useful as either a demo, or a way to regenerate all provinces
-		if(TownyProvincesDataHolder.getInstance().getNumProvinces() == 0) {
-			if(!ProvinceGeneratorUtil.generateProvinces()) {
-				onDisable();
-				return;
-			}
-			DataHandlerUtil.saveAllData();
 		}
 		
 		//Load integrations 
@@ -71,7 +62,7 @@ public class TownyProvinces extends JavaPlugin {
 		try {
 			if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
 				info("Found Dynmap plugin. Enabling Dynmap integration.");
-				new DynmapIntegration();
+				dynmapIntegration = new DynmapIntegration();
 				return true;
 			} else {
 				info("Did not find Dynmap plugin. Cannot enable Dynmap integration.");
@@ -81,6 +72,10 @@ public class TownyProvinces extends JavaPlugin {
 			severe("Problem enabling Dynmap integration: " + e.getMessage());
 			return false;
 		}
+	}
+	
+	public DynmapIntegration getDynmapIntegration() {
+		return dynmapIntegration;
 	}
 	
 	private boolean checkTownyVersion() {

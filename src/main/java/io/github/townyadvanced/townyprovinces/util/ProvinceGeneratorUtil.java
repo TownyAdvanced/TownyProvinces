@@ -12,7 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,60 +23,70 @@ public class ProvinceGeneratorUtil {
 	/**
 	 * Generate all provinces in the world
 	 */
-	public static boolean generateProvinces() {
-		List<File> regionDefinitionFiles = FileUtil.readRegionDefinitionFiles();
-		Collections.sort(regionDefinitionFiles);
-		
+	public static boolean regenerateAllProvinces() {
+		List<String> regionNames = new ArrayList<>(TownyProvincesSettings.getRegionDefinitions().keySet());
+		Collections.sort(regionNames); //Sort in alphabetical order
+		//Delete all Provinces
+		TownyProvincesDataHolder.getInstance().deleteAllProvinces();
 		//Paint all Provinces
-		for (File regionDefinitionFile : regionDefinitionFiles) {
-			if(!paintProvincesInRegion(regionDefinitionFile)) {
+		for (String regionName: regionNames) {
+			if(!paintProvincesInRegion(regionName)) {
 				return false;
 			}
 		}
-		
 		//Allocate unclaimed chunks to provinces.
-		TownyProvincesSettings.setProvinceGenerationInstructions(regionDefinitionFiles.get(0));
 		if(!assignUnclaimedChunksToProvinces()) {
 			return false;
 		}
-		
-		//Cull ocean provinces
-		Bukkit.getScheduler().runTaskAsynchronously(TownyProvinces.getPlugin(), new CullOceanProvincesTask() );
+		return true;
+	}
+
+	/**
+	 * Generate provinces in just one region
+	 * @param regionName given region name
+	 * @return true if success
+	 */
+	public static boolean regenerateOneProvince(String regionName) {
+		//Paint region
+		if(!paintProvincesInRegion(regionName)) {
+			return false;
+		}
+		//Allocate unclaimed chunks
+		if(!assignUnclaimedChunksToProvinces()) {
+			return false;
+		}
 		return true;
 	}
 	
-	private static boolean paintProvincesInRegion(File regionDefinitionFile) {
-		TownyProvinces.info("Now Painting Provinces In Region: " + regionDefinitionFile.getName());
-
-		//Setup settings with correct instructions
-		TownyProvincesSettings.setProvinceGenerationInstructions(regionDefinitionFile);
+	private static boolean paintProvincesInRegion(String regionName) {
+		TownyProvinces.info("Now Painting Provinces In Region: " + regionName);
 
 		//Delete existing provinces which are mostly in the given area
-		if(!deleteExistingProvincesWhichAreMostlyInSpecifiedArea()) {
+		if(!deleteExistingProvincesWhichAreMostlyInSpecifiedArea(regionName)) {
 			return false;
 		}
 		
 		//Create province objects - empty except for the homeblocks
-		if(!createProvinceHomeBlocks()) {
+		if(!createProvinceHomeBlocks(regionName)) {
 			return false;
 		}
 		
 		//Execute chunk claim competition
-		if(!executeChunkClaimCompetition()) {
+		if(!executeChunkClaimCompetition(regionName)) {
 			return false;
 		}
 
-		TownyProvinces.info("Finished Painting Provinces In Region: " + regionDefinitionFile.getName());
+		TownyProvinces.info("Finished Painting Provinces In Region: " + regionName);
 		return true;
 	}
 
-	private static boolean deleteExistingProvincesWhichAreMostlyInSpecifiedArea() {
+	private static boolean deleteExistingProvincesWhichAreMostlyInSpecifiedArea(String regionName) {
 		TownyProvinces.info("Now deleting provinces which are mostly in the specified area.");
 		int numProvincesDeleted = 0;
-		int minX = TownyProvincesSettings.getTopLeftCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int minZ = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
 			List<Coord> coordsInProvince = province.getCoordsInProvince();
 			int numProvinceBlocksInSpecifiedArea = 0;
@@ -156,11 +165,12 @@ public class ProvinceGeneratorUtil {
 	}
 	
 	private static Set<Coord> findAllUnclaimedCoords() {
+		String regionName = new ArrayList<>(TownyProvincesSettings.getRegionDefinitions().keySet()).get(0);
 		Set<Coord> result = new HashSet<>();
-		int minX = TownyProvincesSettings.getTopLeftCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int minZ = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		Coord coord;
 		Province province;
 		for(int x = minX; x <= maxX; x++) {
@@ -183,17 +193,19 @@ public class ProvinceGeneratorUtil {
 	 */
 	private static boolean assignUnclaimedChunksToProvinces() {
 		TownyProvinces.info("Now assigning unclaimed chunks to provinces.");
+		//Use the first region
+		String regionName = TownyProvincesSettings.getNameOfFirstRegion();
 		List<Coord> coordsEligibleForProvinceAssignment;
 		Province province;
 		Set<Coord> unclaimedCoords = findAllUnclaimedCoords();
-		while((coordsEligibleForProvinceAssignment = findCoordsEligibleForProvinceAssignment(unclaimedCoords)).size() > 0) {
+		while((coordsEligibleForProvinceAssignment = findCoordsEligibleForProvinceAssignment(regionName, unclaimedCoords)).size() > 0) {
 			TownyProvinces.info("Num Unclaimed Chunks: " + unclaimedCoords.size());
 			/*
 			 * Cycle each eligible coord
 			 * Assign it if it is still eligible when we get to it
 			 */
 			for(Coord coord: coordsEligibleForProvinceAssignment) {
-				if((province = getProvinceIfCoordIsEligibleForProvinceAssignment(coord)) != null) {
+				if((province = getProvinceIfCoordIsEligibleForProvinceAssignment(regionName, coord)) != null) {
 					TownyProvincesDataHolder.getInstance().claimCoordForProvince(coord, province);
 					unclaimedCoords.remove(coord);
 				}
@@ -203,12 +215,12 @@ public class ProvinceGeneratorUtil {
 		return true;
 	}
 	
-	private static List<Coord> findCoordsEligibleForProvinceAssignment(Set<Coord> allUnclaimedCoords) {
+	private static List<Coord> findCoordsEligibleForProvinceAssignment(String regionName, Set<Coord> allUnclaimedCoords) {
 		List<Coord> result = new ArrayList<>();
 
 		Province province;
 		for (Coord candidateCoord : allUnclaimedCoords) {
-			province = getProvinceIfCoordIsEligibleForProvinceAssignment(candidateCoord);
+			province = getProvinceIfCoordIsEligibleForProvinceAssignment(regionName, candidateCoord);
 			if(province != null) {
 				result.add(candidateCoord);
 			}
@@ -217,11 +229,11 @@ public class ProvinceGeneratorUtil {
 
 	}
 	
-	private static Province getProvinceIfCoordIsEligibleForProvinceAssignment(Coord candidateCoord) {
-		int minX = TownyProvincesSettings.getTopLeftCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxX = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int minZ = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxZ = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+	private static Province getProvinceIfCoordIsEligibleForProvinceAssignment(String regionName, Coord candidateCoord) {
+		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxX = TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxZ = TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 
 		//Filter out chunk if it is at edge of map
 		if(candidateCoord.getX() <= minX)
@@ -291,29 +303,29 @@ public class ProvinceGeneratorUtil {
 		return result;
 	}
 	
-	private static boolean executeChunkClaimCompetition() {
+	private static boolean executeChunkClaimCompetition(String regionName) {
 		TownyProvinces.info("Chunk Claim Competition Started");
 		
 		//Create claim-brush objects
 		List<ProvinceClaimBrush> provinceClaimBrushes = new ArrayList<>();
 		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
-			provinceClaimBrushes.add(new ProvinceClaimBrush(province, TownyProvincesSettings.getProvinceCreatorBrushSquareRadiusInChunks()));
+			provinceClaimBrushes.add(new ProvinceClaimBrush(province, TownyProvincesSettings.getProvinceCreatorBrushSquareRadiusInChunks(regionName)));
 		}
 		
 		//First claim once around the homeblocks
 		for(ProvinceClaimBrush provinceClaimBrush: provinceClaimBrushes) {
-			claimChunksCoveredByBrush(provinceClaimBrush);
+			claimChunksCoveredByBrush(regionName, provinceClaimBrush);
 		}
 		
 		//Execute province painting competition
-		for(int i = 0; i < TownyProvincesSettings.getNumberOfProvincePaintingCycles(); i++) {
+		for(int i = 0; i < TownyProvincesSettings.getNumberOfProvincePaintingCycles(regionName); i++) {
 			for(ProvinceClaimBrush provinceClaimBrush: provinceClaimBrushes) {
 				//If inactive, do nothing
 				if(!provinceClaimBrush.isActive())
 					continue;
 				//Generate random move delta
-				int minMoveAmount = TownyProvincesSettings.getProvinceCreatorBrushMinMoveInChunks();
-				int maxMoveAmount = TownyProvincesSettings.getProvinceCreatorBrushMaxMoveInChunks();
+				int minMoveAmount = TownyProvincesSettings.getProvinceCreatorBrushMinMoveInChunks(regionName);
+				int maxMoveAmount = TownyProvincesSettings.getProvinceCreatorBrushMaxMoveInChunks(regionName);
 				int moveDeltaX = TownyProvincesMathUtil.generateRandomInteger(-maxMoveAmount, maxMoveAmount);
 				int moveDeltaZ = TownyProvincesMathUtil.generateRandomInteger(-maxMoveAmount, maxMoveAmount);
 				//Apply min move amount
@@ -321,11 +333,11 @@ public class ProvinceGeneratorUtil {
 				moveDeltaZ = moveDeltaZ > 0 ? Math.max(moveDeltaZ,minMoveAmount) : Math.min(moveDeltaZ,-minMoveAmount);
 				//Move brush if possible
 				Coord destination = new Coord(provinceClaimBrush.getCurrentPosition().getX() + moveDeltaX, provinceClaimBrush.getCurrentPosition().getZ() + moveDeltaZ);
-				moveBrushIfPossible(provinceClaimBrush, destination);
+				moveBrushIfPossible(regionName, provinceClaimBrush, destination);
 				//Claim chunks
-				claimChunksCoveredByBrush(provinceClaimBrush);
+				claimChunksCoveredByBrush(regionName, provinceClaimBrush);
 				//Deactivate if too many chuns have been claimed
-				if(hasBrushHitClaimLimit(provinceClaimBrush)) {
+				if(hasBrushHitClaimLimit(regionName, provinceClaimBrush)) {
 					provinceClaimBrush.setActive(false);
 				}
 			}
@@ -334,25 +346,25 @@ public class ProvinceGeneratorUtil {
 		return true;
 	}
 
-	private static boolean hasBrushHitClaimLimit(ProvinceClaimBrush provinceClaimBrush) {
+	private static boolean hasBrushHitClaimLimit(String regionName, ProvinceClaimBrush provinceClaimBrush) {
 		double chunkArea = Math.pow(TownyProvincesSettings.getProvinceBlockSideLength(), 2);
 		double currentClaimArea = provinceClaimBrush.getProvince().getCoordsInProvince().size() * chunkArea; 
-		double claimAreaLimit = TownyProvincesSettings.getProvinceCreatorBrushClaimLimitInSquareMetres();
+		double claimAreaLimit = TownyProvincesSettings.getProvinceCreatorBrushClaimLimitInSquareMetres(regionName);
 		return currentClaimArea > claimAreaLimit;
 	}
 
 	//Don't move if any of the brush would overlap another province, or adjacent to it
-	private static void moveBrushIfPossible(ProvinceClaimBrush brush, Coord destination) {
+	private static void moveBrushIfPossible(String regionName, ProvinceClaimBrush brush, Coord destination) {
 		
 		int brushMinX = destination.getX() - brush.getSquareRadius() ;
 		int brushMaxX = destination.getX() + brush.getSquareRadius() ;
 		int brushMinZ = destination.getZ() - brush.getSquareRadius();
 		int brushMaxZ = destination.getZ() + brush.getSquareRadius();
 
-		int provinceWorldMinX = TownyProvincesSettings.getTopLeftCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int provinceWorldMaxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int provinceWorldMinZ = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int provinceWorldMaxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int provinceWorldMinX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int provinceWorldMaxX  = TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int provinceWorldMinZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int provinceWorldMaxZ  = TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
 		
 		Coord coord;
 		Province province;
@@ -385,7 +397,7 @@ public class ProvinceGeneratorUtil {
 	 * Claim chunks covered by brush
 	 * @param brush the brush
 	 */
-	private static void claimChunksCoveredByBrush(ProvinceClaimBrush brush) {
+	private static void claimChunksCoveredByBrush(String regionName, ProvinceClaimBrush brush) {
 		int startX = brush.getCurrentPosition().getX() - brush.getSquareRadius();
 		int endX = brush.getCurrentPosition().getX() + brush.getSquareRadius();
 		int startZ = brush.getCurrentPosition().getZ() - brush.getSquareRadius();
@@ -393,7 +405,7 @@ public class ProvinceGeneratorUtil {
 		for(int x = startX; x <= endX; x++) {
 			for(int z = startZ; z <= endZ; z++) {
 				//Claim chunk
-				claimChunk(new Coord(x,z), brush.getProvince());
+				claimChunk(regionName, new Coord(x,z), brush.getProvince());
 			}
 		}
 	}
@@ -404,7 +416,7 @@ public class ProvinceGeneratorUtil {
 	 * @param coord co-ord of chunk
 	 * @param province the province doing the claiming
 	 */
-	private static void claimChunk(Coord coord, Province province) {
+	private static void claimChunk(String regionName, Coord coord, Province province) {
 		//Don't claim if already claimed
 		if (TownyProvincesDataHolder.getInstance().getProvinceAt(coord) != null)
 			return;
@@ -420,10 +432,10 @@ public class ProvinceGeneratorUtil {
 		}
 		
 		//Don't claim at edge of map
-		int minX = (TownyProvincesSettings.getTopLeftCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength()) + 1;
-		int maxX  = (TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength()) - 1;
-		int minZ = (TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength()) + 1;
-		int maxZ  = (TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength()) - 1;
+		int minX = (TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength()) + 1;
+		int maxX  = (TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength()) - 1;
+		int minZ = (TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength()) + 1;
+		int maxZ  = (TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength()) - 1;
 		if(coord.getX() < minX)
 			return;
 		else if (coord.getX() > maxX)
@@ -443,19 +455,19 @@ public class ProvinceGeneratorUtil {
 	 * 
 	 * @return false if we failed to create sufficient provinces
 	 */
-	private static boolean createProvinceHomeBlocks() {
+	private static boolean createProvinceHomeBlocks(String regionName) {
 		TownyProvinces.info("Now generating province homeblocks");
 		Coord provinceHomeBlock;
-		int idealNumberOfProvinces = calculateIdealNumberOfProvinces();
+		int idealNumberOfProvinces = calculateIdealNumberOfProvinces(regionName);
 		for (int provinceIndex = 0; provinceIndex < idealNumberOfProvinces; provinceIndex++) {
-			provinceHomeBlock = generateProvinceHomeBlock();
+			provinceHomeBlock = generateProvinceHomeBlock(regionName);
 			if(provinceHomeBlock != null) { 
 				//Province homeblock generated. Now create province
 				Province province = new Province(provinceHomeBlock);
 				TownyProvincesDataHolder.getInstance().addProvince(province);
 			} else {
 				//Could not generate a province homeblock. Ran out of space on the map
-				double allowedVariance = TownyProvincesSettings.getMaxAllowedVarianceBetweenIdealAndActualNumProvinces();
+				double allowedVariance = TownyProvincesSettings.getMaxAllowedVarianceBetweenIdealAndActualNumProvinces(regionName);
 				double minimumAllowedNumProvinces = ((double) idealNumberOfProvinces) * (1 - allowedVariance);
 				int actualNumProvinces = TownyProvincesDataHolder.getInstance().getNumProvinces();
 				if (actualNumProvinces < minimumAllowedNumProvinces) {
@@ -475,15 +487,15 @@ public class ProvinceGeneratorUtil {
 	 * Generate a new province homeBlock
 	 * Return null if you fail - usually due to map being full up with provinces
 	 */
-	private static Coord generateProvinceHomeBlock() {
+	private static Coord generateProvinceHomeBlock(String regionName) {
 		double tpChunkSideLength = TownyProvincesSettings.getProvinceBlockSideLength();
 		for(int i = 0; i < 100; i++) {
 			
 			//Establish boundaries
-			double xLowest = TownyProvincesSettings.getTopLeftCornerLocation().getBlockX() +1;
-			double xHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockX() -1;
-			double zLowest = TownyProvincesSettings.getTopLeftCornerLocation().getBlockZ() +1;
-			double zHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation().getBlockZ() -1;
+			double xLowest = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() +1;
+			double xHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockX() -1;
+			double zLowest = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() +1;
+			double zHighest = TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName).getBlockZ() -1;
 			
 			//Generate coords
 			double x = xLowest + (Math.random() * (xHighest - xLowest));
@@ -493,7 +505,7 @@ public class ProvinceGeneratorUtil {
 			Coord generatedHomeBlockCoord = new Coord(xCoord, zCoord);
 			
 			//Validate
-			if(validateProvinceHomeBlock(generatedHomeBlockCoord)) {
+			if(validateProvinceHomeBlock(regionName, generatedHomeBlockCoord)) {
 				return generatedHomeBlockCoord;
 			}
 		}
@@ -501,8 +513,8 @@ public class ProvinceGeneratorUtil {
 		return null;
 	}
 	
-	private static boolean validateProvinceHomeBlock(Coord coord) {
-		int minAllowedDistanceInMetres = TownyProvincesSettings.getMinAllowedDistanceBetweenProvinceHomeBlocks();
+	private static boolean validateProvinceHomeBlock(String regionName, Coord coord) {
+		int minAllowedDistanceInMetres = TownyProvincesSettings.getMinAllowedDistanceBetweenProvinceHomeBlocks(regionName);
 		int minAllowedDistanceInChunks = minAllowedDistanceInMetres / TownyProvincesSettings.getProvinceBlockSideLength();
 		List<Province> provinceList = TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList();
 		for(Province province: provinceList) {
@@ -513,17 +525,17 @@ public class ProvinceGeneratorUtil {
 		return true;
 	}
 	
-	private static int calculateIdealNumberOfProvinces() {
-		double worldAreaSquareMetres = calculateWorldAreaSquareMetres();
-		double averageProvinceAreaSquareMetres = TownyProvincesSettings.getProvinceSizeEstimateForPopulatingInSquareMetres();
+	private static int calculateIdealNumberOfProvinces(String regionName) {
+		double worldAreaSquareMetres = calculateWorldAreaSquareMetres(regionName);
+		double averageProvinceAreaSquareMetres = TownyProvincesSettings.getProvinceSizeEstimateForPopulatingInSquareMetres(regionName);
 		int idealNumberOfProvinces = (int)(worldAreaSquareMetres / averageProvinceAreaSquareMetres);
 		TownyProvinces.info("Ideal num provinces: " + idealNumberOfProvinces);
 		return idealNumberOfProvinces;
 	}
 	
-	private static double calculateWorldAreaSquareMetres() {
-		Location topLeftCorner = TownyProvincesSettings.getTopLeftCornerLocation();
-		Location bottomRightCorner = TownyProvincesSettings.getBottomRightWorldCornerLocation();
+	private static double calculateWorldAreaSquareMetres(String regionName) {
+		Location topLeftCorner = TownyProvincesSettings.getTopLeftCornerLocation(regionName);
+		Location bottomRightCorner = TownyProvincesSettings.getBottomRightWorldCornerLocation(regionName);
 		double sideLengthX = Math.abs(topLeftCorner.getX() - bottomRightCorner.getX());
 		double sideLengthZ = Math.abs(topLeftCorner.getZ() - bottomRightCorner.getZ());
 		double worldAreaSquareMetres = sideLengthX * sideLengthZ;

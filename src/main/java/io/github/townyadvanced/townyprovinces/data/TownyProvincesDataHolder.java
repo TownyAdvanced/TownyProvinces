@@ -82,4 +82,9 @@ public class TownyProvincesDataHolder {
 		}
 		provincesSet.remove(province);
 	}
+
+	public void deleteAllProvinces() {
+		provincesSet.clear();
+		coordProvinceMap.clear();
+	}
 }

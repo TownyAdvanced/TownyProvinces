@@ -98,11 +98,13 @@ public class DataHandlerUtil {
 
 	private static Set<Coord> unpackCoords(String allCoordsAsString) {
 		Set<Coord> result = new HashSet<>();
-		String[] allCoordsAsArray = allCoordsAsString.split("\\|");
-		Coord coord;
-		for(String coordAsString: allCoordsAsArray) {
-			coord = unpackCoord(coordAsString);
-			result.add(coord);
+		if(allCoordsAsString.length() > 0) {
+			String[] allCoordsAsArray = allCoordsAsString.split("\\|");
+			Coord coord;
+			for (String coordAsString : allCoordsAsArray) {
+				coord = unpackCoord(coordAsString);
+				result.add(coord);
+			}
 		}
 		return result;
 	}

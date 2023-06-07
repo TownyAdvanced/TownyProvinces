@@ -26,6 +26,7 @@ public class DynmapIntegration {
 	private final MarkerAPI markerapi;
 	private BukkitTask dynmapTask;
 	private MarkerSet markerSet;
+	private boolean mapClearRequested;
 
 	public DynmapIntegration() {
 		DynmapAPI dynmapAPI = (DynmapAPI) TownyProvinces.getPlugin().getServer().getPluginManager().getPlugin("dynmap");
@@ -33,6 +34,7 @@ public class DynmapIntegration {
 		addMarkerSet();
 		//registerDynmapTownyListener();
 		startDynmapTask();
+		mapClearRequested = false;
 		TownyProvinces.info("Dynmap support enabled.");
 	}
 
@@ -68,6 +70,10 @@ public class DynmapIntegration {
 			TownyProvinces.info("Dynmap-Towny plugin not found.");
 		}
 	}
+	
+	public void requestMapClear() {
+		mapClearRequested = true;
+	}
 
 	public void startDynmapTask() {
 		TownyProvinces.info("Dynmap Task Starting");
@@ -83,6 +89,11 @@ public class DynmapIntegration {
 	 * Display all TownyProvinces items
 	 */
 	void displayTownyProvinces() {
+		if(mapClearRequested) {
+			markerSet.deleteMarkerSet();
+			addMarkerSet();
+			mapClearRequested = false;
+		}
 		//debugDrawProvinceHomeBlocks();
 		drawProvinceBorders();
 	}

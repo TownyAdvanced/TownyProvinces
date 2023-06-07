@@ -6,23 +6,30 @@ import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.utils.NameUtil;
 import com.palmergames.bukkit.util.ChatTools;
 import com.palmergames.util.StringMgmt;
+import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegration;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
+import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
+import io.github.townyadvanced.townyprovinces.util.ProvinceGeneratorUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class TownyProvincesAdminCommand implements TabExecutor {
 
-	private static final List<String> adminTabCompletes = Arrays.asList("province");
-	private static final List<String> adminTabCompletesProvince = Arrays.asList("setsea","setland");
+	private static final List<String> adminTabCompletes = Arrays.asList("province","region");
+	private static final List<String> adminTabCompletesProvince = Arrays.asList("sea","land");
+	private static final List<String> adminTabCompletesRegion = Arrays.asList("regenerate");
 
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 
@@ -30,6 +37,18 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			case "province":
 				if (args.length == 2)
 					return NameUtil.filterByStart(adminTabCompletesProvince, args[1]);
+				break;
+			case "region":
+				if (args.length == 2)
+					return NameUtil.filterByStart(adminTabCompletesRegion, args[1]);
+				if (args.length == 3) {
+					List<String> regionOptions = new ArrayList<>();
+					regionOptions.add("All");
+					List<String> regionNames = new ArrayList<>(TownyProvincesSettings.getRegionDefinitions().keySet());
+					Collections.sort(regionNames);
+					regionOptions.addAll(regionNames);
+					return NameUtil.filterByStart(regionOptions, args[2]);
+				}
 				break;
 			default:
 				if (args.length == 1)
@@ -56,6 +75,9 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				case "province":
 					parseProvinceCommand(sender, StringMgmt.remFirstArg(args));
 					break;
+				case "region":
+					parseRegionCommand(sender, StringMgmt.remFirstArg(args));
+					break;
 
 				/*
 				 * Show help if no command found.
@@ -74,7 +96,8 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 
 	private void showHelp(CommandSender sender) {
 		TownyMessaging.sendMessage(sender, ChatTools.formatTitle("/townyprovincesadmin"));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "province [setsea|setland] [x,z]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "province [sea|land] [<x>,<z>]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "region [regenerate] [<Region Name>]", ""));
 	}
 
 	private void parseProvinceCommand(CommandSender sender, String[] args) {
@@ -82,10 +105,22 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			showHelp(sender);
 			return;
 		}
-		if (args[0].equalsIgnoreCase("setsea")) {
+		if (args[0].equalsIgnoreCase("sea")) {
 			parseProvinceSetToSeaCommand(sender, args);
-		} else if (args[0].equalsIgnoreCase("setland")) {
+		} else if (args[0].equalsIgnoreCase("land")) {
 			parseProvinceSetToLandCommand(sender,args);
+		} else {
+			showHelp(sender);
+		}
+	}
+
+	private void parseRegionCommand(CommandSender sender, String[] args) {
+		if (args.length < 2) {
+			showHelp(sender);
+			return;
+		}
+		if (args[0].equalsIgnoreCase("regenerate")) {
+			parseRegionRegenerateCommand(sender, args);
 		} else {
 			showHelp(sender);
 		}
@@ -123,6 +158,28 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		}
 	}
 
+	private void parseRegionRegenerateCommand(CommandSender sender, String[] args) {
+		String givenRegionName = args[1];
+		String caseCorrectRegionName = TownyProvincesSettings.getCaseCorrectRegionName(givenRegionName);
+		if(givenRegionName.equalsIgnoreCase("all")) {
+			if(!ProvinceGeneratorUtil.regenerateAllProvinces()) {
+				Messaging.sendMsg(sender, Translatable.of("msg_problem_generating_all_provinces"));
+				return;
+			}
+			DataHandlerUtil.saveAllData();
+			TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
+		} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
+			if(!ProvinceGeneratorUtil.regenerateOneProvince(caseCorrectRegionName)) {
+				Messaging.sendMsg(sender, Translatable.of("msg_problem_generating_one_province"));
+				return;
+			}
+			DataHandlerUtil.saveAllData();
+			TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
+		} else {
+			Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
+		}
+	}
+	
 	private void parseProvinceSetToLandCommand(CommandSender sender, String[] args) {
 		try {
 			String[] locationAsArray = args[1].split(",");
