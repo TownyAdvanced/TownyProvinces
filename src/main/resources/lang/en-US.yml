@@ -46,6 +46,7 @@ msg_now_regenerating_one_region: "&bNow regenerating region: %s"
 
 msg_err_value_must_be_and_integer: "&cThe given value must be an integer."
 msg_new_town_cost_set_for_all_regions: "&bNew-Town-Cost set for all regions, to: %s"
+msg_new_town_cost_set_for_one_region: "&bNew-Town-Cost set for region %s, to: %s"
 
 # Land validation job
 

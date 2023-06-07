@@ -32,7 +32,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 
 	private static final List<String> adminTabCompletes = Arrays.asList("province","region", "landvalidationjob");
 	private static final List<String> adminTabCompletesProvince = Arrays.asList("sea","land");
-	private static final List<String> adminTabCompletesRegion = Arrays.asList("regenerate, newtowncost, upkeeptowncost");
+	private static final List<String> adminTabCompletesRegion = Arrays.asList("regenerate", "newtowncost", "upkeeptowncost");
 	private static final List<String> adminTabCompletesSeaProvincesJob = Arrays.asList("status", "start", "stop", "restart", "pause");
 
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
@@ -258,7 +258,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 			
 			if(givenRegionName.equalsIgnoreCase("all")) {
-				//Set cost for all regions
+				//Set cost for all provinces, regardless of region
 				for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 					province.setNewTownCost(newTownCost);
 					province.saveData();
@@ -277,13 +277,11 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 						break;
 					}
 				}
-				
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
 			}
 		} catch (NumberFormatException nfe) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_value_must_be_and_integer"));
-			showHelp(sender);
 		}
 	}
 	

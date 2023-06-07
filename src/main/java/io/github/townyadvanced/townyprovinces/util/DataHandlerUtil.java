@@ -90,7 +90,9 @@ public class DataHandlerUtil {
 			province.setLandValidationRequested(Boolean.parseBoolean(fileEntries.get("is_land_validation_requested")));
 		}
 		province.setNewTownCost(Integer.parseInt(fileEntries.get("new_town_price")));
-		province.setUpkeepTownCost(Integer.parseInt(fileEntries.get("town_upkeep")));
+		if(fileEntries.containsKey("upkeep_town_cost")) {
+			province.setUpkeepTownCost(Integer.parseInt(fileEntries.get("upkeep_town_price")));
+		}
 		//Add province to provinces set
 		TownyProvincesDataHolder.getInstance().addProvince(province);
 		//Add coords to coord-province map
