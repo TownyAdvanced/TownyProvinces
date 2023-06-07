@@ -47,8 +47,8 @@ public class DataHandlerUtil {
 		fileEntries.put("home_block", "" + province.getHomeBlock().getX() + "," + province.getHomeBlock().getZ());
 		fileEntries.put("is_sea", "" + province.isSea());
 		fileEntries.put("is_land_validation_requested", "" + province.isLandValidationRequested());
-		fileEntries.put("new_town_price", "" + province.getNewTownPrice());
-		fileEntries.put("town_upkeep", "" + province.getTownUpkeep());
+		fileEntries.put("new_town_price", "" + province.getNewTownCost());
+		fileEntries.put("town_upkeep", "" + province.getUpkeepTownCost());
 		fileEntries.put("coords", "" + getCoordsAsWriteableString(province));
 		FileUtil.saveHashMapIntoFile(fileEntries, fileName);
 	}
@@ -89,8 +89,8 @@ public class DataHandlerUtil {
 		if(fileEntries.containsKey("is_land_validation_requested")) {
 			province.setLandValidationRequested(Boolean.parseBoolean(fileEntries.get("is_land_validation_requested")));
 		}
-		province.setNewTownPrice(Integer.parseInt(fileEntries.get("new_town_price")));
-		province.setTownUpkeep(Integer.parseInt(fileEntries.get("town_upkeep")));
+		province.setNewTownCost(Integer.parseInt(fileEntries.get("new_town_price")));
+		province.setUpkeepTownCost(Integer.parseInt(fileEntries.get("town_upkeep")));
 		//Add province to provinces set
 		TownyProvincesDataHolder.getInstance().addProvince(province);
 		//Add coords to coord-province map

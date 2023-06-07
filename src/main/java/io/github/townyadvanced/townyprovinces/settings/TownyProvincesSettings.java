@@ -2,6 +2,7 @@ package io.github.townyadvanced.townyprovinces.settings;
 
 import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
+import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -64,7 +65,7 @@ public class TownyProvincesSettings {
 		return new Location(getWorld(), Integer.parseInt(locationArray[0].trim()),0,Integer.parseInt(locationArray[1].trim()));	
 	}
 	
-	public static Location getBottomRightWorldCornerLocation(String regionName) {
+	public static Location getBottomRightCornerLocation(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
 		String locationString = regionDefinitions.get("bottom_right_corner_location");
 		String[] locationArray = locationString.split(",");
@@ -159,12 +160,30 @@ public class TownyProvincesSettings {
 		return regionNames.get(0);
 	}
 	
-	public static @Nullable String getCaseCorrectRegionName(String givenRegionName) {
+	public static @Nullable String getCaseSensitiveRegionName(String givenRegionName) {
 		for(String regionName: regionDefinitions.keySet()) {
 			if(regionName.equalsIgnoreCase(givenRegionName)) {
 				return regionName;
 			}
 		}
 		return null;
+	}
+
+	public static boolean isProvinceInRegion(Province province, String regionName) {
+		Location topLeftCornerLocation = getTopLeftCornerLocation(regionName);
+		Location bottomRightCornerLocation = getBottomRightCornerLocation(regionName);
+		int homeBlockRealX = province.getHomeBlock().getX() * getProvinceBlockSideLength();
+		int homeBlockRealZ = province.getHomeBlock().getZ() * getProvinceBlockSideLength();
+		
+		if(homeBlockRealX  > topLeftCornerLocation.getBlockX()
+				&& homeBlockRealZ > topLeftCornerLocation.getBlockZ()
+				&& homeBlockRealX < bottomRightCornerLocation.getBlockX()
+				&& homeBlockRealZ < bottomRightCornerLocation.getBlockZ()) {
+			return true;
+		} else {
+			return false;
+		}
+			
+		
 	}
 }

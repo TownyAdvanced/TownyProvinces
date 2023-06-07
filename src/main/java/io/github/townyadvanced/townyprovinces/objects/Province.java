@@ -9,8 +9,8 @@ import java.util.List;
 public class Province {
 	
 	private final Coord homeBlock;
-	private int newTownPrice;
-	private int townUpkeep;
+	private int newTownCost;
+	private int upkeepTownCost;
 	private boolean isSea;
 	private String id; //convenience variable. In memory only. Used for dynmap and file operations
 	private boolean landValidationRequested;
@@ -24,8 +24,8 @@ public class Province {
 	public Province(Coord homeBlock) {
 		this.homeBlock = homeBlock;
 		this.isSea = false;
-		this.newTownPrice = 0;
-		this.townUpkeep = 0;
+		this.newTownCost = 0;
+		this.upkeepTownCost = 0;
 		this.id = "province_x" + homeBlock.getX() + "_y_" + homeBlock.getZ();
 		this.landValidationRequested = false;
 	}
@@ -38,20 +38,20 @@ public class Province {
 		return homeBlock;
 	}
 	
-	public void setNewTownPrice(int i) {
-		this.newTownPrice = i;
+	public void setNewTownCost(int i) {
+		this.newTownCost = i;
 	}
 
-	public void setTownUpkeep(int i) {
-		this.townUpkeep = i;
+	public void setUpkeepTownCost(int i) {
+		this.upkeepTownCost = i;
 	}
 
-	public int getNewTownPrice() {
-		return newTownPrice;
+	public int getNewTownCost() {
+		return newTownCost;
 	}
 
-	public int getTownUpkeep() {
-		return townUpkeep;
+	public int getUpkeepTownCost() {
+		return upkeepTownCost;
 	}
 	
 	public boolean isSea() { 
