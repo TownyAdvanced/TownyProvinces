@@ -12,6 +12,8 @@ import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.tasks.LandValidationJob;
+import io.github.townyadvanced.townyprovinces.tasks.LandValidationJobStatus;
 import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.util.ProvinceGeneratorUtil;
 import org.bukkit.command.Command;
@@ -26,10 +28,10 @@ import java.util.List;
 
 public class TownyProvincesAdminCommand implements TabExecutor {
 
-	private static final List<String> adminTabCompletes = Arrays.asList("province","region", "seaprovincesjob");
+	private static final List<String> adminTabCompletes = Arrays.asList("province","region", "landvalidationjob");
 	private static final List<String> adminTabCompletesProvince = Arrays.asList("sea","land");
 	private static final List<String> adminTabCompletesRegion = Arrays.asList("regenerate");
-	private static final List<String> adminTabCompletesSeaProvincesJob = Arrays.asList("start", "stop", "restart", "pause", "continue");
+	private static final List<String> adminTabCompletesSeaProvincesJob = Arrays.asList("status", "start", "stop", "restart", "pause");
 
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 
@@ -50,7 +52,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 					return NameUtil.filterByStart(regionOptions, args[2]);
 				}
 				break;
-			case "seaprovincejob":
+			case "landvalidationjob":
 				if (args.length == 2)
 					return NameUtil.filterByStart(adminTabCompletesSeaProvincesJob, args[1]);
 				break;
@@ -82,8 +84,8 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				case "region":
 					parseRegionCommand(sender, StringMgmt.remFirstArg(args));
 					break;
-				case "seaprovincesjob":
-					parseSeaProvincesJob(sender, StringMgmt.remFirstArg(args));
+				case "landvalidationjob":
+					parseLandValidationJobCommand(sender, StringMgmt.remFirstArg(args));
 					break;
 
 				/*
@@ -105,6 +107,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		TownyMessaging.sendMessage(sender, ChatTools.formatTitle("/townyprovincesadmin"));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "province [sea|land] [<x>,<z>]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "region [regenerate] [<Region Name>]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "landvalidationjob [status|start|stop|restart|pause]", ""));
 	}
 
 	private void parseProvinceCommand(CommandSender sender, String[] args) {
@@ -133,17 +136,48 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		}
 	}
 
-	private void parseSeaProvincesJob(CommandSender sender, String[] args) {
-		if (args.length < 2) {
+	private void parseLandValidationJobCommand(CommandSender sender, String[] args) {
+		if (args.length < 1) {
 			showHelp(sender);
 			return;
 		}
-		if (args[0].equalsIgnoreCase("start")) {
+		LandValidationJob landValidationJob = TownyProvinces.getLandValidationJob();
+		if (args[0].equalsIgnoreCase("status")) {
+			Translatable status = Translatable.of(landValidationJob.getLandValidationJobStatus().getLanguageKey());
+			Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_status").append(status));
 			
+		} else if (args[0].equalsIgnoreCase("start")) {
+			if (landValidationJob.getLandValidationJobStatus().equals(LandValidationJobStatus.STOPPED)
+					|| landValidationJob.getLandValidationJobStatus().equals(LandValidationJobStatus.PAUSED)) {
+				landValidationJob.setLandValidationJobStatus(LandValidationJobStatus.START_REQUESTED);
+				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_starting"));
+			} else {
+				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_stopped_or_paused"));
+			}
+		
+		} else if (args[0].equalsIgnoreCase("stop")) {
+			if (landValidationJob.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
+				landValidationJob.setLandValidationJobStatus(LandValidationJobStatus.STOP_REQUESTED);
+				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_stopping"));
+			} else {
+				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_started"));
+			}
 			
-			parseProvinceSetToSeaCommand(sender, args);
-		} else if (args[0].equalsIgnoreCase("land")) {
-			parseProvinceSetToLandCommand(sender,args);
+		} else if (args[0].equalsIgnoreCase("pause")) {
+			if (landValidationJob.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
+				landValidationJob.setLandValidationJobStatus(LandValidationJobStatus.PAUSE_REQUESTED);
+				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_pausing"));
+			} else {
+				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_started"));
+			}
+
+		} else if (args[0].equalsIgnoreCase("restart")) {
+			if (landValidationJob.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
+				landValidationJob.setLandValidationJobStatus(LandValidationJobStatus.RESTART_REQUESTED);
+				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_restarting"));
+			} else {
+				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_started"));
+			}
 		} else {
 			showHelp(sender);
 		}

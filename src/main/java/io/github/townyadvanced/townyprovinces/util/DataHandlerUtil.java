@@ -46,6 +46,7 @@ public class DataHandlerUtil {
 		Map<String, String> fileEntries = new HashMap<>();
 		fileEntries.put("home_block", "" + province.getHomeBlock().getX() + "," + province.getHomeBlock().getZ());
 		fileEntries.put("is_sea", "" + province.isSea());
+		fileEntries.put("is_land_validation_requested", "" + province.isLandValidationRequested());
 		fileEntries.put("new_town_price", "" + province.getNewTownPrice());
 		fileEntries.put("town_upkeep", "" + province.getTownUpkeep());
 		fileEntries.put("coords", "" + getCoordsAsWriteableString(province));
@@ -85,6 +86,9 @@ public class DataHandlerUtil {
 		Coord homeBlock = unpackCoord(fileEntries.get("home_block"));
 		Province province = new Province(homeBlock);
 		province.setSea(Boolean.parseBoolean(fileEntries.get("is_sea")));
+		if(fileEntries.containsKey("is_land_validation_requested")) {
+			province.setLandValidationRequested(Boolean.parseBoolean(fileEntries.get("is_land_validation_requested")));
+		}
 		province.setNewTownPrice(Integer.parseInt(fileEntries.get("new_town_price")));
 		province.setTownUpkeep(Integer.parseInt(fileEntries.get("town_upkeep")));
 		//Add province to provinces set

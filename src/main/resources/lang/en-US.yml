@@ -27,6 +27,7 @@ description: >
 plugin_prefix: '&6[Towny Provinces] '
 
 # Admin
+
 msg_err_invalid_province_location: "&cThe given co-ordinate was either mis-formatted, on a border, or outside the map."
 msg_province_successfully_set_to_sea: "&bProvince Type set to Sea. The map will be updated shortly."
 msg_province_already_sea: "&cProvince Type is already Sea."
@@ -36,8 +37,22 @@ msg_err_unknown_region_name: "&cUnknown region name."
 msg_problem_generating_all_provinces: "&cThere was a problem generating provinces."
 msg_problem_generating_one_province: "&cThere was a problem generating the province."
 
+# Land validation job
 
-
+msg_land_validation_job_starting: "&bThe Land Validation Job is starting."
+msg_land_validation_job_stopping: "&bThe Land Validation Job is stopping."
+msg_land_validation_job_pausing: "&bThe Land Validation Job is pausing."
+msg_land_validation_job_restarting: "&bThe Land Validation Job is restarting."
+msg_err_command_not_possible_job_not_stopped_or_paused: "&cCommand not possible because the Land Validation Job is not stopped or paused."
+msg_err_command_not_possible_job_not_started: "&cCommand not possible because the Land Validation Job is not started."
+msg_land_validation_job_status: "&2Land Validation Job Status: "
+land_validation_job_status_started: "&aStarted"
+land_validation_job_status_start_requested: "&aStart Requested"
+land_validation_job_status_stopped: "&aStopped"
+land_validation_job_status_stop_requested: "&aStop Requested"
+land_validation_job_status_paused: "&aPaused"
+land_validation_job_status_pause_requested: "&aPause Requested"
+land_validation_job_status_restart_requested: "&aRestart Requested"
 
 # New towns
 

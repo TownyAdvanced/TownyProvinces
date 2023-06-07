@@ -32,6 +32,11 @@ public class TownyProvinces extends JavaPlugin {
 	private static DynmapIntegration dynmapIntegration; 
 	private static LandValidationJob landValidationJob;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.0.7");
+
+	public static LandValidationJob getLandValidationJob() {
+		return landValidationJob;
+	}
+
 	@Override
 	public void onEnable() {
 		plugin = this;

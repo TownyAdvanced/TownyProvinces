@@ -5,7 +5,6 @@ import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -18,7 +17,18 @@ public class LandValidationJob extends BukkitRunnable {
 	private LandValidationJobStatus landValidationJobStatus;
 	
 	public LandValidationJob() {
-		landValidationJobStatus = LandValidationJobStatus.STOPPED;
+		int numProvincesToProcess = 0;
+		List<Province> provinces = TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList();
+		for(Province province : provinces) {
+			if(province.isLandValidationRequested()) {
+				numProvincesToProcess++;
+			}
+		}
+		if (numProvincesToProcess > 0) {
+			landValidationJobStatus = LandValidationJobStatus.PAUSED;
+		} else {
+			landValidationJobStatus = LandValidationJobStatus.STOPPED;
+		}
 	}
 	
 	public LandValidationJobStatus getLandValidationJobStatus() {
@@ -34,14 +44,8 @@ public class LandValidationJob extends BukkitRunnable {
 		//Handle any requests to start the land validation job
 		switch (landValidationJobStatus) {
 			case START_REQUESTED:
-				setLandValidationRequestsForAllProvinces(true);
 				landValidationJobStatus = LandValidationJobStatus.STARTED;
 				TownyProvinces.info("Land Validation Job Starting.");
-				executeLandValidation();
-				break;
-			case CONTINUE_REQUESTED:
-				landValidationJobStatus = LandValidationJobStatus.STARTED;
-				TownyProvinces.info("Land Validation Job Continuing.");
 				executeLandValidation();
 				break;
 		}
@@ -49,7 +53,7 @@ public class LandValidationJob extends BukkitRunnable {
 
 	private void setLandValidationRequestsForAllProvinces(boolean value) {
 		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			if(province.isLandValidationRequested()) {
+			if(province.isLandValidationRequested() != value) {
 				province.setLandValidationRequested(value);
 				province.saveData();
 			}
@@ -70,23 +74,28 @@ public class LandValidationJob extends BukkitRunnable {
 	 */
 	private void executeLandValidation() {
 		TownyProvinces.info("Now Running land validation job.");
-		double numProvincesProcessed = 0;
+		int numProvincesNotRequired = 0;
 		List<Province> provinces = TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList();
+		for(Province province : provinces) {
+			if(!province.isLandValidationRequested())
+				numProvincesNotRequired++;
+		}
+		if(numProvincesNotRequired == provinces.size()) {
+			//Nothing is scheduled. This must be a new (not unpaused) run
+			setLandValidationRequestsForAllProvinces(true);
+			numProvincesNotRequired = 0;
+		}
+		double numProvincesProcessed = numProvincesNotRequired;
 		for(Province province: provinces) {
 			if (province.isLandValidationRequested()) {
 				boolean isSea = isProvinceMainlyOcean(province);
-				try {
-					//Sleep as the above check is hard on process
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					throw new RuntimeException(e);
-				}
 				if(isSea != province.isSea()) {
 					province.setSea(isSea);
-					province.saveData();
 				}
+				province.setLandValidationRequested(false);
+				province.saveData();
+				numProvincesProcessed++;
 			}
-			numProvincesProcessed++;
 			int percentCompletion = (int) ((numProvincesProcessed / provinces.size()) * 100);
 			TownyProvinces.info("Land Validation Job Progress: " + percentCompletion + "%");
 
@@ -108,6 +117,7 @@ public class LandValidationJob extends BukkitRunnable {
 					return;
 			}
 		}
+		landValidationJobStatus = LandValidationJobStatus.STOPPED;
 		TownyProvinces.info("Land Validation Job Complete.");
 	}
 
@@ -123,6 +133,12 @@ public class LandValidationJob extends BukkitRunnable {
 			int z = (coordToTest.getZ() * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;
 			biome = world.getHighestBlockAt(x,z).getBiome();
 			System.gc();
+			try {
+				//Sleep as the above check is hard on processor
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
 			if(!biome.name().toLowerCase().contains("ocean") && !biome.name().toLowerCase().contains("beach")) {
 				return false;
 			}
