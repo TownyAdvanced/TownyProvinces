@@ -4,7 +4,6 @@ import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Translatable;
-import com.palmergames.bukkit.towny.utils.MoneyUtil;
 import com.palmergames.bukkit.towny.utils.NameUtil;
 import com.palmergames.bukkit.util.ChatTools;
 import com.palmergames.util.StringMgmt;
@@ -229,7 +228,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		if(givenRegionName.equalsIgnoreCase("all")) {
 			if(ProvinceGeneratorUtil.regenerateAllRegions()) {
 				DataHandlerUtil.saveAllData();
-				TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
+				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksAndBordersRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_successfully_regenerated_all_regions"));
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_problem_regenerating_all_regions"));
@@ -237,7 +236,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
 			if(ProvinceGeneratorUtil.regenerateOneRegion(caseCorrectRegionName)) {
 				DataHandlerUtil.saveAllData();
-				TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
+				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksAndBordersRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_successfully_regenerated_one_regions", caseCorrectRegionName));
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_problem_regenerating_one_region", caseCorrectRegionName));
@@ -260,7 +259,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 					province.setNewTownCost(newTownCost);
 					province.saveData();
 				}
-				TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
+				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_all_regions", formattedNewTownCost));
 
 			} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
@@ -271,7 +270,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 						province.saveData();
 					}
 				}
-				TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
+				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_one_region", caseCorrectRegionName, formattedNewTownCost));
 				
 			} else {
@@ -295,7 +294,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 					province.setUpkeepTownCost(townCost);
 					province.saveData();
 				}
-				TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
+				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_all_regions", formattedTownCost));
 
 			} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
@@ -306,7 +305,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 						province.saveData();
 					}
 				}
-				TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
+				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCost));
 
 			} else {
