@@ -138,7 +138,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		} else if (args[0].equalsIgnoreCase("newtowncost")) {
 			parseRegionSetNewTownCostCommand(sender, args);
 		} else if (args[0].equalsIgnoreCase("upkeeptowncost")) {
-			//parseRegionSetUpkeepCommand(sender, args);
+			parseRegionSetTownUpkeepCostCommand(sender, args);
 		} else {
 			showHelp(sender);
 		}
@@ -190,9 +190,6 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			showHelp(sender);
 		}
 	}
-
-
-	
 	
 	private void parseProvinceSetToSeaCommand(CommandSender sender, String[] args) {
 		try {	
@@ -233,17 +230,17 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			if(ProvinceGeneratorUtil.regenerateAllRegions()) {
 				DataHandlerUtil.saveAllData();
 				TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
-				Messaging.sendMsg(sender, Translatable.of("msg_now_regenerating_all_regions"));
+				Messaging.sendMsg(sender, Translatable.of("msg_successfully_regenerated_all_regions"));
 			} else {
-				Messaging.sendMsg(sender, Translatable.of("msg_problem_generating_all_provinces"));
+				Messaging.sendMsg(sender, Translatable.of("msg_problem_regenerating_all_regions"));
 			}
 		} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
 			if(ProvinceGeneratorUtil.regenerateOneRegion(caseCorrectRegionName)) {
 				DataHandlerUtil.saveAllData();
 				TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
-				Messaging.sendMsg(sender, Translatable.of("msg_now_regenerating_one_regions", caseCorrectRegionName));
+				Messaging.sendMsg(sender, Translatable.of("msg_successfully_regenerated_one_regions", caseCorrectRegionName));
 			} else {
-				Messaging.sendMsg(sender, Translatable.of("msg_problem_generating_one_province"));
+				Messaging.sendMsg(sender, Translatable.of("msg_problem_regenerating_one_region", caseCorrectRegionName));
 			}
 		} else {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
@@ -272,11 +269,46 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 					if(TownyProvincesSettings.isProvinceInRegion(province, caseCorrectRegionName)) {
 						province.setNewTownCost(newTownCost);
 						province.saveData();
-						TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
-						Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_one_region", caseCorrectRegionName, formattedNewTownCost));
-						break;
 					}
 				}
+				TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
+				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_one_region", caseCorrectRegionName, formattedNewTownCost));
+				
+			} else {
+				Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
+			}
+		} catch (NumberFormatException nfe) {
+			Messaging.sendMsg(sender, Translatable.of("msg_err_value_must_be_and_integer"));
+		}
+	}
+	
+	private void parseRegionSetTownUpkeepCostCommand(CommandSender sender, String[] args) {
+		try {
+			String givenRegionName = args[1];
+			int townCost = Integer.parseInt(args[2]);
+			String formattedTownCost = TownyEconomyHandler.getFormattedBalance(townCost);
+			String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
+
+			if(givenRegionName.equalsIgnoreCase("all")) {
+				//Set cost for all provinces, regardless of region
+				for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+					province.setUpkeepTownCost(townCost);
+					province.saveData();
+				}
+				TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
+				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_all_regions", formattedTownCost));
+
+			} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
+				//Set cost for just one region
+				for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+					if(TownyProvincesSettings.isProvinceInRegion(province, caseCorrectRegionName)) {
+						province.setUpkeepTownCost(townCost);
+						province.saveData();
+					}
+				}
+				TownyProvinces.getPlugin().getDynmapIntegration().requestMapClear();
+				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCost));
+
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
 			}

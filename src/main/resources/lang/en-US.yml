@@ -38,16 +38,18 @@ msg_province_already_land: "&cProvince Type is already Land."
 # Regeneration
 
 msg_err_unknown_region_name: "&cUnknown region name."
-msg_problem_generating_all_provinces: "&cThere was a problem generating provinces."
-msg_problem_generating_one_province: "&cThere was a problem generating the province."
-msg_now_regenerating_all_regions: "&bNow regenerating all regions."
-msg_now_regenerating_one_region: "&bNow regenerating region: %s"
+msg_problem_regenerating_all_regions: "&cThere was a problem generating all regions."
+msg_problem_regenerating_one_region: "&cThere was a problem generating region: %s."
+msg_successfully_regenerated_all_regions: "&bSuccessfully regenerated all regions."
+msg_successfully_regenerated_one_regions: "&bSuccessfully regenerated region: %s."
 
 # Setting town costs
 
 msg_err_value_must_be_and_integer: "&cThe given value must be an integer."
 msg_new_town_cost_set_for_all_regions: "&bNew-Town-Cost set for all regions, to: %s"
 msg_new_town_cost_set_for_one_region: "&bNew-Town-Cost set for region %s, to: %s"
+msg_upkeep_town_cost_set_for_all_regions: "&bUpkeep-Town-Cost set for all regions, to: %s"
+msg_upkeep_town_cost_set_for_one_region: "&bUpkeep-Town-Cost set for region %s, to: %s"
 
 # Land validation job
 
@@ -78,3 +80,7 @@ msg_err_cannot_merge_towns: "&cTown merging is not possible."
 msg_err_cannot_claim_land_on_province_border: "&cTowns cannot claim land on province borders."
 msg_err_cannot_claim_land_without_homeblock: "&cTowns without homeblocks cannot claim land."
 msg_err_cannot_claim_land_outside_own_province: "&cA town cannot claim land outside its own province."
+
+#Dynmap
+
+dynmap_province_homeblock_label: "Town Costs: New %s, Upkeep %s"

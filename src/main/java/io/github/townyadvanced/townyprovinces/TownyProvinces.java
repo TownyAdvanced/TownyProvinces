@@ -62,7 +62,7 @@ public class TownyProvinces extends JavaPlugin {
 		loadIntegrations();
 	}
 	
-	TODO
+	//TODO
 	
 	/*
 	1. Setup a new dynmap layer, disabed by default,

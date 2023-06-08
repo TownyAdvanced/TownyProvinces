@@ -1,6 +1,9 @@
 package io.github.townyadvanced.townyprovinces.integrations.dynmap;
 
+import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Coord;
+import com.palmergames.bukkit.towny.object.EconomyHandler;
+import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
@@ -94,7 +97,7 @@ public class DynmapIntegration {
 			addMarkerSet();
 			mapClearRequested = false;
 		}
-		//debugDrawProvinceHomeBlocks();
+		debugDrawProvinceHomeBlocks();
 		drawProvinceBorders();
 	}
 
@@ -102,24 +105,29 @@ public class DynmapIntegration {
 	 * Method only used for debug. Draws the province homeblocks as fire icons
 	 */
 	private void debugDrawProvinceHomeBlocks() {
-		String FIRE_ICON = "fire";
+		String border_icon = "coins";
 		for (Province province : TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
 			try {
+				if(province.isSea())
+					continue;
 				Coord homeBlock = province.getHomeBlock();
 				int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getProvinceBlockSideLength();
 				int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getProvinceBlockSideLength();
 
-				MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(FIRE_ICON);
+				MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(border_icon);
 				String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
-				String name = homeBlockMarkerId;
+				
+				String newTownCost = TownyEconomyHandler.getFormattedBalance(province.getNewTownCost());
+				String upkeepTownCost = TownyEconomyHandler.getFormattedBalance(province.getUpkeepTownCost());
+				String markerLabel = Translatable.of("dynmap_province_homeblock_label", newTownCost, upkeepTownCost).translate();
 				Marker homeBlockMarker = markerSet.findMarker(homeBlockMarkerId);
 				if (homeBlockMarker == null) {
-					homeBlockMarker = markerSet.createMarker(
-						homeBlockMarkerId, name, TownyProvincesSettings.getWorldName(),
+					markerSet.createMarker(
+						homeBlockMarkerId, markerLabel, TownyProvincesSettings.getWorldName(),
 						realHomeBlockX, 64, realHomeBlockZ,
 						homeBlockIcon, false);
-					homeBlockMarker.setLabel(name);
-					homeBlockMarker.setDescription("test description");
+					//homeBlockMarker.setLabel(markerLabel);
+					//homeBlockMarker.setDescription(null);
 				}
 			} catch (Exception ex) {
 				TownyProvinces.severe("Problem adding homeblock marker");
