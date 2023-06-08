@@ -98,17 +98,20 @@ public class TownyListener implements Listener {
 		}
 		/*
 		 * Check if the player has enough money
-		 * If the player does, take the region settlement price
+		 * If the player does, pay the region settlement price
 		 */
-		if (TownySettings.isUsingEconomy()) {
+		if (TownySettings.isUsingEconomy() && province.getNewTownCost() > 0) {
 			double regionSettlementPrice = province.getNewTownCost();
 			double newTownCost = TownySettings.getNewTownPrice() + regionSettlementPrice;
 			Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
 			if (resident != null && resident.getAccountOrNull() != null) {
-				if(resident.getAccountOrNull().canPayFromHoldings(newTownCost)) {
-					resident.getAccountOrNull().withdraw(regionSettlementPrice,"Region Settlement Price");
+				if (resident.getAccountOrNull().canPayFromHoldings(newTownCost)) {
+					//Pay the region settlement price
+					resident.getAccountOrNull().withdraw(regionSettlementPrice, "Region Settlement Price");
 					Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_you_paid_region_settlement_price", TownyEconomyHandler.getFormattedBalance(regionSettlementPrice)));
 				} else {
+					//Cancel the event
+					event.setCancelled(true);
 					event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_afford_new_town", TownyEconomyHandler.getFormattedBalance(newTownCost)).translate(Locale.ROOT));
 				}
 			}
@@ -131,8 +134,11 @@ public class TownyListener implements Listener {
 		//Add extra upkeep
 		Coord coord = event.getTown().getHomeBlockOrNull().getCoord();
 		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord);
-		double updatedUpkeepPrice = event.getUpkeep() + province.getNewTownCost();
-		event.setUpkeep(updatedUpkeepPrice);
+		double regionUpkeepPrice = province.getUpkeepTownCost();
+		if(regionUpkeepPrice > 0) {
+			double updatedUpkeepPrice = event.getUpkeep() + regionUpkeepPrice;
+			event.setUpkeep(updatedUpkeepPrice);
+		}
 	}
 
 	@EventHandler(ignoreCancelled = true)

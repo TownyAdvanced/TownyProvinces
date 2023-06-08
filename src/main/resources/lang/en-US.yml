@@ -74,8 +74,8 @@ msg_err_cannot_create_town_on_province_border: "&cTowns cannot be created on pro
 msg_err_cannot_create_town_in_sea_provinces: "&cTowns cannot be created in Sea provinces."
 msg_err_cannot_create_town_in_full_province: "&cOnly 1 town is allowed in each province. This province already contains a town."
 msg_err_cannot_merge_towns: "&cTown merging is not possible."
-msg_err_cannot_afford_new_town: "&cYou cannot afford to create a new town in this province (price = %s)."
-msg_you_paid_region_settlement_price: "&bYou paid the region settlement price of %s."
+msg_err_cannot_afford_new_town: "&cYou can't afford to settle a new town in this province, which costs %s."
+msg_you_paid_region_settlement_price: "&aYou paid the region settlement price of %s."
 
 # Claiming
 
