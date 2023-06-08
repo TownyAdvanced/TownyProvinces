@@ -47,8 +47,8 @@ public class DataHandlerUtil {
 		fileEntries.put("home_block", "" + province.getHomeBlock().getX() + "," + province.getHomeBlock().getZ());
 		fileEntries.put("is_sea", "" + province.isSea());
 		fileEntries.put("is_land_validation_requested", "" + province.isLandValidationRequested());
-		fileEntries.put("new_town_price", "" + province.getNewTownCost());
-		fileEntries.put("upkeep_town_price", "" + province.getUpkeepTownCost());
+		fileEntries.put("new_town_cost", "" + province.getNewTownCost());
+		fileEntries.put("upkeep_town_cost", "" + province.getUpkeepTownCost());
 		fileEntries.put("coords", "" + getCoordsAsWriteableString(province));
 		FileUtil.saveHashMapIntoFile(fileEntries, fileName);
 	}
@@ -89,9 +89,11 @@ public class DataHandlerUtil {
 		if(fileEntries.containsKey("is_land_validation_requested")) {
 			province.setLandValidationRequested(Boolean.parseBoolean(fileEntries.get("is_land_validation_requested")));
 		}
-		province.setNewTownCost(Integer.parseInt(fileEntries.get("new_town_price")));
 		if(fileEntries.containsKey("upkeep_town_cost")) {
-			province.setUpkeepTownCost(Integer.parseInt(fileEntries.get("upkeep_town_price")));
+			province.setUpkeepTownCost(Integer.parseInt(fileEntries.get("upkeep_town_cost")));
+		}
+		if(fileEntries.containsKey("upkeep_town_cost")) {
+			province.setUpkeepTownCost(Integer.parseInt(fileEntries.get("upkeep_town_cost")));
 		}
 		//Add province to provinces set
 		TownyProvincesDataHolder.getInstance().addProvince(province);
