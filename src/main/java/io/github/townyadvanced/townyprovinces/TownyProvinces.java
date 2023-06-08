@@ -162,16 +162,7 @@ public class TownyProvinces extends JavaPlugin {
 	public static TownyProvinces getPlugin() {
 		return plugin;
 	}
-
-	/**
-	 * Use this for debugging  TODO - Maybe remove, because for debugging we tend to use TownyProvinces.info() / severe()
-	 * 
-	 * @return plugin prefix
-	 */
-	public static String getPrefix() {
-		return "&6[" + plugin.getName() + "]";
-	}
-
+	
 	/**
 	 * Use this in most cases, as it looks better
 	 * @return plugin prefix

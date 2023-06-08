@@ -49,11 +49,13 @@ public class DynmapIntegration {
 	}
 	
 	private void addProvinceHomeBlocksMarkerSet() {
-		homeBlocksMarkerSet = createMarkerSet("townyprovinces.markerset.homeblocks", TownyProvinces.getPlugin().getName() + " - Prices", true, false);
+		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_prices").translate(Locale.ROOT);		
+		homeBlocksMarkerSet = createMarkerSet("townyprovinces.markerset.homeblocks", name, true, false);
 	}
 
 	private void addProvinceBordersMarkerSet() {
-		bordersMarkerSet = createMarkerSet("townyprovinces.markerset.borders", TownyProvinces.getPlugin().getName() + " - Borders", false, true);
+		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_borders").translate(Locale.ROOT);
+		bordersMarkerSet = createMarkerSet("townyprovinces.markerset.borders", name, false, true);
 	}
 	
 	private MarkerSet createMarkerSet(String markerSetId, String markerSetName, boolean hideByDefault, boolean labelShow) {
