@@ -136,10 +136,12 @@ public class TownyListener implements Listener {
 		//Add extra upkeep
 		Coord coord = event.getTown().getHomeBlockOrNull().getCoord();
 		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord);
-		double regionUpkeepPrice = province.getUpkeepTownCost();
-		if(regionUpkeepPrice > 0) {
-			double updatedUpkeepPrice = event.getUpkeep() + regionUpkeepPrice;
-			event.setUpkeep(updatedUpkeepPrice);
+		if(province != null) {
+			double regionUpkeepPrice = province.getUpkeepTownCost();
+			if (regionUpkeepPrice > 0) {
+				double updatedUpkeepPrice = event.getUpkeep() + regionUpkeepPrice;
+				event.setUpkeep(updatedUpkeepPrice);
+			}
 		}
 	}
 
