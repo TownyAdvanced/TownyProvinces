@@ -62,6 +62,27 @@ public class TownyProvinces extends JavaPlugin {
 		loadIntegrations();
 	}
 	
+	TODO
+	
+	/*
+	1. Setup a new dynmap layer, disabed by default,
+	to show the town prices.
+	Maybe display homeblocks as dollar signs,
+	and on hover, you can see the prices.
+	
+	2. Check for available money on preNewTownEvent
+	   If fail, you can't create town
+	   
+	3. Deduct money on newTownEvent
+	   "Region Settlement Cost"
+	   
+	4. Deduct money on newDay or townUpkeepEvent
+	   "Region Upkeep Cost"
+	
+	*/
+	
+	
+	
 	public boolean startLandValidationJob() {
 		landValidationJob = new LandValidationJob();
 		landValidationJob.runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, 300);
