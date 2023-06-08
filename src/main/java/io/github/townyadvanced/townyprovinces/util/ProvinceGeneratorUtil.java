@@ -406,7 +406,7 @@ public class ProvinceGeneratorUtil {
 	private static boolean createProvinceObjects(String regionName) {
 		TownyProvinces.info("Now generating province objects");
 		int newTownCost = TownyProvincesSettings.getNewTownCost(regionName);
-		int upkeepTownCost = TownyProvincesSettings.getNewTownCost(regionName);
+		int upkeepTownCost = TownyProvincesSettings.getUpkeepTownCost(regionName);
 		boolean isSea = false;
 		boolean landValidationRequested = false; 
 		Coord provinceHomeBlock;
