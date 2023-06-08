@@ -21,6 +21,7 @@ import org.dynmap.markers.PolyLineMarker;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class DynmapIntegration {
@@ -153,7 +154,7 @@ public class DynmapIntegration {
 				
 				String newTownCost = TownyEconomyHandler.getFormattedBalance(province.getNewTownCost());
 				String upkeepTownCost = TownyEconomyHandler.getFormattedBalance(province.getUpkeepTownCost());
-				String markerLabel = Translatable.of("dynmap_province_homeblock_label", newTownCost, upkeepTownCost).translate();
+				String markerLabel = Translatable.of("dynmap_province_homeblock_label", newTownCost, upkeepTownCost).translate(Locale.ROOT);
 				Marker homeBlockMarker = homeBlocksMarkerSet.findMarker(homeBlockMarkerId);
 				if (homeBlockMarker == null) {
 					homeBlocksMarkerSet.createMarker(

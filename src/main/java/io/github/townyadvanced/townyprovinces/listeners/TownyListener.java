@@ -1,20 +1,27 @@
 package io.github.townyadvanced.townyprovinces.listeners;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.TownyEconomyHandler;
+import com.palmergames.bukkit.towny.TownySettings;
+import com.palmergames.bukkit.towny.event.NewTownEvent;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
 import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
+import com.palmergames.bukkit.towny.event.TownUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.event.TownyLoadedDatabaseEvent;
 import com.palmergames.bukkit.towny.event.TranslationLoadEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreMergeEvent;
 import com.palmergames.bukkit.towny.object.Coord;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
@@ -51,8 +58,11 @@ public class TownyListener implements Listener {
 		event.setCancelled(true);
 		event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_merge_towns").translate(Locale.ROOT));
 	}
-	
-	@EventHandler(ignoreCancelled = true)
+
+	/**
+	 * Highest priority as we will assume success and take money here
+	 */
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onNewTownAttempt(PreNewTownEvent event) {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
 			return;
@@ -61,7 +71,7 @@ public class TownyListener implements Listener {
 		if (!event.getTownWorldCoord().getWorldName().equalsIgnoreCase(TownyProvincesSettings.getWorldName())) {
 			return;
 		}
-		/* 
+		/*
 		 * Can't place new town outside a province
 		 * Note: unless some hacking has occurred,
 		 * the only possible place, this can occur,
@@ -71,23 +81,60 @@ public class TownyListener implements Listener {
 		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord);
 		if (province == null) {
 			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_create_town_on_province_border").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_create_town_on_province_border").translate(Locale.ROOT));
 			return;
 		}
 		//Can't place town in Sea province
-		if(province.isSea()) {
+		if (province.isSea()) {
 			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_create_town_in_sea_provinces").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_create_town_in_sea_provinces").translate(Locale.ROOT));
 			return;
 		}
 		//Can't place new town is province-at-location already has one
 		if (doesProvinceContainTown(province)) {
 			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_create_town_in_full_province").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_create_town_in_full_province").translate(Locale.ROOT));
 			return;
 		}
+		/*
+		 * Check if the player has enough money
+		 * If the player does, take the region settlement price
+		 */
+		if (TownySettings.isUsingEconomy()) {
+			double regionSettlementPrice = province.getNewTownCost();
+			double newTownCost = TownySettings.getNewTownPrice() + regionSettlementPrice;
+			Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
+			if (resident != null && resident.getAccountOrNull() != null) {
+				if(resident.getAccountOrNull().canPayFromHoldings(newTownCost)) {
+					resident.getAccountOrNull().withdraw(regionSettlementPrice,"Region Settlement Price");
+					Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_you_paid_region_settlement_price", TownyEconomyHandler.getFormattedBalance(regionSettlementPrice)));
+				} else {
+					event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_afford_new_town", TownyEconomyHandler.getFormattedBalance(newTownCost)).translate(Locale.ROOT));
+				}
+			}
+		}
 	}
-	
+
+	@EventHandler(ignoreCancelled = true)
+	public void on(TownUpkeepCalculationEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled() || !TownySettings.isUsingEconomy()) {
+			return;
+		}
+		//Can't work it if the town has no homeblock
+		if (!event.getTown().hasHomeBlock()) {
+			return;
+		}
+		//No extra upkeep if it is not in the TP-enabled world
+		if (!event.getTown().hasHomeBlock() && !event.getTown().getWorld().getName().equalsIgnoreCase(TownyProvincesSettings.getWorldName())) {
+			return;
+		}
+		//Add extra upkeep
+		Coord coord = event.getTown().getHomeBlockOrNull().getCoord();
+		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord);
+		double updatedUpkeepPrice = event.getUpkeep() + province.getNewTownCost();
+		event.setUpkeep(updatedUpkeepPrice);
+	}
+
 	@EventHandler(ignoreCancelled = true)
 	public void onTownClaimAttempt(TownPreClaimEvent event) {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
