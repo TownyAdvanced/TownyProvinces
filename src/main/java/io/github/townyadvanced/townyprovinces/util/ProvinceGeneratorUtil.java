@@ -320,10 +320,6 @@ public class ProvinceGeneratorUtil {
 	}
 
 	/**
-	 * 
-	 */
-	
-	/**
 	 * Move the brush unless the new position would be too close to another province.
 	 * 
 	 * @param brush given brush

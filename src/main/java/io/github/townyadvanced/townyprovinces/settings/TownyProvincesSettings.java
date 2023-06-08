@@ -189,7 +189,5 @@ public class TownyProvincesSettings {
 		} else {
 			return false;
 		}
-			
-		
 	}
 }

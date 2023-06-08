@@ -1,31 +1,27 @@
 package io.github.townyadvanced.townyprovinces;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Locale;
-
-import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
-import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegration;
-import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapTask;
-import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
-import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.tasks.LandValidationJob;
-import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
-import io.github.townyadvanced.townyprovinces.util.FileUtil;
-import io.github.townyadvanced.townyprovinces.util.ProvinceGeneratorUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.initialization.TownyInitException;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.util.Version;
-
+import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
+import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegration;
+import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
+import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.tasks.LandValidationJob;
+import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
+import io.github.townyadvanced.townyprovinces.util.FileUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Locale;
 
 public class TownyProvinces extends JavaPlugin {
 	private static TownyProvinces plugin;

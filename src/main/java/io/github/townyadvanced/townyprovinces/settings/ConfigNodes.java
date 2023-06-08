@@ -21,7 +21,6 @@ public enum ConfigNodes {
 				"",
 				"# The name of the world where TownyProvinces appplies.",
 				"# TownyProvinces does not yet support multiple worlds"),
-
 	LAND_PROVINCE_BORDER(
 		"land_province_border",
 		"",

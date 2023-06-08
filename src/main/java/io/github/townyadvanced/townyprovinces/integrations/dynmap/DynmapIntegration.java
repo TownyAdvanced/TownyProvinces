@@ -9,7 +9,6 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.ProvinceGeneratorUtil;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.Marker;
@@ -34,72 +33,51 @@ public class DynmapIntegration {
 	private boolean homeBlocksRefreshRequested;
 
 	public DynmapIntegration() {
+		TownyProvinces.info("Enabling dynmap support.");
 		DynmapAPI dynmapAPI = (DynmapAPI) TownyProvinces.getPlugin().getServer().getPluginManager().getPlugin("dynmap");
 		markerapi = dynmapAPI.getMarkerAPI();
-		addProvinceBordersMarkerSet();
-		addProvinceHomeBlocksMarkerSet();
-		//registerDynmapTownyListener();
+		addAllMarkerSets();
 		startDynmapTask();
 		bordersRefreshRequested = false;
 		homeBlocksRefreshRequested = false;
 		TownyProvinces.info("Dynmap support enabled.");
 	}
+	
+	private void addAllMarkerSets() {
+		addProvinceHomeBlocksMarkerSet();
+		addProvinceBordersMarkerSet();
+	}
+	
+	private void addProvinceHomeBlocksMarkerSet() {
+		homeBlocksMarkerSet = createMarkerSet("townyprovinces.markerset.homeblocks", TownyProvinces.getPlugin().getName() + " - Prices", true, false);
+	}
 
 	private void addProvinceBordersMarkerSet() {
-		TownyProvinces plugin = TownyProvinces.getPlugin();
-		String markerSetName = plugin.getName() + " - Borders";
-		
+		bordersMarkerSet = createMarkerSet("townyprovinces.markerset.borders", TownyProvinces.getPlugin().getName() + " - Borders", false, true);
+	}
+	
+	private MarkerSet createMarkerSet(String markerSetId, String markerSetName, boolean hideByDefault, boolean labelShow) {
 		if (markerapi == null) {
 			TownyProvinces.severe("Error loading Dynmap marker API!");
-			return;
+			return null;
 		}
 
 		//Create marker set
-		bordersMarkerSet = markerapi.getMarkerSet("townyprovinces.markerset.borders");
-		if (bordersMarkerSet == null) {
-			bordersMarkerSet = markerapi.createMarkerSet("townyprovinces.markerset.borders", markerSetName, null, false);
+		MarkerSet markerSet = markerapi.getMarkerSet(markerSetId);
+		if (markerSet == null) {
+			markerSet = markerapi.createMarkerSet(markerSetId, markerSetName, null, true);
+			markerSet.setHideByDefault(hideByDefault);
+			markerSet.setLabelShow(labelShow);
 		}
 
-		if (bordersMarkerSet == null) {
+		if (markerSet == null) {
 			TownyProvinces.severe("Error creating Dynmap marker set!");
-			return;
+			return null;
 		}
+		return null;
 	}
 
-	private void addProvinceHomeBlocksMarkerSet() {
-		TownyProvinces plugin = TownyProvinces.getPlugin();
-		String markerSetName = plugin.getName() + " - Prices";
-		
-		if (markerapi == null) {
-			TownyProvinces.severe("Error loading Dynmap marker API!");
-			return;
-		}
-
-		//Create marker set
-		homeBlocksMarkerSet = markerapi.getMarkerSet("townyprovinces.markerset.homeblocks");
-		if (homeBlocksMarkerSet == null) {
-			homeBlocksMarkerSet = markerapi.createMarkerSet("townyprovinces.markerset.homeblocks", markerSetName, null, true);
-			homeBlocksMarkerSet.setHideByDefault(true);
-			homeBlocksMarkerSet.setLabelShow(false);
-		}
-
-		if (homeBlocksMarkerSet == null) {
-			TownyProvinces.severe("Error creating Dynmap marker set!");
-			return;
-		}
-	}
-	private void registerDynmapTownyListener() {
-		TownyProvinces plugin = TownyProvinces.getPlugin();
-		PluginManager pm = plugin.getServer().getPluginManager();
-		if (pm.isPluginEnabled("Dynmap-Towny")) {
-			TownyProvinces.info("TownyProvinces found Dynmap-Towny plugin, enabling Dynmap-Towny support.");
-			pm.registerEvents(new DynmapTownyListener(), plugin);
-		} else {
-			TownyProvinces.info("Dynmap-Towny plugin not found.");
-		}
-	}
-
-	public void requestHomeBlocksAndBordersRefresh() {
+	public void requestFullMapRefresh() {
 		bordersRefreshRequested = true;
 		homeBlocksRefreshRequested = true;
 	}
@@ -136,9 +114,6 @@ public class DynmapIntegration {
 		drawProvinceBorders();
 	}
 
-	/**
-	 * Method only used for debug. Draws the province homeblocks as fire icons
-	 */
 	private void drawProvinceHomeBlocks() {
 		String border_icon = "coins";
 		for (Province province : TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
@@ -160,7 +135,7 @@ public class DynmapIntegration {
 					homeBlocksMarkerSet.createMarker(
 						homeBlockMarkerId, markerLabel, TownyProvincesSettings.getWorldName(),
 						realHomeBlockX, 64, realHomeBlockZ,
-						homeBlockIcon, false);
+						homeBlockIcon, true);
 					//homeBlockMarker.setLabel(markerLabel);
 					//homeBlockMarker.setDescription(null);
 				}

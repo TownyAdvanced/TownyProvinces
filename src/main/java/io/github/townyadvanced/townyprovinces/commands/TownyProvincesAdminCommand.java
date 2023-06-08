@@ -228,7 +228,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		if(givenRegionName.equalsIgnoreCase("all")) {
 			if(ProvinceGeneratorUtil.regenerateAllRegions()) {
 				DataHandlerUtil.saveAllData();
-				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksAndBordersRefresh();
+				TownyProvinces.getPlugin().getDynmapIntegration().requestFullMapRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_successfully_regenerated_all_regions"));
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_problem_regenerating_all_regions"));
@@ -236,7 +236,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
 			if(ProvinceGeneratorUtil.regenerateOneRegion(caseCorrectRegionName)) {
 				DataHandlerUtil.saveAllData();
-				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksAndBordersRefresh();
+				TownyProvinces.getPlugin().getDynmapIntegration().requestFullMapRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_successfully_regenerated_one_regions", caseCorrectRegionName));
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_problem_regenerating_one_region", caseCorrectRegionName));

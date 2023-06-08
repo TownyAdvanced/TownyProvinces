@@ -1,7 +1,5 @@
 package io.github.townyadvanced.townyprovinces.util;
 
-import io.github.townyadvanced.townyprovinces.TownyProvinces;
-
 public class TownyProvincesMathUtil {
 
 

@@ -12,7 +12,7 @@ public class Province {
 	private int newTownCost;
 	private int upkeepTownCost;
 	private boolean isSea;
-	private String id; //convenience variable. In memory only. Used for dynmap and file operations
+	private final String id; //convenience variable. In memory only. Used for dynmap and file operations
 	private boolean landValidationRequested;
 
 	public boolean equals(Object object) {

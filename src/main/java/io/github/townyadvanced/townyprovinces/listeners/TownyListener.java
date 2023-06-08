@@ -3,7 +3,6 @@ package io.github.townyadvanced.townyprovinces.listeners;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
-import com.palmergames.bukkit.towny.event.NewTownEvent;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
 import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
 import com.palmergames.bukkit.towny.event.TownUpkeepCalculationEvent;
@@ -40,6 +39,9 @@ public class TownyListener implements Listener {
 	/* Handle re-adding the lang string into Towny when Towny reloads the Translation Registry. */
 	@EventHandler
 	public void onTownyLoadLang(TranslationLoadEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
 		Plugin plugin = TownyProvinces.getPlugin();
 		Path langFolderPath = Paths.get(plugin.getDataFolder().getPath()).resolve("lang");
 		TranslationLoader loader = new TranslationLoader(langFolderPath, plugin, TownyProvinces.class);

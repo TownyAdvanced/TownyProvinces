@@ -35,7 +35,7 @@ msg_province_already_sea: "&cProvince Type is already Sea."
 msg_province_successfully_set_to_land: "&bProvince Type set to Land. The map will be updated shortly."
 msg_province_already_land: "&cProvince Type is already Land."
 
-# Regeneration
+# Regenerate region
 
 msg_err_unknown_region_name: "&cUnknown region name."
 msg_problem_regenerating_all_regions: "&cThere was a problem generating all regions."
@@ -43,7 +43,7 @@ msg_problem_regenerating_one_region: "&cThere was a problem generating region: %
 msg_successfully_regenerated_all_regions: "&bSuccessfully regenerated all regions."
 msg_successfully_regenerated_one_regions: "&bSuccessfully regenerated region: %s."
 
-# Setting town costs
+# Set town costs
 
 msg_err_value_must_be_and_integer: "&cThe given value must be an integer."
 msg_new_town_cost_set_for_all_regions: "&bNew-Town-Cost set for all regions, to: %s"
@@ -68,14 +68,17 @@ land_validation_job_status_paused: "&aPaused"
 land_validation_job_status_pause_requested: "&aPause Requested"
 land_validation_job_status_restart_requested: "&aRestart Requested"
 
-# New towns
+# Creating new towns
 
 msg_err_cannot_create_town_on_province_border: "&cTowns cannot be created on province borders."
 msg_err_cannot_create_town_in_sea_provinces: "&cTowns cannot be created in Sea provinces."
 msg_err_cannot_create_town_in_full_province: "&cOnly 1 town is allowed in each province. This province already contains a town."
-msg_err_cannot_merge_towns: "&cTown merging is not possible."
 msg_err_cannot_afford_new_town: "&cYou can't afford to settle a new town in this province, which costs %s."
 msg_you_paid_region_settlement_price: "&aYou paid the region settlement price of %s."
+
+# Merging towns
+
+msg_err_cannot_merge_towns: "&cTown merging is not possible."
 
 # Claiming
 

@@ -1,12 +1,11 @@
 package io.github.townyadvanced.townyprovinces.settings;
 
-import java.nio.file.Path;
-
 import com.palmergames.bukkit.config.CommentedConfiguration;
 import com.palmergames.bukkit.towny.exceptions.initialization.TownyInitException;
 import com.palmergames.util.FileMgmt;
-
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
+
+import java.nio.file.Path;
 
 public class Settings {
 	private static CommentedConfiguration config, newConfig;

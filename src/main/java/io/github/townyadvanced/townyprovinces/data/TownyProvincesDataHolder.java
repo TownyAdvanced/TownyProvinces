@@ -44,7 +44,6 @@ public class TownyProvincesDataHolder {
 		}
 		return result;
 	}
-
 	
 	public void addProvince(Province province) {
 		provincesSet.add(province);
