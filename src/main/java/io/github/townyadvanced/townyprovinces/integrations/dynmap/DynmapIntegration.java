@@ -67,7 +67,7 @@ public class DynmapIntegration {
 		//Create marker set
 		MarkerSet markerSet = markerapi.getMarkerSet(markerSetId);
 		if (markerSet == null) {
-			markerSet = markerapi.createMarkerSet(markerSetId, markerSetName, null, true);
+			markerSet = markerapi.createMarkerSet(markerSetId, markerSetName, null, false);
 			markerSet.setHideByDefault(hideByDefault);
 			markerSet.setLabelShow(labelShow);
 		}
@@ -76,7 +76,7 @@ public class DynmapIntegration {
 			TownyProvinces.severe("Error creating Dynmap marker set!");
 			return null;
 		}
-		return null;
+		return markerSet;
 	}
 
 	public void requestFullMapRefresh() {
