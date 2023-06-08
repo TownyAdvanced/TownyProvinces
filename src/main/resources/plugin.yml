@@ -2,10 +2,13 @@ name: ${project.artifactId}
 main: ${project.groupId}.${project.name}.${project.artifactId}
 version: ${project.version}
 api-version: ${project.bukkitAPIVersion}
-author: LlmDl
+author: Goosius
 website: 'http://townyadvanced.github.io'
 prefix: ${project.artifactId}
 depend: [Towny]
+softdepend: [dynmap]
+
+description: Automatically divides the map up into one-town-only provinces, reducing staff workload and server toxicity.
 
 commands:
     townyprovincesadmin:
