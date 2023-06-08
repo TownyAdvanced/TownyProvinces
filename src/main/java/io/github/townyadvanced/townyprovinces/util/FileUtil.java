@@ -91,6 +91,8 @@ public class FileUtil {
 				fileEntries.add("province_creator_brush_max_move_in_chunks: 2");
 				fileEntries.add("province_creator_brush_claim_limit_in_square_metres: 10000");
 				fileEntries.add("number_of_province_painting_cycles: 100");
+				fileEntries.add("new_town_cost: 100");
+				fileEntries.add("upkeep_town_cost: 1");
 				String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(FileUtil.REGION_DEFINITIONS_FOLDER_PATH).toString();
 				String filePath = folderPath + "/" + fileName;
 				saveListIntoFile(fileEntries, filePath);
@@ -109,6 +111,8 @@ public class FileUtil {
 				fileEntries.add("province_creator_brush_max_move_in_chunks: 1");
 				fileEntries.add("province_creator_brush_claim_limit_in_square_metres: 5000");
 				fileEntries.add("number_of_province_painting_cycles: 100");
+				fileEntries.add("new_town_cost: 100");
+				fileEntries.add("upkeep_town_cost: 1");
 				folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(FileUtil.REGION_DEFINITIONS_FOLDER_PATH).toString();
 				filePath = folderPath + "/" + fileName;
 				saveListIntoFile(fileEntries, filePath);

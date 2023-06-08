@@ -81,20 +81,25 @@ public class DataHandlerUtil {
 		TownyProvinces.info("All Provinces Loaded");
 	}
 
-	public static void loadProvince(File provinceFile) {
-		Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(provinceFile);
+	public static void loadProvince(File regionDefinitionFile) {
+		//Read values from province file
+		Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(regionDefinitionFile);
 		Coord homeBlock = unpackCoord(fileEntries.get("home_block"));
-		Province province = new Province(homeBlock);
-		province.setSea(Boolean.parseBoolean(fileEntries.get("is_sea")));
+		boolean isSea = Boolean.parseBoolean(fileEntries.get("is_sea"));
+		boolean isLandValidationRequested = false; 
+		int newTownCost = 0;
+		int upkeepTownCost = 0;
 		if(fileEntries.containsKey("is_land_validation_requested")) {
-			province.setLandValidationRequested(Boolean.parseBoolean(fileEntries.get("is_land_validation_requested")));
+			isLandValidationRequested = Boolean.parseBoolean(fileEntries.get("is_land_validation_requested"));
+		}
+		if(fileEntries.containsKey("new_town_cost")) {
+			newTownCost = Integer.parseInt(fileEntries.get("new_town_cost"));
 		}
 		if(fileEntries.containsKey("upkeep_town_cost")) {
-			province.setUpkeepTownCost(Integer.parseInt(fileEntries.get("upkeep_town_cost")));
+			upkeepTownCost = Integer.parseInt(fileEntries.get("upkeep_town_cost"));
 		}
-		if(fileEntries.containsKey("upkeep_town_cost")) {
-			province.setUpkeepTownCost(Integer.parseInt(fileEntries.get("upkeep_town_cost")));
-		}
+		//Create province
+		Province province = new Province(homeBlock, isSea, isLandValidationRequested, newTownCost, upkeepTownCost);
 		//Add province to provinces set
 		TownyProvincesDataHolder.getInstance().addProvince(province);
 		//Add coords to coord-province map

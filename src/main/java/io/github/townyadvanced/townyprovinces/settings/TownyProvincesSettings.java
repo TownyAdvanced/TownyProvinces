@@ -94,12 +94,6 @@ public class TownyProvincesSettings {
 		return 16; //Same as a chunk. Best not to change
 	}
 
-	public static double getOceanBiomeThresholdForProvinceDeletion(String regionName) {
-		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String doubleString = regionDefinitions.get("ocean_biome_threshold_for_province_deletion");
-		return Double.parseDouble(doubleString);
-	}
-
 	public static int getNumberOfProvincePaintingCycles(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
 		String numString = regionDefinitions.get("number_of_province_painting_cycles");
@@ -128,6 +122,18 @@ public class TownyProvincesSettings {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
 		String numString = regionDefinitions.get("province_creator_brush_claim_limit_in_square_metres");
 		return Integer.parseInt(numString);
+	}
+	
+	public static int getNewTownCost(String regionName) {
+		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+		String intString = regionDefinitions.get("new_town_cost");
+		return Integer.parseInt(intString);
+	}
+
+	public static int getUpkeepTownCost(String regionName) {
+		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+		String intString = regionDefinitions.get("upkeep_town_cost");
+		return Integer.parseInt(intString);
 	}
 	
 	public static int getLandProvinceBorderWeight() {

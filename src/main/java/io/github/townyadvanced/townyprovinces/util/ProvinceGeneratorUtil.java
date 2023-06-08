@@ -1,5 +1,6 @@
 package io.github.townyadvanced.townyprovinces.util;
 
+import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
@@ -21,11 +22,11 @@ public class ProvinceGeneratorUtil {
 	 * Generate all provinces in the world
 	 */
 	public static boolean regenerateAllRegions() {
-		List<String> regionNames = new ArrayList<>(TownyProvincesSettings.getRegionDefinitions().keySet());
-		Collections.sort(regionNames); //Sort in alphabetical order
 		//Delete all Provinces
 		TownyProvincesDataHolder.getInstance().deleteAllProvinces();
 		//Paint all Provinces
+		List<String> regionNames = new ArrayList<>(TownyProvincesSettings.getRegionDefinitions().keySet());
+		Collections.sort(regionNames); //Sort in alphabetical order
 		for (String regionName: regionNames) {
 			if(!paintProvincesInRegion(regionName)) {
 				return false;
@@ -64,7 +65,7 @@ public class ProvinceGeneratorUtil {
 		}
 		
 		//Create province objects - empty except for the homeblocks
-		if(!createProvinceHomeBlocks(regionName)) {
+		if(!createProvinceObjects(regionName)) {
 			return false;
 		}
 		
@@ -395,20 +396,26 @@ public class ProvinceGeneratorUtil {
 	}
 
 	/**
-	 * Create province homeblocks.
-	 * Also create the homeblock objects at this point
+	 * Create province objects, including
+	 * - Homeblocks
+	 * - New town prices
+	 * - Upkeep town prices
 	 * 
-	 * @return false if we failed to create sufficient provinces
+	 * @return false if we failed to create sufficient province objects
 	 */
-	private static boolean createProvinceHomeBlocks(String regionName) {
-		TownyProvinces.info("Now generating province homeblocks");
+	private static boolean createProvinceObjects(String regionName) {
+		TownyProvinces.info("Now generating province objects");
+		int newTownCost = TownyProvincesSettings.getNewTownCost(regionName);
+		int upkeepTownCost = TownyProvincesSettings.getNewTownCost(regionName);
+		boolean isSea = false;
+		boolean landValidationRequested = false; 
 		Coord provinceHomeBlock;
 		int idealNumberOfProvinces = calculateIdealNumberOfProvinces(regionName);
 		for (int provinceIndex = 0; provinceIndex < idealNumberOfProvinces; provinceIndex++) {
 			provinceHomeBlock = generateProvinceHomeBlock(regionName);
 			if(provinceHomeBlock != null) { 
 				//Province homeblock generated. Now create province
-				Province province = new Province(provinceHomeBlock);
+				Province province = new Province(provinceHomeBlock, isSea, landValidationRequested, newTownCost, upkeepTownCost);
 				TownyProvincesDataHolder.getInstance().addProvince(province);
 			} else {
 				//Could not generate a province homeblock. Ran out of space on the map
@@ -416,15 +423,15 @@ public class ProvinceGeneratorUtil {
 				double minimumAllowedNumProvinces = ((double) idealNumberOfProvinces) * (1 - allowedVariance);
 				int actualNumProvinces = TownyProvincesDataHolder.getInstance().getNumProvinces();
 				if (actualNumProvinces < minimumAllowedNumProvinces) {
-					TownyProvinces.severe("ERROR: Could not create the minimum number of provinces. Required: " + minimumAllowedNumProvinces + ". Actual: " + actualNumProvinces);
+					TownyProvinces.severe("ERROR: Could not create the minimum number of provinces objects. Required: " + minimumAllowedNumProvinces + ". Actual: " + actualNumProvinces);
 					return false;
 				} else {
-					TownyProvinces.info("" + actualNumProvinces + " province homeblocks created.");
+					TownyProvinces.info("" + actualNumProvinces + " province objects created.");
 					return true;
 				}
 			}
 		}
-		TownyProvinces.info("" + TownyProvincesDataHolder.getInstance().getNumProvinces() + " province homeblocks created.");
+		TownyProvinces.info("" + TownyProvincesDataHolder.getInstance().getNumProvinces() + " province objects created.");
 		return true;
 	}
 

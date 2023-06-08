@@ -21,13 +21,13 @@ public class Province {
 		return homeBlock.equals(((Province)object).getHomeBlock());
 	}
 	
-	public Province(Coord homeBlock) {
+	public Province(Coord homeBlock, boolean isSea, boolean landValidationRequested, int newTownCost, int upkeepTownCost) {
 		this.homeBlock = homeBlock;
-		this.isSea = false;
-		this.newTownCost = 0;
-		this.upkeepTownCost = 0;
+		this.isSea = isSea;
+		this.newTownCost = newTownCost;
+		this.upkeepTownCost = upkeepTownCost;
 		this.id = "province_x" + homeBlock.getX() + "_y_" + homeBlock.getZ();
-		this.landValidationRequested = false;
+		this.landValidationRequested = landValidationRequested;
 	}
 
 	public String getId() {
