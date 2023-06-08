@@ -24,21 +24,22 @@ description: >
 # Rose = &c, LightPurple = &d, Yellow = &e, White = &f
 
 # Plugin prefix
+
 plugin_prefix: '&6[Towny Provinces] '
 
-# Admin
+# Set province to land or sea
 
 msg_err_invalid_province_location: "&cThe given co-ordinate was either mis-formatted, on a border, or outside the map."
 msg_province_successfully_set_to_sea: "&bProvince Type set to Sea. The map will be updated shortly."
 msg_province_already_sea: "&cProvince Type is already Sea."
 msg_province_successfully_set_to_land: "&bProvince Type set to Land. The map will be updated shortly."
 msg_province_already_land: "&cProvince Type is already Land."
-msg_err_unknown_region_name: "&cUnknown region name."
-msg_problem_generating_all_provinces: "&cThere was a problem generating provinces."
-msg_problem_generating_one_province: "&cThere was a problem generating the province."
 
 # Regeneration
 
+msg_err_unknown_region_name: "&cUnknown region name."
+msg_problem_generating_all_provinces: "&cThere was a problem generating provinces."
+msg_problem_generating_one_province: "&cThere was a problem generating the province."
 msg_now_regenerating_all_regions: "&bNow regenerating all regions."
 msg_now_regenerating_one_region: "&bNow regenerating region: %s"
 
