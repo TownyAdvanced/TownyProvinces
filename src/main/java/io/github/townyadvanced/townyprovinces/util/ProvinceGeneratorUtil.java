@@ -164,10 +164,32 @@ public class ProvinceGeneratorUtil {
 		TownyProvinces.info("Now assigning unclaimed chunks to provinces.");
 		//Use the first region
 		String regionName = TownyProvincesSettings.getNameOfFirstRegion();
-		List<Coord> coordsEligibleForProvinceAssignment;
+		Set<Coord> coordsEligibleForProvinceAssignment = new HashSet<>();
 		Province province;
 		Set<Coord> unclaimedCoords = findAllUnclaimedCoords();
-		while((coordsEligibleForProvinceAssignment = findCoordsEligibleForProvinceAssignment(regionName, unclaimedCoords)).size() > 0) {
+		while(true) {
+			TownyProvinces.info("Num Unclaimed Chunks: " + unclaimedCoords.size());
+			rebuildSetOfUnclaimedCoords(unclaimedCoords);
+			rebuildSetOfCoordsEligibleForProvinceAssignment(regionName, unclaimedCoords, coordsEligibleForProvinceAssignment);
+
+			if(unclaimedCoords.size() == 0) {
+				break;
+			}
+			
+			/*
+			 * Cycle each eligible coord
+			 * Assign it if it is still eligible when we get to it
+			 */
+			for(Coord coord: coordsEligibleForProvinceAssignment) {
+				if((province = getProvinceIfCoordIsEligibleForProvinceAssignment(regionName, coord)) != null) {
+					TownyProvincesDataHolder.getInstance().claimCoordForProvince(coord, province);
+					unclaimedCoords.remove(coord);
+				}
+			}
+
+		}
+		
+		while((coordsEligibleForProvinceAssignment = rebuildSetOfCoordsEligibleForProvinceAssignment(regionName, unclaimedCoords)).size() > 0) {
 			TownyProvinces.info("Num Unclaimed Chunks: " + unclaimedCoords.size());
 			/*
 			 * Cycle each eligible coord
@@ -183,19 +205,32 @@ public class ProvinceGeneratorUtil {
 		TownyProvinces.info("Finished assigning unclaimed chunks to provinces.");
 		return true;
 	}
-	
-	private static List<Coord> findCoordsEligibleForProvinceAssignment(String regionName, Set<Coord> allUnclaimedCoords) {
-		List<Coord> result = new ArrayList<>();
 
-		Province province;
-		for (Coord candidateCoord : allUnclaimedCoords) {
-			province = getProvinceIfCoordIsEligibleForProvinceAssignment(regionName, candidateCoord);
-			if(province != null) {
-				result.add(candidateCoord);
+	private static void rebuildSetOfUnclaimedCoords(Set<Coord> unclaimedCoords) {
+		String regionName = new ArrayList<>(TownyProvincesSettings.getRegionDefinitions().keySet()).get(0);
+		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		unclaimedCoords.clear();
+		for(int x = minX; x <= maxX; x++) {
+			for (int z = minZ; z <= maxZ; z++) {
+				if (!TownyProvincesDataHolder.getInstance().isCoordClaimedByProvince(x, z)) {
+					unclaimedCoords.add(new Coord(x, z));
+				}
 			}
 		}
-		return result;
+	}
 
+	private static void rebuildSetOfCoordsEligibleForProvinceAssignment(String regionName, Set<Coord> allUnclaimedCoords, Set<Coord> coordsEligibleForProvinceAssignment) {
+		coordsEligibleForProvinceAssignment.clear();
+		Province province;
+		for (Coord unclaimedCoord : allUnclaimedCoords) {
+			province = getProvinceIfCoordIsEligibleForProvinceAssignment(regionName, unclaimedCoord);
+			if(province != null) {
+				coordsEligibleForProvinceAssignment.add(unclaimedCoord);
+			}
+		}
 	}
 	
 	private static Province getProvinceIfCoordIsEligibleForProvinceAssignment(String regionName, Coord candidateCoord) {
@@ -215,21 +250,20 @@ public class ProvinceGeneratorUtil {
 			return null;
 
 		//Filter out chunk if it does not have exactly 1 adjacent province
-		List<Province> adjacentProvinces = findAllAdjacentProvinces(candidateCoord);
-		if(adjacentProvinces.size() != 1)
+		Province province = findProvinceIfOnlyOneIsAdjacent(candidateCoord);
+		if(province == null)
 			return null;
 
 		//Filter out chunk if the adjacent province is NOT on a cardinal direction
 		//TODO - Improve me combine with above
-		if(findCardinallyAdjacentProvinces(candidateCoord).size() == 0)
+		if(verifyThereAreNoCardinallyAdjacentPrinces(candidateCoord))
 			return null;
 
 		//Return province
-		return adjacentProvinces.get(0);
+		return province;
 	}
 	
-	private static List<Province> findAllAdjacentProvinces(Coord givenCoord) {
-		Set<Province> result = new HashSet<>();
+	private static Province findProvinceIfOnlyOneIsAdjacent(Coord givenCoord) {
 		Province adjacentProvince;
 		for(Coord adjacentCoord: findAllAdjacentCoords(givenCoord)) {
 			adjacentProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord);
@@ -250,7 +284,7 @@ public class ProvinceGeneratorUtil {
 		return result;
 	}
 
-	private static List<Province> findCardinallyAdjacentProvinces(Coord givenCoord) {
+	private static List<Province> verifyThereAreNoCardinallyAdjacentPrinces(Coord givenCoord) {
 		Set<Province> result = new HashSet<>();
 		Province adjacentProvince;
 		for(Coord adjacentCoord: findCardinallyAdjacentCoords(givenCoord)) {

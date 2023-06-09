@@ -86,4 +86,13 @@ public class TownyProvincesDataHolder {
 		provincesSet.clear();
 		coordProvinceMap.clear();
 	}
+
+	public boolean isCoordClaimedByProvince(int x, int z) {
+		for(Coord coord: coordProvinceMap.keySet()) {
+			if(coord.getX() == x && coord.getZ() == z) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
