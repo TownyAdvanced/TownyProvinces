@@ -22,6 +22,8 @@ public class ProvinceGeneratorUtil {
 	 * Generate all provinces in the world
 	 */
 	public static boolean regenerateAllRegions() {
+		//Create region definitions folder and sample files is needed
+		FileUtil.createRegionDefinitionsFolderAndSampleFiles();
 		//Reload region definitions
 		TownyProvincesSettings.loadRegionDefinitions();
 		//Delete all Provinces
@@ -50,9 +52,10 @@ public class ProvinceGeneratorUtil {
 	 * @return true if success
 	 */
 	public static boolean regenerateOneRegion(String regionName) {
+		//Create region definitions folder and sample files is needed
+		FileUtil.createRegionDefinitionsFolderAndSampleFiles();
 		//Reload region definitions
 		TownyProvincesSettings.loadRegionDefinitions();
-
 		//Paint region
 		if(!paintProvincesInRegion(regionName)) {
 			return false;
@@ -284,7 +287,9 @@ public class ProvinceGeneratorUtil {
 		}
 		
 		//Execute province painting competition
-		for(int i = 0; i < TownyProvincesSettings.getNumberOfProvincePaintingCycles(regionName); i++) {
+		int numPaintingCycles =  TownyProvincesSettings.getNumberOfProvincePaintingCycles(regionName);
+		for(int i = 0; i < numPaintingCycles; i++) {
+			TownyProvinces.info("Painting Cycle: " + i + " / " + numPaintingCycles);
 			for(ProvinceClaimBrush provinceClaimBrush: provinceClaimBrushes) {
 				//If inactive, do nothing
 				if(!provinceClaimBrush.isActive())

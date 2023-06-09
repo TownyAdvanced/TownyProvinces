@@ -45,6 +45,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				if (args.length == 2)
 					return NameUtil.filterByStart(adminTabCompletesRegion, args[1]);
 				if (args.length == 3) {
+					TownyProvincesSettings.loadRegionDefinitions();
 					List<String> regionOptions = new ArrayList<>();
 					regionOptions.add("All");
 					List<String> regionNames = new ArrayList<>(TownyProvincesSettings.getRegionDefinitions().keySet());

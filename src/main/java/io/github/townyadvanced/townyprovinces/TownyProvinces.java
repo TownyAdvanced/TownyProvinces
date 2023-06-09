@@ -44,8 +44,6 @@ public class TownyProvinces extends JavaPlugin {
 				|| !TownyProvincesSettings.isTownyProvincesEnabled() 
 				|| !TownyProvincesDataHolder.initialize()
 				|| !FileUtil.setupPluginDataFoldersIfRequired()
-				|| !FileUtil.createRegionDefinitionsFolderAndSampleFiles()
-				|| !TownyProvincesSettings.loadRegionDefinitions()
 				|| !DataHandlerUtil.loadAllData()
 				|| !registerListeners()
 				|| !registerAdminCommands()
@@ -53,7 +51,7 @@ public class TownyProvinces extends JavaPlugin {
 			onDisable();
 			return;
 		}
-		
+			
 		//Load integrations 
 		loadIntegrations();
 	}
