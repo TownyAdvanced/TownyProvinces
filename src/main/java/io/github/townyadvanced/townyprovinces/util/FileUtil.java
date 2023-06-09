@@ -75,7 +75,7 @@ public class FileUtil {
 		String fileName = "???";
 		try {
 			boolean folderAlreadyExisted = FileUtil.createFolderIfRequired(REGION_DEFINITIONS_FOLDER_PATH);
-			if (folderAlreadyExisted) {
+			if (!folderAlreadyExisted) {
 				
 				//Sample file 1
 				fileName = "Region_1_Earth.yml";

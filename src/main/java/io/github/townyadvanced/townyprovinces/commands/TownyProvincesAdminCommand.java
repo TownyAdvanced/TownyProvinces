@@ -106,11 +106,11 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 
 	private void showHelp(CommandSender sender) {
 		TownyMessaging.sendMessage(sender, ChatTools.formatTitle("/townyprovincesadmin"));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "province [sea|land] [<x>,<z>]", ""));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "region [regenerate] [<Region Name>]", ""));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "region [newtowncost] [<Region Name>] [amount]", ""));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "region [upkeeptowncost] [<Region Name>] [amount]", ""));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpa", "landvalidationjob [status|start|stop|restart|pause]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "province [sea|land] [<x>,<z>]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [regenerate] [<Region Name>]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [newtowncost] [<Region Name>] [amount]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [upkeeptowncost] [<Region Name>] [amount]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "landvalidationjob [status|start|stop|restart|pause]", ""));
 	}
 
 	private void parseProvinceCommand(CommandSender sender, String[] args) {
