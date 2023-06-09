@@ -2,9 +2,10 @@ package io.github.townyadvanced.townyprovinces.objects;
 
 import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
+import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 
 import java.util.List;
+import java.util.Set;
 
 public class Province {
 	
@@ -62,7 +63,7 @@ public class Province {
 		this.isSea = b;
 	}
 
-	public List<Coord> getCoordsInProvince() {
+	public List<TPCoord> getCoordsInProvince() {
 		return TownyProvincesDataHolder.getInstance().getCoordsInProvince(this);
 	}
 
@@ -76,6 +77,10 @@ public class Province {
 
 	public void setLandValidationRequested(boolean landValidationRequested) {
 		this.landValidationRequested = landValidationRequested;
+	}
+
+	public Set<TPCoord> getAdjacentBorderCoords(TPCoord targetCoord) {
+		return TownyProvincesDataHolder.getInstance().findAdjacentBorderCoords(targetCoord);
 	}
 }
  

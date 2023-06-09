@@ -1,4 +1,4 @@
-package io.github.townyadvanced.townyprovinces.tasks;
+package io.github.townyadvanced.townyprovinces.land_validation_job;
 
 import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
@@ -13,6 +13,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.List;
 
 public class LandValidationJob extends BukkitRunnable {
+	
+	public static LandValidationJob landValidationJob = null;
+	
+	public static LandValidationJob getLandValidationJob() {
+		return landValidationJob;
+	}
 	
 	private LandValidationJobStatus landValidationJobStatus;
 	
@@ -30,7 +36,13 @@ public class LandValidationJob extends BukkitRunnable {
 			landValidationJobStatus = LandValidationJobStatus.STOPPED;
 		}
 	}
-	
+
+	public static boolean startJob() {
+		landValidationJob = new LandValidationJob();
+		landValidationJob.runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, 300);
+		return true;
+	}
+
 	public LandValidationJobStatus getLandValidationJobStatus() {
 		return landValidationJobStatus;
 	}

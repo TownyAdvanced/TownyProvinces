@@ -13,10 +13,10 @@ import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.tasks.LandValidationJob;
-import io.github.townyadvanced.townyprovinces.tasks.LandValidationJobStatus;
-import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
-import io.github.townyadvanced.townyprovinces.util.ProvinceGeneratorUtil;
+import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJob;
+import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJobStatus;
+import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
+import io.github.townyadvanced.townyprovinces.province_generation_job.ProvinceGenerationJob;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -149,7 +149,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			showHelp(sender);
 			return;
 		}
-		LandValidationJob landValidationJob = TownyProvinces.getLandValidationJob();
+		LandValidationJob landValidationJob = LandValidationJob.getLandValidationJob();
 		if (args[0].equalsIgnoreCase("status")) {
 			Translatable status = Translatable.of(landValidationJob.getLandValidationJobStatus().getLanguageKey());
 			Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_status").append(status));
@@ -227,21 +227,11 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		String givenRegionName = args[1];
 		String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 		if(givenRegionName.equalsIgnoreCase("all")) {
-			if(ProvinceGeneratorUtil.regenerateAllRegions()) {
-				DataHandlerUtil.saveAllData();
-				TownyProvinces.getPlugin().getDynmapIntegration().requestFullMapRefresh();
-				Messaging.sendMsg(sender, Translatable.of("msg_successfully_regenerated_all_regions"));
-			} else {
-				Messaging.sendMsg(sender, Translatable.of("msg_problem_regenerating_all_regions"));
-			}
+			ProvinceGenerationJob.startJob(givenRegionName);
+			//TODO SEND A MESSAGE SAYING JOB STARTED
 		} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
-			if(ProvinceGeneratorUtil.regenerateOneRegion(caseCorrectRegionName)) {
-				DataHandlerUtil.saveAllData();
-				TownyProvinces.getPlugin().getDynmapIntegration().requestFullMapRefresh();
-				Messaging.sendMsg(sender, Translatable.of("msg_successfully_regenerated_one_regions", caseCorrectRegionName));
-			} else {
-				Messaging.sendMsg(sender, Translatable.of("msg_problem_regenerating_one_region", caseCorrectRegionName));
-			}
+			ProvinceGenerationJob.startJob(caseCorrectRegionName);
+			//TODO SEND A MESSAGE SAYING JOB STARTED
 		} else {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
 		}

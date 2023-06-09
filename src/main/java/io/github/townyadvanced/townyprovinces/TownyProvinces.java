@@ -11,8 +11,8 @@ import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegrat
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.tasks.LandValidationJob;
-import io.github.townyadvanced.townyprovinces.util.DataHandlerUtil;
+import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJob;
+import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -25,14 +25,9 @@ import java.util.Locale;
 
 public class TownyProvinces extends JavaPlugin {
 	private static TownyProvinces plugin;
-	private static DynmapIntegration dynmapIntegration; 
-	private static LandValidationJob landValidationJob;
+	private static DynmapIntegration dynmapIntegration;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.0.7");
-
-	public static LandValidationJob getLandValidationJob() {
-		return landValidationJob;
-	}
-
+	
 	@Override
 	public void onEnable() {
 		plugin = this;
@@ -45,9 +40,10 @@ public class TownyProvinces extends JavaPlugin {
 				|| !TownyProvincesDataHolder.initialize()
 				|| !FileUtil.setupPluginDataFoldersIfRequired()
 				|| !DataHandlerUtil.loadAllData()
+				|| !TownyProvincesDataHolder.getInstance().regenerateUnclaimedCoordsMap()
 				|| !registerListeners()
 				|| !registerAdminCommands()
-				|| !startLandValidationJob()) {
+				|| !LandValidationJob.startJob()) {
 			onDisable();
 			return;
 		}
@@ -74,14 +70,6 @@ public class TownyProvinces extends JavaPlugin {
 	   "Region Upkeep Cost"
 	
 	*/
-	
-	
-	
-	public boolean startLandValidationJob() {
-		landValidationJob = new LandValidationJob();
-		landValidationJob.runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, 300);
-		return true;
-	}
 
 	private boolean registerAdminCommands() {
 		getCommand("townyprovincesadmin").setExecutor(new TownyProvincesAdminCommand());

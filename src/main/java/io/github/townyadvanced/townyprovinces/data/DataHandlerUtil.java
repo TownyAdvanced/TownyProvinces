@@ -1,10 +1,13 @@
-package io.github.townyadvanced.townyprovinces.util;
+package io.github.townyadvanced.townyprovinces.data;
 
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.util.FileUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -128,5 +131,6 @@ public class DataHandlerUtil {
 		int z = Integer.parseInt(coordAsArray[1]);
 		return new Coord(x,z);
 	}
+
 
 }

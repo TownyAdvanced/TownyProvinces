@@ -7,8 +7,9 @@ import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.util.ProvinceGeneratorUtil;
+import io.github.townyadvanced.townyprovinces.province_generation_job.ProvinceGenerationJob;
 import org.bukkit.scheduler.BukkitTask;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.Marker;
@@ -164,7 +165,7 @@ public class DynmapIntegration {
 		PolyLineMarker polyLineMarker = bordersMarkerSet.findPolyLineMarker(markerId);
 		if(polyLineMarker == null) {
 			//Get border blocks
-			Set<Coord> borderCoords = findAllBorderCoords(province);
+			Set<TPCoord> borderCoords = findAllBorderCoords(province);
 			if(borderCoords.size() > 0) {
 				//Arrange border blocks into drawable line
 				List<Coord> drawableLineOfBorderCoords = arrangeBorderCoordsIntoDrawableLine(borderCoords);
@@ -209,29 +210,15 @@ public class DynmapIntegration {
 	 * Find the border coords around the given province
 	 * 
 	 * Note that these co-cords will not actually belong to the province
-	 * Rather they will all have provinceBorder=true, and province=null
 	 */
-	public static Set<Coord> findAllBorderCoords(Province province) {
-		Set<Coord> resultSet = new HashSet<>();
-		for(Coord provinceCoord: province.getCoordsInProvince()) {
-			resultSet.addAll(findAdjacentBorderCoords(provinceCoord));
+	public static Set<TPCoord> findAllBorderCoords(Province province) {
+		Set<TPCoord> resultSet = new HashSet<>();
+		for(TPCoord provinceCoord: province.getCoordsInProvince()) {
+			resultSet.addAll(province.getAdjacentBorderCoords(provinceCoord));
 		}
 		return resultSet;
 	}
 
-	private static Set<Coord> findAdjacentBorderCoords(Coord provinceCoord) {
-		Set<Coord> result = new HashSet<>();
-		Set<Coord> allAdjacentCoords = ProvinceGeneratorUtil.findAllAdjacentCoords(provinceCoord);
-		Province adjacentProvince;
-		for(Coord candidateCoord: allAdjacentCoords) {
-			adjacentProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(candidateCoord);
-			if(adjacentProvince == null) {
-				result.add(candidateCoord);
-			}
-		}
-		return result;
-	}
-	
 	private boolean areCoordsCardinallyAdjacent(Coord c1, Coord c2) {
 		return MathUtil.distance(c1,c2) == 1;
 	}
@@ -316,7 +303,7 @@ public class DynmapIntegration {
 	private Coord calculatePullStrengthFromNearbyProvince(Coord borderCoordBeingPulled, Province provinceDoingThePulling) {
 		int pullStrengthX = 0;
 		int pullStrengthZ = 0;
-		Set<Coord> adjacentCoords = ProvinceGeneratorUtil.findAllAdjacentCoords(borderCoordBeingPulled);
+		Set<Coord> adjacentCoords = ProvinceGenerationJob.findAllAdjacentCoords(borderCoordBeingPulled);
 		Province adjacenProvince;
 		for(Coord adjacentCoord: adjacentCoords) {
 			adjacenProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord);
