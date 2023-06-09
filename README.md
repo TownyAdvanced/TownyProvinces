@@ -14,6 +14,10 @@
   - Province prices can be viewed on the "TownyProvinces - Prices" layer of the map.
   - PLACEHOLDER FOR SCREENGRAB
 
+
+## Installation Guide:
+
+
 ## Admin Guide:
   
   
