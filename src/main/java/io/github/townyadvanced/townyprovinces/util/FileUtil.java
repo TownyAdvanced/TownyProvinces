@@ -32,11 +32,13 @@ public class FileUtil {
 
 	/**
 	 * @param relativeFolderPath given folder path
-	 * @return true if folder already existed
+	 * @return true if folder was created
 	 */
 	public static boolean createFolderIfRequired(String relativeFolderPath) {
 		Path folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(relativeFolderPath);
-		return FileMgmt.checkOrCreateFolder(folderPath.toString());
+		boolean folderWasCreated = !(new File(folderPath.toString()).exists());
+		FileMgmt.checkOrCreateFolder(folderPath.toString());
+		return folderWasCreated;
 	}
 
 	public static List<File> readListOfFiles(String relativeFolderPath) {
@@ -74,8 +76,8 @@ public class FileUtil {
 	public static boolean createRegionDefinitionsFolderAndSampleFiles() {
 		String fileName = "???";
 		try {
-			boolean folderAlreadyExisted = FileUtil.createFolderIfRequired(REGION_DEFINITIONS_FOLDER_PATH);
-			if (!folderAlreadyExisted) {
+			boolean folderWasCreated = FileUtil.createFolderIfRequired(REGION_DEFINITIONS_FOLDER_PATH);
+			if (folderWasCreated) {
 				
 				//Sample file 1
 				fileName = "Region_1_Earth.yml";
