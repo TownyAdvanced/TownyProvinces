@@ -1,9 +1,30 @@
-# TownyCombat
-A combat plugin for Towny, containing some fun combat/battle/pvp features.
+# Towny Resources
+- An add-on plugin for Towny, which makes town claiming more organised/predictable, reducing staff workload and server toxicity.
 
 ## Features:
-- :snake: :x: **Prevent Towny-Block-Glitching by quick-block-place/destroy:**
-  - Via a secret magical method.
+- :world_map: **Automatically Divides The Map Into Provinces:**
+  - Each Provinces can have just one town.
+  - Province density can be configured to be different in different areas of the map.
+  - Province borders can be viewed on the "TownyProvinces - Borders" layer of the map:
+  - PLACEHOLDER FOR SCREENGRAB
+  
+- :moneybag: **Provinces can have different Settlement/Upkeep Costs**
+  - Each province has a "Province Settlement Price" which applies to new towns, and can be configured to vary by map location.
+  - Each province has a "Province Upkeep Price" which applies to town upkeep, and can be configured to vary by map location.
+  - Province prices can be viewed on the "TownyProvinces - Prices" layer of the map.
+  - PLACEHOLDER FOR SCREENGRAB
+
+## Admin Guide:
+  
+  
+  
+## Player Guide:
+
+
+- 
+  -   new towns to be different in different regions of the map.
+  - Each region has its own Town Upkeep price, allowing town upkeep to cost more in different regions of the map.
+  - 
   - Try it and see!
 
 - :unlock: **Unlock Combat for Regular Players**
