@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -134,11 +135,11 @@ public class LandValidationJob extends BukkitRunnable {
 	}
 
 	private static boolean isProvinceMainlyOcean(Province province) {
-		List<Coord> coordsInProvince = province.getCoordsInProvince();
+		List<TPCoord> coordsInProvince = province.getCoordsInProvince();
 		String worldName = TownyProvincesSettings.getWorldName();
 		World world = Bukkit.getWorld(worldName);
 		Biome biome;
-		Coord coordToTest;
+		TPCoord coordToTest;
 		for(int i = 0; i < 10; i++) {
 			coordToTest = coordsInProvince.get((int)(Math.random() * coordsInProvince.size()));
 			int x = (coordToTest.getX() * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;

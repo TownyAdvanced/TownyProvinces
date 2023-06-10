@@ -124,7 +124,7 @@ public class DynmapIntegration {
 			try {
 				if(province.isSea())
 					continue;
-				Coord homeBlock = province.getHomeBlock();
+				TPCoord homeBlock = province.getHomeBlock();
 				int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getProvinceBlockSideLength();
 				int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getProvinceBlockSideLength();
 
