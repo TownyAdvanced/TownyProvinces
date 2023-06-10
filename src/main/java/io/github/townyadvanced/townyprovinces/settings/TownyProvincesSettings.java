@@ -145,7 +145,7 @@ public class TownyProvincesSettings {
 	}
 
 	public static int getLandProvinceBorderColour() {
-		return Settings.getInt(ConfigNodes.LAND_PROVINCE_BORDER_COLOUR);
+		return Integer.parseInt(Settings.getString(ConfigNodes.LAND_PROVINCE_BORDER_COLOUR),16);
 	}
 
 	public static int getSeaProvinceBorderWeight() {

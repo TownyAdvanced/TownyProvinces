@@ -1,5 +1,6 @@
 package io.github.townyadvanced.townyprovinces.data;
 
+import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -203,6 +204,7 @@ public class TownyProvincesDataHolder {
 				if(!result.containsKey(searchKey)) {
 					newCoord = new TPCoord(x,z);
 					result.put(newCoord, newCoord);
+					TownyProvinces.info("Num Coords: " + result.size());
 				}
 			}
 		}

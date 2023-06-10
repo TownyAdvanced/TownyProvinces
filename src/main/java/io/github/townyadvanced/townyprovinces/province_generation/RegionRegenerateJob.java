@@ -92,6 +92,27 @@ public class RegionRegenerateJob extends BukkitRunnable {
 		//Paint region(s)
 		boolean paintingSuccess;
 		if(givenRegionName.equalsIgnoreCase("ALL")) {
+
+
+			TownyProvinces.info("Now Creating Array");
+			TPCoord testCoord = new TPCoord(33,33);
+			Province testProvince = new Province(testCoord, false, false, 0,0);
+			
+			int counter = 0;
+			Province[][] provinces = new Province[4000][4000];
+			for(int x = 0; x < 4000; x++) {
+				for(int z = 0; z < 4000; z++) {
+					provinces[x][z] = testProvince;
+					counter++;
+					TownyProvinces.info("Coords Filled: " + counter);
+				}
+			}
+			TownyProvinces.info("Successfully Created Array");
+			
+			if(true)
+				return;
+			
+			
 			//Create a new local map of soon-to-be-unclaimed coords
 			Map<TPCoord, TPCoord> soonToBeUnclaimedCoords = TownyProvincesDataHolder.getInstance().getAllCoordsOnMap();
 			//Clear the data maps 
