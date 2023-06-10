@@ -15,8 +15,7 @@ import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionN
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJob;
 import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJobStatus;
-import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
-import io.github.townyadvanced.townyprovinces.province_generation_job.ProvinceGenerationJob;
+import io.github.townyadvanced.townyprovinces.province_generation_job.RegionRegenerationJob;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -227,10 +226,10 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		String givenRegionName = args[1];
 		String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 		if(givenRegionName.equalsIgnoreCase("all")) {
-			ProvinceGenerationJob.startJob(givenRegionName);
+			RegionRegenerationJob.startJob(givenRegionName);
 			//TODO SEND A MESSAGE SAYING JOB STARTED
 		} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
-			ProvinceGenerationJob.startJob(caseCorrectRegionName);
+			RegionRegenerationJob.startJob(caseCorrectRegionName);
 			//TODO SEND A MESSAGE SAYING JOB STARTED
 		} else {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));

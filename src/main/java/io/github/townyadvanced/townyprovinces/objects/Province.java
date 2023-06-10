@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Province {
 	
-	private final Coord homeBlock;
+	private final TPCoord homeBlock;
 	private int newTownCost;
 	private int upkeepTownCost;
 	private boolean isSea;
@@ -22,7 +22,7 @@ public class Province {
 		return homeBlock.equals(((Province)object).getHomeBlock());
 	}
 	
-	public Province(Coord homeBlock, boolean isSea, boolean landValidationRequested, int newTownCost, int upkeepTownCost) {
+	public Province(TPCoord homeBlock, boolean isSea, boolean landValidationRequested, int newTownCost, int upkeepTownCost) {
 		this.homeBlock = homeBlock;
 		this.isSea = isSea;
 		this.newTownCost = newTownCost;
@@ -35,7 +35,7 @@ public class Province {
 		return id;
 	}
 	
-	public Coord getHomeBlock() {
+	public TPCoord getHomeBlock() {
 		return homeBlock;
 	}
 	

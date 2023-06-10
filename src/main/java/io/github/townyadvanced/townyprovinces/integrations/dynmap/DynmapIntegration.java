@@ -9,7 +9,7 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.province_generation_job.ProvinceGenerationJob;
+import io.github.townyadvanced.townyprovinces.province_generation_job.RegionRegenerationJob;
 import org.bukkit.scheduler.BukkitTask;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.Marker;
@@ -303,7 +303,7 @@ public class DynmapIntegration {
 	private Coord calculatePullStrengthFromNearbyProvince(Coord borderCoordBeingPulled, Province provinceDoingThePulling) {
 		int pullStrengthX = 0;
 		int pullStrengthZ = 0;
-		Set<Coord> adjacentCoords = ProvinceGenerationJob.findAllAdjacentCoords(borderCoordBeingPulled);
+		Set<Coord> adjacentCoords = RegionRegenerationJob.findAllAdjacentCoords(borderCoordBeingPulled);
 		Province adjacenProvince;
 		for(Coord adjacentCoord: adjacentCoords) {
 			adjacenProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord);

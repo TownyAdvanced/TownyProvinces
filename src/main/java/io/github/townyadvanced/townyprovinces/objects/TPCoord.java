@@ -35,4 +35,9 @@ public class TPCoord {
 			&& ((TPCoord) o).getX() == this.x
 			&& ((TPCoord) o).getZ() == this.z;
 	}
+
+	public void updateValues(int xDelta, int zDelta) {
+		this.x += xDelta;
+		this.z += zDelta;
+	}
 }
