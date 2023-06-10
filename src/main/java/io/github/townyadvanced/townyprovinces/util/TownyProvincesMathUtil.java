@@ -1,8 +1,10 @@
 package io.github.townyadvanced.townyprovinces.util;
 
+import com.palmergames.util.MathUtil;
+import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+
 public class TownyProvincesMathUtil {
-
-
+	
 	/**
 	 * Example:
 	 * - lowest = 2, highest = 5
@@ -20,4 +22,9 @@ public class TownyProvincesMathUtil {
 		int result = lowest + randomPart;
 		return result;
 	}
+
+	public static double distance(TPCoord tpCoordA, TPCoord tpCoordB) {
+		return MathUtil.distance(tpCoordA.getX(), tpCoordB.getX(), tpCoordA.getZ(), tpCoordB.getZ());
+	}
+
 }

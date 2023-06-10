@@ -9,7 +9,8 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.province_generation_job.RegionRegenerationJob;
+import io.github.townyadvanced.townyprovinces.province_generation.RegionRegenerateJob;
+import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
 import org.bukkit.scheduler.BukkitTask;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.Marker;
@@ -168,7 +169,7 @@ public class DynmapIntegration {
 			Set<TPCoord> borderCoords = findAllBorderCoords(province);
 			if(borderCoords.size() > 0) {
 				//Arrange border blocks into drawable line
-				List<Coord> drawableLineOfBorderCoords = arrangeBorderCoordsIntoDrawableLine(borderCoords);
+				List<TPCoord> drawableLineOfBorderCoords = arrangeBorderCoordsIntoDrawableLine(borderCoords);
 				//Draw line
 				drawBorderLine(drawableLineOfBorderCoords, province, markerId);
 			}
@@ -188,11 +189,11 @@ public class DynmapIntegration {
 		} 
 	}
 	
-	private List<Coord> arrangeBorderCoordsIntoDrawableLine(Set<Coord> unsortedBorderCoords) {
-		List<Coord> result = new ArrayList<>();
-		List<Coord> unProcessedCoords = new ArrayList<>(unsortedBorderCoords);
-		Coord lineHead = (new ArrayList<>(unProcessedCoords)).get(0);
-		Coord candidate;
+	private List<TPCoord> arrangeBorderCoordsIntoDrawableLine(Set<TPCoord> unsortedBorderCoords) {
+		List<TPCoord> result = new ArrayList<>();
+		List<TPCoord> unProcessedCoords = new ArrayList<>(unsortedBorderCoords);
+		TPCoord lineHead = (new ArrayList<>(unProcessedCoords)).get(0);
+		TPCoord candidate;
 		while(unProcessedCoords.size() > 0) {
 			candidate = unProcessedCoords.get((int)(Math.random() * unProcessedCoords.size()));
 			if(areCoordsCardinallyAdjacent(candidate, lineHead)) {
@@ -219,11 +220,11 @@ public class DynmapIntegration {
 		return resultSet;
 	}
 
-	private boolean areCoordsCardinallyAdjacent(Coord c1, Coord c2) {
-		return MathUtil.distance(c1,c2) == 1;
+	private boolean areCoordsCardinallyAdjacent(TPCoord c1, TPCoord c2) {
+		return TownyProvincesMathUtil.distance(c1,c2) == 1;
 	}
 
-	private void drawBorderLine(List<Coord> drawableLineOfBorderCoords, Province province, String markerId) {
+	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
 		String worldName = TownyProvincesSettings.getWorldName();
 		int landBorderColour = TownyProvincesSettings.getLandProvinceBorderColour();
 		int landBorderWeight = TownyProvincesSettings.getLandProvinceBorderWeight();
@@ -269,7 +270,7 @@ public class DynmapIntegration {
 			 *   - On a sea border, the expected single line will either look slightly weaker or slightly thinner,
 			 *     while will most likely appear to users as a bug.
 			 * */
-			Coord pullStrengthFromNearbyProvince = calculatePullStrengthFromNearbyProvince(drawableLineOfBorderCoords.get(i), province);
+			TPCoord pullStrengthFromNearbyProvince = calculatePullStrengthFromNearbyProvince(drawableLineOfBorderCoords.get(i), province);
 			if (pullStrengthFromNearbyProvince.getX() < 0) {
 				xPoints[i] = xPoints[i] + 7;
 			} else if (pullStrengthFromNearbyProvince.getX() > 0) {
@@ -300,19 +301,19 @@ public class DynmapIntegration {
 		}
 	}
 	
-	private Coord calculatePullStrengthFromNearbyProvince(Coord borderCoordBeingPulled, Province provinceDoingThePulling) {
+	private TPCoord calculatePullStrengthFromNearbyProvince(TPCoord borderCoordBeingPulled, Province provinceDoingThePulling) {
 		int pullStrengthX = 0;
 		int pullStrengthZ = 0;
-		Set<Coord> adjacentCoords = RegionRegenerationJob.findAllAdjacentCoords(borderCoordBeingPulled);
+		Set<TPCoord> adjacentCoords = RegionRegenerateJob.findAllAdjacentCoords(borderCoordBeingPulled);
 		Province adjacenProvince;
-		for(Coord adjacentCoord: adjacentCoords) {
-			adjacenProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord);
+		for(TPCoord adjacentCoord: adjacentCoords) {
+			adjacenProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord.getX(), adjacentCoord.getZ());
 			if(adjacenProvince != null && adjacenProvince.equals(provinceDoingThePulling)) {
 				pullStrengthX += (adjacentCoord.getX() - borderCoordBeingPulled.getX());
 				pullStrengthZ += (adjacentCoord.getZ() - borderCoordBeingPulled.getZ());
 			}
 		}
-		return new Coord(pullStrengthX, pullStrengthZ);
+		return new TPCoord(pullStrengthX, pullStrengthZ);
 	}
 	
 	////////////////////////// DEBUG SECTION ////////////////////////

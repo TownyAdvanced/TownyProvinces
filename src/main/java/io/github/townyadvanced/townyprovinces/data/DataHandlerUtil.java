@@ -64,7 +64,7 @@ public class DataHandlerUtil {
 	private static String getCoordsAsWriteableString(Province province) {
 		StringBuilder result = new StringBuilder();
 		boolean firstCoord = true;
-		for(Coord coord: province.getCoordsInProvince()) {
+		for(TPCoord coord: province.getCoordsInProvince()) {
 			if(firstCoord) {
 				firstCoord = false;
 			} else {
@@ -87,7 +87,7 @@ public class DataHandlerUtil {
 	public static void loadProvince(File regionDefinitionFile) {
 		//Read values from province file
 		Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(regionDefinitionFile);
-		Coord homeBlock = unpackCoord(fileEntries.get("home_block"));
+		TPCoord homeBlock = unpackCoord(fileEntries.get("home_block"));
 		boolean isSea = Boolean.parseBoolean(fileEntries.get("is_sea"));
 		boolean isLandValidationRequested = false; 
 		int newTownCost = 0;
@@ -106,17 +106,17 @@ public class DataHandlerUtil {
 		//Add province to provinces set
 		TownyProvincesDataHolder.getInstance().addProvince(province);
 		//Add coords to coord-province map
-		Set<Coord> coords = unpackCoords(fileEntries.get("coords"));
-		for(Coord coord: coords) {
+		Set<TPCoord> coords = unpackCoords(fileEntries.get("coords"));
+		for(TPCoord coord: coords) {
 			TownyProvincesDataHolder.getInstance().getCoordProvinceMap().put(coord, province);
 		}
 	}
 
-	private static Set<Coord> unpackCoords(String allCoordsAsString) {
-		Set<Coord> result = new HashSet<>();
+	private static Set<TPCoord> unpackCoords(String allCoordsAsString) {
+		Set<TPCoord> result = new HashSet<>();
 		if(allCoordsAsString.length() > 0) {
 			String[] allCoordsAsArray = allCoordsAsString.split("\\|");
-			Coord coord;
+			TPCoord coord;
 			for (String coordAsString : allCoordsAsArray) {
 				coord = unpackCoord(coordAsString);
 				result.add(coord);
@@ -125,11 +125,11 @@ public class DataHandlerUtil {
 		return result;
 	}
 	
-	private static Coord unpackCoord(String coordAsString) {
+	private static TPCoord unpackCoord(String coordAsString) {
 		String[] coordAsArray = coordAsString.split(",");
 		int x = Integer.parseInt(coordAsArray[0]);
 		int z = Integer.parseInt(coordAsArray[1]);
-		return new Coord(x,z);
+		return new TPCoord(x,z);
 	}
 
 

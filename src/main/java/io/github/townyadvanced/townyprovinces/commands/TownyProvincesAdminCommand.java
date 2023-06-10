@@ -11,11 +11,12 @@ import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJob;
 import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJobStatus;
-import io.github.townyadvanced.townyprovinces.province_generation_job.RegionRegenerationJob;
+import io.github.townyadvanced.townyprovinces.province_generation.RegionRegenerateJob;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -201,7 +202,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			int x = Integer.parseInt(locationAsArray[0]);
 			int y = Integer.parseInt(locationAsArray[1]);
 			Coord coord = Coord.parseCoord(x,y);
-			Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord);
+			Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord.getX(), coord.getZ());
 			//Validate action
 			if(province == null) {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
@@ -226,10 +227,10 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		String givenRegionName = args[1];
 		String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 		if(givenRegionName.equalsIgnoreCase("all")) {
-			RegionRegenerationJob.startJob(givenRegionName);
+			RegionRegenerateJob.startJob(givenRegionName);
 			//TODO SEND A MESSAGE SAYING JOB STARTED
 		} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
-			RegionRegenerationJob.startJob(caseCorrectRegionName);
+			RegionRegenerateJob.startJob(caseCorrectRegionName);
 			//TODO SEND A MESSAGE SAYING JOB STARTED
 		} else {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
@@ -317,7 +318,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			int x = Integer.parseInt(locationAsArray[0]);
 			int y = Integer.parseInt(locationAsArray[1]);
 			Coord coord = Coord.parseCoord(x,y);
-			Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord);
+			Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord.getX(), coord.getZ());
 			//Validate action
 			if(province == null) {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));

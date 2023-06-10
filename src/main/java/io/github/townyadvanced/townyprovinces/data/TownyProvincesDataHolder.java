@@ -110,20 +110,22 @@ public class TownyProvincesDataHolder {
 		provincesSet.remove(province);
 	}
 
-	public void deleteAllProvinces() {
-		provincesSet.clear();
-		coordProvinceMap.clear();
-	}
-
 	public Set<TPCoord> findAdjacentBorderCoords(TPCoord targetCoord) {
 		Set<TPCoord> result = new HashSet<>();
 		int[] x = new int[]{-1,0,1,-1,1,-1,0,1};
 		int[] z = new int[]{-1,-1,-1,0,0,1,1,1};
-		TPCoord coord;
+		TPCoord searchCoord = new TPCoord(0,0);
 		for(int i = 0; i < 8; i++) {
-			coord = getBorderCoord(targetCoord.getX() + x[i], targetCoord.getZ() + z[i]);
-			if(coord != null)
-				result.add(coord);
+			if(isCoordUnclaimed(targetCoord.getX() + x[i], targetCoord.getZ() + z[i])) {
+				/*
+				 * Adjacent border coord found
+				 * If the result set does not already contain this the coord, create & add it
+				 */
+				searchCoord.setValues(targetCoord.getX() + x[i], targetCoord.getZ() + z[i]);
+				if(!result.contains(searchCoord)) {
+					result.add(new TPCoord(targetCoord.getX() + x[i], targetCoord.getZ() + z[i]));
+				}
+			}
 		}
 		return result;
 	}

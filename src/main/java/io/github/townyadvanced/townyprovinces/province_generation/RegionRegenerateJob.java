@@ -1,21 +1,16 @@
-package io.github.townyadvanced.townyprovinces.province_generation_job;
+package io.github.townyadvanced.townyprovinces.province_generation;
 
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Translatable;
-import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.objects.ProvinceClaimBrush;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
-import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
-import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,16 +20,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-public class RegionRegenerationJob extends BukkitRunnable {
+public class RegionRegenerateJob extends BukkitRunnable {
 	
-	public static RegionRegenerationJob regionRegenerationJob = null;
+	public static RegionRegenerateJob regionRegenerationJob = null;
 	
 	public static boolean startJob(String regionName) {
 		if(regionRegenerationJob != null) {
 			TownyProvinces.severe("Job In Progress. You must wait until the current job ends until you start a new one.");
 			return false;
 		} else {
-			regionRegenerationJob = new RegionRegenerationJob(regionName);
+			regionRegenerationJob = new RegionRegenerateJob(regionName);
 			regionRegenerationJob.runTaskAsynchronously(TownyProvinces.getPlugin());
 			return true;
 		}
@@ -43,7 +38,7 @@ public class RegionRegenerationJob extends BukkitRunnable {
 	/**
 	 * Region name for this job
 	 */
-	private final String regionName;
+	private final String givenRegionName;  //Might be "All"
 	/**
 	 * Map of currently unclaimed coords
 	 * When this is filled,
@@ -56,23 +51,14 @@ public class RegionRegenerationJob extends BukkitRunnable {
 	 * something which would be difficult if this was a set
 	 **/
 	private Map<TPCoord, TPCoord> unclaimedCoordsMap;
-	private final int regionMinX;
-	private final int regionMaxX;
-	private final int regionMinZ;
-	private final int regionMaxZ;
 	private final int mapMinX;
 	private final int mapMaxX;
 	private final int mapMinZ;
 	private final int mapMaxZ;
-	private final int minBrushMoveAmount;
-	private final int maxBrushMoveAmount;
-	private final int brushSquareRadius;
-	private final int claimAreaLimitInSquareMetres;
-	public final static double CHUNK_AREA_IN_SQUARE_METRES = Math.pow(TownyProvincesSettings.getProvinceBlockSideLength(), 2);
 	public final TPCoord searchCoord;
 	
-	public RegionRegenerationJob(String regionName) {
-		this.regionName = regionName;
+	public RegionRegenerateJob(String regionName) {
+		this.givenRegionName = regionName;
 		//Create region definitions folder and sample files if needed
 		if(!FileUtil.createRegionDefinitionsFolderAndSampleFiles()) {
 			throw new RuntimeException("Problem creation region definitions folder and sample files");
@@ -81,16 +67,6 @@ public class RegionRegenerationJob extends BukkitRunnable {
 		if(!TownyProvincesSettings.loadRegionDefinitions()) {
 			throw new RuntimeException("Problem reloading region definitions");
 		}
-		//this.allCoordsOnMap = TownyProvincesDataHolder.getInstance().getAllCoordsOnMap();
-		this.unclaimedCoordsMap = null;
-		this.regionMinX = (TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength()) + 1;
-		this.regionMaxX  = (TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength()) - 1;
-		this.regionMinZ = (TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength()) + 1;
-		this.regionMaxZ  = (TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength()) - 1;
-		this.minBrushMoveAmount = TownyProvincesSettings.getProvinceCreatorBrushMinMoveInChunks(regionName);
-		this.maxBrushMoveAmount= TownyProvincesSettings.getProvinceCreatorBrushMaxMoveInChunks(regionName);
-		this.brushSquareRadius = TownyProvincesSettings.getProvinceCreatorBrushSquareRadiusInChunks(regionName);
-		this.claimAreaLimitInSquareMetres = TownyProvincesSettings.getProvinceCreatorBrushClaimLimitInSquareMetres(regionName);
 		String nameOfFirstRegion = TownyProvincesSettings.getNameOfFirstRegion();
 		this.mapMinX = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
 		this.mapMaxX  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
@@ -112,7 +88,7 @@ public class RegionRegenerationJob extends BukkitRunnable {
 		}
 		//Paint region(s)
 		boolean paintingSuccess;
-		if(regionName.equalsIgnoreCase("ALL")) {
+		if(givenRegionName.equalsIgnoreCase("ALL")) {
 			//Create a new local map of soon-to-be-unclaimed coords
 			Map<TPCoord, TPCoord> soonToBeUnclaimedCoords = TownyProvincesDataHolder.getInstance().getAllCoordsOnMap();
 			//Clear the data maps 
@@ -124,11 +100,11 @@ public class RegionRegenerationJob extends BukkitRunnable {
 			paintingSuccess = paintAllRegions();
 		} else {
 			//Clear provinces which are mostly in the given area
-			deleteExistingProvincesWhichAreMostlyInSpecifiedArea(regionName);
+			deleteExistingProvincesWhichAreMostlyInSpecifiedArea(givenRegionName);
 			//Create and assign the map of unclaimed coords
-			unclaimedCoordsMap = TownyProvincesDataHolder.getInstance().getAllUnclaimedCoordsInRegion(regionName);
+			unclaimedCoordsMap = TownyProvincesDataHolder.getInstance().getAllUnclaimedCoordsInRegion(givenRegionName);
 			//Paint one region
-			RegionPaintTask regionPaintTask = new RegionPaintTask(regionName, unclaimedCoordsMap);
+			RegionPaintTask regionPaintTask = new RegionPaintTask(givenRegionName, unclaimedCoordsMap);
 			paintingSuccess = regionPaintTask.executeTask();
 		}
 		if(!paintingSuccess) {
@@ -145,14 +121,14 @@ public class RegionRegenerationJob extends BukkitRunnable {
 			TownyProvinces.info("Problem deleting empty provinces");
 			return;
 		}
-		//Save data and ask for full dynmap refresh
+		//Save data and request full dynmap refresh
 		DataHandlerUtil.saveAllData();
 		TownyProvinces.getPlugin().getDynmapIntegration().requestFullMapRefresh();
 		//Messaging
-		if(regionName.equalsIgnoreCase("ALL")) {
+		if(givenRegionName.equalsIgnoreCase("ALL")) {
 			TownyProvinces.info(Translatable.of("msg_successfully_regenerated_all_regions").translate(Locale.ROOT));
 		} else {
-			TownyProvinces.info(Translatable.of("msg_successfully_regenerated_one_regions", regionName).translate(Locale.ROOT));
+			TownyProvinces.info(Translatable.of("msg_successfully_regenerated_one_regions", givenRegionName).translate(Locale.ROOT));
 		}
 		//Job Complete
 		regionRegenerationJob = null;
@@ -268,7 +244,7 @@ public class RegionRegenerationJob extends BukkitRunnable {
 
 	private Province getProvinceIfCoordIsEligibleForProvinceAssignment(TPCoord candidateCoord) {
 		//Filter out chunk if it is at edge of map
-		if(candidateCoord.getX() < mapMinZ)
+		if(candidateCoord.getX() < mapMinX)
 			return null;
 		else if (candidateCoord.getX() > mapMaxX)
 			return null;
@@ -308,12 +284,12 @@ public class RegionRegenerationJob extends BukkitRunnable {
 		return result;
 	}
 	
-	public static Set<Coord> findAllAdjacentCoords(Coord targetCoord) {
-		Set<Coord> result = new HashSet<>();
+	public static Set<TPCoord> findAllAdjacentCoords(TPCoord targetCoord) {
+		Set<TPCoord> result = new HashSet<>();
 		int[] x = new int[]{-1,0,1,-1,1,-1,0,1};
 		int[] z = new int[]{-1,-1,-1,0,0,1,1,1};
 		for(int i = 0; i < 8; i++) {
-			result.add(new Coord(targetCoord.getX() + x[i], targetCoord.getZ() + z[i]));
+			result.add(new TPCoord(targetCoord.getX() + x[i], targetCoord.getZ() + z[i]));
 		}
 		return result;
 	}
