@@ -11,7 +11,6 @@ import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJob;
@@ -227,11 +226,9 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		String givenRegionName = args[1];
 		String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 		if(givenRegionName.equalsIgnoreCase("all")) {
-			RegionRegenerateJob.startJob(givenRegionName);
-			//TODO SEND A MESSAGE SAYING JOB STARTED
+			RegionRegenerateJob.attemptToStartJob(sender, givenRegionName);
 		} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
-			RegionRegenerateJob.startJob(caseCorrectRegionName);
-			//TODO SEND A MESSAGE SAYING JOB STARTED
+			RegionRegenerateJob.attemptToStartJob(sender, caseCorrectRegionName);
 		} else {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
 		}

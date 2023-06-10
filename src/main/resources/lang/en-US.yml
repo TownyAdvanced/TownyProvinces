@@ -38,10 +38,13 @@ msg_province_already_land: "&cProvince Type is already Land."
 # Regenerate region
 
 msg_err_unknown_region_name: "&cUnknown region name."
+msg_err_regeneration_job_already_started: "&cA region regeneration job is in progress. You must wait for the current job to complete before attempting a new one."
+msg_region_regeneration_job_started: "&bRegion Regeneration Job Started for region: %s"
 msg_problem_regenerating_all_regions: "&cThere was a problem generating all regions."
 msg_problem_regenerating_one_region: "&cThere was a problem generating region: %s."
 msg_successfully_regenerated_all_regions: "&bSuccessfully regenerated all regions."
 msg_successfully_regenerated_one_regions: "&bSuccessfully regenerated region: %s."
+
 
 # Set town costs
 

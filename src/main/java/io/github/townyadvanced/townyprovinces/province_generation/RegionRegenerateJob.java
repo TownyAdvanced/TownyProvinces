@@ -1,14 +1,15 @@
 package io.github.townyadvanced.townyprovinces.province_generation;
 
-import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
+import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -22,23 +23,24 @@ import java.util.Set;
 
 public class RegionRegenerateJob extends BukkitRunnable {
 	
-	public static RegionRegenerateJob regionRegenerationJob = null;
+	private static RegionRegenerateJob regionRegenerationJob = null;
 	
-	public static boolean startJob(String regionName) {
+	public static boolean attemptToStartJob(CommandSender sender, String givenregionName) {
 		if(regionRegenerationJob != null) {
-			TownyProvinces.severe("Job In Progress. You must wait until the current job ends until you start a new one.");
+			Messaging.sendMsg(sender, Translatable.of("msg_err_regeneration_job_already_started"));
 			return false;
 		} else {
-			regionRegenerationJob = new RegionRegenerateJob(regionName);
+			regionRegenerationJob = new RegionRegenerateJob(givenregionName);
 			regionRegenerationJob.runTaskAsynchronously(TownyProvinces.getPlugin());
+			Messaging.sendMsg(sender, Translatable.of("msg_region_regeneration_job_started", givenregionName));
 			return true;
 		}
 	}
 
-	/**
-	 * Region name for this job
-	 */
-	private final String givenRegionName;  //Might be "All"
+	public static void finishJob() {
+		regionRegenerationJob = null;
+	}
+
 	/**
 	 * Map of currently unclaimed coords
 	 * When this is filled,
@@ -51,14 +53,15 @@ public class RegionRegenerateJob extends BukkitRunnable {
 	 * something which would be difficult if this was a set
 	 **/
 	private Map<TPCoord, TPCoord> unclaimedCoordsMap;
+	private final String givenRegionName;  //Name given by job starter. Might be "All"
 	private final int mapMinX;
 	private final int mapMaxX;
 	private final int mapMinZ;
 	private final int mapMaxZ;
 	public final TPCoord searchCoord;
 	
-	public RegionRegenerateJob(String regionName) {
-		this.givenRegionName = regionName;
+	public RegionRegenerateJob(String givenRegionName) {
+		this.givenRegionName = givenRegionName;
 		//Create region definitions folder and sample files if needed
 		if(!FileUtil.createRegionDefinitionsFolderAndSampleFiles()) {
 			throw new RuntimeException("Problem creation region definitions folder and sample files");
@@ -131,7 +134,7 @@ public class RegionRegenerateJob extends BukkitRunnable {
 			TownyProvinces.info(Translatable.of("msg_successfully_regenerated_one_regions", givenRegionName).translate(Locale.ROOT));
 		}
 		//Job Complete
-		regionRegenerationJob = null;
+		finishJob();
 		TownyProvinces.info("Region regeneration Job Complete"); //TODO - maybe global message?
 	}
 	

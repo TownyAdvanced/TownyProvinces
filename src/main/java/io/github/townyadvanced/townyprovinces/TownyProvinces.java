@@ -40,7 +40,6 @@ public class TownyProvinces extends JavaPlugin {
 				|| !TownyProvincesDataHolder.initialize()
 				|| !FileUtil.setupPluginDataFoldersIfRequired()
 				|| !DataHandlerUtil.loadAllData()
-				|| !TownyProvincesDataHolder.getInstance().regenerateUnclaimedCoordsMap()
 				|| !registerListeners()
 				|| !registerAdminCommands()
 				|| !LandValidationJob.startJob()) {

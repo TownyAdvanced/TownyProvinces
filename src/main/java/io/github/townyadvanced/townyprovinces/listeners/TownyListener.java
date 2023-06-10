@@ -186,7 +186,7 @@ public class TownyListener implements Listener {
 		String worldName = TownyProvincesSettings.getWorldName();
 		WorldCoord worldCoord;
 		for(TPCoord coord: province.getCoordsInProvince()) {
-			worldCoord = new WorldCoord(worldName, coord);
+			worldCoord = new WorldCoord(worldName, coord.getX(), coord.getZ());
 			if(!TownyAPI.getInstance().isWilderness(worldCoord)) {
 				return true;
 			}
