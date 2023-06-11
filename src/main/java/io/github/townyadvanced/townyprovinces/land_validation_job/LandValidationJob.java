@@ -4,7 +4,6 @@ import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
-import io.github.townyadvanced.townyprovinces.province_generation.RegionRegenerateJob;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -55,7 +54,7 @@ public class LandValidationJob extends BukkitRunnable {
 	@Override
 	public void run() {
 		//Handle any requests to start the land validation job
-		synchronized (RegionRegenerateJob.REGENERATION_JOB_LOCK) {
+		synchronized (TownyProvinces.MAP_CHANGE_LOCK) {
 			switch (landValidationJobStatus) {
 				case START_REQUESTED:
 					landValidationJobStatus = LandValidationJobStatus.STARTED;

@@ -9,13 +9,15 @@ import com.palmergames.bukkit.util.ChatTools;
 import com.palmergames.util.StringMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.province_generation.RegenerateRegionTaskController;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJob;
 import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJobStatus;
-import io.github.townyadvanced.townyprovinces.province_generation.RegionRegenerateJob;
+import io.github.townyadvanced.townyprovinces.province_generation.RegenerateRegionTask;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -226,9 +228,9 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		String givenRegionName = args[1];
 		String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 		if(givenRegionName.equalsIgnoreCase("all")) {
-			RegionRegenerateJob.attemptToStartJob(sender, givenRegionName);
+			RegenerateRegionTaskController.startTask(sender, givenRegionName);
 		} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
-			RegionRegenerateJob.attemptToStartJob(sender, caseCorrectRegionName);
+			RegenerateRegionTaskController.startTask(sender, caseCorrectRegionName);
 		} else {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
 		}
@@ -247,7 +249,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 					province.setNewTownCost(newTownCost);
 					province.saveData();
 				}
-				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksRefresh();
+				DynmapDisplayTaskController.requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_all_regions", formattedNewTownCost));
 
 			} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
@@ -258,7 +260,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 						province.saveData();
 					}
 				}
-				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksRefresh();
+				DynmapDisplayTaskController.requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_one_region", caseCorrectRegionName, formattedNewTownCost));
 				
 			} else {
@@ -282,7 +284,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 					province.setUpkeepTownCost(townCost);
 					province.saveData();
 				}
-				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksRefresh();
+				DynmapDisplayTaskController.requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_all_regions", formattedTownCost));
 
 			} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
@@ -293,7 +295,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 						province.saveData();
 					}
 				}
-				TownyProvinces.getPlugin().getDynmapIntegration().requestHomeBlocksRefresh();
+				DynmapDisplayTaskController.requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCost));
 
 			} else {

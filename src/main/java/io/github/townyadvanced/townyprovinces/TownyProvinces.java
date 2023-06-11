@@ -7,7 +7,8 @@ import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapIntegration;
+import io.github.townyadvanced.townyprovinces.integrations.dynmap.DisplayProvincesOnDynmapAction;
+import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -24,8 +25,13 @@ import java.nio.file.Paths;
 import java.util.Locale;
 
 public class TownyProvinces extends JavaPlugin {
+	/**
+	 * Lock this if you want to change or display the map,
+	 * to avoid concurrent modification problems
+	 */
+	public static final Integer MAP_CHANGE_LOCK = 1;
 	private static TownyProvinces plugin;
-	private static DynmapIntegration dynmapIntegration;
+	private static DisplayProvincesOnDynmapAction dynmapIntegration;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.0.7");
 	
 	@Override
@@ -79,7 +85,7 @@ public class TownyProvinces extends JavaPlugin {
 		try {
 			if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
 				info("Found Dynmap plugin. Enabling Dynmap integration.");
-				dynmapIntegration = new DynmapIntegration();
+				DynmapDisplayTaskController.startTask();
 				return true;
 			} else {
 				info("Did not find Dynmap plugin. Cannot enable Dynmap integration.");
@@ -91,7 +97,7 @@ public class TownyProvinces extends JavaPlugin {
 		}
 	}
 	
-	public DynmapIntegration getDynmapIntegration() {
+	public DisplayProvincesOnDynmapAction getDynmapIntegration() {
 		return dynmapIntegration;
 	}
 	

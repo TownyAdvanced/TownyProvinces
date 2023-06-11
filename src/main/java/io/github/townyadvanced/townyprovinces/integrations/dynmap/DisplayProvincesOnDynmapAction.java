@@ -7,9 +7,8 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.province_generation.RegionRegenerateJob;
+import io.github.townyadvanced.townyprovinces.province_generation.RegenerateRegionTask;
 import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
-import org.bukkit.scheduler.BukkitTask;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
@@ -23,29 +22,37 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class DynmapIntegration {
+public class DisplayProvincesOnDynmapAction {
 	
 	private final MarkerAPI markerapi;
-	private BukkitTask dynmapTask;
 	private MarkerSet bordersMarkerSet;
 	private MarkerSet homeBlocksMarkerSet;
-	private boolean bordersRefreshRequested;
-	private boolean homeBlocksRefreshRequested;
 
-	public DynmapIntegration() {
+	public DisplayProvincesOnDynmapAction() {
 		TownyProvinces.info("Enabling dynmap support.");
 		DynmapAPI dynmapAPI = (DynmapAPI) TownyProvinces.getPlugin().getServer().getPluginManager().getPlugin("dynmap");
 		markerapi = dynmapAPI.getMarkerAPI();
-		addAllMarkerSets();
-		startDynmapTask();
-		bordersRefreshRequested = false;
-		homeBlocksRefreshRequested = false;
 		TownyProvinces.info("Dynmap support enabled.");
 	}
-	
-	private void addAllMarkerSets() {
-		addProvinceHomeBlocksMarkerSet();
-		addProvinceBordersMarkerSet();
+
+	/**
+	 * Display all TownyProvinces items
+	 */
+	void executeAction(boolean bordersRefreshRequested, boolean homeBlocksRefreshRequested) {
+		if(bordersRefreshRequested) {
+			if(bordersMarkerSet != null) {
+				bordersMarkerSet.deleteMarkerSet();
+			}
+			addProvinceBordersMarkerSet();
+		}
+		if(homeBlocksRefreshRequested) {
+			if(homeBlocksMarkerSet != null) {
+				homeBlocksMarkerSet.deleteMarkerSet();
+			}
+			addProvinceHomeBlocksMarkerSet();
+		}
+		drawProvinceHomeBlocks();
+		drawProvinceBorders();
 	}
 	
 	private void addProvinceHomeBlocksMarkerSet() {
@@ -78,44 +85,7 @@ public class DynmapIntegration {
 		}
 		return markerSet;
 	}
-
-	public void requestFullMapRefresh() {
-		bordersRefreshRequested = true;
-		homeBlocksRefreshRequested = true;
-	}
-
-	public void requestHomeBlocksRefresh() {
-		homeBlocksRefreshRequested = true;
-	}
-
-	public void startDynmapTask() {
-		TownyProvinces.info("Dynmap Task Starting");
-		dynmapTask = new DynmapTask(this).runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, 300);
-		TownyProvinces.info("Dynmap Task Started");
-	}
-
-	public void endDynmapTask() {
-		dynmapTask.cancel();
-	}
-
-	/**
-	 * Display all TownyProvinces items
-	 */
-	void displayTownyProvinces() {
-		if(bordersRefreshRequested) {
-			bordersMarkerSet.deleteMarkerSet();
-			addProvinceBordersMarkerSet();
-			bordersRefreshRequested = false;
-		}
-		if(homeBlocksRefreshRequested) {
-			homeBlocksMarkerSet.deleteMarkerSet();
-			addProvinceHomeBlocksMarkerSet();
-			homeBlocksRefreshRequested = false;
-		}
-		drawProvinceHomeBlocks();
-		drawProvinceBorders();
-	}
-
+	
 	private void drawProvinceHomeBlocks() {
 		String border_icon = "coins";
 		for (Province province : TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
@@ -152,7 +122,7 @@ public class DynmapIntegration {
 		//Find and draw the borders around each province
 		for (Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
 			try {
-				drawProvinceBorder(province, province.getId());
+				drawProvinceBorder(province);
 			} catch (Throwable t) {
 				TownyProvinces.severe("Could not draw province borders for province at x " + province.getHomeBlock().getX() + " z " + province.getHomeBlock().getZ());
 				t.printStackTrace();
@@ -160,7 +130,8 @@ public class DynmapIntegration {
 		}
 	}
 	
-	private void drawProvinceBorder(Province province, String markerId) {
+	private void drawProvinceBorder(Province province) {
+		String markerId = province.getId();
 		PolyLineMarker polyLineMarker = bordersMarkerSet.findPolyLineMarker(markerId);
 		if(polyLineMarker == null) {
 			//Get border blocks
@@ -191,14 +162,31 @@ public class DynmapIntegration {
 		List<TPCoord> result = new ArrayList<>();
 		List<TPCoord> unProcessedCoords = new ArrayList<>(unsortedBorderCoords);
 		TPCoord lineHead = (new ArrayList<>(unProcessedCoords)).get(0);
-		TPCoord candidate;
+		TPCoord coordToAddToLine;
 		while(unProcessedCoords.size() > 0) {
-			candidate = unProcessedCoords.get((int)(Math.random() * unProcessedCoords.size()));
-			if(areCoordsCardinallyAdjacent(candidate, lineHead)) {
-				lineHead = candidate;
-				result.add(candidate);
-				unProcessedCoords.remove(candidate);
+			//Cycle the list of unprocessed coords. Add the first one which suits then exit loop
+			coordToAddToLine = null;
+			for(TPCoord unprocessedCoord: unProcessedCoords) {
+				if(areCoordsCardinallyAdjacent(unprocessedCoord, lineHead)) {
+					coordToAddToLine = unprocessedCoord;
+					break;
+				}
 			}
+
+			/*
+			 * If we found a coord to add to line. Add it
+			 * Otherwise throw exception because we could not make a drawable line
+			 */
+			if(coordToAddToLine != null) {
+				lineHead = coordToAddToLine;
+				result.add(coordToAddToLine);
+				unProcessedCoords.remove(coordToAddToLine);
+			} else {
+				TownyProvinces.severe("ERROR: Could not arrange province coords into drawable line");
+				result.clear();
+				return result;
+			}
+
 		}
 		//Add last block to line, to make a circuit
 		result.add(result.get(0));
@@ -302,7 +290,7 @@ public class DynmapIntegration {
 	private TPCoord calculatePullStrengthFromNearbyProvince(TPCoord borderCoordBeingPulled, Province provinceDoingThePulling) {
 		int pullStrengthX = 0;
 		int pullStrengthZ = 0;
-		Set<TPCoord> adjacentCoords = RegionRegenerateJob.findAllAdjacentCoords(borderCoordBeingPulled);
+		Set<TPCoord> adjacentCoords = RegenerateRegionTask.findAllAdjacentCoords(borderCoordBeingPulled);
 		Province adjacenProvince;
 		for(TPCoord adjacentCoord: adjacentCoords) {
 			adjacenProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord.getX(), adjacentCoord.getZ());

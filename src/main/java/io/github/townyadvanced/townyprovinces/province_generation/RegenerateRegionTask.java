@@ -4,12 +4,11 @@ import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.messaging.Messaging;
+import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
-import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -21,37 +20,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-public class RegionRegenerateJob extends BukkitRunnable {
+public class RegenerateRegionTask extends BukkitRunnable {
 	
-	/**
-	 * Lock this if you want to regenerate or display,
-	 * to avoid concurrent modification problems
-	 */
-	public static final Integer REGENERATION_JOB_LOCK = 1;
-	
-	private static RegionRegenerateJob regionRegenerationJob = null;
-	
-	public static boolean attemptToStartJob(CommandSender sender, String givenregionName) {
-		synchronized (REGENERATION_JOB_LOCK) {
-			if (regionRegenerationJob != null) {
-				Messaging.sendMsg(sender, Translatable.of("msg_err_regeneration_job_already_started"));
-				return false;
-			} else {
-				regionRegenerationJob = new RegionRegenerateJob(givenregionName);
-				regionRegenerationJob.runTaskAsynchronously(TownyProvinces.getPlugin());
-				Messaging.sendMsg(sender, Translatable.of("msg_region_regeneration_job_started", givenregionName));
-				return true;
-			}
-		}
-	}
-
-	public static void finishJob() {
-		regionRegenerationJob = null;
-	}
-
-	public static boolean isJobInProgress() {
-		return regionRegenerationJob != null;
-	}
 	/**
 	 * Map of currently unclaimed coords
 	 * When this is filled,
@@ -71,7 +41,7 @@ public class RegionRegenerateJob extends BukkitRunnable {
 	private final int mapMaxZ;
 	public final TPCoord searchCoord;
 	
-	public RegionRegenerateJob(String givenRegionName) {
+	public RegenerateRegionTask(String givenRegionName) {
 		this.givenRegionName = givenRegionName;
 		//Create region definitions folder and sample files if needed
 		if(!FileUtil.createRegionDefinitionsFolderAndSampleFiles()) {
@@ -91,7 +61,25 @@ public class RegionRegenerateJob extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		TownyProvinces.info("Region regeneration Job Started");
+		try {
+			TownyProvinces.info("Regeneration Job Started");
+			TownyProvinces.info("Regeneration Job: Acquiring map change lock");
+			synchronized (TownyProvinces.MAP_CHANGE_LOCK) {
+				TownyProvinces.info("Regeneration Job: Map Change lock acquired");
+				executeRegionRegenerationJob();
+			}
+		} finally {
+			TownyProvinces.info("Regeneration Job: Map Change lock released");
+			RegenerateRegionTaskController.endTask();
+			TownyProvinces.info("Regeneration Job Completed");
+		}
+	}
+	
+	public void executeRegionRegenerationJob() {
+		//Create data folder if needed
+		if(!FileUtil.setupPluginDataFoldersIfRequired()) {
+			throw new RuntimeException("Problem creating plugin data folders");
+		}
 		//Create region definitions folder and sample files if needed
 		if(!FileUtil.createRegionDefinitionsFolderAndSampleFiles()) {
 			throw new RuntimeException("Problem creation region definitions folder and sample files");
@@ -105,7 +93,7 @@ public class RegionRegenerateJob extends BukkitRunnable {
 		if(givenRegionName.equalsIgnoreCase("ALL")) {
 
 
-			TownyProvinces.info("Now Creating Array");
+			//TownyProvinces.info("Now Creating Array");
 			
 			/*
 			TPCoord testCoord = new TPCoord(33,33);
@@ -138,23 +126,21 @@ public class RegionRegenerateJob extends BukkitRunnable {
 			//Paint all regions
 			paintingSuccess = paintAllRegions();
 		} else {
-			//Clear provinces which are mostly in the given area
-			deleteExistingProvincesWhichAreMostlyInSpecifiedArea(givenRegionName);
 			//Create and assign the map of unclaimed coords
 			unclaimedCoordsMap = TownyProvincesDataHolder.getInstance().getAllUnclaimedCoordsInRegion(givenRegionName);
 			//Paint one region
-			RegionPaintTask regionPaintTask = new RegionPaintTask(givenRegionName, unclaimedCoordsMap);
-			paintingSuccess = regionPaintTask.executeTask();
+			PaintRegionAction regionPaintTask = new PaintRegionAction(givenRegionName, unclaimedCoordsMap);
+			paintingSuccess = regionPaintTask.executeAction();
 		}
 		if(!paintingSuccess) {
 			TownyProvinces.info("Problem Painting Regions");
 			return;
 		}
 		//Allocate unclaimed chunks to provinces.
-		if(!assignUnclaimedCoordsToProvinces()) {
-			TownyProvinces.info("Problem assigning unclaimed chunks to provinces");
-			return;
-		}
+		//if(!assignUnclaimedCoordsToProvinces()) {
+		//	TownyProvinces.info("Problem assigning unclaimed chunks to provinces");
+		//	return;
+		//}
 		//Delete empty provinces
 		if(!deleteEmptyProvinces()) {
 			TownyProvinces.info("Problem deleting empty provinces");
@@ -162,15 +148,13 @@ public class RegionRegenerateJob extends BukkitRunnable {
 		}
 		//Save data and request full dynmap refresh
 		DataHandlerUtil.saveAllData();
-		TownyProvinces.getPlugin().getDynmapIntegration().requestFullMapRefresh();
+		DynmapDisplayTaskController.requestFullMapRefresh();
 		//Messaging
 		if(givenRegionName.equalsIgnoreCase("ALL")) {
 			TownyProvinces.info(Translatable.of("msg_successfully_regenerated_all_regions").translate(Locale.ROOT));
 		} else {
 			TownyProvinces.info(Translatable.of("msg_successfully_regenerated_one_regions", givenRegionName).translate(Locale.ROOT));
 		}
-		//Job Complete
-		finishJob();
 		TownyProvinces.info("Region regeneration Job Complete"); //TODO - maybe global message?
 	}
 	
@@ -179,8 +163,8 @@ public class RegionRegenerateJob extends BukkitRunnable {
 		List<String> regionNames = new ArrayList<>(TownyProvincesSettings.getRegionDefinitions().keySet());
 		Collections.sort(regionNames); //Sort in alphabetical order
 		for (String regionName: regionNames) {
-			RegionPaintTask regionPaintTask = new RegionPaintTask(regionName, unclaimedCoordsMap);
-			if(!regionPaintTask.executeTask()) {
+			PaintRegionAction regionPaintTask = new PaintRegionAction(regionName, unclaimedCoordsMap);
+			if(!regionPaintTask.executeAction()) {
 				return false;
 			}
 		}
@@ -195,36 +179,6 @@ public class RegionRegenerateJob extends BukkitRunnable {
 			}
 		}
 		TownyProvinces.info("Empty Provinces Deleted.");
-		return true;
-	}
-
-	private static boolean deleteExistingProvincesWhichAreMostlyInSpecifiedArea(String regionName) {
-		TownyProvinces.info("Now deleting provinces which are mostly in the specified area.");
-		int numProvincesDeleted = 0;
-		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
-			List<TPCoord> coordsInProvince = province.getCoordsInProvince();
-			int numProvinceBlocksInSpecifiedArea = 0;
-			for (TPCoord coordInProvince : coordsInProvince) {
-				if (coordInProvince.getX() < minX)
-					continue;
-				else if (coordInProvince.getX() > maxX)
-					continue;
-				else if (coordInProvince.getZ() < minZ)
-					continue;
-				else if (coordInProvince.getZ() > maxZ)
-					continue;
-				numProvinceBlocksInSpecifiedArea++;
-			}
-			if(numProvinceBlocksInSpecifiedArea > (coordsInProvince.size() / 2)) {
-				TownyProvincesDataHolder.getInstance().deleteProvince(province);
-				numProvincesDeleted++;
-			}
-		}
-		TownyProvinces.info("" + numProvincesDeleted + " provinces deleted.");
 		return true;
 	}
 
