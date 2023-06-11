@@ -6,6 +6,7 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceClaimBrush;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
 import org.bukkit.Location;
@@ -34,7 +35,7 @@ public class PaintRegionAction {
 	private final int brushSquareRadiusInChunks;
 	private final int claimAreaLimitInSquareMetres;
 	public final static double CHUNK_AREA_IN_SQUARE_METRES = Math.pow(TownyProvincesSettings.getChunkSideLength(), 2);
-	public final TPCoord searchCoord;
+	public final TPFreeCoord searchCoord;
 	private final int minAllowedDistanceBetweenProvinceHomeBlocksInChunks;
 	private final Location topLeftRegionCorner;
 	private final Location bottomRightRegionCorner;
@@ -57,7 +58,7 @@ public class PaintRegionAction {
 		this.mapMaxX  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
 		this.mapMinZ = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		this.mapMaxZ  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		this.searchCoord = new TPCoord(0,0);
+		this.searchCoord = new TPFreeCoord(0,0);
 		int minAllowedDistanceBetweenProvinceHomeBlocksInMetres = TownyProvincesSettings.getMinAllowedDistanceBetweenProvinceHomeBlocks(regionName);
 		this.minAllowedDistanceBetweenProvinceHomeBlocksInChunks = minAllowedDistanceBetweenProvinceHomeBlocksInMetres / TownyProvincesSettings.getChunkSideLength();
 		this.regionMinX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX();

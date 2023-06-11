@@ -1,12 +1,12 @@
 package io.github.townyadvanced.townyprovinces.objects;
 
-public class TPCoord {
+public class TPFreeCoord {
+	
+	private int x;
+	private int z;
 
-	private final int x;
-	private final int z;
-
-	public TPCoord(int x, int z) {
-		this.x = x;
+	public TPFreeCoord(int x, int z) {
+		this.x= x;
 		this.z = z;
 	}
 
@@ -27,15 +27,20 @@ public class TPCoord {
 
 	public boolean equals(Object o) {
 		if (o instanceof TPCoord
-				&& ((TPCoord) o).getX() == this.x
-				&& ((TPCoord) o).getZ() == this.z) {
+			&& ((TPCoord) o).getX() == this.x
+			&& ((TPCoord) o).getZ() == this.z) {
 			return true;
 		} else if (o instanceof TPFreeCoord
-				&& ((TPFreeCoord) o).getX() == this.x
-				&& ((TPFreeCoord) o).getZ() == this.z) {
+			&& ((TPFreeCoord) o).getX() == this.x
+			&& ((TPFreeCoord) o).getZ() == this.z) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	public void setValues(int x, int z) {
+		this.x = x;
+		this.z = z;
 	}
 }

@@ -5,7 +5,7 @@ import com.palmergames.bukkit.towny.object.Coord;
 public class ProvinceClaimBrush {
 	
 	private final int squareRadius;
-	private final TPCoord currentPosition;
+	private final TPFreeCoord currentPosition;
 	private final Province province;
 	private boolean active;
 	private int numChunksClaimed;
@@ -13,7 +13,7 @@ public class ProvinceClaimBrush {
 	public ProvinceClaimBrush(Province province, int squareRadius) {
 		this.squareRadius = squareRadius;
 		this.province = province;
-		this.currentPosition = province.getHomeBlock();
+		this.currentPosition = new TPFreeCoord(province.getHomeBlock().getX(), province.getHomeBlock().getZ());
 		this.active = true;
 		this.numChunksClaimed = 0;
 	}
@@ -26,7 +26,7 @@ public class ProvinceClaimBrush {
 		return squareRadius;
 	}
 	
-	public TPCoord getCurrentPosition() {
+	public TPFreeCoord getCurrentPosition() {
 		return currentPosition;
 	}
 

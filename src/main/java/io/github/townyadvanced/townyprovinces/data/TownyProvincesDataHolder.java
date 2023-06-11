@@ -3,6 +3,7 @@ package io.github.townyadvanced.townyprovinces.data;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 
 import java.util.ArrayList;
@@ -55,10 +56,10 @@ public class TownyProvincesDataHolder {
 	 * The advantage of this technique is that no new object
 	 * needs to be created to do a search of the map
 	 */
-	private final TPCoord coordSearchKey;
+	private final TPFreeCoord searchCoord;
 	
 	private TownyProvincesDataHolder() {
-		coordSearchKey = new TPCoord(0,0);
+		searchCoord = new TPFreeCoord(0,0);
 		provincesSet = new HashSet<>();
 		coordProvinceMap = new HashMap<>();
 		//int chunkAssignmentArraySizeX = TownyProvincesSettings.calculateNumMapChunksX();
@@ -106,8 +107,8 @@ public class TownyProvincesDataHolder {
 	}
 	
 	public Province getProvinceAt(int x, int z) {
-		coordSearchKey.setValues(x,z);
-		return coordProvinceMap.get(coordSearchKey);
+		searchCoord.setValues(x,z);
+		return coordProvinceMap.get(searchCoord);
 	}
 
 	public Set<Province> getProvincesSet() {
@@ -127,7 +128,6 @@ public class TownyProvincesDataHolder {
 		Set<TPCoord> result = new HashSet<>();
 		int[] x = new int[]{-1,0,1,-1,1,-1,0,1};
 		int[] z = new int[]{-1,-1,-1,0,0,1,1,1};
-		TPCoord searchCoord = new TPCoord(0,0);
 		for(int i = 0; i < 8; i++) {
 			if(isCoordUnclaimed(targetCoord.getX() + x[i], targetCoord.getZ() + z[i])) {
 				/*
@@ -152,8 +152,8 @@ public class TownyProvincesDataHolder {
 	 * @return true if the coord is unclaimed
 	 */
 	public boolean isCoordUnclaimed(int x, int z) {
-		coordSearchKey.setValues(x,z);
-		return !coordProvinceMap.containsKey(coordSearchKey);
+		searchCoord.setValues(x,z);
+		return !coordProvinceMap.containsKey(searchCoord);
 	}
 	
 
@@ -165,12 +165,11 @@ public class TownyProvincesDataHolder {
 		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		//Add to the result, any coords in the area which are not claimed
 		Map<TPCoord,Province> coordProvinceMap = TownyProvincesDataHolder.getInstance().getCoordProvinceMap();
-		TPCoord searchKey = new TPCoord(0,0);
 		TPCoord newCoord;
 		for(int x = minX; x <= maxX; x++) {
 			for (int z = minZ; z <= maxZ; z++) {
-				searchKey.setValues(x,z);
-				if(!coordProvinceMap.containsKey(searchKey)) {
+				searchCoord.setValues(x,z);
+				if(!coordProvinceMap.containsKey(searchCoord)) {
 					newCoord = new TPCoord(x,z);
 					result.put(newCoord, newCoord);
 				}
@@ -209,12 +208,11 @@ public class TownyProvincesDataHolder {
 		}
 		
 		//Now create any required coords which are not already in the result
-		TPCoord searchKey = new TPCoord(0,0);
 		TPCoord newCoord;
 		for(int x = minX; x <= maxX; x++) {
 			for (int z = minZ; z <= maxZ; z++) {
-				searchKey.setValues(x,z);
-				if(!result.containsKey(searchKey)) {
+				searchCoord.setValues(x,z);
+				if(!result.containsKey(searchCoord)) {
 					newCoord = new TPCoord(x,z);
 					result.put(newCoord, newCoord);
 					if(result.size() % 10000 == 0) {
