@@ -7,17 +7,15 @@ import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.utils.NameUtil;
 import com.palmergames.bukkit.util.ChatTools;
 import com.palmergames.util.StringMgmt;
-import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.province_generation.RegenerateRegionTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.regenerate_region.RegenerateRegionTaskController;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJob;
-import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJobStatus;
-import io.github.townyadvanced.townyprovinces.province_generation.RegenerateRegionTask;
+import io.github.townyadvanced.townyprovinces.jobs.land_validation.LandValidationTask;
+import io.github.townyadvanced.townyprovinces.jobs.land_validation.LandValidationJobStatus;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -150,7 +148,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			showHelp(sender);
 			return;
 		}
-		LandValidationJob landValidationJob = LandValidationJob.getLandValidationJob();
+		LandValidationTask landValidationJob = LandValidationTask.getLandValidationJob();
 		if (args[0].equalsIgnoreCase("status")) {
 			Translatable status = Translatable.of(landValidationJob.getLandValidationJobStatus().getLanguageKey());
 			Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_status").append(status));

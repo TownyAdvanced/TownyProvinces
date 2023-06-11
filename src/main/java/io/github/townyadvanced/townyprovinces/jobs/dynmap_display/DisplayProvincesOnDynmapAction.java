@@ -1,4 +1,4 @@
-package io.github.townyadvanced.townyprovinces.integrations.dynmap;
+package io.github.townyadvanced.townyprovinces.jobs.dynmap_display;
 
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Translatable;
@@ -7,7 +7,7 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.province_generation.RegenerateRegionTask;
+import io.github.townyadvanced.townyprovinces.jobs.regenerate_region.RegenerateRegionTask;
 import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.Marker;

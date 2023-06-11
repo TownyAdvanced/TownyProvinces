@@ -1,4 +1,4 @@
-package io.github.townyadvanced.townyprovinces.province_generation;
+package io.github.townyadvanced.townyprovinces.jobs.regenerate_region;
 
 import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;

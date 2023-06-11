@@ -7,12 +7,12 @@ import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.integrations.dynmap.DisplayProvincesOnDynmapAction;
-import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DisplayProvincesOnDynmapAction;
+import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJob;
+import io.github.townyadvanced.townyprovinces.jobs.land_validation.LandValidationTask;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.Bukkit;
@@ -48,7 +48,7 @@ public class TownyProvinces extends JavaPlugin {
 				|| !DataHandlerUtil.loadAllData()
 				|| !registerListeners()
 				|| !registerAdminCommands()
-				|| !LandValidationJob.startJob()) {
+				|| !LandValidationTask.startJob()) {
 			onDisable();
 			return;
 		}
