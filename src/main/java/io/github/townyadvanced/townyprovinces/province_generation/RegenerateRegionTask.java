@@ -35,10 +35,10 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	 **/
 	private Map<TPCoord, TPCoord> unclaimedCoordsMap;
 	private final String givenRegionName;  //Name given by job starter. Might be "All"
-	private final int mapMinX;
-	private final int mapMaxX;
-	private final int mapMinZ;
-	private final int mapMaxZ;
+	private final int mapMinXCoord;
+	private final int mapMaxXCoord;
+	private final int mapMinZCoord;
+	private final int mapMaxZCoord;
 	public final TPCoord searchCoord;
 	
 	public RegenerateRegionTask(String givenRegionName) {
@@ -52,10 +52,10 @@ public class RegenerateRegionTask extends BukkitRunnable {
 			throw new RuntimeException("Problem reloading region definitions");
 		}
 		String nameOfFirstRegion = TownyProvincesSettings.getNameOfFirstRegion();
-		this.mapMinX = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		this.mapMaxX  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		this.mapMinZ = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		this.mapMaxZ  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMinXCoord = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMaxXCoord = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMinZCoord = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMaxZCoord = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		this.searchCoord = new TPCoord(0,0);
 	}
 	
@@ -137,10 +137,10 @@ public class RegenerateRegionTask extends BukkitRunnable {
 			return;
 		}
 		//Allocate unclaimed chunks to provinces.
-		//if(!assignUnclaimedCoordsToProvinces()) {
-		//	TownyProvinces.info("Problem assigning unclaimed chunks to provinces");
-		//	return;
-		//}
+		if(!assignUnclaimedCoordsToProvinces()) {
+			TownyProvinces.info("Problem assigning unclaimed chunks to provinces");
+			return;
+		}
 		//Delete empty provinces
 		if(!deleteEmptyProvinces()) {
 			TownyProvinces.info("Problem deleting empty provinces");
@@ -188,12 +188,13 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	private boolean assignUnclaimedCoordsToProvinces() {
 		TownyProvinces.info("Now assigning unclaimed chunks to provinces.");
 		Map<TPCoord, Province> pendingCoordProvinceAssignments = new HashMap<>();
+		double totalChunksOnMap = (mapMaxXCoord - mapMinXCoord) * (mapMaxZCoord - mapMinZCoord);
 		while(true) {
 			//Rebuild the map of pending coord-province assignments
-			rebuildPendingCoordProvinceAssignmentMap(unclaimedCoordsMap, pendingCoordProvinceAssignments);
-			TownyProvinces.info("Num Unclaimed Chunks: " + unclaimedCoordsMap.size());
-			TownyProvinces.info("Pending Chunk-Province Assignments: " + pendingCoordProvinceAssignments.size());
-			
+			rebuildPendingCoordProvinceAssignmentMap(pendingCoordProvinceAssignments);
+			double totalClaimedChunks = totalChunksOnMap - unclaimedCoordsMap.size(); 
+			int percentageChunksClaimed = (int)((totalClaimedChunks / totalChunksOnMap) * 100);
+			TownyProvinces.info("Assigning Unclaimed Chunks. Progress: " + percentageChunksClaimed + "%");
 			//Exit loop if there are no more pending assignments
 			if(pendingCoordProvinceAssignments.size() == 0) {
 				break;
@@ -215,15 +216,13 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	
 	/**
 	 * Some coords may now be eligible. Some may be ineligible. Rebuild
-	 * 
-	 * @param allUnclaimedCoords all unclaimed coords on map
 	 */
-	private void rebuildPendingCoordProvinceAssignmentMap(Map<TPCoord, TPCoord> allUnclaimedCoords, Map<TPCoord, Province> pendingCoordProvinceAssignmentMap) {
+	private void rebuildPendingCoordProvinceAssignmentMap(Map<TPCoord, Province> pendingCoordProvinceAssignmentMap) {
 		//Clear map
 		pendingCoordProvinceAssignmentMap.clear();
 		//Rebuild map
-		for (TPCoord unclaimedCoord : allUnclaimedCoords.values()) {
-			Province province = getProvinceIfCoordIsEligibleForProvinceAssignment(unclaimedCoord);
+		for (TPCoord unclaimedCoord : unclaimedCoordsMap.values()) {
+			Province province = getProvinceIfUnclaimedCoordIsEligibleForProvinceAssignment(unclaimedCoord);
 			if(province != null) {
 				pendingCoordProvinceAssignmentMap.put(unclaimedCoord, province);
 			}
@@ -231,49 +230,58 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	}
 	
 	private boolean verifyCoordEligibilityForProvinceAssignment(TPCoord coord) {
-		Province province = getProvinceIfCoordIsEligibleForProvinceAssignment(coord);
+		Province province = getProvinceIfUnclaimedCoordIsEligibleForProvinceAssignment(coord);
 		return province != null;
 	}
 
-	private Province getProvinceIfCoordIsEligibleForProvinceAssignment(TPCoord candidateCoord) {
+	/**
+	 * Eligibility rules:
+	 * 1. At least one claimed chunk must be found cardinally
+	 * 2. If any adjacent claimed chunks are found, they must all belong to the same province.
+	 * 
+	 * @param unclaimedCoord the unclaimed coord
+	 * @return the province to assign it to
+	 */
+	private Province getProvinceIfUnclaimedCoordIsEligibleForProvinceAssignment(TPCoord unclaimedCoord) {
 		//Filter out chunk if it is at edge of map
-		if(candidateCoord.getX() < mapMinX)
+		if(unclaimedCoord.getX() < mapMinXCoord)
 			return null;
-		else if (candidateCoord.getX() > mapMaxX)
+		else if (unclaimedCoord.getX() > mapMaxXCoord)
 			return null;
-		else if (candidateCoord.getZ() < mapMinZ)
+		else if (unclaimedCoord.getZ() < mapMinZCoord)
 			return null;
-		else if (candidateCoord.getZ() > mapMaxZ)
+		else if (unclaimedCoord.getZ() > mapMaxZCoord)
 			return null;
 
 		//Check cardinal direction
-		Province province;
 		Province result = null;
-		int[] x = new int[]{0,-1,1,0};
-		int[] z = new int[]{-1,0,0,1};
+		Province province;
+		int[] x = new int[]{0,0,1,-1};
+		int[] z = new int[]{-1,1,0,0};
 		for(int i = 0; i < 4; i++) {
-			province = TownyProvincesDataHolder.getInstance().getProvinceAt(x[i], z[i]);
+			province = TownyProvincesDataHolder.getInstance().getProvinceAt(unclaimedCoord.getX() + x[i], unclaimedCoord.getZ() + z[i]);
 			if (province != null) {
 				if(result == null) {
 					result = province;
-				} else {
-					return null; //Can't have 2 adjacent provinces
+				} else if (province != result) {
+					return null; //2 different adjacent provinces found. Return null, as this chunk will be a border.
 				}
 			}
 		}
 
 		if(result == null)
 			return null; //No province found cardinally
-		
+
 		//Check non-cardinal
 		x = new int[]{-1,1,1,-1};
 		z = new int[]{-1,-1,1,1};
 		for(int i = 0; i < 4; i++) {
-			province = TownyProvincesDataHolder.getInstance().getProvinceAt(x[i], z[i]);
-			if (province != null) {
-				return null; //A winner can't have any adjacent in non-cardinal
+			province = TownyProvincesDataHolder.getInstance().getProvinceAt(unclaimedCoord.getX() + x[i], unclaimedCoord.getZ() + z[i]);
+			if (province != null && province != result) {
+				return null; //2 different adjacent provinces found. Return null, as this chunk will be a border.
 			}
 		}
+
 		return result;
 	}
 	
