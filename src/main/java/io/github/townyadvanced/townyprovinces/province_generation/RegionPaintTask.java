@@ -32,7 +32,7 @@ public class RegionPaintTask {
 	private final int maxBrushMoveAmount;
 	private final int brushSquareRadiusInChunks;
 	private final int claimAreaLimitInSquareMetres;
-	public final static double CHUNK_AREA_IN_SQUARE_METRES = Math.pow(TownyProvincesSettings.getProvinceBlockSideLength(), 2);
+	public final static double CHUNK_AREA_IN_SQUARE_METRES = Math.pow(TownyProvincesSettings.getChunkSideLength(), 2);
 	public final TPCoord searchCoord;
 	private final int minAllowedDistanceBetweenProvinceHomeBlocksInChunks;
 	private final Location topLeftRegionCorner;
@@ -52,13 +52,13 @@ public class RegionPaintTask {
 		this.brushSquareRadiusInChunks = TownyProvincesSettings.getProvinceCreatorBrushSquareRadiusInChunks(regionName);
 		this.claimAreaLimitInSquareMetres = TownyProvincesSettings.getProvinceCreatorBrushClaimLimitInSquareMetres(regionName);
 		String nameOfFirstRegion = TownyProvincesSettings.getNameOfFirstRegion();
-		this.mapMinX = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		this.mapMaxX  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		this.mapMinZ = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
-		this.mapMaxZ  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		this.mapMinX = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMaxX  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMinZ = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMaxZ  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		this.searchCoord = new TPCoord(0,0);
 		int minAllowedDistanceBetweenProvinceHomeBlocksInMetres = TownyProvincesSettings.getMinAllowedDistanceBetweenProvinceHomeBlocks(regionName);
-		this.minAllowedDistanceBetweenProvinceHomeBlocksInChunks = minAllowedDistanceBetweenProvinceHomeBlocksInMetres / TownyProvincesSettings.getProvinceBlockSideLength();
+		this.minAllowedDistanceBetweenProvinceHomeBlocksInChunks = minAllowedDistanceBetweenProvinceHomeBlocksInMetres / TownyProvincesSettings.getChunkSideLength();
 		this.regionMinX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX();
 		this.regionMaxX = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX();
 		this.regionMinZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ();
@@ -67,7 +67,7 @@ public class RegionPaintTask {
 		this.bottomRightRegionCorner = TownyProvincesSettings.getBottomRightCornerLocation(regionName);
 		this.provinceSizeEstimateForPopulatingInSquareMetres = TownyProvincesSettings.getProvinceSizeEstimateForPopulatingInSquareMetres(regionName);
 		this.numberOfProvincePaintingCycles= TownyProvincesSettings.getNumberOfProvincePaintingCycles(regionName);
-		this.tpChunkSideLength = TownyProvincesSettings.getProvinceBlockSideLength();
+		this.tpChunkSideLength = TownyProvincesSettings.getChunkSideLength();
 		this.newTownCost = TownyProvincesSettings.getNewTownCost(regionName);
 		this.upkeepTownCost = TownyProvincesSettings.getUpkeepTownCost(regionName);
 		this.allowedVarianceBetweenIdealAndActualNumProvinces = TownyProvincesSettings.getMaxAllowedVarianceBetweenIdealAndActualNumProvinces(regionName);

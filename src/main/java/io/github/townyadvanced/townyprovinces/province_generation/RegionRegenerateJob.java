@@ -23,17 +23,25 @@ import java.util.Set;
 
 public class RegionRegenerateJob extends BukkitRunnable {
 	
+	/**
+	 * Lock this if you want to regenerate or display,
+	 * to avoid concurrent modification problems
+	 */
+	public static final Integer REGENERATION_JOB_LOCK = 1;
+	
 	private static RegionRegenerateJob regionRegenerationJob = null;
 	
 	public static boolean attemptToStartJob(CommandSender sender, String givenregionName) {
-		if(regionRegenerationJob != null) {
-			Messaging.sendMsg(sender, Translatable.of("msg_err_regeneration_job_already_started"));
-			return false;
-		} else {
-			regionRegenerationJob = new RegionRegenerateJob(givenregionName);
-			regionRegenerationJob.runTaskAsynchronously(TownyProvinces.getPlugin());
-			Messaging.sendMsg(sender, Translatable.of("msg_region_regeneration_job_started", givenregionName));
-			return true;
+		synchronized (REGENERATION_JOB_LOCK) {
+			if (regionRegenerationJob != null) {
+				Messaging.sendMsg(sender, Translatable.of("msg_err_regeneration_job_already_started"));
+				return false;
+			} else {
+				regionRegenerationJob = new RegionRegenerateJob(givenregionName);
+				regionRegenerationJob.runTaskAsynchronously(TownyProvinces.getPlugin());
+				Messaging.sendMsg(sender, Translatable.of("msg_region_regeneration_job_started", givenregionName));
+				return true;
+			}
 		}
 	}
 
@@ -41,6 +49,9 @@ public class RegionRegenerateJob extends BukkitRunnable {
 		regionRegenerationJob = null;
 	}
 
+	public static boolean isJobInProgress() {
+		return regionRegenerationJob != null;
+	}
 	/**
 	 * Map of currently unclaimed coords
 	 * When this is filled,
@@ -71,10 +82,10 @@ public class RegionRegenerateJob extends BukkitRunnable {
 			throw new RuntimeException("Problem reloading region definitions");
 		}
 		String nameOfFirstRegion = TownyProvincesSettings.getNameOfFirstRegion();
-		this.mapMinX = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		this.mapMaxX  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		this.mapMinZ = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
-		this.mapMaxZ  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		this.mapMinX = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMaxX  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMinZ = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMaxZ  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		this.searchCoord = new TPCoord(0,0);
 	}
 	
@@ -95,6 +106,8 @@ public class RegionRegenerateJob extends BukkitRunnable {
 
 
 			TownyProvinces.info("Now Creating Array");
+			
+			/*
 			TPCoord testCoord = new TPCoord(33,33);
 			Province testProvince = new Province(testCoord, false, false, 0,0);
 			
@@ -111,6 +124,8 @@ public class RegionRegenerateJob extends BukkitRunnable {
 			
 			if(true)
 				return;
+				
+			 */
 			
 			
 			//Create a new local map of soon-to-be-unclaimed coords
@@ -186,10 +201,10 @@ public class RegionRegenerateJob extends BukkitRunnable {
 	private static boolean deleteExistingProvincesWhichAreMostlyInSpecifiedArea(String regionName) {
 		TownyProvinces.info("Now deleting provinces which are mostly in the specified area.");
 		int numProvincesDeleted = 0;
-		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
 			List<TPCoord> coordsInProvince = province.getCoordsInProvince();
 			int numProvinceBlocksInSpecifiedArea = 0;

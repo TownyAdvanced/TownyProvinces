@@ -1,9 +1,7 @@
 package io.github.townyadvanced.townyprovinces.integrations.dynmap;
 
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
-import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Translatable;
-import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
@@ -125,8 +123,8 @@ public class DynmapIntegration {
 				if(province.isSea())
 					continue;
 				TPCoord homeBlock = province.getHomeBlock();
-				int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getProvinceBlockSideLength();
-				int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getProvinceBlockSideLength();
+				int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getChunkSideLength();
+				int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getChunkSideLength();
 
 				MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(border_icon);
 				String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
@@ -236,8 +234,8 @@ public class DynmapIntegration {
 		double[] xPoints = new double[drawableLineOfBorderCoords.size()];
 		double[] zPoints = new double[drawableLineOfBorderCoords.size()];
 		for (int i = 0; i < drawableLineOfBorderCoords.size(); i++) {
-			xPoints[i] = (drawableLineOfBorderCoords.get(i).getX() * TownyProvincesSettings.getProvinceBlockSideLength());
-			zPoints[i] = (drawableLineOfBorderCoords.get(i).getZ() * TownyProvincesSettings.getProvinceBlockSideLength());
+			xPoints[i] = (drawableLineOfBorderCoords.get(i).getX() * TownyProvincesSettings.getChunkSideLength());
+			zPoints[i] = (drawableLineOfBorderCoords.get(i).getZ() * TownyProvincesSettings.getChunkSideLength());
 
 			/*
 			 * At this point,the draw location is at the top left of the block.

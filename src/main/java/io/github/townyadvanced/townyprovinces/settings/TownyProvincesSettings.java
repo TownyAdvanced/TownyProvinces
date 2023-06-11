@@ -90,7 +90,7 @@ public class TownyProvincesSettings {
 		return Double.parseDouble(numString);
 	}
 	
-	public static int getProvinceBlockSideLength() {
+	public static int getChunkSideLength() {
 		return 16; //Same as a chunk. Best not to change
 	}
 
@@ -178,8 +178,8 @@ public class TownyProvincesSettings {
 	public static boolean isProvinceInRegion(Province province, String regionName) {
 		Location topLeftCornerLocation = getTopLeftCornerLocation(regionName);
 		Location bottomRightCornerLocation = getBottomRightCornerLocation(regionName);
-		int homeBlockRealX = province.getHomeBlock().getX() * getProvinceBlockSideLength();
-		int homeBlockRealZ = province.getHomeBlock().getZ() * getProvinceBlockSideLength();
+		int homeBlockRealX = province.getHomeBlock().getX() * getChunkSideLength();
+		int homeBlockRealZ = province.getHomeBlock().getZ() * getChunkSideLength();
 		
 		if(homeBlockRealX  > topLeftCornerLocation.getBlockX()
 				&& homeBlockRealZ > topLeftCornerLocation.getBlockZ()
@@ -190,4 +190,21 @@ public class TownyProvincesSettings {
 			return false;
 		}
 	}
+
+	public static int calculateNumMapChunksX() {
+		String regionName = getNameOfFirstRegion();
+		Location topLeftCornerLocation = getTopLeftCornerLocation(regionName);
+		Location bottomRightCornerLocation = getBottomRightCornerLocation(regionName);
+		int lengthX = topLeftCornerLocation.getBlockX() + bottomRightCornerLocation.getBlockX();
+		return (lengthX / getChunkSideLength()) + 2;
+	}
+
+	public static int calculateNumMapChunksZ() {
+		String regionName = getNameOfFirstRegion();
+		Location topLeftCornerLocation = getTopLeftCornerLocation(regionName);
+		Location bottomRightCornerLocation = getBottomRightCornerLocation(regionName);
+		int lengthZ = topLeftCornerLocation.getBlockZ() + bottomRightCornerLocation.getBlockZ();
+		return (lengthZ / getChunkSideLength()) + 2;
+	}
+
 }

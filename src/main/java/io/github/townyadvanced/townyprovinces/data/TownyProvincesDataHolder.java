@@ -34,6 +34,15 @@ public class TownyProvincesDataHolder {
 	 *   If it doesn't have the given coord, then its a border
 	 */
 	private final Map<TPCoord, Province> coordProvinceMap;
+
+
+	/**
+	 * An array of which provinces are at which chunks
+	 * 
+	 * - Size is initialized using the first province, which is assumed to cover all others.
+	 * 
+	 */
+	//private final Province[][] chunkAssignmentArray;
 	
 	/**
 	 * Static Coord Search key
@@ -49,9 +58,12 @@ public class TownyProvincesDataHolder {
 	private final TPCoord coordSearchKey;
 	
 	private TownyProvincesDataHolder() {
+		coordSearchKey = new TPCoord(0,0);
 		provincesSet = new HashSet<>();
 		coordProvinceMap = new HashMap<>();
-		coordSearchKey = new TPCoord(0,0);
+		//int chunkAssignmentArraySizeX = TownyProvincesSettings.calculateNumMapChunksX();
+		//int chunkAssignmentArraySizeZ = TownyProvincesSettings.calculateNumMapChunksZ();
+		//chunkAssignmentArray = new Province[chunkAssignmentArraySizeX][chunkAssignmentArraySizeZ];
 	}
 	
 	public static TownyProvincesDataHolder getInstance() {
@@ -147,10 +159,10 @@ public class TownyProvincesDataHolder {
 
 	public Map<TPCoord, TPCoord> getAllUnclaimedCoordsInRegion(String regionName) {
 		Map<TPCoord,TPCoord> result = new HashMap<>();
-		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		//Add to the result, any coords in the area which are not claimed
 		Map<TPCoord,Province> coordProvinceMap = TownyProvincesDataHolder.getInstance().getCoordProvinceMap();
 		TPCoord searchKey = new TPCoord(0,0);
@@ -175,12 +187,13 @@ public class TownyProvincesDataHolder {
 	 * This method will re-use any required coord objects which are already in the coord-province map.
 	 */
 	public Map<TPCoord,TPCoord> getAllCoordsOnMap() {
+		TownyProvinces.info("Now Getting all coords on map");
 		Map<TPCoord,TPCoord> result = new HashMap<>();
 		String regionName = TownyProvincesSettings.getNameOfFirstRegion();
-		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getProvinceBlockSideLength();
+		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		
 		//First add any required coords which are already on the coord-province map
 		for(TPCoord coord: coordProvinceMap.keySet()) {
@@ -204,7 +217,9 @@ public class TownyProvincesDataHolder {
 				if(!result.containsKey(searchKey)) {
 					newCoord = new TPCoord(x,z);
 					result.put(newCoord, newCoord);
-					TownyProvinces.info("Num Coords: " + result.size());
+					if(result.size() % 10000 == 0) {
+						TownyProvinces.info("Num Coords Available: " + result.size());
+					}
 				}
 			}
 		}

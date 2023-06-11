@@ -1,10 +1,10 @@
 package io.github.townyadvanced.townyprovinces.land_validation_job;
 
-import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+import io.github.townyadvanced.townyprovinces.province_generation.RegionRegenerateJob;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -55,12 +55,14 @@ public class LandValidationJob extends BukkitRunnable {
 	@Override
 	public void run() {
 		//Handle any requests to start the land validation job
-		switch (landValidationJobStatus) {
-			case START_REQUESTED:
-				landValidationJobStatus = LandValidationJobStatus.STARTED;
-				TownyProvinces.info("Land Validation Job Starting.");
-				executeLandValidation();
-				break;
+		synchronized (RegionRegenerateJob.REGENERATION_JOB_LOCK) {
+			switch (landValidationJobStatus) {
+				case START_REQUESTED:
+					landValidationJobStatus = LandValidationJobStatus.STARTED;
+					TownyProvinces.info("Land Validation Job Starting.");
+					executeLandValidation();
+					break;
+			}
 		}
 	}
 
@@ -142,8 +144,8 @@ public class LandValidationJob extends BukkitRunnable {
 		TPCoord coordToTest;
 		for(int i = 0; i < 10; i++) {
 			coordToTest = coordsInProvince.get((int)(Math.random() * coordsInProvince.size()));
-			int x = (coordToTest.getX() * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;
-			int z = (coordToTest.getZ() * TownyProvincesSettings.getProvinceBlockSideLength()) + 8;
+			int x = (coordToTest.getX() * TownyProvincesSettings.getChunkSideLength()) + 8;
+			int z = (coordToTest.getZ() * TownyProvincesSettings.getChunkSideLength()) + 8;
 			biome = world.getHighestBlockAt(x,z).getBiome();
 			System.gc();
 			try {
