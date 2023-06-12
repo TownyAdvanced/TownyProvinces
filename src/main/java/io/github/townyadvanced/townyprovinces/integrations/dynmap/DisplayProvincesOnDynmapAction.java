@@ -147,7 +147,12 @@ public class DisplayProvincesOnDynmapAction {
 				if(drawableLineOfBorderCoords.size() > 0) {
 					drawBorderLine(drawableLineOfBorderCoords, province, markerId);
 				} else {
-					debugDrawProvinceChunks(province);
+					//We get here very very intermittently. I don't know why
+					//However it doesn't seem to cause any issues for users
+					//Because within seconds, the dynmap job draws it properly on a subsequent pass. 
+					TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line. This will Will fix shortly.");
+					//TODO Investigate
+					//debugDrawProvinceChunks(province); ... not needed. But if you turn it on, you will see that the province looks fine
 				}
 			}
 		} else {
@@ -190,7 +195,6 @@ public class DisplayProvincesOnDynmapAction {
 				result.add(coordToAddToLine);
 				unProcessedCoords.remove(coordToAddToLine);
 			} else {
-				TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line");
 				result.clear();
 				return result;
 			}
