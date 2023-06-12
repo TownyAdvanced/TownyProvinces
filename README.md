@@ -1,5 +1,5 @@
 # Towny Resources
-- An add-on plugin for Towny, which makes town claiming more organised / predictable, reducing staff workload and server toxicity.
+- An add-on plugin for Towny, which makes town claiming more organized, reducing staff workload and server toxicity.
 
 ## Features:
 - :world_map: **Automatically Divides The Map Into Provinces:**
