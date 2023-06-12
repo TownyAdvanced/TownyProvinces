@@ -114,10 +114,10 @@ public class RegenerateRegionTask extends BukkitRunnable {
 			return;
 		}
 		//Allocate unclaimed chunks to provinces.
-		//if(!assignUnclaimedCoordsToProvinces()) {
-		//	TownyProvinces.info("Problem assigning unclaimed chunks to provinces");
-		//	return;
-		//}
+		if(!assignUnclaimedCoordsToProvinces()) {
+			TownyProvinces.info("Problem assigning unclaimed chunks to provinces");
+			return;
+		}
 		//Delete empty provinces
 		if(!deleteEmptyProvinces()) {
 			TownyProvinces.info("Problem deleting empty provinces");
@@ -150,10 +150,14 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	
 	private static boolean deleteEmptyProvinces() {
 		TownyProvinces.info("Now Deleting Empty Provinces.");
-		for(Province province: new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())) {
+		Set<Province> provincesToDelete = new HashSet<>();
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			if(province.getCoordsInProvince().size() == 0) {
-				TownyProvincesDataHolder.getInstance().deleteProvince(province);
+				provincesToDelete.add(province);
 			}
+		}
+		for(Province province: provincesToDelete) {
+			TownyProvincesDataHolder.getInstance().deleteProvince(province);
 		}
 		TownyProvinces.info("Empty Provinces Deleted.");
 		return true;
