@@ -28,10 +28,10 @@ public class PaintRegionAction {
 	private final int regionMaxX;
 	private final int regionMinZ;
 	private final int regionMaxZ;
-	private final int mapMinX;
-	private final int mapMaxX;
-	private final int mapMinZ;
-	private final int mapMaxZ;
+	private final int mapMinXCoord;
+	private final int mapMaxXCoord;
+	private final int mapMinZCoord;
+	private final int mapMaxZCoord;
 	private final int minBrushMoveAmount;
 	private final int maxBrushMoveAmount;
 	private final int brushSquareRadiusInChunks;
@@ -56,10 +56,10 @@ public class PaintRegionAction {
 		this.brushSquareRadiusInChunks = TownyProvincesSettings.getProvinceCreatorBrushSquareRadiusInChunks(regionName);
 		this.claimAreaLimitInSquareMetres = TownyProvincesSettings.getProvinceCreatorBrushClaimLimitInSquareMetres(regionName);
 		String nameOfFirstRegion = TownyProvincesSettings.getNameOfFirstRegion();
-		this.mapMinX = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		this.mapMaxX  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		this.mapMinZ = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		this.mapMaxZ  = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMinXCoord = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMaxXCoord = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMinZCoord = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		this.mapMaxZCoord = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		this.searchCoord = new TPFreeCoord(0,0);
 		int minAllowedDistanceBetweenProvinceHomeBlocksInMetres = TownyProvincesSettings.getMinAllowedDistanceBetweenProvinceHomeBlocks(regionName);
 		this.minAllowedDistanceBetweenProvinceHomeBlocksInChunks = minAllowedDistanceBetweenProvinceHomeBlocksInMetres / TownyProvincesSettings.getChunkSideLength();
@@ -188,10 +188,10 @@ public class PaintRegionAction {
 		boolean isSea = false;
 		boolean landValidationRequested = false;
 		//Establish boundaries of where the homeblock might be placed
-		double xLowest = regionMinX;
-		double xHighest = regionMaxX;
-		double zLowest = regionMinZ;
-		double zHighest = regionMaxZ;
+		double xLowest = regionMinX + brushSquareRadiusInChunks + 3;
+		double xHighest = regionMaxX - brushSquareRadiusInChunks + 3;
+		double zLowest = regionMinZ + brushSquareRadiusInChunks + 3;
+		double zHighest = regionMaxZ - brushSquareRadiusInChunks + 3;
 		//Try a few times to place the homeblock
 		for(int i = 0; i < 100; i++) {
 			//Pick a random location
@@ -227,7 +227,6 @@ public class PaintRegionAction {
 		}
 	}
 
-
 	private boolean executeChunkClaimCompetition() {
 		TownyProvinces.info("Chunk Claim Competition Started");
 
@@ -236,10 +235,13 @@ public class PaintRegionAction {
 		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			provinceClaimBrushes.add(new ProvinceClaimBrush(province, brushSquareRadiusInChunks));
 		}
-
-		//First claim once around the homeblocks
+		
+		/*
+		 * First claim once around the homeblocks
+		 * Note: We assume that the homeblocks have all been put in valid positoins
+		 */
 		for(ProvinceClaimBrush provinceClaimBrush: provinceClaimBrushes) {
-			claimUnclaimedChunksCoveredByBrush(provinceClaimBrush);
+			claimChunksCoveredByBrush(provinceClaimBrush);
 		}
 
 		//Execute province painting competition
@@ -265,7 +267,7 @@ public class PaintRegionAction {
 				boolean brushMoved = moveBrushIfPossible(provinceClaimBrush, newX, newZ);
 				//Claim chunks
 				if(brushMoved)
-					claimUnclaimedChunksCoveredByBrush(provinceClaimBrush);
+					claimChunksCoveredByBrush(provinceClaimBrush);
 				//Deactivate if too many chunks have been claimed
 				if(hasBrushHitClaimLimit(provinceClaimBrush)) {
 					provinceClaimBrush.setActive(false);
@@ -279,7 +281,9 @@ public class PaintRegionAction {
 	}
 
 	/**
-	 * Move the brush unless the new position would be too close to another province.
+	 * Move the brush unless the new position would be:
+	 *  - off the map 
+	 *  - or too close to another province.
 	 *
 	 * @param brush given brush
 	 */
@@ -294,8 +298,9 @@ public class PaintRegionAction {
 
 	/**
 	 * Validate that it is ok to put the brush at the given coord.
-	 * - The only reason it might not be ok, is if another province is nearby.
-	 * - Note that being at the edge of the map is not a problem. The brush will just paint what it can
+	 * It is not ok if:
+	 * - It would paint off the map
+	 * - It would paint on another province
 	 *
 	 * @return true if it's ok
 	 */
@@ -307,7 +312,16 @@ public class PaintRegionAction {
 		Province province;
 		for(int x = brushMinCoordX -3; x <= (brushMaxCoordX +3); x++) {
 			for(int z = brushMinCoordZ -3; z <= (brushMaxCoordZ +3); z++) {
-				//Fail if the given position is near a different province
+				//Fail if the target coord is off the map
+				if (x < mapMinXCoord)
+					continue;
+				else if (x > mapMaxXCoord)
+					continue;
+				else if (z < mapMinZCoord)
+					continue;
+				else if (z > mapMaxZCoord)
+					continue;
+				//Fail if the target coord is owned by a different province
 				province = TownyProvincesDataHolder.getInstance().getProvinceAt(x,z);
 				if(province != null && province != provinceBeingPainted) {
 					return false;
@@ -318,19 +332,27 @@ public class PaintRegionAction {
 	}
 
 	/**
-	 * Claim unclaimed chunks covered by brush, as long as they are not beyond the world border
+	 * Claim chunks covered by brush
+	 * Assume that all the checks related to other provinces
+	 * and the edge of the map, have already been done
 	 *
 	 * @param brush the brush
 	 */
-	private void claimUnclaimedChunksCoveredByBrush(ProvinceClaimBrush brush) {
+	private void claimChunksCoveredByBrush(ProvinceClaimBrush brush) {
 		int startX = brush.getCurrentPosition().getX() - brush.getSquareRadius();
 		int endX = brush.getCurrentPosition().getX() + brush.getSquareRadius();
 		int startZ = brush.getCurrentPosition().getZ() - brush.getSquareRadius();
 		int endZ = brush.getCurrentPosition().getZ() + brush.getSquareRadius();
 		for(int x = startX; x <= endX; x++) {
 			for(int z = startZ; z <= endZ; z++) {
+				//Don't claim if already claimed by the province
+				searchCoord.setValues(x,z);
+				if(!unclaimedCoordsMap.containsKey(searchCoord))
+					return;
 				//Claim chunk
-				claimChunk(x, z, brush);
+				TownyProvincesDataHolder.getInstance().claimCoordForProvince(unclaimedCoordsMap.get(searchCoord), brush.getProvince());
+				brush.registerChunkClaimed();
+				unclaimedCoordsMap.remove(searchCoord);
 			}
 		}
 	}
@@ -339,7 +361,7 @@ public class PaintRegionAction {
 	 * Claim the given chunk, unless another province has already claimed it
 	 * Or near edge of map, or near other province,
 	 */
-	private void claimChunk(int coordX, int coordZ, ProvinceClaimBrush brush) {
+	private void claimUnclaimedChunk(int coordX, int coordZ, ProvinceClaimBrush brush) {
 		//Don't claim if already claimed
 		searchCoord.setValues(coordX,coordZ);
 		if(!unclaimedCoordsMap.containsKey(searchCoord))
@@ -356,16 +378,6 @@ public class PaintRegionAction {
 				return;
 			}
 		}
-
-		//Don't claim at edge of map
-		if(coordX < mapMinX)
-			return;
-		else if (coordX > mapMaxX)
-			return;
-		else if (coordZ < mapMinZ)
-			return;
-		else if (coordZ > mapMaxZ)
-			return;
 
 		//Claim chunk
 		TownyProvincesDataHolder.getInstance().claimCoordForProvince(unclaimedCoordsMap.get(searchCoord), province);
