@@ -189,9 +189,9 @@ public class PaintRegionAction {
 		boolean landValidationRequested = false;
 		//Establish boundaries of where the homeblock might be placed
 		double xLowest = regionMinX + brushSquareRadiusInChunks + 3;
-		double xHighest = regionMaxX - brushSquareRadiusInChunks + 3;
+		double xHighest = regionMaxX - brushSquareRadiusInChunks - 3;
 		double zLowest = regionMinZ + brushSquareRadiusInChunks + 3;
-		double zHighest = regionMaxZ - brushSquareRadiusInChunks + 3;
+		double zHighest = regionMaxZ - brushSquareRadiusInChunks - 3;
 		//Try a few times to place the homeblock
 		for(int i = 0; i < 100; i++) {
 			//Pick a random location
@@ -264,10 +264,13 @@ public class PaintRegionAction {
 				//Move brush if possible
 				newX = provinceClaimBrush.getCurrentPosition().getX() + moveDeltaX;
 				newZ = provinceClaimBrush.getCurrentPosition().getZ() + moveDeltaZ;
-				boolean brushMoved = moveBrushIfPossible(provinceClaimBrush, newX, newZ);
-				//Claim chunks
-				if(brushMoved)
+				
+				//If new position is good, move and claim
+				if(validateBrushPosition(newX, newZ, provinceClaimBrush.getProvince())) {
+					provinceClaimBrush.moveBrushTo(newX, newZ);
 					claimChunksCoveredByBrush(provinceClaimBrush);
+					return true;
+				}
 				//Deactivate if too many chunks have been claimed
 				if(hasBrushHitClaimLimit(provinceClaimBrush)) {
 					provinceClaimBrush.setActive(false);
@@ -279,23 +282,7 @@ public class PaintRegionAction {
 		TownyProvinces.info("Num Chunks Unclaimed: " + unclaimedCoordsMap.size());
 		return true;
 	}
-
-	/**
-	 * Move the brush unless the new position would be:
-	 *  - off the map 
-	 *  - or too close to another province.
-	 *
-	 * @param brush given brush
-	 */
-	private boolean moveBrushIfPossible(ProvinceClaimBrush brush, int newX, int newZ) {
-		if(validateBrushPosition(newX, newZ, brush.getProvince())) {
-			brush.moveBrushTo(newX, newZ);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
+	
 	/**
 	 * Validate that it is ok to put the brush at the given coord.
 	 * It is not ok if:
