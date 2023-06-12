@@ -63,9 +63,6 @@ public class TownyProvincesDataHolder {
 		searchCoord = new TPFreeCoord(0,0);
 		provincesSet = new HashSet<>();
 		coordProvinceMap = new HashMap<>();
-		//int chunkAssignmentArraySizeX = TownyProvincesSettings.calculateNumMapChunksX();
-		//int chunkAssignmentArraySizeZ = TownyProvincesSettings.calculateNumMapChunksZ();
-		//chunkAssignmentArray = new Province[chunkAssignmentArraySizeX][chunkAssignmentArraySizeZ];
 	}
 	
 	public static TownyProvincesDataHolder getInstance() {

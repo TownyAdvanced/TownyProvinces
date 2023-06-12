@@ -111,8 +111,6 @@ public class DisplayProvincesOnDynmapAction {
 						homeBlockMarkerId, markerLabel, TownyProvincesSettings.getWorldName(),
 						realHomeBlockX, 64, realHomeBlockZ,
 						homeBlockIcon, true);
-					//homeBlockMarker.setLabel(markerLabel);
-					//homeBlockMarker.setDescription(null);
 				}
 			} catch (Exception ex) {
 				TownyProvinces.severe("Problem adding homeblock marker");
@@ -147,12 +145,10 @@ public class DisplayProvincesOnDynmapAction {
 				if(drawableLineOfBorderCoords.size() > 0) {
 					drawBorderLine(drawableLineOfBorderCoords, province, markerId);
 				} else {
-					//We get here very intermittently. I don't know why
-					//However it doesn't seem to cause any issues for users
-					//Because within seconds, the dynmap job draws it properly on a subsequent pass. 
 					TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line. If this message does not stop repeating, please report it to TownyAdvanced.");
-					//TODO Investigate
-					debugDrawProvinceChunks(province); //... not needed. But if you turn it on, you will see that the province looks fine
+					//The above error is usually just an intermittent rendering bug, and resolves itself within seconds, on the next pass.
+					//However, if a server gets persistent mysterious gaps, use the below line to reveal the problem province.  
+					//debugDrawProvinceChunks(province);
 				}
 			}
 		} else {
