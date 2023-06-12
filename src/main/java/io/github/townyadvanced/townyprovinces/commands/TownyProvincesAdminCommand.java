@@ -7,17 +7,15 @@ import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.utils.NameUtil;
 import com.palmergames.bukkit.util.ChatTools;
 import com.palmergames.util.StringMgmt;
-import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.land_validation.LandValidationTaskController;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.province_generation.RegenerateRegionTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.province_generation.RegenerateRegionTaskController;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJob;
-import io.github.townyadvanced.townyprovinces.land_validation_job.LandValidationJobStatus;
-import io.github.townyadvanced.townyprovinces.province_generation.RegenerateRegionTask;
+import io.github.townyadvanced.townyprovinces.jobs.land_validation.LandValidationJobStatus;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -150,39 +148,39 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			showHelp(sender);
 			return;
 		}
-		LandValidationJob landValidationJob = LandValidationJob.getLandValidationJob();
 		if (args[0].equalsIgnoreCase("status")) {
-			Translatable status = Translatable.of(landValidationJob.getLandValidationJobStatus().getLanguageKey());
+			Translatable status = Translatable.of(LandValidationTaskController.getLandValidationJobStatus().getLanguageKey());
 			Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_status").append(status));
 			
 		} else if (args[0].equalsIgnoreCase("start")) {
-			if (landValidationJob.getLandValidationJobStatus().equals(LandValidationJobStatus.STOPPED)
-					|| landValidationJob.getLandValidationJobStatus().equals(LandValidationJobStatus.PAUSED)) {
-				landValidationJob.setLandValidationJobStatus(LandValidationJobStatus.START_REQUESTED);
+			if (LandValidationTaskController.getLandValidationJobStatus().equals(LandValidationJobStatus.STOPPED)
+					|| LandValidationTaskController.getLandValidationJobStatus().equals(LandValidationJobStatus.PAUSED)) {
+				LandValidationTaskController.setLandValidationJobStatus(LandValidationJobStatus.START_REQUESTED);
+				LandValidationTaskController.startTask();
 				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_starting"));
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_stopped_or_paused"));
 			}
 		
 		} else if (args[0].equalsIgnoreCase("stop")) {
-			if (landValidationJob.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
-				landValidationJob.setLandValidationJobStatus(LandValidationJobStatus.STOP_REQUESTED);
+			if (LandValidationTaskController.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
+				LandValidationTaskController.setLandValidationJobStatus(LandValidationJobStatus.STOP_REQUESTED);
 				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_stopping"));
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_started"));
 			}
 			
 		} else if (args[0].equalsIgnoreCase("pause")) {
-			if (landValidationJob.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
-				landValidationJob.setLandValidationJobStatus(LandValidationJobStatus.PAUSE_REQUESTED);
+			if (LandValidationTaskController.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
+				LandValidationTaskController.setLandValidationJobStatus(LandValidationJobStatus.PAUSE_REQUESTED);
 				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_pausing"));
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_started"));
 			}
 
 		} else if (args[0].equalsIgnoreCase("restart")) {
-			if (landValidationJob.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
-				landValidationJob.setLandValidationJobStatus(LandValidationJobStatus.RESTART_REQUESTED);
+			if (LandValidationTaskController.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
+				LandValidationTaskController.setLandValidationJobStatus(LandValidationJobStatus.RESTART_REQUESTED);
 				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_restarting"));
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_started"));

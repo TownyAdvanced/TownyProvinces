@@ -1,4 +1,4 @@
-package io.github.townyadvanced.townyprovinces.land_validation_job;
+package io.github.townyadvanced.townyprovinces.jobs.land_validation;
 
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
@@ -12,67 +12,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
-public class LandValidationJob extends BukkitRunnable {
-	
-	public static LandValidationJob landValidationJob = null;
-	
-	public static LandValidationJob getLandValidationJob() {
-		return landValidationJob;
-	}
-	
-	private LandValidationJobStatus landValidationJobStatus;
-	
-	public LandValidationJob() {
-		int numProvincesToProcess = 0;
-		for(Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			if(province.isLandValidationRequested()) {
-				numProvincesToProcess++;
-			}
-		}
-		if (numProvincesToProcess > 0) {
-			landValidationJobStatus = LandValidationJobStatus.PAUSED;
-		} else {
-			landValidationJobStatus = LandValidationJobStatus.STOPPED;
-		}
-	}
-
-	public static boolean startJob() {
-		landValidationJob = new LandValidationJob();
-		landValidationJob.runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, 300);
-		return true;
-	}
-
-	public LandValidationJobStatus getLandValidationJobStatus() {
-		return landValidationJobStatus;
-	}
-
-	public void setLandValidationJobStatus(LandValidationJobStatus landValidationJobStatus) {
-		this.landValidationJobStatus = landValidationJobStatus;
-	}
+public class LandvalidationTask extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		//Handle any requests to start the land validation job
+		//Execute the land validation job
 		synchronized (TownyProvinces.MAP_CHANGE_LOCK) {
-			switch (landValidationJobStatus) {
-				case START_REQUESTED:
-					landValidationJobStatus = LandValidationJobStatus.STARTED;
-					TownyProvinces.info("Land Validation Job Starting.");
-					executeLandValidation();
-					break;
-			}
+			TownyProvinces.info("Land Validation Job Starting.");
+			executeLandValidation();
 		}
 	}
-
-	private void setLandValidationRequestsForAllProvinces(boolean value) {
-		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			if(province.isLandValidationRequested() != value) {
-				province.setLandValidationRequested(value);
-				province.saveData();
-			}
-		}
-	}
-
+	
 	/**
 	 * Go through each province,
 	 * And decide if it is land or sea,
@@ -87,17 +37,11 @@ public class LandValidationJob extends BukkitRunnable {
 	 */
 	private void executeLandValidation() {
 		TownyProvinces.info("Now Running land validation job.");
-		int numProvincesNotRequired = 0;
+		int numProvincesProcessed = 0;
 		for(Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			if(!province.isLandValidationRequested())
-				numProvincesNotRequired++;
+				numProvincesProcessed++;  //Already processed
 		}
-		if(numProvincesNotRequired == TownyProvincesDataHolder.getInstance().getProvincesSet().size()) {
-			//Nothing is scheduled. This must be a new (not unpaused) run
-			setLandValidationRequestsForAllProvinces(true);
-			numProvincesNotRequired = 0;
-		}
-		double numProvincesProcessed = numProvincesNotRequired;
 		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			if (province.isLandValidationRequested()) {
 				boolean isSea = isProvinceMainlyOcean(province);
@@ -108,28 +52,24 @@ public class LandValidationJob extends BukkitRunnable {
 				province.saveData();
 				numProvincesProcessed++;
 			}
-			int percentCompletion = (int) ((numProvincesProcessed / TownyProvincesDataHolder.getInstance().getProvincesSet().size()) * 100);
+			int percentCompletion = ((numProvincesProcessed / TownyProvincesDataHolder.getInstance().getProvincesSet().size()) * 100);
 			TownyProvinces.info("Land Validation Job Progress: " + percentCompletion + "%");
 
 			//Handle any stop requests
+			LandValidationJobStatus landValidationJobStatus = LandValidationTaskController.getLandValidationJobStatus();
 			switch (landValidationJobStatus) {
 				case STOP_REQUESTED:
-					setLandValidationRequestsForAllProvinces(false);
-					landValidationJobStatus = LandValidationJobStatus.STOPPED;
-					TownyProvinces.info("Land Validation Job Stopped.");
+					LandValidationTaskController.stopTask();
 					return;
 				case PAUSE_REQUESTED:
-					landValidationJobStatus = LandValidationJobStatus.PAUSED;
-					TownyProvinces.info("Land Validation Job Paused.");
+					LandValidationTaskController.pauseTask();
 					return;
 				case RESTART_REQUESTED:
-					setLandValidationRequestsForAllProvinces(false);
-					landValidationJobStatus = LandValidationJobStatus.START_REQUESTED;
-					TownyProvinces.info("Land Validation Job Stopped.");
+					LandValidationTaskController.restartTask();
 					return;
 			}
 		}
-		landValidationJobStatus = LandValidationJobStatus.STOPPED;
+		LandValidationTaskController.stopTask();
 		TownyProvinces.info("Land Validation Job Complete.");
 	}
 

@@ -1,4 +1,4 @@
-package io.github.townyadvanced.townyprovinces.integrations.dynmap;
+package io.github.townyadvanced.townyprovinces.jobs.dynmap_display;
 
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import org.bukkit.scheduler.BukkitRunnable;

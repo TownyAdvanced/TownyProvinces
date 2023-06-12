@@ -1,10 +1,10 @@
-package io.github.townyadvanced.townyprovinces.province_generation;
+package io.github.townyadvanced.townyprovinces.jobs.province_generation;
 
 import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;

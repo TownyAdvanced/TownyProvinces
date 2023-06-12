@@ -1,4 +1,4 @@
-package io.github.townyadvanced.townyprovinces.land_validation_job;
+package io.github.townyadvanced.townyprovinces.jobs.land_validation;
 
 public enum LandValidationJobStatus {
 	START_REQUESTED("land_validation_job_status_start_requested"),
