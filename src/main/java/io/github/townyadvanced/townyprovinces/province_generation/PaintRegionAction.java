@@ -211,16 +211,23 @@ public class PaintRegionAction {
 		return null;
 	}
 	
-	private boolean validatePositionOfProvinceHomeBlock(Province newProvince) {
+	private boolean validatePositionOfProvinceHomeBlock(Province provinceTovalidate) {
 		//Make sure it is far enough from other homeblocks
-		TPCoord provinceHomeBlock = newProvince.getHomeBlock();
+		TPCoord homeBlockToValidate = provinceTovalidate.getHomeBlock();
 		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			if(TownyProvincesMathUtil.distance(provinceHomeBlock, province.getHomeBlock()) < minAllowedDistanceBetweenProvinceHomeBlocksInChunks) {
+			/* 
+			* The minimum allowed distance is:
+			* - (The configured min distance), or
+			* - (twice the brush paint radius + 1)
+			* - Whichever is larger			 
+			 */
+			int minAllowedDistance = Math.max(minAllowedDistanceBetweenProvinceHomeBlocksInChunks, (brushSquareRadiusInChunks * 2) +2);
+			if(TownyProvincesMathUtil.minecraftDistance(homeBlockToValidate, province.getHomeBlock()) < minAllowedDistance) {
 				return false;
 			}
 		}
-		//Make sure that it is far enough from other provinces
-		if(validateBrushPosition(provinceHomeBlock.getX(), provinceHomeBlock.getZ(), newProvince)) {
+		//Make sure that it doesn't overlap existing claims, or go off the map border
+		if(validateBrushPosition(homeBlockToValidate.getX(), homeBlockToValidate.getZ(), provinceTovalidate)) {
 			return true;
 		} else {
 			return false;
@@ -331,17 +338,13 @@ public class PaintRegionAction {
 		int endZ = brush.getCurrentPosition().getZ() + brush.getSquareRadius();
 		for(int x = startX; x <= endX; x++) {
 			for(int z = startZ; z <= endZ; z++) {
-				
-				//Don't claim if already claimed by the province
+				//Claim chunk if not already claimed by the province
 				searchCoord.setValues(x,z);
-				if(!unclaimedCoordsMap.containsKey(searchCoord))
-					return;
-				//Claim chunk
-				TownyProvincesDataHolder.getInstance().claimCoordForProvince(unclaimedCoordsMap.get(searchCoord), brush.getProvince());
-				brush.registerChunkClaimed();
-				unclaimedCoordsMap.remove(searchCoord);
-				
-				//claimUnclaimedChunk(x,z, brush);
+				if(unclaimedCoordsMap.containsKey(searchCoord)) {
+					TownyProvincesDataHolder.getInstance().claimCoordForProvince(unclaimedCoordsMap.get(searchCoord), brush.getProvince());
+					brush.registerChunkClaimed();
+					unclaimedCoordsMap.remove(searchCoord);
+				}
 			}
 		}
 	}

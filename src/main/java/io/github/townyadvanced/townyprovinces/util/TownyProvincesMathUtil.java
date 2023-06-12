@@ -23,8 +23,22 @@ public class TownyProvincesMathUtil {
 		return result;
 	}
 
-	public static double distance(TPCoord tpCoordA, TPCoord tpCoordB) {
-		return MathUtil.distance(tpCoordA.getX(), tpCoordB.getX(), tpCoordA.getZ(), tpCoordB.getZ());
+	/**
+	 * Here a diagonal counts as 1
+	 * 
+	 * @param tpCoordA
+	 * @param tpCoordB
+	 * @return
+	 */
+	public static double minecraftDistance(TPCoord tpCoordA, TPCoord tpCoordB) {
+		int xDistance = Math.abs(tpCoordB.getX() - tpCoordA.getX());
+		int zDistance = Math.abs(tpCoordB.getZ() - tpCoordA.getZ());
+		return Math.max(xDistance, zDistance);
 	}
 
+	public static boolean areCoordsCardinallyAdjacent(TPCoord tpCoordA, TPCoord tpCoordB) {
+		int xDistance = Math.abs(tpCoordB.getX() - tpCoordA.getX());
+		int zDistance = Math.abs(tpCoordB.getZ() - tpCoordA.getZ());
+		return Math.abs(xDistance) + Math.abs(zDistance) == 1;
+	}
 }

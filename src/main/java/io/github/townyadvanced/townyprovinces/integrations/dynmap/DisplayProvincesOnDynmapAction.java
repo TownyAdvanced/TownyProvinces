@@ -152,7 +152,7 @@ public class DisplayProvincesOnDynmapAction {
 					//Because within seconds, the dynmap job draws it properly on a subsequent pass. 
 					TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line. If this message does not stop repeating, please report it to TownyAdvanced.");
 					//TODO Investigate
-					//debugDrawProvinceChunks(province); ... not needed. But if you turn it on, you will see that the province looks fine
+					debugDrawProvinceChunks(province); //... not needed. But if you turn it on, you will see that the province looks fine
 				}
 			}
 		} else {
@@ -171,17 +171,20 @@ public class DisplayProvincesOnDynmapAction {
 		} 
 	}
 
-	private List<TPCoord> arrangeBorderCoordsIntoDrawableLine(Set<TPCoord> unsortedBorderCoords) {
+	private List<TPCoord> arrangeBorderCoordsIntoDrawableLine(Set<TPCoord> unprocessedBorderCoords) {
 		List<TPCoord> result = new ArrayList<>();
-		List<TPCoord> unProcessedCoords = new ArrayList<>(unsortedBorderCoords);
-		TPCoord lineHead = (new ArrayList<>(unProcessedCoords)).get(0);
+		TPCoord lineHead = null;
+		for(TPCoord coord: unprocessedBorderCoords) {
+			lineHead = coord;
+			break;
+		}
 		TPCoord coordToAddToLine;
-		while(unProcessedCoords.size() > 0) {
+		while(unprocessedBorderCoords.size() > 0) {
 			//Cycle the list of unprocessed coords. Add the first one which suits then exit loop
 			coordToAddToLine = null;
-			for(TPCoord unprocessedCoord: unProcessedCoords) {
-				if(areCoordsCardinallyAdjacent(unprocessedCoord, lineHead)) {
-					coordToAddToLine = unprocessedCoord;
+			for(TPCoord unprocessedBorderCoord: unprocessedBorderCoords) {
+				if(TownyProvincesMathUtil.areCoordsCardinallyAdjacent(unprocessedBorderCoord, lineHead)) {
+					coordToAddToLine = unprocessedBorderCoord;
 					break;
 				}
 			}
@@ -193,12 +196,11 @@ public class DisplayProvincesOnDynmapAction {
 			if(coordToAddToLine != null) {
 				lineHead = coordToAddToLine;
 				result.add(coordToAddToLine);
-				unProcessedCoords.remove(coordToAddToLine);
+				unprocessedBorderCoords.remove(coordToAddToLine);
 			} else {
 				result.clear();
 				return result;
 			}
-
 		}
 		//Add last block to line, to make a circuit
 		result.add(result.get(0));
@@ -216,10 +218,6 @@ public class DisplayProvincesOnDynmapAction {
 			resultSet.addAll(province.getAdjacentBorderCoords(provinceCoord));
 		}
 		return resultSet;
-	}
-
-	private boolean areCoordsCardinallyAdjacent(TPCoord c1, TPCoord c2) {
-		return TownyProvincesMathUtil.distance(c1,c2) == 1;
 	}
 
 	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
