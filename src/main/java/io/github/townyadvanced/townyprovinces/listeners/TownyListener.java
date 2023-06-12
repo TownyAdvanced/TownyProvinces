@@ -36,7 +36,7 @@ public class TownyListener implements Listener {
 //	@EventHandler
 	public void onTownyLoadDB(TownyLoadedDatabaseEvent event) {
 	}
-
+	
 	/* Handle re-adding the lang string into Towny when Towny reloads the Translation Registry. */
 	@EventHandler
 	public void onTownyLoadLang(TranslationLoadEvent event) {

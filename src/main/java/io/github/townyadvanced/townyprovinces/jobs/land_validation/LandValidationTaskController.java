@@ -1,7 +1,9 @@
 package io.github.townyadvanced.townyprovinces.jobs.land_validation;
 
+import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 
 public class LandValidationTaskController {
@@ -17,11 +19,17 @@ public class LandValidationTaskController {
 
 	private static LandvalidationTask landValidationTask = null;
 	public static boolean startTask() {
-		TownyProvinces.info("Land Validation Job Job Starting");
+		/*
+		 * If there are any requests pending, just start the job
+		 * otherwise request all provinces
+		 */
+		if(!areAnyValidationsPending()) {
+			setLandValidationRequestsForAllProvinces(true);
+		}
 		landValidationTask = new LandvalidationTask();
-		landValidationTask.runTask(TownyProvinces.getPlugin());
+		landValidationTask.runTaskAsynchronously(TownyProvinces.getPlugin());
 		landValidationJobStatus = LandValidationJobStatus.STARTED;
-		TownyProvinces.info("Land Validation Job Job Started");
+		Messaging.sendGlobalMessage(Translatable.of("msg_land_validation_job_started"));
 		return true;
 	}
 	
@@ -29,9 +37,9 @@ public class LandValidationTaskController {
 		if(landValidationTask != null) {
 			landValidationTask.cancel();
 			landValidationTask = null;
-			setLandValidationRequestsForAllProvinces(false);
+			setLandValidationRequestsForAllProvinces(false);  //Clear all requests
 			landValidationJobStatus = LandValidationJobStatus.STOPPED;
-			TownyProvinces.info("Land Validation Job Stopped.");
+			Messaging.sendGlobalMessage(Translatable.of("msg_land_validation_job_stopped"));
 		}
 	}
 
@@ -40,7 +48,7 @@ public class LandValidationTaskController {
 			landValidationTask.cancel();
 			landValidationTask = null;
 			landValidationJobStatus = LandValidationJobStatus.PAUSED;
-			TownyProvinces.info("Land Validation Job Paused.");
+			Messaging.sendGlobalMessage(Translatable.of("msg_land_validation_job_paused"));
 		}
 	}
 

@@ -37,7 +37,7 @@ public class LandvalidationTask extends BukkitRunnable {
 	 */
 	private void executeLandValidation() {
 		TownyProvinces.info("Now Running land validation job.");
-		int numProvincesProcessed = 0;
+		double numProvincesProcessed = 0;
 		for(Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			if(!province.isLandValidationRequested())
 				numProvincesProcessed++;  //Already processed
@@ -52,7 +52,7 @@ public class LandvalidationTask extends BukkitRunnable {
 				province.saveData();
 				numProvincesProcessed++;
 			}
-			int percentCompletion = ((numProvincesProcessed / TownyProvincesDataHolder.getInstance().getProvincesSet().size()) * 100);
+			int percentCompletion = (int)((numProvincesProcessed / TownyProvincesDataHolder.getInstance().getProvincesSet().size()) * 100);
 			TownyProvinces.info("Land Validation Job Progress: " + percentCompletion + "%");
 
 			//Handle any stop requests

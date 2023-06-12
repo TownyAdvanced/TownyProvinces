@@ -7,7 +7,6 @@ import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DisplayProvincesOnDynmapAction;
 import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
@@ -30,7 +29,6 @@ public class TownyProvinces extends JavaPlugin {
 	 */
 	public static final Integer MAP_CHANGE_LOCK = 1;
 	private static TownyProvinces plugin;
-	private static DisplayProvincesOnDynmapAction dynmapIntegration;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.0.7");
 	
 	@Override
@@ -74,10 +72,6 @@ public class TownyProvinces extends JavaPlugin {
 			severe("Problem enabling Dynmap integration: " + e.getMessage());
 			return false;
 		}
-	}
-	
-	public DisplayProvincesOnDynmapAction getDynmapIntegration() {
-		return dynmapIntegration;
 	}
 	
 	private boolean checkTownyVersion() {
