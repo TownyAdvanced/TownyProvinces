@@ -6,6 +6,7 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceClaimBrush;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
@@ -13,6 +14,7 @@ import org.bukkit.Location;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -104,7 +106,7 @@ public class PaintRegionAction {
 		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
 		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
+		for(Province province: (new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet()))) {
 			List<TPCoord> coordsInProvince = province.getCoordsInProvince();
 			int numProvinceBlocksInSpecifiedArea = 0;
 			for (TPCoord coordInProvince : coordsInProvince) {
@@ -198,7 +200,7 @@ public class PaintRegionAction {
 			Coord coord = Coord.parseCoord((int)x,(int)z);
 			int xCoord = coord.getX();
 			int zCoord = coord.getZ();
-			TPCoord homeBlockCoord = new TPCoord(xCoord, zCoord);
+			TPCoord homeBlockCoord = new TPFinalCoord(xCoord, zCoord);
 			//Create province object
 			Province province = new Province(homeBlockCoord, isSea, landValidationRequested, newTownCost, upkeepTownCost);
 			//Validate province homeblock position

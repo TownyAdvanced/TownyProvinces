@@ -3,6 +3,7 @@ package io.github.townyadvanced.townyprovinces.data;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 
@@ -94,10 +95,6 @@ public class TownyProvincesDataHolder {
 		return provincesSet.size();
 	}
 	
-	public List<Province> getCopyOfProvincesSetAsList() {
-		return new ArrayList<>(provincesSet);
-	}
-
 	public void claimCoordForProvince(TPCoord coord, Province province) {
 		coordProvinceMap.put(coord, province);
 	}
@@ -136,7 +133,7 @@ public class TownyProvincesDataHolder {
 				 */
 				searchCoord.setValues(targetCoord.getX() + x[i], targetCoord.getZ() + z[i]);
 				if(!result.contains(searchCoord)) {
-					result.add(new TPCoord(targetCoord.getX() + x[i], targetCoord.getZ() + z[i]));
+					result.add(new TPFinalCoord(targetCoord.getX() + x[i], targetCoord.getZ() + z[i]));
 				}
 			}
 		}
@@ -170,7 +167,7 @@ public class TownyProvincesDataHolder {
 			for (int z = minZ; z <= maxZ; z++) {
 				searchCoord.setValues(x,z);
 				if(!coordProvinceMap.containsKey(searchCoord)) {
-					newCoord = new TPCoord(x,z);
+					newCoord = new TPFinalCoord(x,z);
 					result.put(newCoord, newCoord);
 				}
 			}
@@ -213,7 +210,7 @@ public class TownyProvincesDataHolder {
 			for (int z = minZ; z <= maxZ; z++) {
 				searchCoord.setValues(x,z);
 				if(!result.containsKey(searchCoord)) {
-					newCoord = new TPCoord(x,z);
+					newCoord = new TPFinalCoord(x,z);
 					result.put(newCoord, newCoord);
 					if(result.size() % 10000 == 0) {
 						TownyProvinces.info("Num Coords Available: " + result.size());

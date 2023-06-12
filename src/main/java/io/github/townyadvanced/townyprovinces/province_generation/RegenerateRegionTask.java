@@ -7,6 +7,8 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.integrations.dynmap.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
+import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -56,7 +58,7 @@ public class RegenerateRegionTask extends BukkitRunnable {
 		this.mapMaxXCoord = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
 		this.mapMinZCoord = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		this.mapMaxZCoord = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		this.searchCoord = new TPCoord(0,0);
+		this.searchCoord = new TPFreeCoord(0,0);
 	}
 	
 	@Override
@@ -173,7 +175,7 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	
 	private static boolean deleteEmptyProvinces() {
 		TownyProvinces.info("Now Deleting Empty Provinces.");
-		for(Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
+		for(Province province: new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())) {
 			if(province.getCoordsInProvince().size() == 0) {
 				TownyProvincesDataHolder.getInstance().deleteProvince(province);
 			}
@@ -290,7 +292,7 @@ public class RegenerateRegionTask extends BukkitRunnable {
 		int[] x = new int[]{-1,0,1,-1,1,-1,0,1};
 		int[] z = new int[]{-1,-1,-1,0,0,1,1,1};
 		for(int i = 0; i < 8; i++) {
-			result.add(new TPCoord(targetCoord.getX() + x[i], targetCoord.getZ() + z[i]));
+			result.add(new TPFinalCoord(targetCoord.getX() + x[i], targetCoord.getZ() + z[i]));
 		}
 		return result;
 	}

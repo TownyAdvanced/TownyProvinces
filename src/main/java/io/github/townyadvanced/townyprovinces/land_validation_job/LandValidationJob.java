@@ -24,8 +24,7 @@ public class LandValidationJob extends BukkitRunnable {
 	
 	public LandValidationJob() {
 		int numProvincesToProcess = 0;
-		List<Province> provinces = TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList();
-		for(Province province : provinces) {
+		for(Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			if(province.isLandValidationRequested()) {
 				numProvincesToProcess++;
 			}
@@ -89,18 +88,17 @@ public class LandValidationJob extends BukkitRunnable {
 	private void executeLandValidation() {
 		TownyProvinces.info("Now Running land validation job.");
 		int numProvincesNotRequired = 0;
-		List<Province> provinces = TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList();
-		for(Province province : provinces) {
+		for(Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			if(!province.isLandValidationRequested())
 				numProvincesNotRequired++;
 		}
-		if(numProvincesNotRequired == provinces.size()) {
+		if(numProvincesNotRequired == TownyProvincesDataHolder.getInstance().getProvincesSet().size()) {
 			//Nothing is scheduled. This must be a new (not unpaused) run
 			setLandValidationRequestsForAllProvinces(true);
 			numProvincesNotRequired = 0;
 		}
 		double numProvincesProcessed = numProvincesNotRequired;
-		for(Province province: provinces) {
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			if (province.isLandValidationRequested()) {
 				boolean isSea = isProvinceMainlyOcean(province);
 				if(isSea != province.isSea()) {
@@ -110,7 +108,7 @@ public class LandValidationJob extends BukkitRunnable {
 				province.saveData();
 				numProvincesProcessed++;
 			}
-			int percentCompletion = (int) ((numProvincesProcessed / provinces.size()) * 100);
+			int percentCompletion = (int) ((numProvincesProcessed / TownyProvincesDataHolder.getInstance().getProvincesSet().size()) * 100);
 			TownyProvinces.info("Land Validation Job Progress: " + percentCompletion + "%");
 
 			//Handle any stop requests

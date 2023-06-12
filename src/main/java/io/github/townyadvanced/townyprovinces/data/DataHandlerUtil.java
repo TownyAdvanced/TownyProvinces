@@ -6,6 +6,7 @@ import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 
@@ -129,7 +130,7 @@ public class DataHandlerUtil {
 		String[] coordAsArray = coordAsString.split(",");
 		int x = Integer.parseInt(coordAsArray[0]);
 		int z = Integer.parseInt(coordAsArray[1]);
-		return new TPCoord(x,z);
+		return new TPFinalCoord(x,z);
 	}
 
 

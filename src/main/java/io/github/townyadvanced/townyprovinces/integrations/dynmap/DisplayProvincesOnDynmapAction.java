@@ -6,6 +6,7 @@ import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.province_generation.RegenerateRegionTask;
 import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
@@ -27,11 +28,13 @@ public class DisplayProvincesOnDynmapAction {
 	private final MarkerAPI markerapi;
 	private MarkerSet bordersMarkerSet;
 	private MarkerSet homeBlocksMarkerSet;
+	private TPFreeCoord tpFreeCoord;
 
 	public DisplayProvincesOnDynmapAction() {
 		TownyProvinces.info("Enabling dynmap support.");
 		DynmapAPI dynmapAPI = (DynmapAPI) TownyProvinces.getPlugin().getServer().getPluginManager().getPlugin("dynmap");
 		markerapi = dynmapAPI.getMarkerAPI();
+		tpFreeCoord = new TPFreeCoord(0,0);
 		TownyProvinces.info("Dynmap support enabled.");
 	}
 
@@ -88,7 +91,7 @@ public class DisplayProvincesOnDynmapAction {
 	
 	private void drawProvinceHomeBlocks() {
 		String border_icon = "coins";
-		for (Province province : TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
+		for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			try {
 				if(province.isSea())
 					continue;
@@ -120,7 +123,7 @@ public class DisplayProvincesOnDynmapAction {
 
 	private void drawProvinceBorders() {
 		//Find and draw the borders around each province
-		for (Province province: TownyProvincesDataHolder.getInstance().getCopyOfProvincesSetAsList()) {
+		for (Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			try {
 				drawProvinceBorder(province);
 			} catch (Throwable t) {
@@ -139,8 +142,13 @@ public class DisplayProvincesOnDynmapAction {
 			if(borderCoords.size() > 0) {
 				//Arrange border blocks into drawable line
 				List<TPCoord> drawableLineOfBorderCoords = arrangeBorderCoordsIntoDrawableLine(borderCoords);
+				
 				//Draw line
-				drawBorderLine(drawableLineOfBorderCoords, province, markerId);
+				if(drawableLineOfBorderCoords.size() > 0) {
+					drawBorderLine(drawableLineOfBorderCoords, province, markerId);
+				} else {
+					debugDrawProvinceChunks(province);
+				}
 			}
 		} else {
 			//Re-evaluate colour 
@@ -157,7 +165,7 @@ public class DisplayProvincesOnDynmapAction {
 			}
 		} 
 	}
-	
+
 	private List<TPCoord> arrangeBorderCoordsIntoDrawableLine(Set<TPCoord> unsortedBorderCoords) {
 		List<TPCoord> result = new ArrayList<>();
 		List<TPCoord> unProcessedCoords = new ArrayList<>(unsortedBorderCoords);
@@ -172,7 +180,7 @@ public class DisplayProvincesOnDynmapAction {
 					break;
 				}
 			}
-
+			
 			/*
 			 * If we found a coord to add to line. Add it
 			 * Otherwise throw exception because we could not make a drawable line
@@ -182,7 +190,7 @@ public class DisplayProvincesOnDynmapAction {
 				result.add(coordToAddToLine);
 				unProcessedCoords.remove(coordToAddToLine);
 			} else {
-				TownyProvinces.severe("ERROR: Could not arrange province coords into drawable line");
+				TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line");
 				result.clear();
 				return result;
 			}
@@ -256,15 +264,15 @@ public class DisplayProvincesOnDynmapAction {
 			 *   - On a sea border, the expected single line will either look slightly weaker or slightly thinner,
 			 *     while will most likely appear to users as a bug.
 			 * */
-			TPCoord pullStrengthFromNearbyProvince = calculatePullStrengthFromNearbyProvince(drawableLineOfBorderCoords.get(i), province);
-			if (pullStrengthFromNearbyProvince.getX() < 0) {
+			calculatePullStrengthFromNearbyProvince(drawableLineOfBorderCoords.get(i), province, tpFreeCoord);
+			if (tpFreeCoord.getX() < 0) {
 				xPoints[i] = xPoints[i] + 7;
-			} else if (pullStrengthFromNearbyProvince.getX() > 0) {
+			} else if (tpFreeCoord.getX() > 0) {
 				xPoints[i] = xPoints[i] + 9;
 			}
-			if (pullStrengthFromNearbyProvince.getZ() < 0) {
+			if (tpFreeCoord.getZ() < 0) {
 				zPoints[i] = zPoints[i] + 7;
-			} else if (pullStrengthFromNearbyProvince.getZ() > 0) {
+			} else if (tpFreeCoord.getZ() > 0) {
 				zPoints[i] = zPoints[i] + 9;
 			}
 		}
@@ -287,7 +295,7 @@ public class DisplayProvincesOnDynmapAction {
 		}
 	}
 	
-	private TPCoord calculatePullStrengthFromNearbyProvince(TPCoord borderCoordBeingPulled, Province provinceDoingThePulling) {
+	private void calculatePullStrengthFromNearbyProvince(TPCoord borderCoordBeingPulled, Province provinceDoingThePulling, TPFreeCoord freeCoord) {
 		int pullStrengthX = 0;
 		int pullStrengthZ = 0;
 		Set<TPCoord> adjacentCoords = RegenerateRegionTask.findAllAdjacentCoords(borderCoordBeingPulled);
@@ -299,10 +307,20 @@ public class DisplayProvincesOnDynmapAction {
 				pullStrengthZ += (adjacentCoord.getZ() - borderCoordBeingPulled.getZ());
 			}
 		}
-		return new TPCoord(pullStrengthX, pullStrengthZ);
+		freeCoord.setValues(pullStrengthX,pullStrengthZ);
 	}
 	
 	////////////////////////// DEBUG SECTION ////////////////////////
+
+
+
+	private void debugDrawProvinceChunks(Province province) {
+		String worldName = TownyProvincesSettings.getWorldName();
+		for(TPCoord tpCoord: TownyProvincesDataHolder.getInstance().getCoordsInProvince(province)) {
+			debugDrawChunk(tpCoord, worldName);
+		}
+	}
+	
 	
 	//Shows all borders. But not for production
 	private void debugDrawProvinceBorders() {
@@ -313,23 +331,22 @@ public class DisplayProvincesOnDynmapAction {
 		//}
 	}
 	
-	/*
-	private void debugDrawProvinceBorderBlock(String worldName, ProvinceBlock provinceBlock) {
+	private void debugDrawChunk(TPCoord coord, String worldName) {
 		double[] xPoints = new double[5];
-		xPoints[0] = provinceBlock.getCoord().getX() * TownyProvincesSettings.getProvinceBlockSideLength();
-		xPoints[1] = xPoints[0] + TownyProvincesSettings.getProvinceBlockSideLength();
+		xPoints[0] = coord.getX() * TownyProvincesSettings.getChunkSideLength();
+		xPoints[1] = xPoints[0] + TownyProvincesSettings.getChunkSideLength();
 		xPoints[2] = xPoints[1];
 		xPoints[3] = xPoints[0];
 		xPoints[4] = xPoints[0];
 
 		double[] zPoints = new double[5];
-		zPoints[0] = provinceBlock.getCoord().getZ() * TownyProvincesSettings.getProvinceBlockSideLength();
+		zPoints[0] = coord.getZ() * TownyProvincesSettings.getChunkSideLength();
 		zPoints[1] = zPoints[0]; 
-		zPoints[2] = zPoints[1] + TownyProvincesSettings.getProvinceBlockSideLength();;
+		zPoints[2] = zPoints[1] + TownyProvincesSettings.getChunkSideLength();;
 		zPoints[3] = zPoints[2];
 		zPoints[4] = zPoints[0];
 		
-		String markerId = "border_province_block_" + provinceBlock.getCoord().getX() + "-" + provinceBlock.getCoord().getZ();
+		String markerId = "Debug Drawn Chunk" + coord.getX() + "-" + coord.getZ();
 		//String markerName = "xx";
 		String markerName = "ID: " + markerId;
 		//markerName += " Is Border: " + provinceBlock.isProvinceBorder();
@@ -341,15 +358,17 @@ public class DisplayProvincesOnDynmapAction {
 		//	markerId, markerName, unknown, worldName,
 	//		xPoints, zPoints, unknown2);
 
-		PolyLineMarker polyLineMarker =  markerSet.createPolyLineMarker(
+		PolyLineMarker polyLineMarker =  bordersMarkerSet.createPolyLineMarker(
 			markerId, markerName, unknown, worldName,
 			xPoints, zPoints, zPoints, unknown2);
 
+		if(polyLineMarker != null) {
+			polyLineMarker.setLineStyle(4,1, 0xff0000);
+		}
 //polyLineMarker.setLineStyle(4,1, 300000);
 //polyLineMarker.set
 		//areaMarker.setFillStyle(0, 300000);
 		//areaMarker.setLineStyle(1, 0.2, 300000);
 	}
-	*/
 	 
 }
