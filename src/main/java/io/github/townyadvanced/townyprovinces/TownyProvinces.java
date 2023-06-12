@@ -12,7 +12,6 @@ import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayT
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.jobs.land_validation.LandValidationJob;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.Bukkit;
@@ -47,8 +46,7 @@ public class TownyProvinces extends JavaPlugin {
 				|| !FileUtil.setupPluginDataFoldersIfRequired()
 				|| !DataHandlerUtil.loadAllData()
 				|| !registerListeners()
-				|| !registerAdminCommands()
-				|| !LandValidationJob.startJob()) {
+				|| !registerAdminCommands()) {
 			onDisable();
 			return;
 		}
@@ -57,25 +55,6 @@ public class TownyProvinces extends JavaPlugin {
 		loadIntegrations();
 	}
 	
-	//TODO
-	
-	/*
-	1. Setup a new dynmap layer, disabed by default,
-	to show the town prices.
-	Maybe display homeblocks as dollar signs,
-	and on hover, you can see the prices.
-	
-	2. Check for available money on preNewTownEvent
-	   If fail, you can't create town
-	   
-	3. Deduct money on newTownEvent
-	   "Region Settlement Cost"
-	   
-	4. Deduct money on newDay or townUpkeepEvent
-	   "Region Upkeep Cost"
-	
-	*/
-
 	private boolean registerAdminCommands() {
 		getCommand("townyprovincesadmin").setExecutor(new TownyProvincesAdminCommand());
 		return true;
