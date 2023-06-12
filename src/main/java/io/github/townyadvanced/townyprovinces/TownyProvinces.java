@@ -29,7 +29,7 @@ public class TownyProvinces extends JavaPlugin {
 	 */
 	public static final Integer MAP_CHANGE_LOCK = 1;
 	private static TownyProvinces plugin;
-	private static final Version requiredTownyVersion = Version.fromString("0.99.0.7");
+	private static final Version requiredTownyVersion = Version.fromString("0.99.1.0");
 	
 	@Override
 	public void onEnable() {
