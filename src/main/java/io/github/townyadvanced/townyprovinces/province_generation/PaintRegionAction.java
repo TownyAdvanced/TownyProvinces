@@ -269,11 +269,10 @@ public class PaintRegionAction {
 				if(validateBrushPosition(newX, newZ, provinceClaimBrush.getProvince())) {
 					provinceClaimBrush.moveBrushTo(newX, newZ);
 					claimChunksCoveredByBrush(provinceClaimBrush);
-					return true;
-				}
-				//Deactivate if too many chunks have been claimed
-				if(hasBrushHitClaimLimit(provinceClaimBrush)) {
-					provinceClaimBrush.setActive(false);
+					//Deactivate if too many chunks have been claimed
+					if(hasBrushHitClaimLimit(provinceClaimBrush)) {
+						provinceClaimBrush.setActive(false);
+					}
 				}
 			}
 		}
@@ -332,6 +331,7 @@ public class PaintRegionAction {
 		int endZ = brush.getCurrentPosition().getZ() + brush.getSquareRadius();
 		for(int x = startX; x <= endX; x++) {
 			for(int z = startZ; z <= endZ; z++) {
+				
 				//Don't claim if already claimed by the province
 				searchCoord.setValues(x,z);
 				if(!unclaimedCoordsMap.containsKey(searchCoord))
@@ -340,6 +340,8 @@ public class PaintRegionAction {
 				TownyProvincesDataHolder.getInstance().claimCoordForProvince(unclaimedCoordsMap.get(searchCoord), brush.getProvince());
 				brush.registerChunkClaimed();
 				unclaimedCoordsMap.remove(searchCoord);
+				
+				//claimUnclaimedChunk(x,z, brush);
 			}
 		}
 	}
@@ -354,6 +356,7 @@ public class PaintRegionAction {
 		if(!unclaimedCoordsMap.containsKey(searchCoord))
 			return;
 
+		//TODO - I'm not sure why I have to do this....
 		//Don't claim near other provinces
 		Province province = brush.getProvince();
 		Province adjacentProvince;

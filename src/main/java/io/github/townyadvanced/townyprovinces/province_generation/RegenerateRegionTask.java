@@ -191,6 +191,7 @@ public class RegenerateRegionTask extends BukkitRunnable {
 				}
 			}
 		}
+		TownyProvinces.info("Assigning Unclaimed Chunks. Progress: 100%");
 		TownyProvinces.info("Finished assigning unclaimed chunks to provinces.");
 		return true;
 	}
