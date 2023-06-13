@@ -4,10 +4,10 @@
 ## Features:
 - :world_map: **Automatically Divides The Map Into Provinces:**
   - Each Province can have just one town.
-    - ***Automatically Solves Overclaiming***: Each town has its own reserved area for claiming; There is no need to throw money away on overclaiming.
-    - ***Automatically Solves Claim Blocking***: No town can block the claiming plans of another.
-    - ***Automatically Solves Snake Claiming***: Snake claiming is not a problem.
-    - ***Automatically Solves Roads***: Two adjacent towns can easily link up by roads without anyone interfering.
+    - ***Solves Overclaiming***: Each town has its own reserved area for claiming; There is no need to throw money away on overclaiming.
+    - ***Solves Claim Blocking***: No town can block the claiming plans of another.
+    - ***Solves Snake Claiming***: Snake claiming is not a problem.
+    - ***Solves Roads***: Two adjacent towns can easily link up by roads without anyone interfering.
   - Province density can be configured to be vary by map location.
   - Province borders can be viewed on the "Borders" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/9eb5849a-4540-49ba-b71f-26c128c3fc56)
   
