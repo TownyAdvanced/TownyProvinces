@@ -14,6 +14,7 @@ import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,6 +40,7 @@ public class TownyProvinces extends JavaPlugin {
 		if(!checkTownyVersion()
 				|| !loadConfig()
 				|| !loadLocalization(false)
+				|| !validateWorld()
 				|| !TownyProvincesSettings.isTownyProvincesEnabled() 
 				|| !TownyProvincesDataHolder.initialize()
 				|| !FileUtil.setupPluginDataFoldersIfRequired()
@@ -115,6 +117,18 @@ public class TownyProvinces extends JavaPlugin {
 		return true;
 	}
 
+	private boolean validateWorld() {
+		info("Now validating world");
+		World world = TownyProvincesSettings.getWorld();
+		if(world != null) {
+			info("World Validated");
+			return true;
+		} else {
+			severe(Translatable.of("msg_err_unknown_world").translate(Locale.ROOT));
+			return false;
+		}
+	}
+	
 	private boolean registerListeners() {
 		PluginManager pluginManager = this.getServer().getPluginManager();
 		pluginManager.registerEvents(new TownyListener(), this);

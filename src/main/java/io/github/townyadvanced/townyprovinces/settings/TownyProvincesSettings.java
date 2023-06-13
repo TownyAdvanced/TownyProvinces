@@ -51,7 +51,7 @@ public class TownyProvincesSettings {
 	}
 
 	//TODO - Later make this "get worlds" etc.
-	public static World getWorld() {
+	public static @Nullable World getWorld() {
 		return Bukkit.getWorld(getWorldName());
 	}
 	

@@ -27,6 +27,10 @@ description: >
 
 plugin_prefix: '&6[Towny Provinces] '
 
+# World validation
+
+msg_err_unknown_world: "&cThe world_name field in TownyProvinces/config.yml in incorrect. It must be the name of a world on your server."
+
 # Set province to land or sea
 
 msg_err_invalid_province_location: "&cThe given co-ordinate was either mis-formatted, on a border, or outside the map."
@@ -44,7 +48,6 @@ msg_problem_regenerating_all_regions: "&cThere was a problem generating all regi
 msg_problem_regenerating_one_region: "&cThere was a problem generating region: %s."
 msg_successfully_regenerated_all_regions: "&bSuccessfully regenerated all regions."
 msg_successfully_regenerated_one_regions: "&bSuccessfully regenerated region: %s."
-
 
 # Set town costs
 
