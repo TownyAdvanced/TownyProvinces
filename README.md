@@ -21,24 +21,26 @@
 1. Ensure your server has *Towny 0.99.1.0* or newer.
 2. If at all possible, ensure your server has *Dynmap*.
 3. Download the *TownyProvinces* plugin jar file from [here](https://github.com/TownyAdvanced/TownyProvinces/releases), and drop it into your server plugins folder.
-4. Restart your server.
+4. Stop your server
+5. Ensure your server with plenty of memory (*especially for big maps*)
+   - Example: With Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`.
+6. In the console or in-game, run `tpra region regenerate all`. 
+   - This will generate 2 small sample regions.
 
 ## :book: Admin Guide:
-1. Configure some region definition files, and place them in the folder: /region_definitions.
+1. Configure the region definition files you want, in /region_definitions.
    - Typically a server might have one region definition file for each continent, allowing province density and town-costs to be different for each continent.
    - The 1st region definition file should be the size of the entire map.
    - Region definition files are evaluated in alpha-numeric order.
    - You can have as many region definition files as you want.
    - Two sample region definiton files are provided.
-2. Make sure you start your server with plenty of memory
-   - e.g. for Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`
-4. Run the command `/tpra region regenerate all`
+2. When you have your region definition files configured, run `/tpra region regenerate all`.
    - This will regenerate all regions.
-5. Run the command `/tpra landvalidationjob start` 
-   - This will convert each 'mostly ocean biome' province to a be a "Sea Province". 
-     - *Note: The convertion is not perfect, so expect to convert a few provinces afterwards with `/tpra province [sea|land] [<x>,<z>]`* 
+3. After regenerating all regions, run `/tpra landvalidationjob start`.
+   - This will convert every 'mostly ocean biome' province to a be a "Sea Province". 
    - Sea provinces cannot be settled.
-  
+   - *Note: The automatic validation is not perfect, so expect to convert a few provinces afterwards using `/tpra province [sea|land] [<x>,<z>]`* 
+   
 ## :keyboard: Admin Commands:
 - `/tpra region [regenerate] [<Region Name>]`: Regenerate a region.
 - `/tpra region [newtowncost] [<Region Name>] [amount]`: Set the new town cost for a region.
