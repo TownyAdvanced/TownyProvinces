@@ -54,7 +54,6 @@ public class TownyProvincesDataHolder {
 	private TownyProvincesDataHolder() {
 		searchCoord = new TPFreeCoord(0,0);
 		provincesSet = new HashSet<>();
-		coordProvinceMap = new HashMap<>();
 		chunkAssignmentArray = null;
 	}
 	
@@ -68,6 +67,16 @@ public class TownyProvincesDataHolder {
 	}
 
 	public List<TPCoord> getCoordsInProvince(Province province) {
+		
+		for(int x = 0; x < chunkAssignmentArray.length; x++) {
+			
+		}
+		
+		
+		for(Province[] chunkAssignmentRow: chunkAssignmentArray) {
+			
+		}
+		
 		List<TPCoord> result = new ArrayList<>();
 		for(Map.Entry<TPCoord,Province> mapEntry: coordProvinceMap.entrySet()) {
 			if(mapEntry.getValue() == province) {
