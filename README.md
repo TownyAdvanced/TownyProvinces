@@ -12,8 +12,9 @@
   - Province borders can be viewed on the "Borders" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/9eb5849a-4540-49ba-b71f-26c128c3fc56)
   
 - :moneybag: **Applies town costs depending on province location:**
-  - Each province has a "Town Settlement" and "Town Upkeep" Cost:
-    - :tophat: Solves absentee mayors in popular areas -> The town upkeep cost can be raised in popular areas of the map, but kept low/zero in less popular areas of the map.
+  - Each province has separate "Town Settlement/Town Upkeep" Costs:
+    - :tophat: Solves absentee mayors in popular areas -> The town upkeep cost can be raised in popular areas of the map without being raised in other areas.
+    - :santa: Solves hermits -> The town upkeep cost can be set to zero/low in very unpopular areas of the map (e.g. Antarctica), to support hermit playstyles.
   - Town Costs can be viewed on the "Prices" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/b5d6fdee-9625-4b2a-8edd-8a5b221e64e8)
 
 ## Installation Guide:
