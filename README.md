@@ -13,7 +13,7 @@
 - :moneybag: **Applies town costs depending on province location:**
   - Solves:
     - :tophat: ***Absentee mayors in popular areas***: Town upkeep can be raised in popular areas of the map, without being raised in other areas.
-    - :santa: ***Hermits***: Town Upkeep can be set to zero/low in unpopular/harsh areas of the map, to support players with isolationist styles of play.
+    - :santa: ***Hermits***: Town Settlement/Upkeep costs can be set to low/zero in unpopular/harsh areas of the map, to support players with isolationist styles of play.
   - Dynmap: *("Town Costs" Layer)* ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/044b7c32-71a8-49a3-a0fb-59f1e3af7a3e)
 
 ## :floppy_disk: Installation Guide:
