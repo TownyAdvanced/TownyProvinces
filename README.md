@@ -29,14 +29,15 @@
    - Region definition files are evaluated in alpha-numeric order.
    - You can have as many region definition files as you want.
    - Two sample region definiton files are provided.
-2. Run the command `/tpra region regenerate all`
+2. Make sure you start your server with plenty of memory
+   - e.g. for Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`
+4. Run the command `/tpra region regenerate all`
    - This will regenerate all regions.
-4. Run the command `/tpra landvalidationjob start` 
+5. Run the command `/tpra landvalidationjob start` 
    - This will convert each 'mostly ocean biome' province to a be a "Sea Province". 
      - *Note: The convertion is not perfect, so expect to convert a few provinces afterwards with `/tpra province [sea|land] [<x>,<z>]`* 
    - Sea provinces cannot be settled.
   
-
 ## :keyboard: Admin Commands:
 - `/tpra region [regenerate] [<Region Name>]`: Regenerate a region.
 - `/tpra region [newtowncost] [<Region Name>] [amount]`: Set the new town cost for a region.
