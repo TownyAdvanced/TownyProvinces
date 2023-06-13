@@ -2,20 +2,20 @@
 - An add-on plugin for Towny, which makes town claiming more organized, reducing staff workload and server toxicity.
 
 ## :information_source: Features:
-- :world_map: **Automatically Divides The Map Into Provinces:**
-  - Each Province can contain just 1 town:
-    - :money_with_wings: ***Solves Overclaiming***: Each town has its own reserved area for claiming; There is no need to throw away money on overclaiming.
-    - :stop_sign: ***Solves Claim Blocking***: No town can block the claiming plans of another.
-    - :snake: ***Solves Snake Claiming***: Snake claiming is irrelevant.
-    - :railway_track: ***Solves road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
+- :world_map: **Divides The Map Automatically, Into Multiple 1-Town-Only Provinces:**
+  - Solves:
+    - :money_with_wings: ***Overclaiming***: Each town has its own reserved area for claiming; There is no need to throw away money on overclaiming.
+    - :stop_sign: ***Claim Blocking***: No town can block the claiming plans of another town.
+    - :snake: ***Snake Claiming***: Snake claiming is irrelevant.
+    - :railway_track: ***Road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
   - Province density can be configured to be vary by map location.
-  - Province borders can be viewed on the "Borders" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/9eb5849a-4540-49ba-b71f-26c128c3fc56)
+  - Dynmap "Borders" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/9eb5849a-4540-49ba-b71f-26c128c3fc56)
 
 - :moneybag: **Applies town costs depending on province location:**
-  - Each province has separate town costs:
-    - :tophat: ***Solves absentee mayors in popular areas***: Town upkeep can be raised in popular areas of the map, without being raised in other areas.
-    - :santa: ***Solves hermits***: Town Upkeep can be set to zero/low in unpopular/harsh areas of the map, to support players with isolationist styles of play.
-  - Town Costs can be viewed on the "Town Costs" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/b5d6fdee-9625-4b2a-8edd-8a5b221e64e8)
+  - Solves:
+    - :tophat: ***Absentee mayors in popular areas***: Town upkeep can be raised in popular areas of the map, without being raised in other areas.
+    - :santa: ***Hermits***: Town Upkeep can be set to zero/low in unpopular/harsh areas of the map, to support players with isolationist styles of play.
+  - Dynmap "Town Costs" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/b5d6fdee-9625-4b2a-8edd-8a5b221e64e8)
 
 ## :floppy_disk: Installation Guide:
 1. Ensure your server has *Towny 0.99.1.0* or newer.
