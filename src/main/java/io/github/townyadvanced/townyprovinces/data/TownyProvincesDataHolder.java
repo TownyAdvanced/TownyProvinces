@@ -28,14 +28,6 @@ public class TownyProvincesDataHolder {
 	 * Set of provinces
 	 */
 	private final Set<Province> provincesSet;
-	/**
-	 * Coord province map
-	 * 
-	 * To get a province at a given location, search the map
-	 * To get a border at a given location, seach the map
-	 *   If it doesn't have the given coord, then its a border
-	 */
-	private final Map<TPCoord, Province> coordProvinceMap;
 
 
 	/**
@@ -44,7 +36,7 @@ public class TownyProvincesDataHolder {
 	 * - Size is initialized using the first province, which is assumed to cover all others.
 	 * 
 	 */
-	//private final Province[][] chunkAssignmentArray;
+	private Province[][] chunkAssignmentArray;
 	
 	/**
 	 * Static Coord Search key
@@ -63,6 +55,7 @@ public class TownyProvincesDataHolder {
 		searchCoord = new TPFreeCoord(0,0);
 		provincesSet = new HashSet<>();
 		coordProvinceMap = new HashMap<>();
+		chunkAssignmentArray = null;
 	}
 	
 	public static TownyProvincesDataHolder getInstance() {

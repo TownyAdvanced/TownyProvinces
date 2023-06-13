@@ -36,6 +36,15 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	 * something which would be difficult if this was a set
 	 **/
 	private Map<TPCoord, TPCoord> unclaimedCoordsMap;
+	/**
+	 * This map has all claimed coords
+	 * 
+	 * For a full region job, this will start off empty
+	 * For a single region job, this will start with the contents of the existing data array
+	 * 
+	 * At the end of the job we will transfer this back into the data array
+	 */
+	private Map<TPCoord, Province> claimedCoordsMap;
 	private final String givenRegionName;  //Name given by job starter. Might be "All"
 	private final int mapMinXCoord;
 	private final int mapMaxXCoord;
