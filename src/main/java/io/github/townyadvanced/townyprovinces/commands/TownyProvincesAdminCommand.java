@@ -155,33 +155,33 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		} else if (args[0].equalsIgnoreCase("start")) {
 			if (LandValidationTaskController.getLandValidationJobStatus().equals(LandValidationJobStatus.STOPPED)
 					|| LandValidationTaskController.getLandValidationJobStatus().equals(LandValidationJobStatus.PAUSED)) {
+				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_starting"));
 				LandValidationTaskController.setLandValidationJobStatus(LandValidationJobStatus.START_REQUESTED);
 				LandValidationTaskController.startTask();
-				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_starting"));
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_stopped_or_paused"));
 			}
 		
 		} else if (args[0].equalsIgnoreCase("stop")) {
 			if (LandValidationTaskController.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
-				LandValidationTaskController.setLandValidationJobStatus(LandValidationJobStatus.STOP_REQUESTED);
 				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_stopping"));
+				LandValidationTaskController.setLandValidationJobStatus(LandValidationJobStatus.STOP_REQUESTED);
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_started"));
 			}
 			
 		} else if (args[0].equalsIgnoreCase("pause")) {
 			if (LandValidationTaskController.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
-				LandValidationTaskController.setLandValidationJobStatus(LandValidationJobStatus.PAUSE_REQUESTED);
 				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_pausing"));
+				LandValidationTaskController.setLandValidationJobStatus(LandValidationJobStatus.PAUSE_REQUESTED);
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_started"));
 			}
 
 		} else if (args[0].equalsIgnoreCase("restart")) {
 			if (LandValidationTaskController.getLandValidationJobStatus().equals(LandValidationJobStatus.STARTED)) {
-				LandValidationTaskController.setLandValidationJobStatus(LandValidationJobStatus.RESTART_REQUESTED);
 				Messaging.sendMsg(sender, Translatable.of("msg_land_validation_job_restarting"));
+				LandValidationTaskController.setLandValidationJobStatus(LandValidationJobStatus.RESTART_REQUESTED);
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_command_not_possible_job_not_started"));
 			}
