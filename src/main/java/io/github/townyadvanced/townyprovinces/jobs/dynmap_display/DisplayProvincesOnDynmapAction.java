@@ -145,10 +145,9 @@ public class DisplayProvincesOnDynmapAction {
 				if(drawableLineOfBorderCoords.size() > 0) {
 					drawBorderLine(drawableLineOfBorderCoords, province, markerId);
 				} else {
-					TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line. If this message does not stop repeating, please report it to TownyAdvanced.");
-					//The above error is usually just an intermittent rendering bug, and resolves itself within seconds, on the next pass.
-					//However, if a server gets persistent mysterious gaps, use the below line to reveal the problem province.  
-					debugDrawProvinceChunks(province);
+					TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line. If this message has not stopped repeating a few minutes after your server starts, please report it to TownyAdvanced.");
+					//The below line will draw the province if uncommented
+					//debugDrawProvinceChunks(province);
 				}
 			}
 		} else {
