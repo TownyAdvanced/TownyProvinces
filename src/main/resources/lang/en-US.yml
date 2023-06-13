@@ -81,7 +81,7 @@ msg_err_cannot_create_town_on_province_border: "&cTowns cannot be created on pro
 msg_err_cannot_create_town_in_sea_provinces: "&cTowns cannot be created in Sea provinces."
 msg_err_cannot_create_town_in_full_province: "&cOnly 1 town is allowed in each province. This province already contains a town."
 msg_err_cannot_afford_new_town: "&cYou can't afford to settle a new town in this province, which costs %s."
-msg_you_paid_region_settlement_price: "&aYou paid the region settlement price of %s."
+msg_you_paid_region_settlement_cost: "&aYou paid the region settlement cost of %s."
 
 # Merging towns
 
@@ -96,5 +96,5 @@ msg_err_cannot_claim_land_outside_own_province: "&cA town cannot claim land outs
 #Dynmap
 
 dynmap_province_homeblock_label: "Town Costs: New %s, Upkeep %s"
-dynmap_layer_label_prices: "Town Costs"
+dynmap_layer_label_town_costs: "Town Costs"
 dynmap_layer_label_borders: "Borders"

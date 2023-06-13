@@ -132,8 +132,8 @@ public class PaintRegionAction {
 	/**
 	 * Generate province objects, including
 	 * - Homeblocks
-	 * - New town prices
-	 * - Upkeep town prices
+	 * - New town costs
+	 * - Upkeep town costs
 	 *
 	 * @return false if we failed to create sufficient province objects
 	 */

@@ -59,7 +59,7 @@ public class DisplayProvincesOnDynmapAction {
 	}
 	
 	private void addProvinceHomeBlocksMarkerSet() {
-		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_prices").translate(Locale.ROOT);		
+		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_town_costs").translate(Locale.ROOT);		
 		homeBlocksMarkerSet = createMarkerSet("townyprovinces.markerset.homeblocks", name, true, false);
 	}
 
