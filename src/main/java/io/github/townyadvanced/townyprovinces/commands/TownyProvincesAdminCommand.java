@@ -16,6 +16,7 @@ import io.github.townyadvanced.townyprovinces.jobs.province_generation.Regenerat
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.jobs.land_validation.LandValidationJobStatus;
+import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -44,6 +45,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				if (args.length == 2)
 					return NameUtil.filterByStart(adminTabCompletesRegion, args[1]);
 				if (args.length == 3) {
+					//Reload region definitions
 					TownyProvincesSettings.loadRegionDefinitions();
 					List<String> regionOptions = new ArrayList<>();
 					regionOptions.add("All");
@@ -223,6 +225,13 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 	}
 
 	private void parseRegionRegenerateCommand(CommandSender sender, String[] args) {
+		//Create data folder if needed
+		FileUtil.setupPluginDataFoldersIfRequired();
+		//Create region definitions folder and sample files if needed
+		FileUtil.createRegionDefinitionsFolderAndSampleFiles();
+		//Reload region definitions
+		TownyProvincesSettings.loadRegionDefinitions();
+		//Verify the given region name
 		String givenRegionName = args[1];
 		String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 		if(givenRegionName.equalsIgnoreCase("all")) {

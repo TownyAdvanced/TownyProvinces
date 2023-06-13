@@ -9,15 +9,15 @@ public class RegenerateRegionTaskController {
 
 	private static RegenerateRegionTask regenerateRegionTask = null;
 	
-	public static boolean startTask(CommandSender sender, String givenregionName) {
+	public static boolean startTask(CommandSender sender, String caseCorrectRegionName) {
 		if (regenerateRegionTask != null) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_regeneration_job_already_started"));
 			return false;
 		} else {
 			TownyProvinces.info("Region Regeneration Job Starting");
-			regenerateRegionTask = new RegenerateRegionTask(givenregionName);
+			regenerateRegionTask = new RegenerateRegionTask(caseCorrectRegionName);
 			regenerateRegionTask.runTaskAsynchronously(TownyProvinces.getPlugin());
-			Messaging.sendMsg(sender, Translatable.of("msg_region_regeneration_job_started", givenregionName));
+			Messaging.sendMsg(sender, Translatable.of("msg_region_regeneration_job_started", caseCorrectRegionName));
 			return true;
 		}
 	}

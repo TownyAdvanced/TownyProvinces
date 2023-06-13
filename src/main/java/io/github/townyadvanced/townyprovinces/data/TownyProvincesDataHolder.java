@@ -1,5 +1,6 @@
 package io.github.townyadvanced.townyprovinces.data;
 
+import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
@@ -77,7 +78,7 @@ public class TownyProvincesDataHolder {
 	public List<TPCoord> getCoordsInProvince(Province province) {
 		List<TPCoord> result = new ArrayList<>();
 		for(Map.Entry<TPCoord,Province> mapEntry: coordProvinceMap.entrySet()) {
-			if(mapEntry.getValue() == province) {
+			if(mapEntry.getValue().equals(province)) {
 				result.add(mapEntry.getKey());
 			}
 		}
@@ -110,10 +111,11 @@ public class TownyProvincesDataHolder {
 	}
 
 
-	public void deleteProvince(Province province) {
+	public void deleteProvince(Province province, Map<TPCoord,TPCoord> unclaimedCoordsMap) {
 		List<TPCoord> coordsInProvince = province.getCoordsInProvince();
 		for(TPCoord coord: coordsInProvince) {
 			coordProvinceMap.remove(coord);
+			unclaimedCoordsMap.put(coord,coord);
 		}
 		provincesSet.remove(province);
 	}
@@ -149,9 +151,13 @@ public class TownyProvincesDataHolder {
 		searchCoord.setValues(x,z);
 		return !coordProvinceMap.containsKey(searchCoord);
 	}
-	
 
-	public Map<TPCoord, TPCoord> getAllUnclaimedCoordsInRegion(String regionName) {
+	public Map<TPCoord, TPCoord> getAllUnclaimedCoordsOnMap() {
+		String nameOfFirstRegion = TownyProvincesSettings.getNameOfFirstRegion();
+		return getAllUnclaimedCoordsInRegion(nameOfFirstRegion);
+	}
+	
+	private Map<TPCoord, TPCoord> getAllUnclaimedCoordsInRegion(String regionName) {
 		Map<TPCoord,TPCoord> result = new HashMap<>();
 		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
 		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();

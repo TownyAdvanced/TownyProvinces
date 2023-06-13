@@ -79,8 +79,10 @@ public class PaintRegionAction {
 	
 	boolean executeAction() {
 		TownyProvinces.info("Now Painting Provinces In Region: " + regionName);
-		//Clear provinces which are mostly in the given area
-		deleteExistingProvincesWhichAreMostlyInSpecifiedArea(regionName);
+
+		
+		//if(regionName.equalsIgnoreCase("Europe"))
+		//	return true;
 
 		/*
 		 * Create province objects - empty except for the homeblocks
@@ -96,36 +98,6 @@ public class PaintRegionAction {
 		}
 
 		TownyProvinces.info("Finished Painting Provinces In Region: " + regionName);
-		return true;
-	}
-	
-	private static boolean deleteExistingProvincesWhichAreMostlyInSpecifiedArea(String regionName) {
-		TownyProvinces.info("Now deleting provinces which are mostly in the specified area.");
-		int numProvincesDeleted = 0;
-		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		for(Province province: (new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet()))) {
-			List<TPCoord> coordsInProvince = province.getCoordsInProvince();
-			int numProvinceBlocksInSpecifiedArea = 0;
-			for (TPCoord coordInProvince : coordsInProvince) {
-				if (coordInProvince.getX() < minX)
-					continue;
-				else if (coordInProvince.getX() > maxX)
-					continue;
-				else if (coordInProvince.getZ() < minZ)
-					continue;
-				else if (coordInProvince.getZ() > maxZ)
-					continue;
-				numProvinceBlocksInSpecifiedArea++;
-			}
-			if(numProvinceBlocksInSpecifiedArea > (coordsInProvince.size() / 2)) {
-				TownyProvincesDataHolder.getInstance().deleteProvince(province);
-				numProvincesDeleted++;
-			}
-		}
-		TownyProvinces.info("" + numProvincesDeleted + " provinces deleted.");
 		return true;
 	}
 

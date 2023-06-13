@@ -42,6 +42,7 @@ public class TownyProvinces extends JavaPlugin {
 				|| !TownyProvincesSettings.isTownyProvincesEnabled() 
 				|| !TownyProvincesDataHolder.initialize()
 				|| !FileUtil.setupPluginDataFoldersIfRequired()
+				|| !FileUtil.createRegionDefinitionsFolderAndSampleFiles()
 				|| !DataHandlerUtil.loadAllData()
 				|| !registerListeners()
 				|| !registerAdminCommands()) {

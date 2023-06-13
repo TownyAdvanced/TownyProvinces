@@ -21,6 +21,7 @@ public class TownyProvincesSettings {
 	private static final Map<String, Map<String,String>> regionDefinitions = new HashMap<>();
 
 	public static boolean loadRegionDefinitions() {
+		regionDefinitions.clear();
 		List<File> regionDefinitionFiles = FileUtil.readRegionDefinitionFiles();
 		Map<String, String> regionDefinitions;
 		for(File regionDefinitionFile: regionDefinitionFiles) {

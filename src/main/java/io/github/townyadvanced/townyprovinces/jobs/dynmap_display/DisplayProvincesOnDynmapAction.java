@@ -315,7 +315,7 @@ public class DisplayProvincesOnDynmapAction {
 	private void debugDrawProvinceChunks(Province province) {
 		String worldName = TownyProvincesSettings.getWorldName();
 		for(TPCoord tpCoord: TownyProvincesDataHolder.getInstance().getCoordsInProvince(province)) {
-			debugDrawChunk(tpCoord, worldName);
+			debugDrawChunk(tpCoord, province, worldName);
 		}
 	}
 	
@@ -329,7 +329,7 @@ public class DisplayProvincesOnDynmapAction {
 		//}
 	}
 	
-	private void debugDrawChunk(TPCoord coord, String worldName) {
+	private void debugDrawChunk(TPCoord coord, Province province, String worldName) {
 		double[] xPoints = new double[5];
 		xPoints[0] = coord.getX() * TownyProvincesSettings.getChunkSideLength();
 		xPoints[1] = xPoints[0] + TownyProvincesSettings.getChunkSideLength();
@@ -344,7 +344,7 @@ public class DisplayProvincesOnDynmapAction {
 		zPoints[3] = zPoints[2];
 		zPoints[4] = zPoints[0];
 		
-		String markerId = "Debug Drawn Chunk" + coord.getX() + "-" + coord.getZ();
+		String markerId = "Debug Drawn Chunk" + coord.getX() + "-" + coord.getZ() + ". Province: " + province.getId();
 		//String markerName = "xx";
 		String markerName = "ID: " + markerId;
 		//markerName += " Is Border: " + provinceBlock.isProvinceBorder();
