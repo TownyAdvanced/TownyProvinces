@@ -11,7 +11,7 @@
 - :money_with_wings: ***Overclaiming***: Each town has its own reserved area for claiming; There is no need to throw away money on overclaiming.
 - :stop_sign: ***Claim Blocking***: No town can block the claiming plans of another town.
 - :snake: ***Snake Claiming***: Snake claiming is irrelevant.
-- :doughnut: ***Doughnot Claiming***: Doughnut claiming is irrelevant.
+- :doughnut: ***Doughnut Claiming***: Doughnut claiming is irrelevant.
 - :railway_track: ***Road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
 - :tophat: ***Absentee mayors in popular areas***: Town upkeep can be raised in popular areas of the map, without being raised in other areas.
 - :santa: ***Hermits***: Town costs can be set to low/zero in unpopular/harsh areas of the map, to support players with isolationist styles of play.
