@@ -37,7 +37,7 @@ public class TownyProvinces extends JavaPlugin {
 	public void onEnable() {
 		plugin = this;
 
-		//Setup Basics
+		//Load Mandatory stuff
 		if(!checkTownyVersion()
 				|| !loadConfig()
 				|| !loadLocalization(false)
@@ -49,11 +49,14 @@ public class TownyProvinces extends JavaPlugin {
 				|| !DataHandlerUtil.loadAllData()
 				|| !registerListeners()
 				|| !registerAdminCommands()) {
+			severe("Towny Provinces Did Not Load Successfully.");
 			onDisable();
 			return;
+		} else {
+			info("Town Provinces Loaded Successfully");
 		}
-			
-		//Load integrations 
+		
+		//Load optional stuff 
 		loadIntegrations();
 	}
 	

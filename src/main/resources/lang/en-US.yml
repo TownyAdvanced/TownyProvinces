@@ -29,7 +29,7 @@ plugin_prefix: '&6[Towny Provinces] '
 
 # World validation
 
-msg_err_unknown_world: "&cThe world_name field in TownyProvinces/config.yml in incorrect. It must be the name of a world on your server."
+msg_err_unknown_world: "&cERROR: The world_name field in TownyProvinces/config.yml in incorrect. It must be the name of a world on your server."
 
 # Set province to land or sea
 
