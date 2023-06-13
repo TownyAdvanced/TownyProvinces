@@ -1,5 +1,5 @@
 # Towny Resources
-- :point_right: An add-on plugin for Towny, which makes claiming more organized, reducing staff workload and server toxicity.
+- :point_right: An add-on plugin for Towny, to make claiming more organized, reducing staff workload and server toxicity.
 
 ## :information_source: Features:
 - :world_map: **Divides The Map Automatically, Into Multiple 1-Town-Only Provinces.**
