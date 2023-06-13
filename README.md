@@ -11,7 +11,7 @@
     - :railway_track: ***Road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
   - Dynmap: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/9eb5849a-4540-49ba-b71f-26c128c3fc56)
 
-- :moneybag: **Applies town costs depending on province location:**
+- :moneybag: **Applies Town Costs Depending On Province Location:**
   - Solves:
     - :tophat: ***Absentee mayors in popular areas***: Town upkeep can be raised in popular areas of the map, without being raised in other areas.
     - :santa: ***Hermits***: Town costs can be set to low/zero in unpopular/harsh areas of the map, to support players with isolationist styles of play.
