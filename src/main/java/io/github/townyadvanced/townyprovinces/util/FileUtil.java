@@ -2,6 +2,8 @@ package io.github.townyadvanced.townyprovinces.util;
 
 import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
+import io.github.townyadvanced.townyprovinces.messaging.Messaging;
+import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +26,9 @@ public class FileUtil {
 			createFolderIfRequired(DATA_FOLDER_PATH);
 			createFolderIfRequired(PROVINCES_FOLDER_PATH);
 		} catch (Exception e) {
-			TownyProvinces.severe("Problem setting up plugin sub-folders: " + e.getMessage());
+			Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem setting up plugin sub-folders: " + e.getMessage());
 			e.printStackTrace();
+			return false;
 		}
 		return true;
 	}
@@ -121,7 +124,7 @@ public class FileUtil {
 			}
 			return true;
 		} catch (Exception e) {
-			TownyProvinces.severe("Problem creating sample resource definition file: " + fileName + ". " + e.getMessage());
+			Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem creating sample resource definition file: " + fileName + ". " + e.getMessage());
 			e.printStackTrace();
 			return false;
 		}

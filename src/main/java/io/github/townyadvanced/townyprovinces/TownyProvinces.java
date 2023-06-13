@@ -9,6 +9,7 @@ import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminComman
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
+import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
@@ -72,7 +73,8 @@ public class TownyProvinces extends JavaPlugin {
 				return false;
 			}
 		} catch (Exception e) {
-			severe("Problem enabling Dynmap integration: " + e.getMessage());
+			Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling Dynmap integration: " + e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -124,7 +126,7 @@ public class TownyProvinces extends JavaPlugin {
 			info("World Validated");
 			return true;
 		} else {
-			severe(Translatable.of("msg_err_unknown_world").translate(Locale.ROOT));
+			Messaging.sendErrorMsg(Bukkit.getConsoleSender(), Translatable.of("msg_err_unknown_world"));
 			return false;
 		}
 	}
