@@ -4,7 +4,7 @@
 ## Features:
 - :world_map: **Automatically Divides The Map Into Provinces:**
   - Each Province can have just one town.
-    - ***Solves Overclaiming***: Each town has its own reserved area for claiming; There is no need to throw money away on overclaiming.
+    - ***Solves Overclaiming***: Each town has its own reserved area for claiming; There is no need to throw away money on overclaiming.
     - ***Solves Claim Blocking***: No town can block the claiming plans of another.
     - ***Solves Snake Claiming***: Snake claiming is not a problem.
     - ***Solves Roads***: Two adjacent towns can easily link up by roads without anyone interfering.
