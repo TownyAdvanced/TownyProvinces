@@ -27,8 +27,7 @@ public class Province {
 		this.isSea = isSea;
 		this.newTownCost = newTownCost;
 		this.upkeepTownCost = upkeepTownCost;
-		//TODO FIXME!!!
-		this.id = "province_x" + homeBlock.getX() + "_y_" + homeBlock.getZ();
+		this.id = "province_x" + homeBlock.getX() + "_z_" + homeBlock.getZ();
 		this.landValidationRequested = landValidationRequested;
 	}
 
