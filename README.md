@@ -3,14 +3,19 @@
 
 ## Features:
 - :world_map: **Automatically Divides The Map Into Provinces:**
-  - Each Province can have just one town.
+  - Each Province can contain just 1 town:
+    - :money_with_wings: ***Solves Overclaiming***: Each town has its own reserved area for claiming; There is no need to throw away money on overclaiming.
+    - :stop_sign: ***Solves Claim Blocking***: No town can block the claiming plans of another.
+    - :snake: ***Solves Snake Claiming***: Snake claiming is irrelevant.
+    - :railway_track: ***Solves road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
   - Province density can be configured to be vary by map location.
   - Province borders can be viewed on the "Borders" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/9eb5849a-4540-49ba-b71f-26c128c3fc56)
   
-- :moneybag: **Gives each province a Settlement/Upkeep Cost**
-  - Each province can have a "Settlement Price" which applies to new towns, and can be configured to vary by map location.
-  - Each province can have an "Upkeep Price" which applies to town upkeep, and can be configured to vary by map location.
-  - Province prices can be viewed on the "Prices" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/b5d6fdee-9625-4b2a-8edd-8a5b221e64e8)
+- :moneybag: **Applies town costs depending on province location:**
+  - Each province has separate "Town Settlement/Town Upkeep" Costs:
+    - :tophat: Solves absentee mayors in popular areas -> The town upkeep cost can be raised in popular areas of the map without being raised in other areas.
+    - :santa: Solves hermits -> The town upkeep cost can be set to zero/low in very unpopular areas of the map (e.g. Antarctica), to support hermit playstyles.
+  - Town Costs can be viewed on the "Prices" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/b5d6fdee-9625-4b2a-8edd-8a5b221e64e8)
 
 ## Installation Guide:
 1. Ensure your server has *Towny 0.99.1.0* or newer.
