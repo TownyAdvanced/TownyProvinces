@@ -4,14 +4,17 @@
 ## Features:
 - :world_map: **Automatically Divides The Map Into Provinces:**
   - Each Province can have just one town.
+    - ***Automatically Solves Overclaiming***: Each town has a reserved claim area; no need to throw money away on overclaiming.
+    - ***Automatically Solves Claim Blocking***: No town can block the claiming plans of another.
+    - ***Automatically Solves Snake Claiming***: Snake claiming is not a problem.
+    - ***Automatically Solves Roads***: Two adjacent towns can easily link up by roads without anyone interfering.
   - Province density can be configured to be vary by map location.
   - Province borders can be viewed on the "Borders" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/9eb5849a-4540-49ba-b71f-26c128c3fc56)
   
 - :moneybag: **Applies town costs depending on province location:**
-  - Each province has a "Town Settlement" and "Town Upkeep" Cost.
-  - These town costs can be the same for each province in the world, or they can be configured to be different for different regions.
-  - Example: On an Earth map, town costs could be expensive in popular regions like Europe, but cheap in unfashionable regions like Antarctica.
-  - Province prices can be viewed on the "Prices" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/b5d6fdee-9625-4b2a-8edd-8a5b221e64e8)
+  - Each province has a "Town Settlement" and "Town Upkeep" Price.
+  - These prices can be set to vary by region, e.g. on an Earth map, town costs could be expensive in popular regions like Europe, but cheap in unfashionable regions like Antarctica.
+  - Town Costs can be viewed on the "Prices" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/b5d6fdee-9625-4b2a-8edd-8a5b221e64e8)
 
 ## Installation Guide:
 1. Ensure your server has *Towny 0.99.1.0* or newer.
