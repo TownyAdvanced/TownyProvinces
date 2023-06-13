@@ -7,9 +7,10 @@
   - Province density can be configured to be vary by map location.
   - Province borders can be viewed on the "Borders" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/9eb5849a-4540-49ba-b71f-26c128c3fc56)
   
-- :moneybag: **Gives each province a Settlement/Upkeep Cost**
-  - Each province can have a "Settlement Cost" which applies to new towns. Different areas of the world can have different settlement costs.
-  - Each province can have an "Upkeep Cost" which applies to town upkeep. Different areas of the world can have different upkeep costs.
+- :moneybag: **Applies town costs depending on province location:**
+  - Each province has a "Town Settlement" and "Town Upkeep" Cost.
+  - These town costs can be the same for each province in the world, or they can be configured to be different for different regions.
+  - Example: On an Earth map, town costs could be expensive in popular regions like Europe, but cheap in unfashionable regions like Antarctica.
   - Province prices can be viewed on the "Prices" map layer: ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/b5d6fdee-9625-4b2a-8edd-8a5b221e64e8)
 
 ## Installation Guide:
