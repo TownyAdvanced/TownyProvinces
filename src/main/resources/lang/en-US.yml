@@ -95,6 +95,6 @@ msg_err_cannot_claim_land_outside_own_province: "&cA town cannot claim land outs
 
 #Dynmap
 
-dynmap_province_homeblock_label: "Town Prices: New %s, Upkeep %s"
-dynmap_layer_label_prices: "Prices"
+dynmap_province_homeblock_label: "Town Costs: New %s, Upkeep %s"
+dynmap_layer_label_prices: "Town Costs"
 dynmap_layer_label_borders: "Borders"
