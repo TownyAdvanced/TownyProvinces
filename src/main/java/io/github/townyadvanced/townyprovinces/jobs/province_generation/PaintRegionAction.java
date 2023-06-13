@@ -270,6 +270,16 @@ public class PaintRegionAction {
 	 * @return true if it's ok
 	 */
 	public boolean validateBrushPosition(int brushPositionCoordX, int brushPositionCoordZ, Province provinceBeingPainted) {
+		//First check that the centre point would not be off the map
+		if (brushPositionCoordX < mapMinXCoord)
+			return false;
+		else if (brushPositionCoordX > mapMaxXCoord)
+			return false;
+		else if (brushPositionCoordZ < mapMinZCoord)
+			return false;
+		else if (brushPositionCoordZ > mapMaxZCoord)
+			return false;
+		//Now check that none of the painting points would be on or near a different province
 		int brushMinCoordX = brushPositionCoordX - brushSquareRadiusInChunks;
 		int brushMaxCoordX = brushPositionCoordX + brushSquareRadiusInChunks;
 		int brushMinCoordZ = brushPositionCoordZ - brushSquareRadiusInChunks;
@@ -277,16 +287,6 @@ public class PaintRegionAction {
 		Province province;
 		for(int x = brushMinCoordX -3; x <= (brushMaxCoordX +3); x++) {
 			for(int z = brushMinCoordZ -3; z <= (brushMaxCoordZ +3); z++) {
-				//Fail if the target coord is off the map
-				if (x < mapMinXCoord)
-					continue;
-				else if (x > mapMaxXCoord)
-					continue;
-				else if (z < mapMinZCoord)
-					continue;
-				else if (z > mapMaxZCoord)
-					continue;
-				//Fail if the target coord is owned by a different province
 				province = TownyProvincesDataHolder.getInstance().getProvinceAt(x,z);
 				if(province != null && province != provinceBeingPainted) {
 					return false;
