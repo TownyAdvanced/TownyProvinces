@@ -1,13 +1,13 @@
 # Towny Resources
 
-## :information_source: Overview:
+## :information_source: Overview
 - :world_map: An add-on plugin for *Towny*, which makes claiming more organized, reducing staff workload and server toxicity.
 
-## :gift: Features:
+## :gift: Features
 - :globe_with_meridians: **Divides The Map Automatically, Into Multiple 1-Town-Only Provinces.**
 - :moneybag: **Applies Different Town Costs Depending On Province Location.**
 
-## :hammer_and_wrench: Solves:
+## :hammer_and_wrench: Solves
 - :money_with_wings: ***Overclaiming***: Each town has its own reserved area for claiming; There is no need to throw away money on overclaiming.
 - :no_entry_sign: ***Claim Blocking***: No town can block the claiming plans of another town.
 - :snake: ***Snake Claiming***: Snake claiming is irrelevant.
@@ -16,10 +16,10 @@
 - :tophat: ***Absentee mayors in popular areas***: Town upkeep can be raised in popular areas of the map, without being raised in other areas.
 - :santa: ***Hermits***: Town costs can be set to low/zero in unpopular/harsh areas of the map, to support players with isolationist styles of play.
 
-## :eye: Map View: 
+## :eye: Map View
 - ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/17e5baed-766e-471e-a8f2-e5494f0d083c)
 
-## :floppy_disk: Installation Guide:
+## :floppy_disk: Installation Guide
 1. Ensure your server has *Towny 0.99.1.0* or newer.
 2. If possible, ensure your server has *Dynmap*.
 3. Download the *TownyProvinces* plugin jar file from [here](https://github.com/TownyAdvanced/TownyProvinces/releases), and drop it into your server plugins folder.
@@ -27,7 +27,7 @@
 5. Start your server with plenty of memory (*especially for big maps*)
    - Example: With Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`.
 
-## :keyboard: Admin Commands: *(best run from console)*
+## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
 - `tpra region [newtowncost] [<Region Name>] [amount]` -> Set the new-town-cost for a region.
 - `tpra region [upkeeptowncost] [<Region Name>] [amount]` -> Set the upkeep-town-cost for a region.
@@ -41,8 +41,8 @@
 2. Run `tpra landvalidationjob start`. This will automatically start identifying sea provinces.
 3. To see the generated provinces, view your dynmap. 
 
-## :arrow_forward: Full-Start Guide
-1. Configure as many region definition files you want, in /region_definitions.
+## :eight_spoked_asterisk: Region Definitions Guide
+1. Configure as many region definition files as you want, in /region_definitions.
 2. Region definition files are evaluated in alpha-numeric order.
 3. The first region definition file should be the size of the entire map.
 4. To fully understand how to configure your region definition files, you must understand how provinces are generated:
