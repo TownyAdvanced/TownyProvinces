@@ -38,7 +38,7 @@
     </dependency>
     <dependency>
       <groupId>com.palmergames.bukkit.towny</groupId>
-      <artifactId>Towny</artifactId>
+      <artifactId>towny</artifactId>
       <version>0.99.1.0</version>
       <scope>provided</scope>
     </dependency>
