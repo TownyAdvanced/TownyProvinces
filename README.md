@@ -45,7 +45,7 @@
 1. Configure as many region definition files you want, in /region_definitions.
 2. Region definition files are evaluated in alpha-numeric order.
 3. The first region definition file should be the size of the entire map.
-4. To fully understand how to configure your region definition files, you must understand how povinces are generated:
+4. To fully understand how to configure your region definition files, you must understand how provinces are generated:
    * **STEP 1:** "Claim Brushes" are created and placed in the given region
      * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/f86b1169-d3d6-43a4-8c95-6477f08b92d0)
    * **STEP 2:** Each claim brush then moves in a random direction
