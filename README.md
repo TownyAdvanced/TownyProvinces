@@ -47,11 +47,11 @@
 3. The first region definition file should be the size of the entire map.
 4. To fully understand how to configure your region definition files, you must understand how povinces are generated:
    * **STEP 1:** "Claim Brushes" are created and placed in the given region
-     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/4a8eff82-f4f0-4b15-bca0-9f78fca78f8f)
+     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/f86b1169-d3d6-43a4-8c95-6477f08b92d0)
    * **STEP 2:** Each claim brush then moves in a random direction
-     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/3e8b465c-195a-4fb5-b5f6-e493e4f3caa5)
+     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/5a0727be-6ef7-4269-9642-c3245a6ac527)
    * **STEP 3**: Each claim brush then moves a few more times
-     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/509bd4ca-0160-4484-a43b-07c2b572e589)
+     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/1d854cd5-c779-4300-b644-549d45975c21)
    * **STEP 4**: The gaps between each province are filled in, except for a 1 chunk border
      * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/a8a63af8-ca8d-4a7e-8be5-56b62379f58c)
 
