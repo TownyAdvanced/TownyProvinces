@@ -17,8 +17,7 @@
 - :santa: ***Hermits***: Town costs can be set to low/zero in unpopular/harsh areas of the map, to support players with isolationist styles of play.
 
 ## :eye: Map View: 
-- Border Layer ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/9eb5849a-4540-49ba-b71f-26c128c3fc56)
-- Town Costs Layer ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/044b7c32-71a8-49a3-a0fb-59f1e3af7a3e)
+- ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/c6b65856-07c7-4305-8aed-b1342c35e365)
 
 ## :floppy_disk: Installation Guide:
 1. Ensure your server has *Towny 0.99.1.0* or newer.
