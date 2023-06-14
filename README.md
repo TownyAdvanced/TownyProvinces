@@ -38,7 +38,7 @@
  
 ## :fast_forward: Quick-Start Guide
 1. Run `tpra region regenerate all`. This will generate 2 small sample regions.
-2. Run `tpra landvalidationjob start`. This will start automatically identifying sea provinces.
+2. Run `tpra landvalidationjob start`. This will automatically start identifying sea provinces.
 3. To see the generated provinces, view your dynmap. 
 
 ## :arrow_forward: Full-Start Guide
