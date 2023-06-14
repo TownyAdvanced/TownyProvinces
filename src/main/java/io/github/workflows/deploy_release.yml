@@ -41,7 +41,7 @@ jobs:
               with:
                   generate_release_notes: true
                   append_body: false
-                  draft: false
+                  draft: true
                   prerelease: false
                   token: ${{ github.token }}
                   tag_name: ${{ env.CURR_VER }}
