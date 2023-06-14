@@ -31,8 +31,10 @@
 - `/tpra region [regenerate] [<Region Name>]`: Regenerate a region.
 - `/tpra region [newtowncost] [<Region Name>] [amount]`: Set the new town cost for a region.
 - `/tpra region [upkeeptowncost] [<Region Name>] [amount]`: Set the upkeep town cost for a region.
-- `/tpra landvalidationjob [status|start|stop|restart|pause]`: Control the land validation job
+- `/tpra landvalidationjob [status|start|stop|restart|pause]`: Control the land validation job.
+  - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below command.* 
 - `/tpra province [sea|land] [<x>,<z>]`: Set a province to sea/land.
+  - Sea provinces cannot be settled.
  
 ## :fast_forward: Quick-Start Guide
 1. In console or in-game, run `/tpra region regenerate all`. This will generate 2 small sample regions.
@@ -43,31 +45,17 @@
 1. Configure as many region definition files you want, in /region_definitions.
 2. Region definition files are evaluated in alpha-numeric order.
 3. The first region definition file should be the size of the entire map.
-4. To fully understand how to configure your region definition files, you must understand how each region is generated:
+4. To fully understand how to configure your region definition files, you must understand how povinces are generated:
    * **STEP 1:** "Claim Brushes" are created and placed in the given region
-     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/7bc847aa-b54a-4a2b-88be-4a79a0f53e31)
-   * **STEP 2:** Each of the claim brushes then moves in a random direction
-     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/a8c6c0b6-b9a4-4f93-8dff-e3e921d37437)
+     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/4a8eff82-f4f0-4b15-bca0-9f78fca78f8f)
+   * **STEP 2:** Each claim brush then moves in a random direction
+     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/3e8b465c-195a-4fb5-b5f6-e493e4f3caa5)
+   * **STEP 3**: Each claim brush then moves a few more times
+     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/509bd4ca-0160-4484-a43b-07c2b572e589)
+   * **STEP 4**: The gaps between each province are filled in, except for a 1 chunk border
+     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/a8a63af8-ca8d-4a7e-8be5-56b62379f58c)
 
-
-5. 
-6. When the `/tpra region regenerate all` command is run, each region is evaluated as follows:
-   * s
-   * sd
-   * sd
-
-## :book: Admin Guide:
-1. Configure the region definition files you want, in /region_definitions.
-   - Typically a server might have one region definition file for each continent, allowing province density and town-costs to be different for each continent.
-   - The 1st region definition file should be the size of the entire map.
-   - Region definition files are evaluated in alpha-numeric order.
-   - You can have as many region definition files as you want.
-   - Two sample region definiton files are provided.
-2. When you have your region definition files configured, run `/tpra region regenerate all`.
-   - This will regenerate all regions.
-3. After regenerating all regions, run `/tpra landvalidationjob start`.
-   - This will convert every 'mostly ocean biome' province to a be a "Sea Province". 
-   - Sea provinces cannot be settled.
-   - *Note: The automatic validation is not perfect, so expect to convert a few provinces afterwards using `/tpra province [sea|land] [<x>,<z>]`* 
-   
+## :scroll: Credits
+- *TownyProvinces* was developed by Goosius in Summer 2023.
+- Special thanks to Valoria Earth, the first server to support and adopt the system, and which provided valuable testing and feedback.
 
