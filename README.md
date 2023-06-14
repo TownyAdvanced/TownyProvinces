@@ -57,5 +57,5 @@
 
 ## :scroll: Credits
 - *TownyProvinces* was developed by Goosius in Summer 2023.
-- Special thanks to Valoria Earth, the first server to support and adopt the system, who were very supportive and helpful during the development of the plugin.
+- Special thanks to Valoria Earth, who were very supportive and helpful during the development of the plugin.
 
