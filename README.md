@@ -27,7 +27,7 @@
 5. Start your server with plenty of memory (*especially for big maps*)
    - Example: With Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`.
 
-## :keyboard: Admin Commands: *(best run from Console)*
+## :keyboard: Admin Commands: *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]`: Regenerate a region.
 - `tpra region [newtowncost] [<Region Name>] [amount]`: Set the new town cost for a region.
 - `tpra region [upkeeptowncost] [<Region Name>] [amount]`: Set the upkeep town cost for a region.
