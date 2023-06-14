@@ -52,12 +52,12 @@ public class TownyProvinces extends JavaPlugin {
 			severe("Towny Provinces Did Not Load Successfully.");
 			onDisable();
 			return;
-		} else {
-			info("Town Provinces Loaded Successfully");
-		}
-		
+		} 
+
 		//Load optional stuff 
 		loadIntegrations();
+
+		info("Town Provinces Loaded Successfully");
 	}
 	
 	private boolean registerAdminCommands() {

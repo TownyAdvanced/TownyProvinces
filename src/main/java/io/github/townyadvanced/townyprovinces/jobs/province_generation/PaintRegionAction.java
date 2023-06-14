@@ -192,7 +192,7 @@ public class PaintRegionAction {
 			* - (twice the brush paint radius + 1)
 			* - Whichever is larger			 
 			 */
-			int minAllowedDistance = minimumStartDistanceBetweenBrushesInChunks + (brushSquareRadiusInChunks * 2);
+			int minAllowedDistance = minimumStartDistanceBetweenBrushesInChunks + (brushSquareRadiusInChunks * 2) + 1;
 			if(TownyProvincesMathUtil.minecraftDistance(homeBlockToValidate, province.getHomeBlock()) < minAllowedDistance) {
 				return false;
 			}
