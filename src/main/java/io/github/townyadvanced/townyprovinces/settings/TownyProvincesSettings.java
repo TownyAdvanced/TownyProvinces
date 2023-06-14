@@ -73,15 +73,15 @@ public class TownyProvincesSettings {
 		return new Location(getWorld(), Integer.parseInt(locationArray[0].trim()),0,Integer.parseInt(locationArray[1].trim()));
 	}
 	
-	public static int getProvinceSizeEstimateForPopulatingInSquareMetres(String regionName) {
+	public static int getAverageProvinceSize(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String numString = regionDefinitions.get("province_size_estimate_for_populating_in_square_metres");
+		String numString = regionDefinitions.get("average_province_size");
 		return Integer.parseInt(numString);
 	}
 	
-	public static int getMinAllowedDistanceBetweenProvinceHomeBlocks(String regionName) {
+	public static int getMinimumStartDistanceBetweenBrushes(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String numString = regionDefinitions.get("min_allowed_distance_between_province_home_blocks");
+		String numString = regionDefinitions.get("minimum_start_distance_between_brushes");
 		return Integer.parseInt(numString);
 	}
 	
@@ -95,33 +95,33 @@ public class TownyProvincesSettings {
 		return 16; //Same as a chunk. Best not to change
 	}
 
-	public static int getNumberOfProvincePaintingCycles(String regionName) {
+	public static int getMaxBrushMoves(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String numString = regionDefinitions.get("number_of_province_painting_cycles");
+		String numString = regionDefinitions.get("max_brush_moves");
 		return Integer.parseInt(numString);
 	}
 
-	public static int getProvinceCreatorBrushSquareRadiusInChunks(String regionName) {
+	public static int getBrushSquareRadiusInChunks(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String numString = regionDefinitions.get("province_creator_brush_square_radius_in_chunks");
+		String numString = regionDefinitions.get("brush_square_radius_in_chunks");
 		return Integer.parseInt(numString);
 	}
 
-	public static int getProvinceCreatorBrushMinMoveInChunks(String regionName) {
+	public static int getMinBrushMoveAmountInChunks(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String numString = regionDefinitions.get("province_creator_brush_min_move_in_chunks");
+		String numString = regionDefinitions.get("min_brush_move_amount_in_chunks");
 		return Integer.parseInt(numString);
 	}
 
-	public static int getProvinceCreatorBrushMaxMoveInChunks(String regionName) {
+	public static int getMaxBrushMoveAmountInChunks(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String numString = regionDefinitions.get("province_creator_brush_max_move_in_chunks");
+		String numString = regionDefinitions.get("max_brush_move_amount_in_chunks");
 		return Integer.parseInt(numString);
 	}
 
-	public static int getProvinceCreatorBrushClaimLimitInSquareMetres(String regionName) {
+	public static int getMaxAreaClaimedPerBrush(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String numString = regionDefinitions.get("province_creator_brush_claim_limit_in_square_metres");
+		String numString = regionDefinitions.get("max_area_claimed_per_brush");
 		return Integer.parseInt(numString);
 	}
 	
@@ -191,21 +191,4 @@ public class TownyProvincesSettings {
 			return false;
 		}
 	}
-
-	public static int calculateNumMapChunksX() {
-		String regionName = getNameOfFirstRegion();
-		Location topLeftCornerLocation = getTopLeftCornerLocation(regionName);
-		Location bottomRightCornerLocation = getBottomRightCornerLocation(regionName);
-		int lengthX = topLeftCornerLocation.getBlockX() + bottomRightCornerLocation.getBlockX();
-		return (lengthX / getChunkSideLength()) + 2;
-	}
-
-	public static int calculateNumMapChunksZ() {
-		String regionName = getNameOfFirstRegion();
-		Location topLeftCornerLocation = getTopLeftCornerLocation(regionName);
-		Location bottomRightCornerLocation = getBottomRightCornerLocation(regionName);
-		int lengthZ = topLeftCornerLocation.getBlockZ() + bottomRightCornerLocation.getBlockZ();
-		return (lengthZ / getChunkSideLength()) + 2;
-	}
-
 }

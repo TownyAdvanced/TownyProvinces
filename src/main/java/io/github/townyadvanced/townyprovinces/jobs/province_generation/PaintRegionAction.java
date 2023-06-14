@@ -14,7 +14,6 @@ import org.bukkit.Location;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -32,17 +31,17 @@ public class PaintRegionAction {
 	private final int mapMaxXCoord;
 	private final int mapMinZCoord;
 	private final int mapMaxZCoord;
-	private final int minBrushMoveAmount;
-	private final int maxBrushMoveAmount;
+	private final int minBrushMoveAmountInChunks;
+	private final int maxBrushMoveAmountInChunks;
 	private final int brushSquareRadiusInChunks;
 	private final int claimAreaLimitInSquareMetres;
 	public final static double CHUNK_AREA_IN_SQUARE_METRES = Math.pow(TownyProvincesSettings.getChunkSideLength(), 2);
 	public final TPFreeCoord searchCoord;
-	private final int minAllowedDistanceBetweenProvinceHomeBlocksInChunks;
+	private final int minimumStartDistanceBetweenBrushesInChunks;
 	private final Location topLeftRegionCorner;
 	private final Location bottomRightRegionCorner;
-	private final int provinceSizeEstimateForPopulatingInSquareMetres;
-	private final int numberOfProvincePaintingCycles;
+	private final int averageProvinceSize;
+	private final int maxBrushMoves;
 	private final double tpChunkSideLength;
 	private final int newTownCost;
 	private final int upkeepTownCost;
@@ -51,26 +50,26 @@ public class PaintRegionAction {
 	public PaintRegionAction(String regionName, Map<TPCoord,TPCoord> unclaimedCoordsMap) {
 		this.regionName = regionName;
 		this.unclaimedCoordsMap = unclaimedCoordsMap;
-		this.minBrushMoveAmount = TownyProvincesSettings.getProvinceCreatorBrushMinMoveInChunks(regionName);
-		this.maxBrushMoveAmount= TownyProvincesSettings.getProvinceCreatorBrushMaxMoveInChunks(regionName);
-		this.brushSquareRadiusInChunks = TownyProvincesSettings.getProvinceCreatorBrushSquareRadiusInChunks(regionName);
-		this.claimAreaLimitInSquareMetres = TownyProvincesSettings.getProvinceCreatorBrushClaimLimitInSquareMetres(regionName);
+		this.minBrushMoveAmountInChunks = TownyProvincesSettings.getMinBrushMoveAmountInChunks(regionName);
+		this.maxBrushMoveAmountInChunks = TownyProvincesSettings.getMaxBrushMoveAmountInChunks(regionName);
+		this.brushSquareRadiusInChunks = TownyProvincesSettings.getBrushSquareRadiusInChunks(regionName);
+		this.claimAreaLimitInSquareMetres = TownyProvincesSettings.getMaxAreaClaimedPerBrush(regionName);
 		String nameOfFirstRegion = TownyProvincesSettings.getNameOfFirstRegion();
 		this.mapMinXCoord = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
 		this.mapMaxXCoord = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
 		this.mapMinZCoord = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		this.mapMaxZCoord = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		this.searchCoord = new TPFreeCoord(0,0);
-		int minAllowedDistanceBetweenProvinceHomeBlocksInMetres = TownyProvincesSettings.getMinAllowedDistanceBetweenProvinceHomeBlocks(regionName);
-		this.minAllowedDistanceBetweenProvinceHomeBlocksInChunks = minAllowedDistanceBetweenProvinceHomeBlocksInMetres / TownyProvincesSettings.getChunkSideLength();
+		int minimumStartDistanceBetweenBrushes = TownyProvincesSettings.getMinimumStartDistanceBetweenBrushes(regionName);
+		this.minimumStartDistanceBetweenBrushesInChunks = minimumStartDistanceBetweenBrushes / TownyProvincesSettings.getChunkSideLength();
 		this.regionMinX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX();
 		this.regionMaxX = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX();
 		this.regionMinZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ();
 		this.regionMaxZ = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ();
 		this.topLeftRegionCorner = TownyProvincesSettings.getTopLeftCornerLocation(regionName);
 		this.bottomRightRegionCorner = TownyProvincesSettings.getBottomRightCornerLocation(regionName);
-		this.provinceSizeEstimateForPopulatingInSquareMetres = TownyProvincesSettings.getProvinceSizeEstimateForPopulatingInSquareMetres(regionName);
-		this.numberOfProvincePaintingCycles= TownyProvincesSettings.getNumberOfProvincePaintingCycles(regionName);
+		this.averageProvinceSize = TownyProvincesSettings.getAverageProvinceSize(regionName);
+		this.maxBrushMoves = TownyProvincesSettings.getMaxBrushMoves(regionName);
 		this.tpChunkSideLength = TownyProvincesSettings.getChunkSideLength();
 		this.newTownCost = TownyProvincesSettings.getNewTownCost(regionName);
 		this.upkeepTownCost = TownyProvincesSettings.getUpkeepTownCost(regionName);
@@ -138,7 +137,7 @@ public class PaintRegionAction {
 	
 	private int calculateIdealNumberOfProvinces() {
 		double regionAreaSquareMetres = calculateRegionAreaSquareMetres();
-		int idealNumberOfProvinces = (int)(regionAreaSquareMetres / provinceSizeEstimateForPopulatingInSquareMetres);
+		int idealNumberOfProvinces = (int)(regionAreaSquareMetres / averageProvinceSize);
 		TownyProvinces.info("Ideal num provinces: " + idealNumberOfProvinces);
 		return idealNumberOfProvinces;
 	}
@@ -193,7 +192,7 @@ public class PaintRegionAction {
 			* - (twice the brush paint radius + 1)
 			* - Whichever is larger			 
 			 */
-			int minAllowedDistance = Math.max(minAllowedDistanceBetweenProvinceHomeBlocksInChunks, (brushSquareRadiusInChunks * 2) +2);
+			int minAllowedDistance = minimumStartDistanceBetweenBrushesInChunks + (brushSquareRadiusInChunks * 2);
 			if(TownyProvincesMathUtil.minecraftDistance(homeBlockToValidate, province.getHomeBlock()) < minAllowedDistance) {
 				return false;
 			}
@@ -228,18 +227,18 @@ public class PaintRegionAction {
 		int moveDeltaZ;
 		int newX;
 		int newZ;
-		for(int i = 0; i < numberOfProvincePaintingCycles; i++) {
-			TownyProvinces.info("Painting Cycle: " + i + " / " + numberOfProvincePaintingCycles);
+		for(int i = 0; i < maxBrushMoves; i++) {
+			TownyProvinces.info("Painting Cycle: " + i + " / " + maxBrushMoves);
 			for(ProvinceClaimBrush provinceClaimBrush: provinceClaimBrushes) {
 				//If inactive, do nothing
 				if(!provinceClaimBrush.isActive())
 					continue;
 				//Generate random move delta
-				moveDeltaX = TownyProvincesMathUtil.generateRandomInteger(-maxBrushMoveAmount, maxBrushMoveAmount);
-				moveDeltaZ = TownyProvincesMathUtil.generateRandomInteger(-maxBrushMoveAmount, maxBrushMoveAmount);
+				moveDeltaX = TownyProvincesMathUtil.generateRandomInteger(-maxBrushMoveAmountInChunks, maxBrushMoveAmountInChunks);
+				moveDeltaZ = TownyProvincesMathUtil.generateRandomInteger(-maxBrushMoveAmountInChunks, maxBrushMoveAmountInChunks);
 				//Apply min move amount
-				moveDeltaX = moveDeltaX > 0 ? Math.max(moveDeltaX,minBrushMoveAmount) : Math.min(moveDeltaX,-minBrushMoveAmount);
-				moveDeltaZ = moveDeltaZ > 0 ? Math.max(moveDeltaZ,minBrushMoveAmount) : Math.min(moveDeltaZ,-minBrushMoveAmount);
+				moveDeltaX = moveDeltaX > 0 ? Math.max(moveDeltaX, minBrushMoveAmountInChunks) : Math.min(moveDeltaX,-minBrushMoveAmountInChunks);
+				moveDeltaZ = moveDeltaZ > 0 ? Math.max(moveDeltaZ, minBrushMoveAmountInChunks) : Math.min(moveDeltaZ,-minBrushMoveAmountInChunks);
 				//Move brush if possible
 				newX = provinceClaimBrush.getCurrentPosition().getX() + moveDeltaX;
 				newZ = provinceClaimBrush.getCurrentPosition().getZ() + moveDeltaZ;
@@ -285,8 +284,8 @@ public class PaintRegionAction {
 		int brushMinCoordZ = brushPositionCoordZ - brushSquareRadiusInChunks;
 		int brushMaxCoordZ = brushPositionCoordZ + brushSquareRadiusInChunks;
 		Province province;
-		for(int x = brushMinCoordX -3; x <= (brushMaxCoordX +3); x++) {
-			for(int z = brushMinCoordZ -3; z <= (brushMaxCoordZ +3); z++) {
+		for(int x = brushMinCoordX -1; x <= (brushMaxCoordX +1); x++) {
+			for(int z = brushMinCoordZ -1; z <= (brushMaxCoordZ +1); z++) {
 				province = TownyProvincesDataHolder.getInstance().getProvinceAt(x,z);
 				if(province != null && province != provinceBeingPainted) {
 					return false;
