@@ -27,15 +27,31 @@
 5. Start your server with plenty of memory (*especially for big maps*)
    - Example: With Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`.
 
+## :keyboard: Admin Commands:
+- `/tpra region [regenerate] [<Region Name>]`: Regenerate a region.
+- `/tpra region [newtowncost] [<Region Name>] [amount]`: Set the new town cost for a region.
+- `/tpra region [upkeeptowncost] [<Region Name>] [amount]`: Set the upkeep town cost for a region.
+- `/tpra landvalidationjob [status|start|stop|restart|pause]`: Control the land validation job
+- `/tpra province [sea|land] [<x>,<z>]`: Set a province to sea/land.
+ 
 ## :fast_forward: Quick-Start Guide
 1. In console or in-game, run `/tpra region regenerate all`. This will generate 2 small sample regions.
 2. In console or in-game, run `/tpra landvalidationjob start`. This will start automatically identifying sea provinces.
 3. To see the generated provinces, view your dynmap. 
 
-## :arrow_forward: Full Setup Guide
+## :arrow_forward: Full-Start Guide
 1. Configure as many region definition files you want, in /region_definitions.
-2. The 1st region definition file should be the size of the entire map.
-3. When the `/tpra region regenerate all` command is run, each region is evaluated as follows:
+2. Region definition files are evaluated in alpha-numeric order.
+3. The first region definition file should be the size of the entire map.
+4. To fully understand how to configure your region definition files, you must understand how each region is generated:
+   * **STEP 1:** "Claim Brushes" are created and placed in the given region
+     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/7bc847aa-b54a-4a2b-88be-4a79a0f53e31)
+   * **STEP 2:** Each of the claim brushes then moves in a random direction
+     * ![image](https://github.com/Goosius1/TownyProvinces/assets/50219223/a8c6c0b6-b9a4-4f93-8dff-e3e921d37437)
+
+
+5. 
+6. When the `/tpra region regenerate all` command is run, each region is evaluated as follows:
    * s
    * sd
    * sd
@@ -54,9 +70,4 @@
    - Sea provinces cannot be settled.
    - *Note: The automatic validation is not perfect, so expect to convert a few provinces afterwards using `/tpra province [sea|land] [<x>,<z>]`* 
    
-## :keyboard: Admin Commands:
-- `/tpra region [regenerate] [<Region Name>]`: Regenerate a region.
-- `/tpra region [newtowncost] [<Region Name>] [amount]`: Set the new town cost for a region.
-- `/tpra region [upkeeptowncost] [<Region Name>] [amount]`: Set the upkeep town cost for a region.
-- `/tpra landvalidationjob [status|start|stop|restart|pause]`: Control the land validation job
-- `/tpra province [sea|land] [<x>,<z>]`: Set a province to sea/land.
+
