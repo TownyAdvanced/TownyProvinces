@@ -24,10 +24,21 @@
 2. If at all possible, ensure your server has *Dynmap*.
 3. Download the *TownyProvinces* plugin jar file from [here](https://github.com/TownyAdvanced/TownyProvinces/releases), and drop it into your server plugins folder.
 4. Stop your server
-5. Ensure your server with plenty of memory (*especially for big maps*)
+5. Start your server with plenty of memory (*especially for big maps*)
    - Example: With Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`.
-6. In the console or in-game, run `tpra region regenerate all`. 
-   - This will generate 2 small sample regions.
+
+## :fast_forward: Quick-Start Guide
+1. In console or in-game, run `/tpra region regenerate all`. This will generate 2 small sample regions.
+2. In console or in-game, run `/tpra landvalidationjob start`. This will start automatically identifying sea provinces.
+3. To see the generated provinces, view your dynmap. 
+
+## :arrow_forward: Full Setup Guide
+1. Configure as many region definition files you want, in /region_definitions.
+2. The 1st region definition file should be the size of the entire map.
+3. When the `/tpra region regenerate all` command is run, each region is evaluated as follows:
+   * s
+   * sd
+   * sd
 
 ## :book: Admin Guide:
 1. Configure the region definition files you want, in /region_definitions.
