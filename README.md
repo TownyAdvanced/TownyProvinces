@@ -27,18 +27,18 @@
 5. Start your server with plenty of memory (*especially for big maps*)
    - Example: With Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`.
 
-## :keyboard: Admin Commands:
-- `/tpra region [regenerate] [<Region Name>]`: Regenerate a region.
-- `/tpra region [newtowncost] [<Region Name>] [amount]`: Set the new town cost for a region.
-- `/tpra region [upkeeptowncost] [<Region Name>] [amount]`: Set the upkeep town cost for a region.
-- `/tpra landvalidationjob [status|start|stop|restart|pause]`: Control the land validation job.
+## :keyboard: Admin Commands: *(best run from Console)*
+- `tpra region [regenerate] [<Region Name>]`: Regenerate a region.
+- `tpra region [newtowncost] [<Region Name>] [amount]`: Set the new town cost for a region.
+- `tpra region [upkeeptowncost] [<Region Name>] [amount]`: Set the upkeep town cost for a region.
+- `tpra landvalidationjob [status|start|stop|restart|pause]`: Control the land validation job.
   - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below command.* 
-- `/tpra province [sea|land] [<x>,<z>]`: Set a province to sea/land.
+- `tpra province [sea|land] [<x>,<z>]`: Set a province to sea/land.
   - Sea provinces cannot be settled.
  
 ## :fast_forward: Quick-Start Guide
-1. In console or in-game, run `/tpra region regenerate all`. This will generate 2 small sample regions.
-2. In console or in-game, run `/tpra landvalidationjob start`. This will start automatically identifying sea provinces.
+1. Run `tpra region regenerate all`. This will generate 2 small sample regions.
+2. Run `tpra landvalidationjob start`. This will start automatically identifying sea provinces.
 3. To see the generated provinces, view your dynmap. 
 
 ## :arrow_forward: Full-Start Guide
@@ -58,5 +58,5 @@
 ## :scroll: Credits
 - *TownyProvinces* was developed by Goosius in Summer 2023.
 - Special thanks to Valoria Earth, who were very supportive and helpful during the development of the plugin.
-- And thanks of course to Llama, for adopting *TownyProvinces* in the *Towny* family.
+- And many many thanks to Llama, for adopting *TownyProvinces* in the *Towny* family.
 
