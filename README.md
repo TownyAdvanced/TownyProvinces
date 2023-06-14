@@ -53,7 +53,7 @@
    * **STEP 3**: Each claim brush then moves a few more times
      * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/8bbe9379-ab47-4bd0-9038-dce299545ac0)
    * **STEP 4**: The gaps between each province are filled in, except for a 1 chunk border
-     * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/a8a63af8-ca8d-4a7e-8be5-56b62379f58c)
+     * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/570039a4-7a5b-4280-ad32-debc0f1110db)
 
 ## :scroll: Credits
 - *TownyProvinces* was developed by Goosius in Summer 2023.
