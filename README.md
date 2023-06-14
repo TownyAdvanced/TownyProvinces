@@ -9,7 +9,7 @@
 
 ## :hammer_and_wrench: Solves:
 - :money_with_wings: ***Overclaiming***: Each town has its own reserved area for claiming; There is no need to throw away money on overclaiming.
-- :stop_sign: ***Claim Blocking***: No town can block the claiming plans of another town.
+- :no_entry_sign: ***Claim Blocking***: No town can block the claiming plans of another town.
 - :snake: ***Snake Claiming***: Snake claiming is irrelevant.
 - :doughnut: ***Doughnut Claiming***: Doughnut claiming is irrelevant.
 - :railway_track: ***Road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
@@ -21,7 +21,7 @@
 
 ## :floppy_disk: Installation Guide:
 1. Ensure your server has *Towny 0.99.1.0* or newer.
-2. If at all possible, ensure your server has *Dynmap*.
+2. If possible, ensure your server has *Dynmap*.
 3. Download the *TownyProvinces* plugin jar file from [here](https://github.com/TownyAdvanced/TownyProvinces/releases), and drop it into your server plugins folder.
 4. Stop your server
 5. Start your server with plenty of memory (*especially for big maps*)
