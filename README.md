@@ -1,4 +1,4 @@
-# Towny Resources
+# TownyProvinces
 
 ## :information_source: Overview
 - :world_map: An add-on plugin for *Towny*, which makes claiming more organized, reducing staff workload and server toxicity.
@@ -23,8 +23,8 @@
 1. Ensure your server has *Towny 0.99.1.0* or newer.
 2. If possible, ensure your server has *Dynmap*.
 3. Download the *TownyProvinces* plugin jar file from [here](https://github.com/TownyAdvanced/TownyProvinces/releases), and drop it into your server plugins folder.
-4. Stop your server
-5. Start your server with plenty of memory (*especially for big maps*)
+4. Stop your server.
+5. Start your server with plenty of memory (*especially for big maps*).
    - Example: With Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`.
 
 ## :keyboard: Admin Commands *(best run from console)*
