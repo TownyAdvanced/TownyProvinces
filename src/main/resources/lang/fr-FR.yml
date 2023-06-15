@@ -1,0 +1,102 @@
+name: French locale file
+version: 0.01
+language: french
+author: IvanMishin1
+website: 'http://townyadvanced.github.io/'
+description: >
+    The language file used to show players translations, when they
+    use the fr-FR locale. If you wish to edit this file, copy it to the
+    override folder first, then edit that file.
+#
+#
+#         You MUST retain spacing in the texts.
+#  If a text begins or ends with a space, it must remain that way.
+#
+#
+#       %s = data to be supplied by the plugin.
+
+# Text colouring
+# --------------
+# Black = &0, Navy = &1, Green = &2, Blue = &3, Red = &4
+# Purple = &5, Gold = &6, LightGray = &7, Gray = &8
+# DarkPurple = &9, LightGreen = &a, LightBlue = &b
+# Rose = &c, LightPurple = &d, Yellow = &e, White = &f
+
+# Plugin prefix
+
+plugin_prefix: '&6[TownyProvinces] '
+
+# World validation
+
+msg_err_unknown_world: "&cERREUR: La valeur de la variable world_name dans TownyProvinces/config.yml est incorrecte. Elle doit correspondre au nom d'un monde sur votre serveur."
+
+# Set province to land or sea
+
+msg_err_invalid_province_location: "&cLa coordonnée donnée est soit mal formatée, soit sur une frontière, soit en dehors de la carte."
+msg_province_successfully_set_to_sea: "&bCette province est désormais une province maritime. La carte va se mettre à jour bientôt."
+msg_province_already_sea: "&cCette province est déjà une province marritime."
+msg_province_successfully_set_to_land: "&bCette province est désormais une province terrestre. La carte va se mettre à jour bientôt."
+msg_province_already_land: "&cCette province est déjà une province terrestre."
+
+# Regenerate region
+
+msg_err_unknown_region_name: "&cNom de région inconnu."
+msg_err_regeneration_job_already_started: "&cLa génération d'une région est en cours. Veuillez attendre jusqu'à la fin de la génération en cours avant d'en commencer une nouvelle."
+msg_region_regeneration_job_started: "&bLa génération de la région a démarré pour la région: %s"
+msg_problem_regenerating_all_regions: "&cUne erreur est survenue durant la génération de toutes les régions."
+msg_problem_regenerating_one_region: "&cUne erreur est survenue durant la génération de la région: %s."
+msg_successfully_regenerated_all_regions: "&bToutes les régions ont été régénérées avec succès."
+msg_successfully_regenerated_one_regions: "&bLa région a été régénéré avec succès: %s."
+
+# Set town costs
+
+msg_err_value_must_be_and_integer: "&cLa valeur donnée doit être un nombre entier."
+msg_new_town_cost_set_for_all_regions: "&bLe prix d'une nouvelle ville pour toutes les régions est désormais: %s"
+msg_new_town_cost_set_for_one_region: "&bLe prix d'une nouvelle ville pour la région %s est désormais: %s"
+msg_upkeep_town_cost_set_for_all_regions: "&bLa taxe journalière pour toutes les régions est désormais: %s"
+msg_upkeep_town_cost_set_for_one_region: "&bLa taxe journalière pour la région %s est désormais: %s"
+
+# Land validation job
+
+msg_land_validation_job_starting: "&bLa validation de la terre démarre."
+msg_land_validation_job_stopping: "&bLa validation de la terre s'arrête."
+msg_land_validation_job_pausing: "&bLa validation de la terre se met en pause."
+msg_land_validation_job_restarting: "&bLa validation de la terre redémarre."
+msg_land_validation_job_started: "&bLa validation de la terre a démarré."
+msg_land_validation_job_stopped: "&bLa validation de la terre s'est arrêté."
+msg_land_validation_job_paused: "&bLa validation de la terre s'est mise en pause."
+
+msg_err_command_not_possible_job_not_stopped_or_paused: "&cCommande impossible car la validation de la terre a été arrêté ou pausé."
+msg_err_command_not_possible_job_not_started: "&cCommande impossible car la validation de la terre n'a pas été démarré."
+msg_land_validation_job_status: "&2Statut de la validation de la terre: "
+land_validation_job_status_started: "&aDémarré"
+land_validation_job_status_start_requested: "&aDémarrage Demandé"
+land_validation_job_status_stopped: "&aArrêté"
+land_validation_job_status_stop_requested: "&aArrêt Demandé"
+land_validation_job_status_paused: "&aPausé"
+land_validation_job_status_pause_requested: "&aPause Demandé"
+land_validation_job_status_restart_requested: "&aRedémarrage Demandé"
+
+# Creating new towns
+
+msg_err_cannot_create_town_on_province_border: "&cLes villes ne peuvent pas être crées sur les frontières des provinces."
+msg_err_cannot_create_town_in_sea_provinces: "&cLes villes ne peuvent pas être crées dans des provinces marines."
+msg_err_cannot_create_town_in_full_province: "&cUne seule ville est autorisée pas province. Cette province contient déjà une ville."
+msg_err_cannot_afford_new_town: "&cVous ne pouvez pas vous permettre de créer une nouvelle dans cette province, cela coute %s."
+msg_you_paid_region_settlement_cost: "&aVous avez payé le prix pour l'établissement dans cette région de %s."
+
+# Merging towns
+
+msg_err_cannot_merge_towns: "&cLe fusionnement des villes n'est pas possible."
+
+# Claiming
+
+msg_err_cannot_claim_land_on_province_border: "&cLes villes ne peuvent pas annexer de la terre sur les frontières des provinces."
+msg_err_cannot_claim_land_without_homeblock: "&cLes villes n'ayant pas de Centre ville ne peuvent annexer de la terre."
+msg_err_cannot_claim_land_outside_own_province: "&cUne ville ne peut pas annexer de la terre en-dehors de sa province."
+
+#Dynmap
+
+dynmap_province_homeblock_label: "Prix des villes: Prix %s, Taxe journallière %s"
+dynmap_layer_label_town_costs: "Prix des villes"
+dynmap_layer_label_borders: "Frontières"
