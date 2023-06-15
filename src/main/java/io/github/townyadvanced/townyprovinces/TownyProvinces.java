@@ -49,7 +49,7 @@ public class TownyProvinces extends JavaPlugin {
 				|| !DataHandlerUtil.loadAllData()
 				|| !registerListeners()
 				|| !registerAdminCommands()) {
-			severe("Towny Provinces Did Not Load Successfully.");
+			severe("TownyProvinces Did Not Load Successfully.");
 			onDisable();
 			return;
 		} 
@@ -57,7 +57,7 @@ public class TownyProvinces extends JavaPlugin {
 		//Load optional stuff 
 		loadIntegrations();
 
-		info("Town Provinces Loaded Successfully");
+		info("TownyProvinces Loaded Successfully");
 	}
 	
 	private boolean registerAdminCommands() {
