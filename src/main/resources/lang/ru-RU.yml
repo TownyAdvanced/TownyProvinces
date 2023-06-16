@@ -1,0 +1,102 @@
+name: Russian locale file
+version: 0.01
+language: russian
+author: IvanMishin1
+website: 'http://townyadvanced.github.io/'
+description: >
+    The language file used to show players translations, when they
+    use the en-US locale. If you wish to edit this file, copy it to the
+    override folder first, then edit that file.
+#
+#
+#         You MUST retain spacing in the texts.
+#  If a text begins or ends with a space, it must remain that way.
+#
+#
+#       %s = data to be supplied by the plugin.
+
+# Text colouring
+# --------------
+# Black = &0, Navy = &1, Green = &2, Blue = &3, Red = &4
+# Purple = &5, Gold = &6, LightGray = &7, Gray = &8
+# DarkPurple = &9, LightGreen = &a, LightBlue = &b
+# Rose = &c, LightPurple = &d, Yellow = &e, White = &f
+
+# Plugin prefix
+
+plugin_prefix: '&6[TownyProvinces] '
+
+# World validation
+
+msg_err_unknown_world: "&cОШИБКА: Неверное значение world_name в TownyProvinces/config.yml. Это должно быть название мира на вашем сервере."
+
+# Set province to land or sea
+
+msg_err_invalid_province_location: "&cThe given co-ordinate was either mis-formatted, on a border, or outside the map."
+msg_province_successfully_set_to_sea: "&bProvince Type set to Sea. The map will be updated shortly."
+msg_province_already_sea: "&cProvince Type is already Sea."
+msg_province_successfully_set_to_land: "&bProvince Type set to Land. The map will be updated shortly."
+msg_province_already_land: "&cProvince Type is already Land."
+
+# Regenerate region
+
+msg_err_unknown_region_name: "&cUnknown region name."
+msg_err_regeneration_job_already_started: "&cA region regeneration job is in progress. You must wait for the current job to complete before attempting a new one."
+msg_region_regeneration_job_started: "&bRegion Regeneration Job Started for region: %s"
+msg_problem_regenerating_all_regions: "&cThere was a problem generating all regions."
+msg_problem_regenerating_one_region: "&cThere was a problem generating region: %s."
+msg_successfully_regenerated_all_regions: "&bSuccessfully regenerated all regions."
+msg_successfully_regenerated_one_regions: "&bSuccessfully regenerated region: %s."
+
+# Set town costs
+
+msg_err_value_must_be_and_integer: "&cThe given value must be an integer."
+msg_new_town_cost_set_for_all_regions: "&bNew-Town-Cost set for all regions, to: %s"
+msg_new_town_cost_set_for_one_region: "&bNew-Town-Cost set for region %s, to: %s"
+msg_upkeep_town_cost_set_for_all_regions: "&bUpkeep-Town-Cost set for all regions, to: %s"
+msg_upkeep_town_cost_set_for_one_region: "&bUpkeep-Town-Cost set for region %s, to: %s"
+
+# Land validation job
+
+msg_land_validation_job_starting: "&bПроверкa земли is starting."
+msg_land_validation_job_stopping: "&bПроверкa земли is stopping."
+msg_land_validation_job_pausing: "&bПроверкa земли is pausing."
+msg_land_validation_job_restarting: "&bПроверкa земли перезапускается."
+msg_land_validation_job_started: "&bПроверкa земли начатa."
+msg_land_validation_job_stopped: "&bПроверкa земли остановленa."
+msg_land_validation_job_paused: "&bПроверка земли приостановлена."
+
+msg_err_command_not_possible_job_not_stopped_or_paused: "&cКоманда невозможна, так как проверка земли не остановлена или не приостановлена."
+msg_err_command_not_possible_job_not_started: "&cКоманда невозможна, так как не идёт проверка земли."
+msg_land_validation_job_status: "&2Статус проверки земли: "
+land_validation_job_status_started: "&aНачатo"
+land_validation_job_status_start_requested: "&aНачало запрошено"
+land_validation_job_status_stopped: "&aОстановленo"
+land_validation_job_status_stop_requested: "&aОстановка запрошена"
+land_validation_job_status_paused: "&aПриостановлено"
+land_validation_job_status_pause_requested: "&aПриостановка запрошена"
+land_validation_job_status_restart_requested: "&aПерезапуск запрошен"
+
+# Creating new towns
+
+msg_err_cannot_create_town_on_province_border: "&cГорода не могут быть созданы на границах провинций."
+msg_err_cannot_create_town_in_sea_provinces: "&cГорода не могут быть созданы в морских провинциях."
+msg_err_cannot_create_town_in_full_province: "&cВ каждой провинции разрешен только 1 город. В этой провинции уже есть город."
+msg_err_cannot_afford_new_town: "&cВы не можете себе позволить создать новый город в этой провинции, это стоит %s."
+msg_you_paid_region_settlement_cost: "&aВы заплатили стоимость заселения региона в размере %s."
+
+# Merging towns
+
+msg_err_cannot_merge_towns: "&cbСлияние городов невозможно."
+
+# Claiming
+
+msg_err_cannot_claim_land_on_province_border: "&cГорода не могут создавать приваты на границах провинций."
+msg_err_cannot_claim_land_without_homeblock: "&cTГорода без homeblock''а не могут создавать приваты."
+msg_err_cannot_claim_land_outside_own_province: "&cГорода не могут создавать приваты за пределами своей провинции."
+
+#Dynmap
+
+dynmap_province_homeblock_label: "Стоимость города: New %s, Новый %s"
+dynmap_layer_label_town_costs: "Стоимость города"
+dynmap_layer_label_borders: "Границы"
