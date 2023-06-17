@@ -147,7 +147,7 @@ public class DisplayProvincesOnDynmapAction {
 				} else {
 					TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line. If this message has not stopped repeating a few minutes after your server starts, please report it to TownyAdvanced.");
 					//The below line will draw the province if uncommented
-					debugDrawProvinceChunks(province);
+					//debugDrawProvinceChunks(province);
 				}
 			}
 		} else {
