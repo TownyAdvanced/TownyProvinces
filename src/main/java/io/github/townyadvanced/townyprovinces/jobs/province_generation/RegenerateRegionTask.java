@@ -1,8 +1,6 @@
 package io.github.townyadvanced.townyprovinces.jobs.province_generation;
 
-import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Translatable;
-import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
@@ -12,12 +10,8 @@ import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -119,8 +113,7 @@ public class RegenerateRegionTask extends BukkitRunnable {
 		}
 		TownyProvinces.info("Region regeneration Job Complete"); //TODO - maybe global message?
 	}
-
-
+	
 	private boolean deleteExistingProvincesWhichAreMostlyInSpecifiedArea(String regionName) {
 		TownyProvinces.info("Now deleting provinces which are mostly in the specified area.");
 		int numProvincesDeleted = 0;
@@ -152,14 +145,9 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	}
 	
 	public boolean paintAllRegions() {
-		//Establish order of regions
-		List<File> regionDefinitionFiles = FileUtil.readRegionDefinitionFiles();
-		Collections.sort(regionDefinitionFiles); //Sort in alphabetical order
 		//Paint all Regions
-		String regionName;
 		boolean firstRegion = true;
-		for (File regionDefinitionFile: regionDefinitionFiles) {
-			regionName = FileMgmt.loadFileIntoHashMap(regionDefinitionFile).get("region_name");
+		for (String regionName: TownyProvincesSettings.getOrderedRegionNames()) {
 			if(firstRegion) {
 				firstRegion = false;
 				//Paint region

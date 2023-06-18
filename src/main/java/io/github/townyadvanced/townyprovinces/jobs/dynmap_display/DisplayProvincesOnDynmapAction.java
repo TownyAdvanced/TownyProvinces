@@ -107,10 +107,11 @@ public class DisplayProvincesOnDynmapAction {
 				String markerLabel = Translatable.of("dynmap_province_homeblock_label", newTownCost, upkeepTownCost).translate(Locale.ROOT);
 				Marker homeBlockMarker = homeBlocksMarkerSet.findMarker(homeBlockMarkerId);
 				if (homeBlockMarker == null) {
-					homeBlocksMarkerSet.createMarker(
+					homeBlockMarker = homeBlocksMarkerSet.createMarker(
 						homeBlockMarkerId, markerLabel, TownyProvincesSettings.getWorldName(),
 						realHomeBlockX, 64, realHomeBlockZ,
 						homeBlockIcon, true);
+					homeBlockMarker.setDescription(markerLabel);
 				}
 			} catch (Exception ex) {
 				TownyProvinces.severe("Problem adding homeblock marker");
@@ -274,14 +275,12 @@ public class DisplayProvincesOnDynmapAction {
 			}
 		}
 
-		String markerName = "ID: " + markerId;
-
 		boolean unknown = false;
 		boolean unknown2 = false;
 
 		//Draw border line
 		PolyLineMarker polyLineMarker = bordersMarkerSet.createPolyLineMarker(
-			markerId, markerName, unknown, worldName,
+			markerId, null, unknown, worldName,
 			xPoints, zPoints, zPoints, unknown2);
 		
 		//Set colour

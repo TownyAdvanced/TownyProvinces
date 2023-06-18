@@ -19,14 +19,20 @@ import java.util.Map;
 public class TownyProvincesSettings {
 	
 	private static final Map<String, Map<String,String>> regionDefinitions = new HashMap<>();
-
+	private final static List<String> orderedRegionNames = new ArrayList<>();  //Name in the order of files
+	
 	public static boolean loadRegionDefinitions() {
 		regionDefinitions.clear();
+		orderedRegionNames.clear();
 		List<File> regionDefinitionFiles = FileUtil.readRegionDefinitionFiles();
+		Collections.sort(regionDefinitionFiles);
 		Map<String, String> regionDefinitions;
+		String regionName;
 		for(File regionDefinitionFile: regionDefinitionFiles) {
 			regionDefinitions = FileMgmt.loadFileIntoHashMap(regionDefinitionFile);
-			TownyProvincesSettings.regionDefinitions.put(regionDefinitions.get("region_name"), regionDefinitions);
+			regionName = regionDefinitions.get("region_name");
+			TownyProvincesSettings.regionDefinitions.put(regionName, regionDefinitions);
+			orderedRegionNames.add(regionName);
 		}
 		//Ensure none of them are titled "ALL"
 		for(String name: TownyProvincesSettings.getRegionDefinitions().keySet()) {
@@ -161,10 +167,12 @@ public class TownyProvincesSettings {
 		return Integer.parseInt(Settings.getString(ConfigNodes.SEA_PROVINCE_BORDER_COLOUR),16);
 	}
 	
+	public static List<String> getOrderedRegionNames() {
+		return orderedRegionNames;
+	}
+	
 	public static String getNameOfFirstRegion() {
-		List<String> regionNames = new ArrayList<>(regionDefinitions.keySet());
-		Collections.sort(regionNames);
-		return regionNames.get(0);
+		return orderedRegionNames.get(0);
 	}
 	
 	public static @Nullable String getCaseSensitiveRegionName(String givenRegionName) {
