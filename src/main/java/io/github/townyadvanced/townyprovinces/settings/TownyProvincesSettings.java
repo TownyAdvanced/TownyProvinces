@@ -34,8 +34,6 @@ public class TownyProvincesSettings {
 			TownyProvincesSettings.regionDefinitions.put(regionName, regionDefinitions);
 			orderedRegionNames.add(regionName);
 		}
-		//Sort the regions names list
-		Collections.sort(orderedRegionNames);
 		//Ensure none of them are titled "ALL"
 		for(String name: TownyProvincesSettings.getRegionDefinitions().keySet()) {
 			if(name.equalsIgnoreCase("all")) {
