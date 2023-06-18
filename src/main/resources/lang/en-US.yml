@@ -94,7 +94,7 @@ msg_err_cannot_merge_towns: "&cTown merging is not possible."
 
 msg_err_cannot_claim_land_on_province_border: "&cTowns cannot claim land on province borders."
 msg_err_cannot_claim_land_without_homeblock: "&cTowns without homeblocks cannot claim land."
-msg_err_cannot_claim_land_outside_own_province: "&cA town cannot claim land outside its own province."
+msg_err_cannot_claim_land_outside_own_province: "&cTowns cannot claim land outside their own provinces."
 
 #Dynmap
 
