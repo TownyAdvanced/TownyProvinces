@@ -195,7 +195,7 @@ public class PaintRegionAction {
 		double sideLengthX = Math.abs(topLeftRegionCorner.getX() - bottomRightRegionCorner.getX());
 		double sideLengthZ = Math.abs(topLeftRegionCorner.getZ() - bottomRightRegionCorner.getZ());
 		double worldAreaSquareMetres = sideLengthX * sideLengthZ;
-		TownyProvinces.info("World Area square metres: " + worldAreaSquareMetres);
+		TownyProvinces.info("Region Area square metres: " + worldAreaSquareMetres);
 		return worldAreaSquareMetres;
 	}
 	
