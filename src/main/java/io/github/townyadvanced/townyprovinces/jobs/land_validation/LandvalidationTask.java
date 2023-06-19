@@ -84,6 +84,11 @@ public class LandvalidationTask extends BukkitRunnable {
 			int x = (coordToTest.getX() * TownyProvincesSettings.getChunkSideLength()) + 8;
 			int z = (coordToTest.getZ() * TownyProvincesSettings.getChunkSideLength()) + 8;
 			biome = world.getHighestBlockAt(x,z).getBiome();
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
 			if(!biome.name().toLowerCase().contains("ocean") && !biome.name().toLowerCase().contains("beach")) {
 				return false;
 			}
