@@ -185,7 +185,7 @@ public class TownyListener implements Listener {
 	private boolean doesProvinceContainTown(Province province) {
 		String worldName = TownyProvincesSettings.getWorldName();
 		WorldCoord worldCoord;
-		for(TPCoord coord: province.getCoordsInProvince()) {
+		for(TPCoord coord: province.getListOfCoordsInProvince()) {
 			worldCoord = new WorldCoord(worldName, coord.getX(), coord.getZ());
 			if(!TownyAPI.getInstance().isWilderness(worldCoord)) {
 				return true;

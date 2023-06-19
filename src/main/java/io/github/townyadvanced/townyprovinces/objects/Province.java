@@ -1,6 +1,5 @@
 package io.github.townyadvanced.townyprovinces.objects;
 
-import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 
@@ -63,8 +62,8 @@ public class Province {
 		this.isSea = b;
 	}
 
-	public List<TPCoord> getCoordsInProvince() {
-		return TownyProvincesDataHolder.getInstance().getCoordsInProvince(this);
+	public List<TPCoord> getListOfCoordsInProvince() {
+		return TownyProvincesDataHolder.getInstance().getListOfCoordsInProvince(this);
 	}
 
 	public void saveData() {

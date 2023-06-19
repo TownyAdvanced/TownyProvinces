@@ -124,7 +124,7 @@ public class PaintRegionAction {
 		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		for(Province province: (new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet()))) {
-			List<TPCoord> coordsInProvince = province.getCoordsInProvince();
+			List<TPCoord> coordsInProvince = province.getListOfCoordsInProvince();
 			int numProvinceBlocksInSpecifiedArea = 0;
 			for (TPCoord coordInProvince : coordsInProvince) {
 				if (coordInProvince.getX() < minX)
@@ -514,7 +514,7 @@ public class PaintRegionAction {
 		TownyProvinces.info("Now Deleting Empty Provinces.");
 		Set<Province> provincesToDelete = new HashSet<>();
 		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			if(province.getCoordsInProvince().size() == 0) {
+			if(province.getListOfCoordsInProvince().size() == 0) {
 				provincesToDelete.add(province);
 			}
 		}
