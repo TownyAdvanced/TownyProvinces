@@ -1,13 +1,10 @@
 package io.github.townyadvanced.townyprovinces.data;
 
-import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
-import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
-import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 
 import java.io.File;
@@ -65,7 +62,7 @@ public class DataHandlerUtil {
 	private static String getCoordsAsWriteableString(Province province) {
 		StringBuilder result = new StringBuilder();
 		boolean firstCoord = true;
-		for(TPCoord coord: province.getCoordsInProvince()) {
+		for(TPCoord coord: province.getListOfCoordsInProvince()) {
 			if(firstCoord) {
 				firstCoord = false;
 			} else {

@@ -2,6 +2,7 @@ package io.github.townyadvanced.townyprovinces.jobs.land_validation;
 
 import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
+import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
@@ -39,6 +40,8 @@ public class LandValidationTaskController {
 			landValidationTask = null;
 			setLandValidationRequestsForAllProvinces(false);  //Clear all requests
 			landValidationJobStatus = LandValidationJobStatus.STOPPED;
+			TownyProvinces.info("Land Validation Task: Saving data");
+			DataHandlerUtil.saveAllData();
 			Messaging.sendGlobalMessage(Translatable.of("msg_land_validation_job_stopped"));
 		}
 	}
@@ -48,6 +51,8 @@ public class LandValidationTaskController {
 			landValidationTask.cancel();
 			landValidationTask = null;
 			landValidationJobStatus = LandValidationJobStatus.PAUSED;
+			TownyProvinces.info("Land Validation Task: Saving data");
+			DataHandlerUtil.saveAllData();
 			Messaging.sendGlobalMessage(Translatable.of("msg_land_validation_job_paused"));
 		}
 	}

@@ -28,7 +28,7 @@ public class DisplayProvincesOnDynmapAction {
 	private final MarkerAPI markerapi;
 	private MarkerSet bordersMarkerSet;
 	private MarkerSet homeBlocksMarkerSet;
-	private TPFreeCoord tpFreeCoord;
+	private final TPFreeCoord tpFreeCoord;
 
 	public DisplayProvincesOnDynmapAction() {
 		TownyProvinces.info("Enabling dynmap support.");
@@ -91,7 +91,8 @@ public class DisplayProvincesOnDynmapAction {
 	
 	private void drawProvinceHomeBlocks() {
 		String border_icon = "coins";
-		for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+		Set<Province> copyOfProvincesSet = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet());
+		for (Province province : copyOfProvincesSet) {
 			try {
 				if(province.isSea())
 					continue;
@@ -210,7 +211,7 @@ public class DisplayProvincesOnDynmapAction {
 	 */
 	public static Set<TPCoord> findAllBorderCoords(Province province) {
 		Set<TPCoord> resultSet = new HashSet<>();
-		for(TPCoord provinceCoord: province.getCoordsInProvince()) {
+		for(TPCoord provinceCoord: province.getListOfCoordsInProvince()) {
 			resultSet.addAll(province.getAdjacentBorderCoords(provinceCoord));
 		}
 		return resultSet;
@@ -312,7 +313,7 @@ public class DisplayProvincesOnDynmapAction {
 
 	private void debugDrawProvinceChunks(Province province) {
 		String worldName = TownyProvincesSettings.getWorldName();
-		for(TPCoord tpCoord: TownyProvincesDataHolder.getInstance().getCoordsInProvince(province)) {
+		for(TPCoord tpCoord: TownyProvincesDataHolder.getInstance().getListOfCoordsInProvince(province)) {
 			debugDrawChunk(tpCoord, province, worldName);
 		}
 	}

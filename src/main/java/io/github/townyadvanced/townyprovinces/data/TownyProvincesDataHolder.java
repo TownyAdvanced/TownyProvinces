@@ -1,6 +1,5 @@
 package io.github.townyadvanced.townyprovinces.data;
 
-import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
@@ -75,7 +74,7 @@ public class TownyProvincesDataHolder {
 		return true;
 	}
 
-	public List<TPCoord> getCoordsInProvince(Province province) {
+	public List<TPCoord> getListOfCoordsInProvince(Province province) {
 		List<TPCoord> result = new ArrayList<>();
 		for(Map.Entry<TPCoord,Province> mapEntry: coordProvinceMap.entrySet()) {
 			if(mapEntry.getValue().equals(province)) {
@@ -112,7 +111,7 @@ public class TownyProvincesDataHolder {
 
 
 	public void deleteProvince(Province province, Map<TPCoord,TPCoord> unclaimedCoordsMap) {
-		List<TPCoord> coordsInProvince = province.getCoordsInProvince();
+		List<TPCoord> coordsInProvince = province.getListOfCoordsInProvince();
 		for(TPCoord coord: coordsInProvince) {
 			coordProvinceMap.remove(coord);
 			unclaimedCoordsMap.put(coord,coord);
