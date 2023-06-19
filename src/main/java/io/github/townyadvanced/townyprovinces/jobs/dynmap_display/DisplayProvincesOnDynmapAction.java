@@ -90,24 +90,30 @@ public class DisplayProvincesOnDynmapAction {
 	}
 	
 	private void drawProvinceHomeBlocks() {
-		String border_icon = "coins";
+		String border_icon_id = "coins";
+		MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(border_icon_id);
 		Set<Province> copyOfProvincesSet = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet());
 		for (Province province : copyOfProvincesSet) {
 			try {
-				if(province.isSea())
-					continue;
 				TPCoord homeBlock = province.getHomeBlock();
-				int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getChunkSideLength();
-				int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getChunkSideLength();
-
-				MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(border_icon);
 				String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
-				
-				String newTownCost = TownyEconomyHandler.getFormattedBalance(province.getNewTownCost());
-				String upkeepTownCost = TownyEconomyHandler.getFormattedBalance(province.getUpkeepTownCost());
-				String markerLabel = Translatable.of("dynmap_province_homeblock_label", newTownCost, upkeepTownCost).translate(Locale.ROOT);
 				Marker homeBlockMarker = homeBlocksMarkerSet.findMarker(homeBlockMarkerId);
-				if (homeBlockMarker == null) {
+
+				if(province.isSea()) {
+					//This is sea. If the marker is there, we need to remove it
+					if(homeBlockMarker == null)
+						continue;
+					homeBlockMarker.deleteMarker();
+					return;
+				} else {
+					//This is land If the marker is not there, we need to add it
+					if(homeBlockMarker != null)
+						continue;
+					int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getChunkSideLength();
+					int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getChunkSideLength();
+					String newTownCost = TownyEconomyHandler.getFormattedBalance(province.getNewTownCost());
+					String upkeepTownCost = TownyEconomyHandler.getFormattedBalance(province.getUpkeepTownCost());
+					String markerLabel = Translatable.of("dynmap_province_homeblock_label", newTownCost, upkeepTownCost).translate(Locale.ROOT);
 					homeBlockMarker = homeBlocksMarkerSet.createMarker(
 						homeBlockMarkerId, markerLabel, TownyProvincesSettings.getWorldName(),
 						realHomeBlockX, 64, realHomeBlockZ,

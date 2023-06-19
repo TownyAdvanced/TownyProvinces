@@ -110,7 +110,7 @@ public class FileUtil {
 				fileEntries.add("bottom_right_corner_location: 900,-630");
 				fileEntries.add("average_province_size: 20000");
 				fileEntries.add("minimum_start_distance_between_brushes: 16");
-				fileEntries.add("max_allowed_variance_between_ideal_and_actual_num_provinces: 0.1");
+				fileEntries.add("max_allowed_variance_between_ideal_and_actual_num_provinces: 0.2");
 				fileEntries.add("brush_square_radius_in_chunks: 2");
 				fileEntries.add("min_brush_move_amount_in_chunks: 1");
 				fileEntries.add("max_brush_move_amount_in_chunks: 2");
