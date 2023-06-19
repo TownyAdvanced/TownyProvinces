@@ -29,7 +29,7 @@ public class TownyProvinces extends JavaPlugin {
 	 * Lock this if you want to change or display the map,
 	 * to avoid concurrent modification problems
 	 */
-	public static final Integer DYNMAP_DISPLAY_LOCK = 1;
+	public static final Object DYNMAP_DISPLAY_LOCK = new Object();
 	private static TownyProvinces plugin;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.1.0");
 	
