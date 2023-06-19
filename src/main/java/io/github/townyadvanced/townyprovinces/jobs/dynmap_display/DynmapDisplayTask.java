@@ -5,13 +5,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class DynmapDisplayTask extends BukkitRunnable {
     private final DisplayProvincesOnDynmapAction dynmapDisplayMapAction;
+	private boolean jobRunning;
 
     DynmapDisplayTask() {
         this.dynmapDisplayMapAction = new DisplayProvincesOnDynmapAction();
+		this.jobRunning = false;
     }
 
     public void run() {
 		try {
+			if(jobRunning) {
+				return;
+			} else {
+				jobRunning = true;
+			}
 			synchronized (TownyProvinces.MAP_CHANGE_LOCK) {
 				dynmapDisplayMapAction.executeAction(DynmapDisplayTaskController.getBordersRefreshRequested(), DynmapDisplayTaskController.getHomeBlocksRefreshRequested());
 			}
@@ -19,6 +26,7 @@ public class DynmapDisplayTask extends BukkitRunnable {
 			//Reset refresh flags
 			DynmapDisplayTaskController.setBordersRefreshRequested(false);
 			DynmapDisplayTaskController.setHomeBlocksRefreshRequested(false);
+			jobRunning = false;
 		}
 	}
 }
