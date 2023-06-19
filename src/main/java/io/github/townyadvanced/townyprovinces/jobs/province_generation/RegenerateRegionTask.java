@@ -5,16 +5,13 @@ import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
-import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -34,19 +31,10 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	 **/
 	private Map<TPCoord, TPCoord> unclaimedCoordsMap;
 	private final String regionName;  //This will either be the case correct name of a real region, or "All"
-	private final int mapMinXCoord;
-	private final int mapMaxXCoord;
-	private final int mapMinZCoord;
-	private final int mapMaxZCoord;
 	public final TPCoord searchCoord;
 	
 	public RegenerateRegionTask(String regionName) {
 		this.regionName = regionName;
-		String nameOfFirstRegion = TownyProvincesSettings.getNameOfFirstRegion();
-		this.mapMinXCoord = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		this.mapMaxXCoord = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		this.mapMinZCoord = TownyProvincesSettings.getTopLeftCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		this.mapMaxZCoord = TownyProvincesSettings.getBottomRightCornerLocation(nameOfFirstRegion).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		this.searchCoord = new TPFreeCoord(0,0);
 	}
 	
@@ -109,12 +97,12 @@ public class RegenerateRegionTask extends BukkitRunnable {
 			if(firstRegion) {
 				firstRegion = false;
 				//Paint region
-				if(!paintOneRegion(regionName, true)) {
+				if(!paintOneRegion(regionName, false)) {
 					return false;
 				}
 			} else {
 				//Paint region
-				if(!paintOneRegion(regionName, false)) {
+				if(!paintOneRegion(regionName, true)) {
 					return false;
 				}
 			}

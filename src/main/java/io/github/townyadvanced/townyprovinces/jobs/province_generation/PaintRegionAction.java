@@ -45,7 +45,6 @@ public class PaintRegionAction {
 	private final Location bottomRightRegionCorner;
 	private final int averageProvinceSize;
 	private final int maxBrushMoves;
-	private final double tpChunkSideLength;
 	private final int newTownCost;
 	private final int upkeepTownCost;
 	private final double allowedVarianceBetweenIdealAndActualNumProvinces;
@@ -73,7 +72,6 @@ public class PaintRegionAction {
 		this.bottomRightRegionCorner = TownyProvincesSettings.getBottomRightCornerLocation(regionName);
 		this.averageProvinceSize = TownyProvincesSettings.getAverageProvinceSize(regionName);
 		this.maxBrushMoves = TownyProvincesSettings.getMaxBrushMoves(regionName);
-		this.tpChunkSideLength = TownyProvincesSettings.getChunkSideLength();
 		this.newTownCost = TownyProvincesSettings.getNewTownCost(regionName);
 		this.upkeepTownCost = TownyProvincesSettings.getUpkeepTownCost(regionName);
 		this.allowedVarianceBetweenIdealAndActualNumProvinces = TownyProvincesSettings.getMaxAllowedVarianceBetweenIdealAndActualNumProvinces(regionName);
@@ -195,7 +193,7 @@ public class PaintRegionAction {
 		double sideLengthX = Math.abs(topLeftRegionCorner.getX() - bottomRightRegionCorner.getX());
 		double sideLengthZ = Math.abs(topLeftRegionCorner.getZ() - bottomRightRegionCorner.getZ());
 		double worldAreaSquareMetres = sideLengthX * sideLengthZ;
-		TownyProvinces.info("World Area square metres: " + worldAreaSquareMetres);
+		TownyProvinces.info("Region Area square metres: " + worldAreaSquareMetres);
 		return worldAreaSquareMetres;
 	}
 	
