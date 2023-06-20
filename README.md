@@ -1,7 +1,7 @@
 # TownyProvinces
 
 ## :information_source: Overview
-- :world_map: An add-on plugin for *Towny*, which makes claiming more organized, reducing staff workload and server toxicity.
+- :world_map: An add-on plugin for *Towny*, which reduces staff workload and server toxicity, by making claiming more organized.
 
 ## :gift: Features
 - :globe_with_meridians: **Divides The Map Automatically, Into Multiple 1-Town-Only Provinces.**
