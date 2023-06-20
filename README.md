@@ -15,7 +15,7 @@
 - :hamburger: ***Town Surrounding*** It is impossible to surround a town with the claims of another town (*e.g. to become un-attackable*).
 - :no_pedestrians: ***Travel Blocking***: Travel can never be blocked by claims, because province border is always wilderness.
 - :railway_track: ***Road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
-- :santa: ***Hermits***: Town costs can be set to low/zero in unpopular/harsh regions, to support players with isolationist styles of play.
+- :santa: ***Hermits***: Town costs can be lowered in unpopular/harsh regions, to support players with isolationist styles of play.
 - :tent: ***Inactive towns in popular areas***: Town upkeep can be raised in popular regions, to encourage inactive towns there to fall.
 
 ## :eye: Map View
