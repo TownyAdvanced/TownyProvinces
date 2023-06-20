@@ -15,9 +15,8 @@
 - :hamburger: ***Town Surrounding*** It is impossible to surround a town with the claims of another town (*e.g. to become un-attackable*).
 - :no_pedestrians: ***Travel Blocking***: Travel can never be blocked by claims, because the 1-chunk province border is always wilderness.
 - :railway_track: ***Road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
-- :tophat: ***Absentee mayors in popular areas***: Town upkeep can be raised in popular areas of the map, without being raised in other areas.
-- :santa: ***Hermits***: Town costs can be set to low/zero in unpopular/harsh areas of the map, to support players with isolationist styles of play.
-- 
+- :santa: ***Hermits***: Town costs can be set to low/zero in unpopular/harsh regions, to support players with isolationist styles of play.
+- :tent: ***Inactive towns in popular areas***: Town upkeep can be raised in popular regions, to encourage inactive towns there to fall.
 
 ## :eye: Map View
 - ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/b0778012-7023-4372-b599-b5de6a336d4f)
