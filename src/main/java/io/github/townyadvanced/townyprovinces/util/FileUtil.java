@@ -89,9 +89,9 @@ public class FileUtil {
 				fileEntries.add("top_left_corner_location: -2434,-2049");
 				fileEntries.add("bottom_right_corner_location: 4064,2056");
 				fileEntries.add("average_province_size: 50000");
-				fileEntries.add("brush_square_radius_as_percentage_of_province_square_radius: 60");
-				fileEntries.add("brush_max_move_as_percentage_of_province_square_radius: 40");
-				fileEntries.add("brush_min_move_as_percentage_of_province_square_radius: 20");
+				fileEntries.add("brush_square_radius_as_percentage_of_province_square_radius: 50");
+				fileEntries.add("brush_max_move_as_percentage_of_brush_square_radius: 50");
+				fileEntries.add("brush_min_move_as_percentage_of_brush_max_move: 50");
 				fileEntries.add("max_brush_moves: 100");
 				fileEntries.add("new_town_cost: 250");
 				fileEntries.add("upkeep_town_cost: 10");
@@ -107,8 +107,8 @@ public class FileUtil {
 				fileEntries.add("bottom_right_corner_location: 900,-630");
 				fileEntries.add("average_province_size: 8000");
 				fileEntries.add("brush_square_radius_as_percentage_of_province_square_radius: 40");
-				fileEntries.add("brush_max_move_as_percentage_of_province_square_radius: 20");
-				fileEntries.add("brush_min_move_as_percentage_of_province_square_radius: 10");
+				fileEntries.add("brush_max_move_as_percentage_of_brush_square_radius: 50");
+				fileEntries.add("brush_min_move_as_percentage_of_brush_max_move: 50");
 				fileEntries.add("max_brush_moves: 100");
 				fileEntries.add("new_town_cost: 300");
 				fileEntries.add("upkeep_town_cost: 12");
