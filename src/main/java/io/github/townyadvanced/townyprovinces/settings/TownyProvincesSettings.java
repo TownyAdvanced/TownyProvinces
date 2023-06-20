@@ -105,18 +105,18 @@ public class TownyProvincesSettings {
 	}
 	
 	public static int getMaxBrushMoveInChunks(String regionName) {
-		double provinceSquareRadius = calculateProvinceSquareRadius(regionName);
-		double brushMaxMovePercent = getBrushMaxMoveAsPercentageOfProvinceSquareRadius(regionName);
-		double brushMaxMove = provinceSquareRadius / 100 * brushMaxMovePercent;
+		double brushSquareRadius = getBrushSquareRadiusInChunks(regionName) * getChunkSideLength();
+		double brushMaxMovePercent = getBrushMaxMoveAsPercentageOfBrushSquareRadius(regionName);
+		double brushMaxMove = brushSquareRadius / 100 * brushMaxMovePercent;
 		int brushMaxMoveInChunks = (int)((brushMaxMove / getChunkSideLength()) + 0.5);
 		brushMaxMoveInChunks = Math.max(brushMaxMoveInChunks, 1);
 		return brushMaxMoveInChunks;
 	}
 
 	public static int getMinBrushMoveInChunks(String regionName) {
-		double provinceSquareRadius = calculateProvinceSquareRadius(regionName);
-		double brushMinMovePercent = getBrushMinMoveAsPercentageOfProvinceSquareRadius(regionName);
-		double brushMinMove = provinceSquareRadius / 100 * brushMinMovePercent;
+		double brushMaxMove = getMaxBrushMoveInChunks(regionName) * getChunkSideLength();
+		double brushMinMovePercent = getBrushMinMoveAsPercentageOfBrushMaxMove(regionName);
+		double brushMinMove = brushMaxMove / 100 * brushMinMovePercent;
 		int brushMinMoveInChunks = (int)((brushMinMove / getChunkSideLength()) + 0.5);
 		brushMinMoveInChunks = Math.max(brushMinMoveInChunks, 1);
 		return brushMinMoveInChunks;
@@ -128,15 +128,15 @@ public class TownyProvincesSettings {
 		return Integer.parseInt(numString);
 	}
 
-	private static int getBrushMaxMoveAsPercentageOfProvinceSquareRadius(String regionName) {
+	private static int getBrushMaxMoveAsPercentageOfBrushSquareRadius(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String numString =  regionDefinitions.get("brush_max_move_as_percentage_of_province_square_radius");
+		String numString =  regionDefinitions.get("brush_max_move_as_percentage_of_brush_square_radius");
 		return Integer.parseInt(numString);
 	}
 
-	private static int getBrushMinMoveAsPercentageOfProvinceSquareRadius(String regionName) {
+	private static int getBrushMinMoveAsPercentageOfBrushMaxMove(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String numString =  regionDefinitions.get("brush_min_move_as_percentage_of_province_square_radius");
+		String numString =  regionDefinitions.get("brush_min_move_as_percentage_of_brush_max_move");
 		return Integer.parseInt(numString);
 	}
 
