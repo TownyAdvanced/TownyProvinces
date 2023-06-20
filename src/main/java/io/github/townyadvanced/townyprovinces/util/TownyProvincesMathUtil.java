@@ -1,6 +1,5 @@
 package io.github.townyadvanced.townyprovinces.util;
 
-import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 
 public class TownyProvincesMathUtil {
@@ -30,7 +29,7 @@ public class TownyProvincesMathUtil {
 	 * @param tpCoordB
 	 * @return
 	 */
-	public static double minecraftDistance(TPCoord tpCoordA, TPCoord tpCoordB) {
+	public static double minecraftDistanceBetweenCoords(TPCoord tpCoordA, TPCoord tpCoordB) {
 		int xDistance = Math.abs(tpCoordB.getX() - tpCoordA.getX());
 		int zDistance = Math.abs(tpCoordB.getZ() - tpCoordA.getZ());
 		return Math.max(xDistance, zDistance);
