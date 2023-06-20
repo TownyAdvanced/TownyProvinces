@@ -49,7 +49,7 @@
    * **STEP 1:** "Claim Brushes" are created and placed in the given region
      * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/1770c063-8cc2-453e-9b91-e169fd0bb5d5)
    * **STEP 2:** Each claim brush then moves in a random direction
-     * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/2ca09c27-acd7-45ea-a4ae-20c646fc596c)
+     * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/ad00cc6e-573f-421e-80b7-0e8430e4065e)
    * **STEP 3**: Each claim brush then moves a few more times
      * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/ee7871f0-6c55-4050-beb7-10dd69b45306)
    * **STEP 4**: The gaps between each province are filled in, except for a 1 chunk border
