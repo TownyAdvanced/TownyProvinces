@@ -47,11 +47,11 @@
 3. The first region definition file should be the size of the entire map.
 4. To fully understand how to configure your region definition files, you must understand how provinces are generated:
    * **STEP 1:** "Claim Brushes" are created and placed in the given region
-     * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/5b438195-0253-448c-9f0a-a7e9b85195e7)
+     * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/1770c063-8cc2-453e-9b91-e169fd0bb5d5)
    * **STEP 2:** Each claim brush then moves in a random direction
-     * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/458bd31b-efaa-44d9-838f-4dcc9ff7b852)
+     * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/2ca09c27-acd7-45ea-a4ae-20c646fc596c)
    * **STEP 3**: Each claim brush then moves a few more times
-     * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/8bbe9379-ab47-4bd0-9038-dce299545ac0)
+     * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/ee7871f0-6c55-4050-beb7-10dd69b45306)
    * **STEP 4**: The gaps between each province are filled in, except for a 1 chunk border
      * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/570039a4-7a5b-4280-ad32-debc0f1110db)
 
