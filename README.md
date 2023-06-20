@@ -8,12 +8,12 @@
 - :moneybag: **Applies Different Town Costs Depending On Province Location.**
 
 ## :hammer_and_wrench: Solves
-- :money_with_wings: ***Overclaiming***: Each town has its own reserved area for claiming; There is no need to throw away money on overclaiming.
+- :money_with_wings: ***Overclaiming***: Each town has a reserved claiming area; No need to throw away money on overclaiming.
 - :no_entry_sign: ***Claim Blocking***: No town can block the claiming plans of another town.
 - :snake: ***Snake Claiming***: Snake claiming is irrelevant.
 - :doughnut: ***Doughnut Claiming***: Doughnut claiming is irrelevant.
 - :hamburger: ***Town Surrounding*** It is impossible to surround a town with the claims of another town (*e.g. to become un-attackable*).
-- :no_pedestrians: ***Travel Blocking***: Travel can never be blocked by claims, because the 1-chunk province border is always wilderness.
+- :no_pedestrians: ***Travel Blocking***: Travel can never be blocked by claims, because province border is always wilderness.
 - :railway_track: ***Road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
 - :santa: ***Hermits***: Town costs can be set to low/zero in unpopular/harsh regions, to support players with isolationist styles of play.
 - :tent: ***Inactive towns in popular areas***: Town upkeep can be raised in popular regions, to encourage inactive towns there to fall.
