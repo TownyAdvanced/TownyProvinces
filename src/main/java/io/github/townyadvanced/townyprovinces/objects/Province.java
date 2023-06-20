@@ -1,7 +1,7 @@
 package io.github.townyadvanced.townyprovinces.objects;
 
-import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
+import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 
 import java.util.List;
 import java.util.Set;
