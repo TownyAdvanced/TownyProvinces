@@ -12,7 +12,7 @@
 - :no_entry_sign: ***Claim Blocking***: No town can block the claiming plans of another town.
 - :snake: ***Snake Claiming***: Snake claiming is irrelevant.
 - :doughnut: ***Doughnut Claiming***: Doughnut claiming is irrelevant.
-- :hamburger: ***Town Surrounding***: A town cannot be surrounded by another town (*e.g. to become un-attackable*).
+- :hamburger: ***Town Surrounding***: A town cannot surrounded itself with another town (*e.g. to become un-attackable*).
 - :no_pedestrians: ***Travel Blocking***: Travel cannot be blocked by claims, because province borders are always wilderness.
 - :railway_track: ***Road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
 - :santa: ***Hermits***: Upkeep can be lowered in unpopular regions, to support players with isolationist styles of play.
