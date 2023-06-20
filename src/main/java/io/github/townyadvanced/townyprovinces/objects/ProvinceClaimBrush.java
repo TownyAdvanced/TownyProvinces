@@ -1,7 +1,5 @@
 package io.github.townyadvanced.townyprovinces.objects;
 
-import com.palmergames.bukkit.towny.object.Coord;
-
 public class ProvinceClaimBrush {
 	
 	private final int squareRadius;
