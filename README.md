@@ -15,8 +15,8 @@
 - :hamburger: ***Town Surrounding***: A town cannot surrounded itself with another town (*e.g. to become un-attackable*).
 - :no_pedestrians: ***Travel Blocking***: Travel cannot be blocked by claims, because province borders are always wilderness.
 - :railway_track: ***Road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
-- :santa: ***Hermits***: Upkeep can be lowered in unpopular regions, to support players with isolationist styles of play.
 - :tent: ***Inactive towns in popular areas***: Upkeep can be raised in popular regions, discouraging inactive towns.
+- :santa: ***Hermits***: Upkeep can be lowered in unpopular regions, to support players with isolationist styles of play.
 
 ## :eye: Map View
 - ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/b0778012-7023-4372-b599-b5de6a336d4f)
