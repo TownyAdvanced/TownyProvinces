@@ -152,7 +152,7 @@ public class TownyProvinces extends JavaPlugin {
 	 * @return plugin prefix
 	 */
 	public static String getTranslatedPrefix() {
-		return Translatable.of("plugin_prefix").translate(Locale.ROOT);
+		return Translatable.of("townyprovinces_plugin_prefix").translate(Locale.ROOT);
 	}
 	
 	private boolean townyVersionCheck() {
