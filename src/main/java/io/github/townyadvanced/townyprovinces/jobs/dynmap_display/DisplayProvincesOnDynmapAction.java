@@ -111,9 +111,16 @@ public class DisplayProvincesOnDynmapAction {
 						continue;
 					int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getChunkSideLength();
 					int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getChunkSideLength();
-					String newTownCost = TownyEconomyHandler.getFormattedBalance(province.getNewTownCost());
-					String upkeepTownCost = TownyEconomyHandler.getFormattedBalance(province.getUpkeepTownCost());
-					String markerLabel = Translatable.of("dynmap_province_homeblock_label", newTownCost, upkeepTownCost).translate(Locale.ROOT);
+
+					String markerLabel;
+					if(TownyEconomyHandler.isActive()) {
+						String newTownCost = TownyEconomyHandler.getFormattedBalance(province.getNewTownCost());
+						String upkeepTownCost = TownyEconomyHandler.getFormattedBalance(province.getUpkeepTownCost());
+						markerLabel = Translatable.of("dynmap_province_homeblock_label", newTownCost, upkeepTownCost).translate(Locale.ROOT);
+					} else {
+						markerLabel = "";
+					}
+					
 					homeBlockMarker = homeBlocksMarkerSet.createMarker(
 						homeBlockMarkerId, markerLabel, TownyProvincesSettings.getWorldName(),
 						realHomeBlockX, 64, realHomeBlockZ,
