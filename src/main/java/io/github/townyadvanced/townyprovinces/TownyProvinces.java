@@ -13,6 +13,7 @@ import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.util.CustomPlotUtil;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -47,6 +48,7 @@ public class TownyProvinces extends JavaPlugin {
 				|| !FileUtil.setupPluginDataFoldersIfRequired()
 				|| !FileUtil.createRegionDefinitionsFolderAndSampleFiles()
 				|| !DataHandlerUtil.loadAllData()
+				|| CustomPlotUtil.registerCustomPlots()
 				|| !registerListeners()
 				|| !registerAdminCommands()) {
 			severe("TownyProvinces Did Not Load Successfully.");

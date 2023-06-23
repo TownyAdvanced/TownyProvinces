@@ -1,5 +1,6 @@
 package io.github.townyadvanced.townyprovinces.data;
 
+import com.palmergames.bukkit.towny.object.Town;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
@@ -28,6 +29,21 @@ public class TownyProvincesDataHolder {
 	 * Set of provinces
 	 */
 	private final Set<Province> provincesSet;
+
+
+	/**
+	 * 
+	 *
+	 1. townyProvincePortCoord, <Coord>
+
+	 2. townyProvincesJumpHubCoord, <Coord>
+
+	 3. townyProvincesRoadDestinations,  [<Coord>, <Coord>, <Coord>]
+
+	 * 
+	 * 
+	 * 
+	 */
 	/**
 	 * Coord province map
 	 * 
@@ -37,15 +53,19 @@ public class TownyProvincesDataHolder {
 	 */
 	private final Map<TPCoord, Province> coordProvinceMap;
 
+	/**
+	 * Map of towns to their ports
+	 * This map only lives in memory
+	 */
+	private final Map<Town, TPCoord> townPortMap;
+
 
 	/**
-	 * An array of which provinces are at which chunks
-	 * 
-	 * - Size is initialized using the first province, which is assumed to cover all others.
-	 * 
+	 * Map of towns to their jump hubs
+	 * This map only lives in memory
 	 */
-	//private final Province[][] chunkAssignmentArray;
-	
+	private final Map<Town, TPCoord> townJumpHubMap;
+
 	/**
 	 * Static Coord Search key
 	 * 
@@ -63,6 +83,8 @@ public class TownyProvincesDataHolder {
 		searchCoord = new TPFreeCoord(0,0);
 		provincesSet = new HashSet<>();
 		coordProvinceMap = new HashMap<>();
+		townPortMap = new HashMap<>();
+		townJumpHubMap = new HashMap<>();
 	}
 	
 	public static TownyProvincesDataHolder getInstance() {
@@ -86,10 +108,6 @@ public class TownyProvincesDataHolder {
 	
 	public void addProvince(Province province) {
 		provincesSet.add(province);
-	}
-	
-	public int getNumProvinces() {
-		return provincesSet.size();
 	}
 	
 	public void claimCoordForProvince(TPCoord coord, Province province) {
