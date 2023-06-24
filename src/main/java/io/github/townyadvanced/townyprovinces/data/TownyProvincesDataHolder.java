@@ -52,20 +52,7 @@ public class TownyProvincesDataHolder {
 	 *   If it doesn't have the given coord, then its a border
 	 */
 	private final Map<TPCoord, Province> coordProvinceMap;
-
-	/**
-	 * Map of towns to their ports
-	 * This map only lives in memory
-	 */
-	private final Map<Town, TPCoord> townPortMap;
-
-
-	/**
-	 * Map of towns to their jump hubs
-	 * This map only lives in memory
-	 */
-	private final Map<Town, TPCoord> townJumpHubMap;
-
+	
 	/**
 	 * Static Coord Search key
 	 * 
@@ -83,8 +70,6 @@ public class TownyProvincesDataHolder {
 		searchCoord = new TPFreeCoord(0,0);
 		provincesSet = new HashSet<>();
 		coordProvinceMap = new HashMap<>();
-		townPortMap = new HashMap<>();
-		townJumpHubMap = new HashMap<>();
 	}
 	
 	public static TownyProvincesDataHolder getInstance() {

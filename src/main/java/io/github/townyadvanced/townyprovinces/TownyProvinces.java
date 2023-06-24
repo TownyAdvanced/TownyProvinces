@@ -1,6 +1,9 @@
 package io.github.townyadvanced.townyprovinces;
 
+import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.command.TownyAdminCommand;
+import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.exceptions.initialization.TownyInitException;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.object.TranslationLoader;
@@ -48,13 +51,21 @@ public class TownyProvinces extends JavaPlugin {
 				|| !FileUtil.setupPluginDataFoldersIfRequired()
 				|| !FileUtil.createRegionDefinitionsFolderAndSampleFiles()
 				|| !DataHandlerUtil.loadAllData()
-				|| CustomPlotUtil.registerCustomPlots()
+				|| !CustomPlotUtil.registerCustomPlots()
 				|| !registerListeners()
-				|| !registerAdminCommands()) {
+				|| !registerAdminCommands()
+			) {
 			severe("TownyProvinces Did Not Load Successfully.");
 			onDisable();
 			return;
-		} 
+		}
+
+		//reload towny config to ensure the custom plot types are loaded correctly
+		try {
+			(new TownyAdminCommand(Towny.getPlugin())).parseTownyAdminCommand(Bukkit.getConsoleSender(), new String[]{"reload", "database"});
+		} catch (TownyException e) {
+			throw new RuntimeException(e);
+		}
 
 		//Load optional stuff 
 		loadIntegrations();
