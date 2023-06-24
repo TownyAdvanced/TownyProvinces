@@ -30,6 +30,7 @@ public class TownyProvinces extends JavaPlugin {
 	 * to avoid concurrent modification problems
 	 */
 	public static final Object DYNMAP_DISPLAY_LOCK = new Object();
+	public static final Object LAND_VALIDATION_LOCK = new Object();
 	private static TownyProvinces plugin;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.1.0");
 	

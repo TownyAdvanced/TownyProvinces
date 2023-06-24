@@ -1,7 +1,10 @@
 package io.github.townyadvanced.townyprovinces.jobs.land_validation;
 
+import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
+import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -18,9 +21,37 @@ public class LandvalidationTask extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		//Execute the land validation job
-		TownyProvinces.info("Land Validation Job Starting.");
-		executeLandValidation();
+		TownyProvinces.info("Acquiring land validation lock.");
+		synchronized (TownyProvinces.LAND_VALIDATION_LOCK) {
+			TownyProvinces.info("Land validation lock acquired.");
+			TownyProvinces.info("Land Validation Job Starting.");
+			/*
+			 * If there are no requests pending, 
+			 * this is a fresh start, so request all provinces
+			 */
+			if(!areAnyValidationsPending()) {
+				setLandValidationRequestsForAllProvinces(true);
+			}
+			executeLandValidation();
+		}
+	}
+
+	private boolean areAnyValidationsPending() {
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+			if(province.isLandValidationRequested()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void setLandValidationRequestsForAllProvinces(boolean value) {
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+			if(province.isLandValidationRequested() != value) {
+				province.setLandValidationRequested(value);
+				province.saveData();
+			}
+		}
 	}
 	
 	/**
@@ -59,12 +90,22 @@ public class LandvalidationTask extends BukkitRunnable {
 			LandValidationJobStatus landValidationJobStatus = LandValidationTaskController.getLandValidationJobStatus();
 			switch (landValidationJobStatus) {
 				case STOP_REQUESTED:
+					TownyProvinces.info("Land Validation Task: Clearing all validation requests");
+					setLandValidationRequestsForAllProvinces(false);  //Clear all requests
+					TownyProvinces.info("Land Validation Task: Saving data");
+					DataHandlerUtil.saveAllData();
 					LandValidationTaskController.stopTask();
 					return;
 				case PAUSE_REQUESTED:
+					TownyProvinces.info("Land Validation Task: Saving data");
+					DataHandlerUtil.saveAllData();
 					LandValidationTaskController.pauseTask();
 					return;
 				case RESTART_REQUESTED:
+					TownyProvinces.info("Land Validation Task: Clearing all validation requests");
+					setLandValidationRequestsForAllProvinces(false);  //Clear all requests
+					TownyProvinces.info("Land Validation Task: Saving data");
+					DataHandlerUtil.saveAllData();
 					LandValidationTaskController.restartTask();
 					return;
 			}

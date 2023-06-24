@@ -42,10 +42,14 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	public void run() {
 		try {
 			TownyProvinces.info("Regeneration Job Started");
-			TownyProvinces.info("Regeneration Job: Acquiring dynmap display lock");
-			synchronized (TownyProvinces.DYNMAP_DISPLAY_LOCK) {
-				TownyProvinces.info("Regeneration Job: Dynmap display lock acquired");
-				executeRegionRegenerationJob();
+			TownyProvinces.info("Regeneration Job: Acquiring land validation lock");
+			synchronized (TownyProvinces.LAND_VALIDATION_LOCK) {
+				TownyProvinces.info("Regeneration Job: Land Validation lock acquired");
+				TownyProvinces.info("Regeneration Job: Acquiring dynmap display lock");
+				synchronized (TownyProvinces.DYNMAP_DISPLAY_LOCK) {
+					TownyProvinces.info("Regeneration Job: Dynmap display lock acquired");
+					executeRegionRegenerationJob();
+				}
 			}
 		} finally {
 			TownyProvinces.info("Regeneration Job: Dynmap display lock released");
