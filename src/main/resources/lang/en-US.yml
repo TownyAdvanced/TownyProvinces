@@ -102,9 +102,12 @@ dynmap_province_homeblock_label: "Town Costs: New %s, Upkeep %s"
 dynmap_layer_label_town_costs: "Town Costs"
 dynmap_layer_label_borders: "Borders"
 
-# Travel
+# Jump Nodes
+
 msg_err_cannot_add_a_second_jump_node: "&cTowns cannot have more than one jump node."
-msg_err_cannot_create_fast_travel_sign_incorrect_configuration: "&cCannot create Fast-Travel-Sign, because the text of the sign is not configured correctly."
+msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs:  "&cCannot create Fast-Travel-Sign, because you can only do this in Home-Blocks, Outposts, Ports, and Jump-Nodes."
+msg_err_cannot_create_fast_travel_sign_bad_town_data:  "&cCannot create Fast-Travel-Sign, because there is a problem with the data of the town or townblock."
+msg_err_cannot_create_fast_travel_sign_incorrect_second_line: "&cCannot create Fast-Travel-Sign, because the 2nd line of the text was incorrect."
 msg_err_cannot_create_fast_travel_sign_unknown_destination_town: "&cCannot create Fast-Travel-Sign, because the destination town (%s) is unknown."
 msg_err_cannot_create_fast_travel_sign_no_jump_node_at_destination_town: "&cCannot create Fast-Travel-Sign, because there is no jump node at the destination town (%s)."
 msg_success_fast_travel_sign_created: "&bFast-Travel-Sign Created. Right-Click the sign to instantly travel to the destination town: %s."

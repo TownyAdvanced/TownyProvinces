@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.Translatable;
+import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
@@ -21,64 +22,66 @@ public class BukkitListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onSignChangeEvent(SignChangeEvent event) {
-		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled())
 			return;
-		}
-		if (TownyProvincesSettings.isJumpNodesEnabled()) {
-			evaluateSignChangeEventForJumpNode(event);
-		}
-	}
-
-	private void evaluateSignChangeEventForJumpNode(SignChangeEvent event) {
-		//Is this on a jump node
-		if (TownyAPI.getInstance().isWilderness(event.getBlock()))
-			return;
-		
-		TownBlock townBlock = TownyAPI.getInstance().getTownBlock(event.getBlock().getLocation());
-		if(townBlock == null || townBlock.getType() == null || townBlock.getTypeName() == null)
-			return;
-		if(townBlock.getTownOrNull() == null)
-			return;
-		if (!townBlock.getTypeName().equalsIgnoreCase("jump-node"))
-			return;
-		//Ok now we know we are setting the text on a sign in a jump node
-		if (event.getLines().length == 0)
-			return; //Probably won't happen
 		String line1 = event.getLine(0);
 		if (line1 == null || !line1.trim().equals(">>>"))
-			return; //Not a fast travel sign
-		String line2 = event.getLine(1);
-		if (line2 == null || !line2.trim().equalsIgnoreCase("fast travel")) {
+			return;
+		if (TownyAPI.getInstance().isWilderness(event.getBlock())) {
+			//Can't create sign in the wilderness
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs"));
 			event.setCancelled(true);
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_incorrect_configuration"));
+			return;
+		}
+		TownBlock townBlock = TownyAPI.getInstance().getTownBlock(event.getBlock().getLocation());
+		if (townBlock == null
+			|| townBlock.getType() == null
+			|| townBlock.getTypeName() == null
+			|| townBlock.getTownOrNull() == null
+			|| townBlock.getTownOrNull().getHomeBlockOrNull() == null) {
+			//Can't create the sign if the townblock or town data is dodgy
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_bad_town_data"));
+			event.setCancelled(true);
+			return;
+		}
+		Town town = townBlock.getTownOrNull();
+		WorldCoord worldCoordOfSign = WorldCoord.parseWorldCoord(event.getBlock());
+		String townBlockTypeNameLowercase = townBlock.getTypeName().toLowerCase();
+		if (!worldCoordOfSign.equals(town.getHomeBlockOrNull().getWorldCoord())
+			&& !townBlockTypeNameLowercase.equals("outpost")
+			&& !townBlockTypeNameLowercase.equals("port")
+			&& !townBlockTypeNameLowercase.equals("jump-node")) {
+			//Can only create travel node in certain plot types
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs"));
+			event.setCancelled(true);
+			return;
+		}
+		String line2 = event.getLine(1);
+		if (line2 == null || !line2.trim().equalsIgnoreCase("fast travel to")) {
+			event.setCancelled(true);
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_incorrect_second_line"));
 			return;
 		}
 		String line3 = event.getLine(2);
-		if (line3 == null || !line3.trim().equalsIgnoreCase("to")) {
+		if (line3 == null || line3.length() == 0) {
 			event.setCancelled(true);
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_incorrect_configuration"));
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_unknown_destination_town", ""));
 			return;
 		}
-		String line4 = event.getLine(3);
-		if (line4 == null || line4.length() == 0) {
-			event.setCancelled(true);
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_incorrect_configuration"));
-			return;
-		}
-		Town destinationTown = TownyAPI.getInstance().getTown(line4.trim());
+		Town destinationTown = TownyAPI.getInstance().getTown(line3.trim());
 		if (destinationTown == null) {
 			event.setCancelled(true);
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_unknown_destination_town", line4.trim()));
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_unknown_destination_town", line3.trim()));
 			return;
 		}
 		boolean destinationHasJumpHub = TownMetaDataController.hasJumpHub(destinationTown);
 		if (!destinationHasJumpHub) {
 			event.setCancelled(true);
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_no_jump_node_at_destination_town", line4.trim()));
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_no_jump_node_at_destination_town", line3.trim()));
 			return;
 		}
 		//Sign creation successful
-		Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_success_fast_travel_sign_created", line4.trim()));
+		Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_success_fast_travel_sign_created", line3.trim()));
 	}
 }
 	
