@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.event.PlotChangeTypeEvent;
+import com.palmergames.bukkit.towny.event.PlotPreChangeTypeEvent;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
 import com.palmergames.bukkit.towny.event.TownBlockTypeRegisterEvent;
 import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
@@ -13,12 +14,14 @@ import com.palmergames.bukkit.towny.event.TranslationLoadEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreMergeEvent;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
+import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -184,9 +187,50 @@ public class TownyListener implements Listener {
 			return;
 		}
 	}
-	
+
+	/**
+	 * - When a plot is about to be converted to a jump hub
+	 *   first check the town metadata
+	 *    - If the jump hub metadata exists, forbid a second one
+	 *    - If no jump hub metadata exists, add the jump hub metadata
+	 *    
+	 * - When a plot is about to be converted FROM a jump hub, (PlotChangeTypeEvent)
+	 *   Remove the jump hub metadata if it exists	 
+	 *    
+	 * @param event
+	 */
 	@EventHandler(ignoreCancelled = true)
-	private void onPlotConversion(PlotChangeTypeEvent plotChangeTypeEvent) {
+	private void onPlotConversion(PlotPreChangeTypeEvent event) {
+		Town town = event.getTownBlock().getTownOrNull();
+		if(town == null) {
+			return;
+		}
+		boolean oldTypeIsJumpHub = event.getOldType().getName().equalsIgnoreCase("jump-hub");
+		boolean newTypeIsJumpHub = event.getNewType().getName().equalsIgnoreCase("jump-hub");
+		boolean jumpHubMetadataExists = TownMetaDataController.hasJumpHub(town);
+		
+		if(oldTypeIsJumpHub) {
+			if(!newTypeIsJumpHub) {
+				//Jump hub deleted
+				TownMetaDataController.removeJumpHubCoord(town);
+				town.save();
+				//TODO - Should we delete/break the signs at the plot?
+			}
+		} else {
+			if(newTypeIsJumpHub) {
+				if(jumpHubMetadataExists) {
+					//Can't add a second jump hub
+					event.setCancelled(true);
+					event.setCancelMessage(Translatable.of("msg_err_cannot_add_a_second_jump_hub").translate(Locale.ROOT));
+				} else {
+					//Jump hub added to down
+					TownMetaDataController.addJumpHubCoord(town, event.getTownBlock().getWorldCoord());
+					town.save();
+				}
+			}
+		}
+
+		
 		
 	} 
 	

@@ -2,9 +2,6 @@ package io.github.townyadvanced.townyprovinces.metadata;
 
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.WorldCoord;
-import com.palmergames.bukkit.towny.object.metadata.BooleanDataField;
-import com.palmergames.bukkit.towny.object.metadata.IntegerDataField;
-import com.palmergames.bukkit.towny.object.metadata.LongDataField;
 import com.palmergames.bukkit.towny.object.metadata.StringDataField;
 import com.palmergames.bukkit.towny.utils.MetaDataUtil;
 import org.bukkit.Bukkit;
@@ -12,19 +9,23 @@ import org.bukkit.World;
 
 import javax.annotation.Nullable;
 
-/**
- * 
- * @author LlmDl
- *
- */
 public class TownMetaDataController {
 
 	@SuppressWarnings("unused")
-	private static StringDataField portCoord = new StringDataField("townyprovinces_portCoord", "");
+	private static StringDataField jumpHubCoord = new StringDataField("townyprovinces_jumpHubCoord", "");
 
 	@Nullable
-	private static WorldCoord getPortCoord(Town town) {
-		String portCoordString = getPortCoordAsString(town);
+	public static boolean hasJumpHub(Town town) {
+		String portCoordString = getJumpHubCoordAsString(town);
+		if(portCoordString == null)
+			return false; 
+		else 	
+			return true;
+	}
+
+	@Nullable
+	public static WorldCoord getJumpHubCoord(Town town) {
+		String portCoordString = getJumpHubCoordAsString(town);
 		if(portCoordString == null)
 			return null;
 		String[] worldCoordArray = portCoordString.split(",");
@@ -36,12 +37,27 @@ public class TownMetaDataController {
 	}
 
 	@Nullable
-	private static String getPortCoordAsString(Town town) {
-		StringDataField sdf = (StringDataField) portCoord.clone();
+	private static String getJumpHubCoordAsString(Town town) {
+		StringDataField sdf = (StringDataField) jumpHubCoord.clone();
 		if (town.hasMeta(sdf.getKey())) {
 			return MetaDataUtil.getString(town, sdf);
 		}
 		return null;
 	}
 	
+	public static void addJumpHubCoord(Town town, WorldCoord worldCoord) {
+		int x = worldCoord.getX();
+		int z = worldCoord.getZ();
+		String worldName = worldCoord.getWorldName();
+		String metadataValue = worldName + "," + x + "," + z;
+		StringDataField sdf = (StringDataField) jumpHubCoord.clone();
+		if (town.hasMeta(sdf.getKey()))
+			MetaDataUtil.setString(town, sdf, metadataValue, true);
+		else
+			town.addMetaData(new StringDataField("townyprovinces_jumpHubCoord", metadataValue));
+	}
+
+	public static void removeJumpHubCoord(Town town) {
+		town.removeMetaData(jumpHubCoord.clone());
+	}
 }

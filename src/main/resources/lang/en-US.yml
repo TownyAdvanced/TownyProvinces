@@ -101,3 +101,6 @@ msg_err_cannot_claim_land_outside_own_province: "&cTowns cannot claim land outsi
 dynmap_province_homeblock_label: "Town Costs: New %s, Upkeep %s"
 dynmap_layer_label_town_costs: "Town Costs"
 dynmap_layer_label_borders: "Borders"
+
+# Travel
+msg_err_cannot_add_a_second_jump_hub: "&cTowns cannot have more than one jump hub."
