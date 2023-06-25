@@ -102,7 +102,7 @@ dynmap_province_homeblock_label: "Town Costs: New %s, Upkeep %s"
 dynmap_layer_label_town_costs: "Town Costs"
 dynmap_layer_label_borders: "Borders"
 
-# Jump Nodes
+# Constructing Jump Nodes
 
 msg_err_cannot_add_a_second_jump_node: "&cTowns cannot have more than one jump node."
 msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs:  "&cFast-Travel-Signs can only be placed in Home-Blocks, Outposts, Ports, and Jump-Nodes."
@@ -112,3 +112,11 @@ msg_err_cannot_create_fast_travel_sign_unknown_destination_town: "&cCannot creat
 msg_err_cannot_create_fast_travel_sign_source_town_and_destination_town_are_the_same: "&cCannot create Fast-Travel-Sign, because the source town and destination town are the same."
 msg_err_cannot_create_fast_travel_sign_no_jump_node_at_destination_town: "&cCannot create Fast-Travel-Sign, because there is no jump node at the destination town (%s)."
 msg_success_fast_travel_sign_created: "&bFast-Travel-Sign Created. Right-Click the sign to instantly travel to the destination town: %s."
+
+# Using Fast Travel
+
+msg_err_fast_travel_sign_did_not_work_not_in_a_town: "&cThe Fast-Travel sign did not work, because you are not in a town."
+msg_err_fast_travel_sign_did_not_work_bad_plot_type: "&cThe Fast-Travel sign did not work, because it is not in a Home-Block, Outpost, Port, or Jump-Node."
+msg_err_fast_travel_sign_did_not_work_unknown_destination_town: "&cThe Fast-Travel sign did not work, because the destination town is unknown."
+msg_err_fast_travel_sign_did_not_work_destination_town_has_no_jump_hub: "&cThe Fast-Travel sign did not work, because the destination town has no jump hub."
+msg_err_fast_travel_sign_did_not_work_destination_plot_had_no_return_sign: "&cThe Fast-Travel-Sign did not work, because the destination plot did not contain a return Fast-Travel-Sign."

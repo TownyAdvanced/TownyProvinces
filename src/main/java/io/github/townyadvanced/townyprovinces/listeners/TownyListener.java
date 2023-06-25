@@ -233,7 +233,7 @@ public class TownyListener implements Listener {
 					event.setCancelMessage(Translatable.of("msg_err_cannot_add_a_second_jump_node").translate(Locale.ROOT));
 				} else {
 					//Jump hub added to town
-					TownMetaDataController.addJumpHubCoord(town, event.getTownBlock().getWorldCoord());
+					TownMetaDataController.setJumpHubCoord(town, event.getTownBlock().getWorldCoord());
 					town.save();
 				}
 			}
@@ -250,7 +250,7 @@ public class TownyListener implements Listener {
 		}
 		//If this was a jump hub, adjust metadata
 		if(TownMetaDataController.hasJumpHub(event.getTown())) {
-			WorldCoord jumpHubWorldCoord = TownMetaDataController.getJumpHubCoord(event.getTown());
+			WorldCoord jumpHubWorldCoord = TownMetaDataController.getJumpHubWorldCoord(event.getTown());
 			if(jumpHubWorldCoord != null && jumpHubWorldCoord.equals(event.getWorldCoord())) {
 				TownMetaDataController.removeJumpHubCoord(event.getTown());
 			}

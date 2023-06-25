@@ -5,15 +5,25 @@ import com.palmergames.bukkit.towny.object.WorldCoord;
 import com.palmergames.bukkit.towny.object.metadata.StringDataField;
 import com.palmergames.bukkit.towny.utils.MetaDataUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TownMetaDataController {
+	
+	private static final StringDataField jumpHubCoord = new StringDataField("townyprovinces_jumpNodeCoord", "");
 
-	@SuppressWarnings("unused")
-	private static StringDataField jumpHubCoord = new StringDataField("townyprovinces_jumpNodeCoord", "");
+	private static final StringDataField jumpHubSigns = new StringDataField("townyprovinces_jumpHubSigns", "");
 
+
+
+	//["towny_stringdf","townyprovinces_signs","{world,-3555,-10333,lerglon},{world,-3675,-13545,prepdo}"]
+	
+	
 	@Nullable
 	public static boolean hasJumpHub(Town town) {
 		String portCoordString = getJumpHubCoordAsString(town);
@@ -21,7 +31,7 @@ public class TownMetaDataController {
 	}
 
 	@Nullable
-	public static WorldCoord getJumpHubCoord(Town town) {
+	public static WorldCoord getJumpHubWorldCoord(Town town) {
 		String portCoordString = getJumpHubCoordAsString(town);
 		if(portCoordString == null)
 			return null;
@@ -42,7 +52,7 @@ public class TownMetaDataController {
 		return null;
 	}
 	
-	public static void addJumpHubCoord(Town town, WorldCoord worldCoord) {
+	public static void setJumpHubCoord(Town town, WorldCoord worldCoord) {
 		int x = worldCoord.getX();
 		int z = worldCoord.getZ();
 		String worldName = worldCoord.getWorldName();
@@ -57,4 +67,77 @@ public class TownMetaDataController {
 	public static void removeJumpHubCoord(Town town) {
 		town.removeMetaData(jumpHubCoord.clone());
 	}
+	
+	public static Map<String, Block> getJumpHubSigns(Town town) {
+		Map<String, Block> result = new HashMap<>();
+		String signsAsString = getJumpHubSignsAsString(town);
+		if(signsAsString != null && signsAsString.length() > 0) {
+			String[] signsAsArray = signsAsString.split("\\|");
+			String[] signAsArray;
+			World world;
+			int x;
+			int y;
+			int z;
+			String destinationTownName;
+			Block block;
+			for(String signAsString: signsAsArray) {
+				signAsArray = signAsString.split(",");
+				world = Bukkit.getWorld(signAsArray[0]);
+				x = Integer.parseInt(signAsArray[1]);
+				y = Integer.parseInt(signAsArray[2]);
+				z = Integer.parseInt(signAsArray[3]);
+				destinationTownName = signAsArray[4];
+				block = (new Location(world,x,y,z)).getBlock();
+				result.put(destinationTownName, block);
+			}
+		}
+		return result;
+	}
+
+	public static void addJumpHubSign(Town town, Block signBlock, String destinationTownName) {
+		StringBuilder builder;
+		String value = getJumpHubSignsAsString(town);
+		//Remove data
+		if(value != null) {
+			removeJumpHubSigns(town);
+			builder = new StringBuilder(value);
+			builder.append("|");
+		} else {
+			builder = new StringBuilder();
+		}
+		//Add the new values to the builder
+		builder.append(signBlock.getWorld().getName());
+		builder.append(",");
+		builder.append(signBlock.getX());
+		builder.append(",");
+		builder.append(signBlock.getY());
+		builder.append(",");
+		builder.append(signBlock.getZ());
+		builder.append(",");
+		builder.append(destinationTownName);
+		//Set the required metadata field
+		StringDataField sdf = (StringDataField) jumpHubSigns.clone();
+		if (town.hasMeta(sdf.getKey()))
+			MetaDataUtil.setString(town, sdf, builder.toString(), true);
+		else
+			town.addMetaData(new StringDataField("townyprovinces_jumpHubSigns", builder.toString()));
+	}
+	
+	/**
+	 *
+	 * worldName,x,y,z,destinationTown| 
+	 */
+	@Nullable
+	private static String getJumpHubSignsAsString(Town town) {
+		StringDataField sdf = (StringDataField) jumpHubSigns.clone();
+		if (town.hasMeta(sdf.getKey())) {
+			return MetaDataUtil.getString(town, sdf);
+		}
+		return null;
+	}
+
+	public static void removeJumpHubSigns(Town town) {
+		town.removeMetaData(jumpHubSigns.clone());
+	}
+
 }
