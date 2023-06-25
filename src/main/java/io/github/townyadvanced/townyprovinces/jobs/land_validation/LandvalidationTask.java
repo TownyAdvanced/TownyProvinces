@@ -110,6 +110,8 @@ public class LandvalidationTask extends BukkitRunnable {
 					return;
 			}
 		}
+		TownyProvinces.info("Land Validation Task: Saving data");
+		DataHandlerUtil.saveAllData();
 		LandValidationTaskController.stopTask();
 		TownyProvinces.info("Land Validation Job Complete.");
 	}
