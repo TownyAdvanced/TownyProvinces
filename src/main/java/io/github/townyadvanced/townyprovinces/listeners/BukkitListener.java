@@ -1,39 +1,16 @@
 package io.github.townyadvanced.townyprovinces.listeners;
 
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.hooks.PluginIntegrations;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.Translatable;
-import com.palmergames.bukkit.towny.object.WorldCoord;
+import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.PrepareAnvilEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.potion.PotionEffectType;
-
-import java.util.List;
 
 /**
  * 
@@ -56,7 +33,12 @@ public class BukkitListener implements Listener {
 		//Is this on a jump node
 		if (TownyAPI.getInstance().isWilderness(event.getBlock()))
 			return;
+		
 		TownBlock townBlock = TownyAPI.getInstance().getTownBlock(event.getBlock().getLocation());
+		if(townBlock == null || townBlock.getType() == null || townBlock.getTypeName() == null)
+			return;
+		if(townBlock.getTownOrNull() == null)
+			return;
 		if (!townBlock.getTypeName().equalsIgnoreCase("jump-node"))
 			return;
 		//Ok now we know we are setting the text on a sign in a jump node
@@ -78,7 +60,7 @@ public class BukkitListener implements Listener {
 			return;
 		}
 		String line4 = event.getLine(3);
-		if (line4 == null || !(line4.length() == 0)) {
+		if (line4 == null || line4.length() == 0) {
 			event.setCancelled(true);
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_incorrect_configuration"));
 			return;
@@ -92,7 +74,7 @@ public class BukkitListener implements Listener {
 		boolean destinationHasJumpHub = TownMetaDataController.hasJumpHub(destinationTown);
 		if (!destinationHasJumpHub) {
 			event.setCancelled(true);
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign__no_jump_hub_at_destination_town", line4.trim()));
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_no_jump_node_at_destination_town", line4.trim()));
 			return;
 		}
 		//Sign creation successful

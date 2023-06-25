@@ -11,6 +11,7 @@ import com.palmergames.bukkit.towny.event.TownUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.event.TownyLoadedDatabaseEvent;
 import com.palmergames.bukkit.towny.event.TranslationLoadEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreMergeEvent;
+import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -213,10 +214,10 @@ public class TownyListener implements Listener {
 		if(town == null) {
 			return;
 		}
-		boolean oldTypeIsJumpHub = event.getOldType().getName().equalsIgnoreCase("jump-hub");
-		boolean newTypeIsJumpHub = event.getNewType().getName().equalsIgnoreCase("jump-hub");
+		boolean oldTypeIsJumpHub = event.getOldType().getName().equalsIgnoreCase("jump-node");
+		boolean newTypeIsJumpHub = event.getNewType().getName().equalsIgnoreCase("jump-node");
 		boolean jumpHubMetadataExists = TownMetaDataController.hasJumpHub(town);
-		
+
 		if(oldTypeIsJumpHub) {
 			if(!newTypeIsJumpHub) {
 				//Jump hub deleted
@@ -229,7 +230,7 @@ public class TownyListener implements Listener {
 				if(jumpHubMetadataExists) {
 					//Can't add a second jump hub
 					event.setCancelled(true);
-					event.setCancelMessage(Translatable.of("msg_err_cannot_add_a_second_jump_hub").translate(Locale.ROOT));
+					event.setCancelMessage(Translatable.of("msg_err_cannot_add_a_second_jump_node").translate(Locale.ROOT));
 				} else {
 					//Jump hub added to town
 					TownMetaDataController.addJumpHubCoord(town, event.getTownBlock().getWorldCoord());
@@ -237,11 +238,24 @@ public class TownyListener implements Listener {
 				}
 			}
 		}
-
-		
-		
-	} 
+	}
 	
+	@EventHandler(ignoreCancelled = true)
+	private void onTownUnclaim(TownUnclaimEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		if(event.getTown() == null) {
+			return;
+		}
+		//If this was a jump hub, adjust metadata
+		if(TownMetaDataController.hasJumpHub(event.getTown())) {
+			WorldCoord jumpHubWorldCoord = TownMetaDataController.getJumpHubCoord(event.getTown());
+			if(jumpHubWorldCoord != null && jumpHubWorldCoord.equals(event.getWorldCoord())) {
+				TownMetaDataController.removeJumpHubCoord(event.getTown());
+			}
+		}
+	}
 	
 	private boolean doesProvinceContainTown(Province province) {
 		String worldName = TownyProvincesSettings.getWorldName();

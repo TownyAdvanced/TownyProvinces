@@ -12,15 +12,12 @@ import javax.annotation.Nullable;
 public class TownMetaDataController {
 
 	@SuppressWarnings("unused")
-	private static StringDataField jumpHubCoord = new StringDataField("townyprovinces_jumpHubCoord", "");
+	private static StringDataField jumpHubCoord = new StringDataField("townyprovinces_jumpNodeCoord", "");
 
 	@Nullable
 	public static boolean hasJumpHub(Town town) {
 		String portCoordString = getJumpHubCoordAsString(town);
-		if(portCoordString == null)
-			return false; 
-		else 	
-			return true;
+		return portCoordString != null;
 	}
 
 	@Nullable
@@ -54,7 +51,7 @@ public class TownMetaDataController {
 		if (town.hasMeta(sdf.getKey()))
 			MetaDataUtil.setString(town, sdf, metadataValue, true);
 		else
-			town.addMetaData(new StringDataField("townyprovinces_jumpHubCoord", metadataValue));
+			town.addMetaData(new StringDataField("townyprovinces_jumpNodeCoord", metadataValue));
 	}
 
 	public static void removeJumpHubCoord(Town town) {

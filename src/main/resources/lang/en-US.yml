@@ -103,8 +103,8 @@ dynmap_layer_label_town_costs: "Town Costs"
 dynmap_layer_label_borders: "Borders"
 
 # Travel
-msg_err_cannot_add_a_second_jump_hub: "&cTowns cannot have more than one jump hub."
+msg_err_cannot_add_a_second_jump_node: "&cTowns cannot have more than one jump node."
 msg_err_cannot_create_fast_travel_sign_incorrect_configuration: "&cCannot create Fast-Travel-Sign, because the text of the sign is not configured correctly."
 msg_err_cannot_create_fast_travel_sign_unknown_destination_town: "&cCannot create Fast-Travel-Sign, because the destination town (%s) is unknown."
-msg_err_cannot_create_fast_travel_sign__no_jump_hub_at_destination_town: "&cCannot create Fast-Travel-Sign, because there is no jump hub at the destination town (%s)."
-msg_success_fast_travel_sign_created: "&bFast-Travel-Sign Created. Click the sign to instantly travel to the destination town: %s."
+msg_err_cannot_create_fast_travel_sign_no_jump_node_at_destination_town: "&cCannot create Fast-Travel-Sign, because there is no jump node at the destination town (%s)."
+msg_success_fast_travel_sign_created: "&bFast-Travel-Sign Created. Right-Click the sign to instantly travel to the destination town: %s."
