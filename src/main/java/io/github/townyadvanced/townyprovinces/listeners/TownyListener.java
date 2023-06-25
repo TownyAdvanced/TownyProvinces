@@ -3,6 +3,7 @@ package io.github.townyadvanced.townyprovinces.listeners;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
+import com.palmergames.bukkit.towny.event.PlotChangeTypeEvent;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
 import com.palmergames.bukkit.towny.event.TownBlockTypeRegisterEvent;
 import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
@@ -183,7 +184,13 @@ public class TownyListener implements Listener {
 			return;
 		}
 	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void onPlotConversion(PlotChangeTypeEvent plotChangeTypeEvent) {
 		
+	} 
+	
+	
 	private boolean doesProvinceContainTown(Province province) {
 		String worldName = TownyProvincesSettings.getWorldName();
 		WorldCoord worldCoord;
