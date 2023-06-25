@@ -74,6 +74,11 @@ public class BukkitListener implements Listener {
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_unknown_destination_town", line3.trim()));
 			return;
 		}
+		if (town.equals(destinationTown)) {
+			event.setCancelled(true);
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_source_town_and_destination_town_are_the_same", line3.trim()));
+			return;
+		}
 		boolean destinationHasJumpHub = TownMetaDataController.hasJumpHub(destinationTown);
 		if (!destinationHasJumpHub) {
 			event.setCancelled(true);
