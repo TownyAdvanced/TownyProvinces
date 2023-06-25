@@ -3,7 +3,6 @@ package io.github.townyadvanced.townyprovinces.listeners;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
-import com.palmergames.bukkit.towny.event.PlotChangeTypeEvent;
 import com.palmergames.bukkit.towny.event.PlotPreChangeTypeEvent;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
 import com.palmergames.bukkit.towny.event.TownBlockTypeRegisterEvent;
@@ -201,6 +200,15 @@ public class TownyListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 	private void onPlotConversion(PlotPreChangeTypeEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		if (TownyProvincesSettings.isJumpNodesEnabled()) {
+			evaluatePlotConversionForJumpNodes(event);
+		}
+	}
+	
+	private void evaluatePlotConversionForJumpNodes(PlotPreChangeTypeEvent event) {
 		Town town = event.getTownBlock().getTownOrNull();
 		if(town == null) {
 			return;
@@ -223,7 +231,7 @@ public class TownyListener implements Listener {
 					event.setCancelled(true);
 					event.setCancelMessage(Translatable.of("msg_err_cannot_add_a_second_jump_hub").translate(Locale.ROOT));
 				} else {
-					//Jump hub added to down
+					//Jump hub added to town
 					TownMetaDataController.addJumpHubCoord(town, event.getTownBlock().getWorldCoord());
 					town.save();
 				}

@@ -12,6 +12,7 @@ import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminComman
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.listeners.BukkitListener;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
@@ -151,6 +152,7 @@ public class TownyProvinces extends JavaPlugin {
 	private boolean registerListeners() {
 		PluginManager pluginManager = this.getServer().getPluginManager();
 		pluginManager.registerEvents(new TownyListener(), this);
+		pluginManager.registerEvents(new BukkitListener(), this);
 		return true;
 	}
 	public String getVersion() {
