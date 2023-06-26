@@ -28,6 +28,7 @@ public class TownyProvincesDataHolder {
 	 * Set of provinces
 	 */
 	private final Set<Province> provincesSet;
+	
 	/**
 	 * Coord province map
 	 * 
@@ -36,15 +37,6 @@ public class TownyProvincesDataHolder {
 	 *   If it doesn't have the given coord, then its a border
 	 */
 	private final Map<TPCoord, Province> coordProvinceMap;
-
-
-	/**
-	 * An array of which provinces are at which chunks
-	 * 
-	 * - Size is initialized using the first province, which is assumed to cover all others.
-	 * 
-	 */
-	//private final Province[][] chunkAssignmentArray;
 	
 	/**
 	 * Static Coord Search key
@@ -86,10 +78,6 @@ public class TownyProvincesDataHolder {
 	
 	public void addProvince(Province province) {
 		provincesSet.add(province);
-	}
-	
-	public int getNumProvinces() {
-		return provincesSet.size();
 	}
 	
 	public void claimCoordForProvince(TPCoord coord, Province province) {

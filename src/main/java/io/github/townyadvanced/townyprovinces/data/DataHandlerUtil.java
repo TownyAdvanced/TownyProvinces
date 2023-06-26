@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class DataHandlerUtil {
+public class 
+DataHandlerUtil {
 
 	public static boolean loadAllData() {
 		loadAllProvinces();
@@ -25,8 +26,7 @@ public class DataHandlerUtil {
 		saveAllProvinces();
 		return true;
 	}
-
-
+	
 	private static void saveAllProvinces() {
 		TownyProvinces.info("Now Saving Provinces");
 		//Delete existing files
@@ -129,6 +129,5 @@ public class DataHandlerUtil {
 		int z = Integer.parseInt(coordAsArray[1]);
 		return new TPFinalCoord(x,z);
 	}
-
 
 }

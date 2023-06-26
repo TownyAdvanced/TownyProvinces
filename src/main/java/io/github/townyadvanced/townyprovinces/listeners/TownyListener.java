@@ -3,23 +3,31 @@ package io.github.townyadvanced.townyprovinces.listeners;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
+import com.palmergames.bukkit.towny.event.PlotPreChangeTypeEvent;
+import com.palmergames.bukkit.towny.event.PreDeleteTownEvent;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
+import com.palmergames.bukkit.towny.event.TownBlockTypeRegisterEvent;
 import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
 import com.palmergames.bukkit.towny.event.TownUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.event.TownyLoadedDatabaseEvent;
 import com.palmergames.bukkit.towny.event.TranslationLoadEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreMergeEvent;
+import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
+import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.util.CustomPlotUtil;
+import io.github.townyadvanced.townyprovinces.util.FastTravelUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -181,7 +189,75 @@ public class TownyListener implements Listener {
 			return;
 		}
 	}
+
+	/**
+	 * - When a plot is about to be converted to a jump hub
+	 *   first check the town metadata
+	 *    - If the jump hub metadata exists, forbid a second one
+	 *    - If no jump hub metadata exists, add the jump hub metadata
+	 *    
+	 * - When a plot is about to be converted FROM a jump hub, (PlotChangeTypeEvent)
+	 *   Remove the jump hub metadata if it exists	 
+	 *    
+	 * @param event
+	 */
+	@EventHandler(ignoreCancelled = true)
+	private void onPlotConversion(PlotPreChangeTypeEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		if (TownyProvincesSettings.isJumpNodesEnabled()) {
+			evaluatePlotConversionForJumpNodes(event);
+		}
+	}
+	
+	private void evaluatePlotConversionForJumpNodes(PlotPreChangeTypeEvent event) {
+		Town town = event.getTownBlock().getTownOrNull();
+		if(town == null) {
+			return;
+		}
+		boolean oldTypeIsJumpNode = event.getOldType().getName().equalsIgnoreCase("jump-node");
+		boolean newTypeIsJumpNode = event.getNewType().getName().equalsIgnoreCase("jump-node");
+		boolean townHasJumpNode = TownMetaDataController.hasJumpHub(town);
+
+		if(oldTypeIsJumpNode) {
+			if(!newTypeIsJumpNode) {
+				FastTravelUtil.removeAllTracesOfJumpNode(town);
+			}
+		} else {
+			if(newTypeIsJumpNode) {
+				if(townHasJumpNode) {
+					//Can't add a second jump node
+					event.setCancelled(true);
+					event.setCancelMessage(Translatable.of("msg_err_cannot_add_a_second_jump_node").translate(Locale.ROOT));
+				} else {
+					//Jump hub added to town
+					TownMetaDataController.setJumpNodeCoord(town, event.getTownBlock().getWorldCoord());
+					town.save();
+				}
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void onTownUnclaim(TownUnclaimEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		if(event.getTown() == null) {
+			return;
+		}
+		Town town = event.getTown();
 		
+		//If this was a jump hub, cleanup
+		if(TownMetaDataController.hasJumpHub(town)) {
+			WorldCoord jumpHubWorldCoord = TownMetaDataController.getJumpHubWorldCoord(town);
+			if(jumpHubWorldCoord != null && jumpHubWorldCoord.equals(event.getWorldCoord())) {
+				FastTravelUtil.removeAllTracesOfJumpNode(town);
+			}
+		}
+	}
+	
 	private boolean doesProvinceContainTown(Province province) {
 		String worldName = TownyProvincesSettings.getWorldName();
 		WorldCoord worldCoord;
@@ -194,4 +270,31 @@ public class TownyListener implements Listener {
 		return false;
 	}
 
+	// Re-register the TownBlockType when/if Towny reloads itself.
+	@EventHandler
+	public void onTownyLoadTownBlockTypes(TownBlockTypeRegisterEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		CustomPlotUtil.registerCustomPlots();
+	}
+
+	/**
+	 * When delete town occurs ---> break fast travel signs in the town
+	When unclaim occurs ---> break all signs
+	
+	 */
+	@EventHandler
+	public void onPreDeleteTown(PreDeleteTownEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		//If there was a jump hub, remove the signs
+		if(TownMetaDataController.hasJumpHub(event.getTown())) {
+			FastTravelUtil.removeAllTracesOfJumpNode(event.getTown());
+		}
+	}
+	
+	
+	
 }

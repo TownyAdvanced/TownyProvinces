@@ -213,4 +213,24 @@ public class TownyProvincesSettings {
 			return false;
 		}
 	}
+
+	public static boolean isRoadsEnabled() {
+		return Settings.getBoolean(ConfigNodes.ROADS_ENABLED);
+	}
+
+	public static boolean isPortsEnabled() {
+		return Settings.getBoolean(ConfigNodes.PORTS_ENABLED);
+	}
+
+	public static double getPortsPurchasePrice() {
+		return Settings.getDouble(ConfigNodes.PORTS_PURCHASE_PRICE);
+	}
+
+	public static boolean isJumpNodesEnabled() {
+		return Settings.getBoolean(ConfigNodes.JUMP_NODES_ENABLED);
+	}
+
+	public static double getJumpNodesPurchasePrice() {
+		return Settings.getDouble(ConfigNodes.JUMP_NODES_PURCHASE_PRICE);
+	}
 }

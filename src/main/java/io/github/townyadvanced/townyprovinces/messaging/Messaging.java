@@ -2,7 +2,6 @@ package io.github.townyadvanced.townyprovinces.messaging;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Translatable;
-import com.palmergames.bukkit.towny.object.Translation;
 import com.palmergames.bukkit.util.Colors;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import org.bukkit.Bukkit;
