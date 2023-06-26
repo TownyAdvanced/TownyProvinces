@@ -26,13 +26,13 @@ public class TownMetaDataController {
 	
 	@Nullable
 	public static boolean hasJumpHub(Town town) {
-		String portCoordString = getJumpHubCoordAsString(town);
+		String portCoordString = getJumpNodeCoordAsString(town);
 		return portCoordString != null;
 	}
 
 	@Nullable
 	public static WorldCoord getJumpHubWorldCoord(Town town) {
-		String portCoordString = getJumpHubCoordAsString(town);
+		String portCoordString = getJumpNodeCoordAsString(town);
 		if(portCoordString == null)
 			return null;
 		String[] worldCoordArray = portCoordString.split(",");
@@ -44,7 +44,7 @@ public class TownMetaDataController {
 	}
 
 	@Nullable
-	private static String getJumpHubCoordAsString(Town town) {
+	private static String getJumpNodeCoordAsString(Town town) {
 		StringDataField sdf = (StringDataField) jumpHubCoord.clone();
 		if (town.hasMeta(sdf.getKey())) {
 			return MetaDataUtil.getString(town, sdf);
@@ -52,7 +52,7 @@ public class TownMetaDataController {
 		return null;
 	}
 	
-	public static void setJumpHubCoord(Town town, WorldCoord worldCoord) {
+	public static void setJumpNodeCoord(Town town, WorldCoord worldCoord) {
 		int x = worldCoord.getX();
 		int z = worldCoord.getZ();
 		String worldName = worldCoord.getWorldName();
@@ -140,4 +140,30 @@ public class TownMetaDataController {
 		town.removeMetaData(jumpHubSigns.clone());
 	}
 
+	/**
+	 * Remove the sign IF it is in the metadata
+	 * @param block the sign
+	 */
+	public static void removeJumpHubSign(Town town, Block block) {
+		Map<String, Block> jumpHubSigns = getJumpHubSigns(town);
+		String signKey = null;
+		for(Map.Entry<String,Block> mapEntry: jumpHubSigns.entrySet()) {
+			if(mapEntry.getValue().equals(block)) {
+				signKey = mapEntry.getKey();
+				break;
+			}
+		}
+		if(signKey != null) {
+			jumpHubSigns.remove(signKey);
+			setJumpHubSigns(town, jumpHubSigns);
+		}
+	}
+
+	public static void setJumpHubSigns(Town town, Map<String,Block> newJumpHubSigns) {
+		removeJumpHubSigns(town);
+		for(Map.Entry<String,Block> mapEntry: newJumpHubSigns.entrySet()) {
+			addJumpHubSign(town, mapEntry.getValue(), mapEntry.getKey());
+		}
+	}
+	
 }

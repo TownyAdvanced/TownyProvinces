@@ -109,8 +109,8 @@ msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs:  "&cFast-Travel-S
 msg_err_cannot_create_fast_travel_sign_bad_town_data:  "&cCannot create Fast-Travel-Sign, because there was a problem with the data of the town or townblock."
 msg_err_cannot_create_fast_travel_sign_incorrect_second_line: "&cCannot create Fast-Travel-Sign, because the 2nd line of the text was incorrect."
 msg_err_cannot_create_fast_travel_sign_unknown_destination_town: "&cCannot create Fast-Travel-Sign, because the destination town (%s) is unknown."
-msg_err_cannot_create_fast_travel_sign_source_town_and_destination_town_are_the_same: "&cCannot create Fast-Travel-Sign, because the source town and destination town are the same."
-msg_err_cannot_create_fast_travel_sign_no_jump_node_at_destination_town: "&cCannot create Fast-Travel-Sign, because there is no jump node at the destination town (%s)."
+msg_err_cannot_create_fast_travel_sign_source_town_and_destination_town_are_the_same: "&cCannot create Fast-Travel-Sign, because the source town and destination town are the same (%s)."
+msg_err_cannot_create_fast_travel_sign_sign_already_exists_at_jump_node: "&cThis jump node already contains a Fast-Travel_sign for the destination town (%s)."
 msg_success_fast_travel_sign_created: "&bFast-Travel-Sign Created. Right-Click the sign to instantly travel to the destination town: %s."
 
 # Using Fast Travel

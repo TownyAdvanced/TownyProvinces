@@ -4,22 +4,17 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.Translatable;
-import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.ChunkSnapshot;
-import org.bukkit.World;
+import io.github.townyadvanced.townyprovinces.util.FastTravelUtil;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import java.util.Map;
 
 /**
  * 
@@ -33,6 +28,8 @@ public class BukkitListener implements Listener {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled())
 			return;
 		String line1 = event.getLine(0);
+		String line2 = event.getLine(1);
+		String destinationTownName = event.getLine(2);
 		if (line1 == null || !line1.trim().equals(">>>"))
 			return;
 		if (TownyAPI.getInstance().isWilderness(event.getBlock())) {
@@ -62,39 +59,36 @@ public class BukkitListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
-		String line2 = event.getLine(1);
 		if (line2 == null || !line2.trim().equalsIgnoreCase("fast travel to")) {
 			event.setCancelled(true);
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_incorrect_second_line"));
 			return;
 		}
-		String line3 = event.getLine(2);
-		if (line3 == null || line3.length() == 0) {
+		if (destinationTownName == null || destinationTownName.length() == 0) {
 			event.setCancelled(true);
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_unknown_destination_town", ""));
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_unknown_destination_town", destinationTownName));
 			return;
 		}
-		Town destinationTown = TownyAPI.getInstance().getTown(line3.trim());
+		Town destinationTown = TownyAPI.getInstance().getTown(destinationTownName.trim());
 		if (destinationTown == null) {
 			event.setCancelled(true);
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_unknown_destination_town", line3));
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_unknown_destination_town", destinationTownName));
 			return;
 		}
 		Town sourceTown = townBlock.getTownOrNull();
 		if (sourceTown.equals(destinationTown)) {
 			event.setCancelled(true);
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_source_town_and_destination_town_are_the_same", line3));
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_source_town_and_destination_town_are_the_same", destinationTownName));
 			return;
 		}
-		boolean destinationHasJumpHub = TownMetaDataController.hasJumpHub(destinationTown);
-		if (!destinationHasJumpHub) {
+		if(TownMetaDataController.getJumpHubSigns(sourceTown).get(destinationTownName) != null) {
 			event.setCancelled(true);
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_no_jump_node_at_destination_town", line3));
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_sign_already_exists_at_jump_node", destinationTownName));
 			return;
 		}
 		//Sign creation successful
 		TownMetaDataController.addJumpHubSign(sourceTown, event.getBlock(), destinationTown.getName());
-		Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_success_fast_travel_sign_created", line3));
+		Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_success_fast_travel_sign_created", destinationTownName));
 	}
 
 	@EventHandler(ignoreCancelled = true)
@@ -150,6 +144,27 @@ public class BukkitListener implements Listener {
 				}
 			}
 		}
+	}
+
+	/**
+	 * If a player breaks a fast-travel-sign, delete the metadata
+	 * @param event block break event
+	 */
+	@EventHandler(ignoreCancelled = true)
+	public void on(BlockBreakEvent event) {
+		if(!TownyAPI.getInstance().isWilderness(event.getBlock())
+				&& FastTravelUtil.isFastTravelSign(event.getBlock())) {
+			TownBlock townBlock = TownyAPI.getInstance().getTownBlock(event.getBlock().getLocation());
+			if(townBlock == null)
+				return;
+			Town town = townBlock.getTownOrNull();
+			if(town == null)
+				return;
+			if(TownMetaDataController.hasJumpHub(town)) {
+				TownMetaDataController.removeJumpHubSign(town, event.getBlock());
+			}
+		}
+		
 	}
 
 }

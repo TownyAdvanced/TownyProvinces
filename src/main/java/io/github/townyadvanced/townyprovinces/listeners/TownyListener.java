@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.event.PlotPreChangeTypeEvent;
+import com.palmergames.bukkit.towny.event.PreDeleteTownEvent;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
 import com.palmergames.bukkit.towny.event.TownBlockTypeRegisterEvent;
 import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
@@ -26,6 +27,7 @@ import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.CustomPlotUtil;
+import io.github.townyadvanced.townyprovinces.util.FastTravelUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -214,26 +216,23 @@ public class TownyListener implements Listener {
 		if(town == null) {
 			return;
 		}
-		boolean oldTypeIsJumpHub = event.getOldType().getName().equalsIgnoreCase("jump-node");
-		boolean newTypeIsJumpHub = event.getNewType().getName().equalsIgnoreCase("jump-node");
-		boolean jumpHubMetadataExists = TownMetaDataController.hasJumpHub(town);
+		boolean oldTypeIsJumpNode = event.getOldType().getName().equalsIgnoreCase("jump-node");
+		boolean newTypeIsJumpNode = event.getNewType().getName().equalsIgnoreCase("jump-node");
+		boolean townHasJumpNode = TownMetaDataController.hasJumpHub(town);
 
-		if(oldTypeIsJumpHub) {
-			if(!newTypeIsJumpHub) {
-				//Jump hub deleted
-				TownMetaDataController.removeJumpHubCoord(town);
-				town.save();
-				//TODO - Should we delete/break the signs at the plot?
+		if(oldTypeIsJumpNode) {
+			if(!newTypeIsJumpNode) {
+				FastTravelUtil.removeAllTracesOfJumpNode(town);
 			}
 		} else {
-			if(newTypeIsJumpHub) {
-				if(jumpHubMetadataExists) {
-					//Can't add a second jump hub
+			if(newTypeIsJumpNode) {
+				if(townHasJumpNode) {
+					//Can't add a second jump node
 					event.setCancelled(true);
 					event.setCancelMessage(Translatable.of("msg_err_cannot_add_a_second_jump_node").translate(Locale.ROOT));
 				} else {
 					//Jump hub added to town
-					TownMetaDataController.setJumpHubCoord(town, event.getTownBlock().getWorldCoord());
+					TownMetaDataController.setJumpNodeCoord(town, event.getTownBlock().getWorldCoord());
 					town.save();
 				}
 			}
@@ -248,11 +247,13 @@ public class TownyListener implements Listener {
 		if(event.getTown() == null) {
 			return;
 		}
-		//If this was a jump hub, adjust metadata
-		if(TownMetaDataController.hasJumpHub(event.getTown())) {
-			WorldCoord jumpHubWorldCoord = TownMetaDataController.getJumpHubWorldCoord(event.getTown());
+		Town town = event.getTown();
+		
+		//If this was a jump hub, cleanup
+		if(TownMetaDataController.hasJumpHub(town)) {
+			WorldCoord jumpHubWorldCoord = TownMetaDataController.getJumpHubWorldCoord(town);
 			if(jumpHubWorldCoord != null && jumpHubWorldCoord.equals(event.getWorldCoord())) {
-				TownMetaDataController.removeJumpHubCoord(event.getTown());
+				FastTravelUtil.removeAllTracesOfJumpNode(town);
 			}
 		}
 	}
@@ -272,7 +273,28 @@ public class TownyListener implements Listener {
 	// Re-register the TownBlockType when/if Towny reloads itself.
 	@EventHandler
 	public void onTownyLoadTownBlockTypes(TownBlockTypeRegisterEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
 		CustomPlotUtil.registerCustomPlots();
 	}
 
+	/**
+	 * When delete town occurs ---> break fast travel signs in the town
+	When unclaim occurs ---> break all signs
+	
+	 */
+	@EventHandler
+	public void onPreDeleteTown(PreDeleteTownEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		//If there was a jump hub, remove the signs
+		if(TownMetaDataController.hasJumpHub(event.getTown())) {
+			FastTravelUtil.removeAllTracesOfJumpNode(event.getTown());
+		}
+	}
+	
+	
+	
 }
