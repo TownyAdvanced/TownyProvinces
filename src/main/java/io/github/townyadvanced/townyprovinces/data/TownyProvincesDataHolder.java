@@ -1,6 +1,5 @@
 package io.github.townyadvanced.townyprovinces.data;
 
-import com.palmergames.bukkit.towny.object.Town;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
@@ -29,21 +28,7 @@ public class TownyProvincesDataHolder {
 	 * Set of provinces
 	 */
 	private final Set<Province> provincesSet;
-
-
-	/**
-	 * 
-	 *
-	 1. townyProvincePortCoord, <Coord>
-
-	 2. townyProvincesJumpHubCoord, <Coord>
-
-	 3. townyProvincesRoadDestinations,  [<Coord>, <Coord>, <Coord>]
-
-	 * 
-	 * 
-	 * 
-	 */
+	
 	/**
 	 * Coord province map
 	 * 
