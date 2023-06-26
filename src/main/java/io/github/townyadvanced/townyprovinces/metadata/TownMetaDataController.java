@@ -18,11 +18,6 @@ public class TownMetaDataController {
 	private static final StringDataField jumpHubCoord = new StringDataField("townyprovinces_jumpNodeCoord", "");
 
 	private static final StringDataField jumpHubSigns = new StringDataField("townyprovinces_jumpHubSigns", "");
-
-
-
-	//["towny_stringdf","townyprovinces_signs","{world,-3555,-10333,lerglon},{world,-3675,-13545,prepdo}"]
-	
 	
 	@Nullable
 	public static boolean hasJumpHub(Town town) {
