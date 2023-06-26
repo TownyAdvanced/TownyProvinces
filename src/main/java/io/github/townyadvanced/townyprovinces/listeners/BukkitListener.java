@@ -12,26 +12,22 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-/**
- * 
- * @author LlmDl
- *
- */
 public class BukkitListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onSignChangeEvent(SignChangeEvent event) {
-		if (!TownyProvincesSettings.isTownyProvincesEnabled())
-			return;
-		if (!FastTravelUtil.isFastTravelSign(event.getBlock())) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
 			return;
 		}
-		String line2 = event.getLine(1);
-		String destinationTownName = event.getLine(2);
+		String line1 = event.getLine(0);
+		if (line1 == null || !line1.trim().equals(">>>")) {
+			return;
+		}
 		if (TownyAPI.getInstance().isWilderness(event.getBlock())) {
 			//Can't create sign in the wilderness
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs"));
@@ -50,20 +46,23 @@ public class BukkitListener implements Listener {
 			return;
 		}
 		String townBlockTypeNameLowercase = townBlock.getTypeName().toLowerCase();
-		if (!townBlock.isHomeBlock()
-			&& !townBlockTypeNameLowercase.equals("outpost")
-			&& !townBlockTypeNameLowercase.equals("port")
-			&& !townBlockTypeNameLowercase.equals("jump-node")) {
+		if (
+			//!townBlock.isHomeBlock()
+			//&& !townBlockTypeNameLowercase.equals("outpost")
+			//&& !townBlockTypeNameLowercase.equals("port")
+			!townBlockTypeNameLowercase.equals("jump-node")) {
 			//Can only create travel node in certain plot types
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs"));
 			event.setCancelled(true);
 			return;
 		}
+		String line2 = event.getLine(1);
 		if (line2 == null || !line2.trim().equalsIgnoreCase("fast travel to")) {
 			event.setCancelled(true);
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_incorrect_second_line"));
 			return;
 		}
+		String destinationTownName = event.getLine(2);
 		if (destinationTownName == null || destinationTownName.length() == 0) {
 			event.setCancelled(true);
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_unknown_destination_town", destinationTownName));
@@ -87,13 +86,16 @@ public class BukkitListener implements Listener {
 			return;
 		}
 		//Sign creation successful
-		TownMetaDataController.addJumpHubSign(sourceTown, event.getBlock(), destinationTown.getName());
-		Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_success_fast_travel_sign_created", destinationTownName));
+		if(townBlockTypeNameLowercase.equals("jump-node")) {
+			TownMetaDataController.addJumpHubSign(sourceTown, event.getBlock(), destinationTown.getName());
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_success_fast_travel_sign_created", destinationTownName));
+		}
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void on(PlayerInteractEvent event) {
-		if (!event.hasBlock() 
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK  
+				|| !event.hasBlock() 
 				|| event.getClickedBlock() == null
 				|| !FastTravelUtil.isFastTravelSign(event.getClickedBlock())) {
 			return;
@@ -114,10 +116,11 @@ public class BukkitListener implements Listener {
 			return;
 		}
 		String townBlockTypeNameLowercase = townBlock.getTypeName().toLowerCase();
-		if (!townBlock.isHomeBlock()
-			&& !townBlockTypeNameLowercase.equals("outpost")
-			&& !townBlockTypeNameLowercase.equals("port")
-			&& !townBlockTypeNameLowercase.equals("jump-node")) {
+		if (
+			//!townBlock.isHomeBlock()
+			///&& !townBlockTypeNameLowercase.equals("outpost")
+			//&& !townBlockTypeNameLowercase.equals("port")
+			!townBlockTypeNameLowercase.equals("jump-node")) {
 			//Sign not in a travel node type of plot
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_bad_plot_type"));
 			return;
