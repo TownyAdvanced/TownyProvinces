@@ -27,11 +27,11 @@ public class BukkitListener implements Listener {
 	public void onSignChangeEvent(SignChangeEvent event) {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled())
 			return;
-		String line1 = event.getLine(0);
+		if (!FastTravelUtil.isFastTravelSign(event.getBlock())) {
+			return;
+		}
 		String line2 = event.getLine(1);
 		String destinationTownName = event.getLine(2);
-		if (line1 == null || !line1.trim().equals(">>>"))
-			return;
 		if (TownyAPI.getInstance().isWilderness(event.getBlock())) {
 			//Can't create sign in the wilderness
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs"));
@@ -93,56 +93,55 @@ public class BukkitListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void on(PlayerInteractEvent event) {
-		if (event.hasBlock()) {
-			Block block = event.getClickedBlock();
-			if (block != null && block.getType().name().toLowerCase().endsWith("_sign")) {
-				Sign sign = (Sign) block;
-				if (sign.getLine(0).trim().equals(">>>")) {
-					//Player clicked a fast travel sign. Lets see if we can move them
-					TownBlock townBlock = TownyAPI.getInstance().getTownBlock(block.getLocation());
-					if (townBlock == null) {
-						//Sign is in wilderness
-						Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_not_in_a_town"));
-						return;
-					}
-					Town sourceTown = townBlock.getTownOrNull();
-					if(sourceTown == null) {
-						//Sign is not in a town
-						Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_not_in_a_town"));
-						return;
-					}
-					String townBlockTypeNameLowercase = townBlock.getTypeName().toLowerCase();
-					if (!townBlock.isHomeBlock()
-						&& !townBlockTypeNameLowercase.equals("outpost")
-						&& !townBlockTypeNameLowercase.equals("port")
-						&& !townBlockTypeNameLowercase.equals("jump-node")) {
-						//Sign not in a travel node type of plot
-						Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_bad_plot_type"));
-						return;
-					}
-					String line3 = sign.getLine(2);
-					Town destinationTown = TownyAPI.getInstance().getTown(line3);
-					if (destinationTown == null) {
-						Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_unknown_destination_town", line3));
-						return;
-					}
-					//Check individual travel types
-					if (townBlockTypeNameLowercase.equals("jump-node")) {
-						if (!TownMetaDataController.hasJumpHub(destinationTown)) {
-							Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_town_has_no_jump_hub", line3));
-							return;
-						}
-						//Find the return sign at the destination
-						Block returnSign = TownMetaDataController.getJumpHubSigns(destinationTown).get(sourceTown.getName());
-						if(returnSign == null) {
-							Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_plot_had_no_return_sign", line3));
-							return;
-						}
-						//Jump now
-						event.getPlayer().teleport(returnSign.getLocation());
-					}
-				}
+		if (!event.hasBlock() 
+				|| event.getClickedBlock() == null
+				|| !FastTravelUtil.isFastTravelSign(event.getClickedBlock())) {
+			return;
+		}
+		//Player clicked a fast travel sign. Lets see if we can move them
+		Block block = event.getClickedBlock();
+		Sign sign = (Sign) block.getState();
+		TownBlock townBlock = TownyAPI.getInstance().getTownBlock(block.getLocation());
+		if (townBlock == null) {
+			//Sign is in wilderness
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_not_in_a_town"));
+			return;
+		}
+		Town sourceTown = townBlock.getTownOrNull();
+		if(sourceTown == null) {
+			//Sign is not in a town
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_not_in_a_town"));
+			return;
+		}
+		String townBlockTypeNameLowercase = townBlock.getTypeName().toLowerCase();
+		if (!townBlock.isHomeBlock()
+			&& !townBlockTypeNameLowercase.equals("outpost")
+			&& !townBlockTypeNameLowercase.equals("port")
+			&& !townBlockTypeNameLowercase.equals("jump-node")) {
+			//Sign not in a travel node type of plot
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_bad_plot_type"));
+			return;
+		}
+		String line3 = sign.getLine(2);
+		Town destinationTown = TownyAPI.getInstance().getTown(line3);
+		if (destinationTown == null) {
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_unknown_destination_town", line3));
+			return;
+		}
+		//Check individual travel types
+		if (townBlockTypeNameLowercase.equals("jump-node")) {
+			if (!TownMetaDataController.hasJumpHub(destinationTown)) {
+				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_town_has_no_jump_hub", line3));
+				return;
 			}
+			//Find the return sign at the destination
+			Block returnSign = TownMetaDataController.getJumpHubSigns(destinationTown).get(sourceTown.getName());
+			if(returnSign == null) {
+				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_plot_had_no_return_sign", line3));
+				return;
+			}
+			//Jump now
+			event.getPlayer().teleport(returnSign.getLocation());
 		}
 	}
 

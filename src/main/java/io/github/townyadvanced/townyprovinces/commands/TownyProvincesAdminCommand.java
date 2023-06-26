@@ -45,6 +45,10 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				if (args.length == 2)
 					return NameUtil.filterByStart(adminTabCompletesRegion, args[1]);
 				if (args.length == 3) {
+					//Create data folder if needed
+					FileUtil.setupPluginDataFoldersIfRequired();
+					//Create region definitions folder and sample files if needed
+					FileUtil.createRegionDefinitionsFolderAndSampleFiles();
 					//Reload region definitions
 					TownyProvincesSettings.loadRegionDefinitions();
 					List<String> regionOptions = new ArrayList<>();
