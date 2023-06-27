@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class TownyProvincesAdminCommand implements TabExecutor {
 
@@ -113,6 +114,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 	private void showHelp(CommandSender sender) {
 		TownyMessaging.sendMessage(sender, ChatTools.formatTitle("/townyprovincesadmin"));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "province [sea|land] [<x>,<z>]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "province [sea|land] [<x>,<z>] [<x>,<z>]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [regenerate] [<Region Name>]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [newtowncost] [<Region Name>] [amount]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [upkeeptowncost] [<Region Name>] [amount]", ""));
@@ -197,37 +199,93 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 	}
 	
 	private void parseProvinceSetToSeaCommand(CommandSender sender, String[] args) {
-		try {	
-			String[] locationAsArray = args[1].split(",");
-			if(locationAsArray.length != 2) {
-				Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
+		try {
+			if (args.length == 2) {
+				parseProvinceSetToSeaCommandByPoint(sender, args);
+			} else if (args.length == 3){
+				parseProvinceSetToSeaCommandByArea(sender, args);
+			} else{
 				showHelp(sender);
-				return;
 			}
-			int x = Integer.parseInt(locationAsArray[0]);
-			int y = Integer.parseInt(locationAsArray[1]);
-			Coord coord = Coord.parseCoord(x,y);
-			Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord.getX(), coord.getZ());
-			//Validate action
-			if(province == null) {
-				Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
-				showHelp(sender);
-				return;
-			}
-			if(province.isSea()) {
-				Messaging.sendMsg(sender, Translatable.of("msg_province_already_sea"));
-				return;
-			}
-			//Set province to be sea
-			province.setSea(true);
-			province.saveData();
-			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_sea"));
 		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
 			showHelp(sender);
 		}
 	}
 
+	private void parseProvinceSetToLandCommand(CommandSender sender, String[] args) {
+		try {
+			if (args.length == 2) {
+				parseProvinceSetToLandCommandByPoint(sender, args);
+			} else if (args.length == 3){
+				parseProvinceSetToLandCommandByArea(sender, args);
+			} else{
+				showHelp(sender);
+			}
+		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
+			showHelp(sender);
+		}
+	}
+	
+	private void parseProvinceSetToSeaCommandByPoint(CommandSender sender, String[] args) throws NumberFormatException, ArrayIndexOutOfBoundsException{
+		String[] locationAsArray = args[1].split(",");
+		if(locationAsArray.length != 2) {
+			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
+			showHelp(sender);
+			return;
+		}
+		int x = Integer.parseInt(locationAsArray[0]);
+		int y = Integer.parseInt(locationAsArray[1]);
+		Coord coord = Coord.parseCoord(x,y);
+		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord.getX(), coord.getZ());
+		//Validate action
+		if(province == null) {
+			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
+			showHelp(sender);
+			return;
+		}
+		if(province.isSea()) {
+			Messaging.sendMsg(sender, Translatable.of("msg_province_already_sea"));
+			return;
+		}
+		//Set province to be sea
+		province.setSea(true);
+		province.saveData();
+		DynmapDisplayTaskController.requestHomeBlocksRefresh();
+		Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_sea"));
+	}
+
+	private void parseProvinceSetToSeaCommandByArea(CommandSender sender, String[] args) {
+		String[] topLeftCornerAsArray = args[1].split(",");
+		if(topLeftCornerAsArray.length != 2) {
+			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
+			showHelp(sender);
+			return;
+		}
+		String[] bottomRightCornerAsArray = args[2].split(",");
+		if(bottomRightCornerAsArray.length != 2) {
+			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
+			showHelp(sender);
+			return;
+		}
+		int topLeftX = Integer.parseInt(topLeftCornerAsArray[0]);
+		int topLeftZ = Integer.parseInt(topLeftCornerAsArray[1]);
+		int bottomRightX = Integer.parseInt(bottomRightCornerAsArray[0]);
+		int bottomRightZ = Integer.parseInt(bottomRightCornerAsArray[1]);
+		
+		Set<Province> provinces = TownyProvincesDataHolder.getInstance().getProvincesInArea(topLeftX, topLeftZ, bottomRightX, bottomRightZ);
+		
+		for(Province province: provinces) {
+			if(!province.isSea()) {
+				province.setSea(true);
+				province.saveData();
+			}
+		}
+		DynmapDisplayTaskController.requestHomeBlocksRefresh();
+		Messaging.sendMsg(sender, Translatable.of("msg_provinces_in_area_set_to_sea"));
+	}
+	
 	private void parseRegionRegenerateCommand(CommandSender sender, String[] args) {
 		//Create data folder if needed
 		FileUtil.setupPluginDataFoldersIfRequired();
@@ -317,37 +375,62 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		}
 	}
 	
-	private void parseProvinceSetToLandCommand(CommandSender sender, String[] args) {
-		try {
-			String[] locationAsArray = args[1].split(",");
-			if(locationAsArray.length != 2) {
-				Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
-				showHelp(sender);
-				return;
-			}
-			int x = Integer.parseInt(locationAsArray[0]);
-			int y = Integer.parseInt(locationAsArray[1]);
-			Coord coord = Coord.parseCoord(x,y);
-			Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord.getX(), coord.getZ());
-			//Validate action
-			if(province == null) {
-				Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
-				showHelp(sender);
-				return;
-			}
-			if(!province.isSea()) {
-				Messaging.sendMsg(sender, Translatable.of("msg_province_already_land"));
-				return;
-			}
-			//Set province to be land
-			province.setSea(false);
-			province.saveData();
-			Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_land"));
-		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+	private void parseProvinceSetToLandCommandByPoint(CommandSender sender, String[] args) {
+		String[] locationAsArray = args[1].split(",");
+		if(locationAsArray.length != 2) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
 			showHelp(sender);
+			return;
 		}
+		int x = Integer.parseInt(locationAsArray[0]);
+		int y = Integer.parseInt(locationAsArray[1]);
+		Coord coord = Coord.parseCoord(x,y);
+		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord.getX(), coord.getZ());
+		//Validate action
+		if(province == null) {
+			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
+			showHelp(sender);
+			return;
+		}
+		if(!province.isSea()) {
+			Messaging.sendMsg(sender, Translatable.of("msg_province_already_land"));
+			return;
+		}
+		//Set province to be land
+		province.setSea(false);
+		province.saveData();
+		DynmapDisplayTaskController.requestHomeBlocksRefresh();
+		Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_land"));
 	}
-	
+
+	private void parseProvinceSetToLandCommandByArea(CommandSender sender, String[] args) {
+		String[] topLeftCornerAsArray = args[1].split(",");
+		if(topLeftCornerAsArray.length != 2) {
+			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
+			showHelp(sender);
+			return;
+		}
+		String[] bottomRightCornerAsArray = args[2].split(",");
+		if(bottomRightCornerAsArray.length != 2) {
+			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
+			showHelp(sender);
+			return;
+		}
+		int topLeftX = Integer.parseInt(topLeftCornerAsArray[0]);
+		int topLeftZ = Integer.parseInt(topLeftCornerAsArray[1]);
+		int bottomRightX = Integer.parseInt(bottomRightCornerAsArray[0]);
+		int bottomRightZ = Integer.parseInt(bottomRightCornerAsArray[1]);
+
+		Set<Province> provinces = TownyProvincesDataHolder.getInstance().getProvincesInArea(topLeftX, topLeftZ, bottomRightX, bottomRightZ);
+
+		for(Province province: provinces) {
+			if(province.isSea()) {
+				province.setSea(false);
+				province.saveData();
+			}
+		}
+		DynmapDisplayTaskController.requestHomeBlocksRefresh();
+		Messaging.sendMsg(sender, Translatable.of("msg_provinces_in_area_set_to_land"));
+	}
 }
 
