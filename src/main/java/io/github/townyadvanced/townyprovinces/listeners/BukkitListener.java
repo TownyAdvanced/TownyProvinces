@@ -5,10 +5,12 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.Translatable;
+import com.palmergames.util.MathUtil;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FastTravelUtil;
+import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -156,6 +158,17 @@ public class BukkitListener implements Listener {
 			Block returnSign = TownMetaDataController.getPortSigns(destinationTown).get(sourceTown.getName());
 			if(returnSign == null) {
 				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_plot_had_no_return_sign", line3));
+				return;
+			}
+			//Check distance
+			double actualDistance = MathUtil.distance(
+					event.getClickedBlock().getX(),
+					event.getClickedBlock().getZ(),
+					returnSign.getX(),
+					returnSign.getZ());
+			double maxDistance = TownyProvincesSettings.getPortsMaxFastTravelRange();
+			if(actualDistance > maxDistance) {
+				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_port_is_too_far_away", line3, (int)maxDistance, (int)actualDistance));
 				return;
 			}
 			//Jump now

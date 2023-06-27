@@ -126,5 +126,6 @@ msg_err_fast_travel_sign_did_not_work_bad_plot_type: "&cThe Fast-Travel Sign did
 msg_err_fast_travel_sign_did_not_work_unknown_destination_town: "&cThe Fast-Travel Sign did not work, because the destination town is unknown."
 msg_err_fast_travel_sign_did_not_work_destination_town_has_no_jump_node: "&cThe Fast-Travel Sign did not work, because the destination town has no Jump-Node."
 msg_err_fast_travel_sign_did_not_work_destination_town_has_no_port: "&cThe Fast-Travel Sign did not work, because the destination town has no Port."
+msg_err_fast_travel_sign_did_not_work_destination_port_is_too_far_away: "&cThe Fast-Travel Sign did not work, because the destination Port is too far away. Max Distance: %d, Actual Distance: %d."
 msg_err_fast_travel_sign_did_not_work_destination_plot_had_no_return_sign: "&cThe Fast-Travel Sign did not work, because the destination plot did not contain a return Fast-Travel Sign."
 

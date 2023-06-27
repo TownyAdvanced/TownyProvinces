@@ -244,4 +244,6 @@ public class TownyProvincesSettings {
 	public static double getJumpNodesUpkeepCost() {
 		return Settings.getDouble(ConfigNodes.JUMP_NODES_UPKEEP_COST);
 	}
+	
+	public static double getPortsMaxFastTravelRange() { return Settings.getDouble(ConfigNodes.PORTS_MAX_FAST_TRAVEL_RANGE); }
 }
