@@ -241,6 +241,16 @@ public class TownMetaDataController {
 		}
 	}
 
+	public static void removeAllJumpNodeMetadata(Town town) {
+		removeJumpNodeCoord(town);
+		removeJumpNodeSigns(town);
+	}
+
+	public static void removeAllPortMetadata(Town town) {
+		removePortCoord(town);
+		removePortSigns(town);
+	}
+
 	///////////////////////////////////////////////
 
 }

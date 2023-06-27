@@ -30,7 +30,6 @@ import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.BiomeUtil;
 import io.github.townyadvanced.townyprovinces.util.CustomPlotUtil;
-import io.github.townyadvanced.townyprovinces.util.FastTravelUtil;
 import org.bukkit.block.Biome;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -269,28 +268,43 @@ public class TownyListener implements Listener {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
 			return;
 		}
-		String oldType = event.getOldType().getName();
 		String newType = event.getNewType().getName();
+		Town town = event.getTownBlock().getTownOrNull();
+		WorldCoord eventWorldCoord = event.getTownBlock().getWorldCoord();
+
 		if (TownyProvincesSettings.isPortsEnabled()) {
-			//If this is a removal, nuke all traces of port
-			if (oldType.equalsIgnoreCase("port") && !newType.equalsIgnoreCase("port")) {
-				FastTravelUtil.removeAllTracesOfPort(event.getTownBlock().getTownOrNull());
-			}
-			//If this is an addition, add metadata
-			if (!oldType.equalsIgnoreCase("port") && newType.equalsIgnoreCase("port")) {
-				TownMetaDataController.setPortCoord(event.getTownBlock().getTownOrNull(), event.getTownBlock().getWorldCoord());
-				event.getTownBlock().getTownOrNull().save();
+			WorldCoord existingTravelPlotWorldCoord = TownMetaDataController.getPortWorldCoord(town);
+			if (existingTravelPlotWorldCoord == null) {
+				//If this is an addition, add metadata
+				if(newType.equalsIgnoreCase("port")) {
+					TownMetaDataController.setPortCoord(town, eventWorldCoord);
+					town.save();
+				}
+			} else {
+				//If this is a removal, remove metadata
+				if (eventWorldCoord.equals(existingTravelPlotWorldCoord)
+						&& !newType.equalsIgnoreCase("port")) {
+					TownMetaDataController.removeAllPortMetadata(town);
+					town.save();
+				}
 			}
 		}
+
 		if (TownyProvincesSettings.isJumpNodesEnabled()) {
-			//If this is a removal, nuke all traces of port
-			if (oldType.equalsIgnoreCase("jump-node") && !newType.equalsIgnoreCase("jump-node")) {
-				FastTravelUtil.removeAllTracesOfPort(event.getTownBlock().getTownOrNull());
-			}
-			//If this is an addition, add metadata
-			if (!oldType.equalsIgnoreCase("jump-node") && newType.equalsIgnoreCase("jump-node")) {
-				TownMetaDataController.setPortCoord(event.getTownBlock().getTownOrNull(), event.getTownBlock().getWorldCoord());
-				event.getTownBlock().getTownOrNull().save();
+			WorldCoord existingTravelPlotWorldCoord = TownMetaDataController.getJumpNodeWorldCoord(town);
+			if (existingTravelPlotWorldCoord == null) {
+				//If this is an addition, add metadata
+				if (newType.equalsIgnoreCase("jump-node")) {
+					TownMetaDataController.setJumpNodeCoord(town, eventWorldCoord);
+					town.save();
+				}
+			} else {
+				//If this is a removal, remove metadata
+				if (eventWorldCoord.equals(existingTravelPlotWorldCoord)
+					&& !newType.equalsIgnoreCase("jump-node")) {
+					TownMetaDataController.removeAllJumpNodeMetadata(town);
+					town.save();
+				}
 			}
 		}
 	}
@@ -308,14 +322,16 @@ public class TownyListener implements Listener {
 		if(TownMetaDataController.hasJumpNode(town)) {
 			WorldCoord worldCoord = TownMetaDataController.getJumpNodeWorldCoord(town);
 			if(worldCoord != null && worldCoord.equals(event.getWorldCoord())) {
-				FastTravelUtil.removeAllTracesOfJumpNode(town);
+				TownMetaDataController.removeAllJumpNodeMetadata(town);
+				town.save();
 			}
 		}
 
 		if(TownMetaDataController.hasPort(town)) {
 			WorldCoord worldCoord = TownMetaDataController.getPortWorldCoord(town);
 			if(worldCoord != null && worldCoord.equals(event.getWorldCoord())) {
-				FastTravelUtil.removeAllTracesOfPort(town);
+				TownMetaDataController.removeAllPortMetadata(town);
+				town.save();
 			}
 		}
 	}
@@ -339,24 +355,6 @@ public class TownyListener implements Listener {
 			return;
 		}
 		CustomPlotUtil.registerCustomPlots();
-	}
-
-	/**
-	 * When delete town occurs ---> break fast travel signs in the town
-	When unclaim occurs ---> break all signs
-	
-	 */
-	@EventHandler
-	public void onPreDeleteTown(PreDeleteTownEvent event) {
-		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
-			return;
-		}
-		if(TownMetaDataController.hasJumpNode(event.getTown())) {
-			FastTravelUtil.removeAllTracesOfJumpNode(event.getTown());
-		}
-		if(TownMetaDataController.hasPort(event.getTown())) {
-			FastTravelUtil.removeAllTracesOfPort(event.getTown());
-		}
 	}
 	
 }

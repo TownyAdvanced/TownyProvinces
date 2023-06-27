@@ -1,11 +1,14 @@
 package io.github.townyadvanced.townyprovinces.util;
 
+import com.palmergames.bukkit.towny.Towny;
+import com.palmergames.bukkit.towny.command.TownyAdminCommand;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.TownBlockData;
 import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.TownBlockTypeHandler;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import org.bukkit.Bukkit;
 
 public class CustomPlotUtil {
 
@@ -18,6 +21,13 @@ public class CustomPlotUtil {
 		}
 		if(TownyProvincesSettings.isJumpNodesEnabled()) {
 			registerCustomPlot("Jump-Node", "J", TownyProvincesSettings.getJumpNodesPurchasePrice());
+		}
+
+		//reload towny config to ensure the custom plot types are loaded correctly
+		try {
+			(new TownyAdminCommand(Towny.getPlugin())).parseTownyAdminCommand(Bukkit.getConsoleSender(), new String[]{"reload", "database"});
+		} catch (TownyException e) {
+			throw new RuntimeException(e);
 		}
 		return true;
 	}

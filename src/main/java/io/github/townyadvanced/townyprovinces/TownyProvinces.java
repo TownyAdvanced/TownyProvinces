@@ -62,13 +62,6 @@ public class TownyProvinces extends JavaPlugin {
 			return;
 		}
 
-		//reload towny config to ensure the custom plot types are loaded correctly
-		try {
-			(new TownyAdminCommand(Towny.getPlugin())).parseTownyAdminCommand(Bukkit.getConsoleSender(), new String[]{"reload", "database"});
-		} catch (TownyException e) {
-			throw new RuntimeException(e);
-		}
-
 		//Load optional stuff 
 		loadIntegrations();
 
