@@ -6,11 +6,11 @@ import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.util.MathUtil;
+import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FastTravelUtil;
-import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -195,7 +195,7 @@ public class BukkitListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void on(BlockBreakEvent event) {
-		if(!TownyAPI.getInstance().isWilderness(event.getBlock())
+		if(!TownyAPI.getInstance().isWilderness(event.getBlock()) 
 				&& FastTravelUtil.isFastTravelSign(event.getBlock())) {
 			TownBlock townBlock = TownyAPI.getInstance().getTownBlock(event.getBlock().getLocation());
 			if(townBlock == null)
@@ -207,16 +207,17 @@ public class BukkitListener implements Listener {
 			if(townBlockType == null)
 				return;
 			if(townBlockType.getName().equalsIgnoreCase("jump-node")) {
-				if(TownMetaDataController.hasJumpNode(town)) {
-					TownMetaDataController.removeJumpNodeSign(town, event.getBlock());
+				if(TownMetaDataController.hasJumpNode(town)
+						&& TownMetaDataController.removeJumpNodeSign(town, event.getBlock())) {
+					town.save();
 				}
 			} else if (townBlockType.getName().equalsIgnoreCase("port")) {
-				if(TownMetaDataController.hasPort(town)) {
-					TownMetaDataController.removePortSign(town, event.getBlock());
+				if(TownMetaDataController.hasPort(town)
+						&& TownMetaDataController.removePortSign(town, event.getBlock())) {
+					town.save();
 				}
 			}
 		}
-		
 	}
 
 }

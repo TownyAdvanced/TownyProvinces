@@ -22,13 +22,6 @@ public class CustomPlotUtil {
 		if(TownyProvincesSettings.isJumpNodesEnabled()) {
 			registerCustomPlot("Jump-Node", "J", TownyProvincesSettings.getJumpNodesPurchasePrice());
 		}
-
-		//reload towny config to ensure the custom plot types are loaded correctly
-		try {
-			(new TownyAdminCommand(Towny.getPlugin())).parseTownyAdminCommand(Bukkit.getConsoleSender(), new String[]{"reload", "database"});
-		} catch (TownyException e) {
-			throw new RuntimeException(e);
-		}
 		return true;
 	}
 

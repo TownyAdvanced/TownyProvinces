@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import com.palmergames.bukkit.towny.object.metadata.StringDataField;
 import com.palmergames.bukkit.towny.utils.MetaDataUtil;
+import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -146,7 +147,7 @@ public class TownMetaDataController {
 		String value = getTravelPlotSignsAsString(town, stringDataField);
 		//Remove data
 		if(value != null) {
-			removeJumpNodeSigns(town);
+			removeTravelPlotSigns(town, stringDataField);
 			builder = new StringBuilder(value);
 			builder.append("|");
 		} else {
@@ -204,20 +205,27 @@ public class TownMetaDataController {
 		town.removeMetaData(portSigns.clone());
 	}
 
+	public static void removeTravelPlotSigns(Town town, StringDataField stringDataField) {
+		town.removeMetaData(stringDataField.clone());
+	}
+	
 	////////////////////////////////////////////////////////////////
 
-	public static void removeJumpNodeSign(Town town, Block block) {
-		removeTravelPlotSign(town, block, jumpNodeSigns, "townyprovinces_jumpNodeSigns");
+	public static boolean removeJumpNodeSign(Town town, Block block) {
+		return removeTravelPlotSign(town, block, jumpNodeSigns, "townyprovinces_jumpNodeSigns");
 	}
 
-	public static void removePortSign(Town town, Block block) {
-		removeTravelPlotSign(town, block, portSigns, "townyprovinces_portSigns");
+	public static boolean removePortSign(Town town, Block block) {
+		return removeTravelPlotSign(town, block, portSigns, "townyprovinces_portSigns");
 	}
+	
 	/**
 	 * Remove the sign IF it is in the metadata
+	 * 
 	 * @param block the sign
+	 * @return true if the sign was removed   
 	 */
-	public static void removeTravelPlotSign(Town town, Block block, StringDataField stringDataField, String metadataFieldName) {
+	public static boolean removeTravelPlotSign(Town town, Block block, StringDataField stringDataField, String metadataFieldName) {
 		Map<String, Block> signs = getTravelPlotSigns(town, stringDataField);
 		String signKey = null;
 		for(Map.Entry<String,Block> mapEntry: signs.entrySet()) {
@@ -229,13 +237,16 @@ public class TownMetaDataController {
 		if(signKey != null) {
 			signs.remove(signKey);
 			setTravelPlotSigns(town, signs, stringDataField, metadataFieldName);
+			return true;
+		} else {
+			return false;
 		}
 	}
 
 	///////////////////////////////////////////////
 	
 	private static void setTravelPlotSigns(Town town, Map<String,Block> newSigns, StringDataField stringDataField, String metaDataname) {
-		removeJumpNodeSigns(town);
+		removeTravelPlotSigns(town, stringDataField);
 		for(Map.Entry<String,Block> mapEntry: newSigns.entrySet()) {
 			addTravelPlotSign(town, mapEntry.getValue(), mapEntry.getKey(), stringDataField, metaDataname);
 		}

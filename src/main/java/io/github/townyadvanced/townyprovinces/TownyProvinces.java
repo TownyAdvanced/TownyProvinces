@@ -54,6 +54,7 @@ public class TownyProvinces extends JavaPlugin {
 				|| !FileUtil.createRegionDefinitionsFolderAndSampleFiles()
 				|| !DataHandlerUtil.loadAllData()
 				|| !CustomPlotUtil.registerCustomPlots()
+				|| !reloadTownyDatabase()
 				|| !registerListeners()
 				|| !registerAdminCommands()
 			) {
@@ -66,6 +67,16 @@ public class TownyProvinces extends JavaPlugin {
 		loadIntegrations();
 
 		info("TownyProvinces Loaded Successfully");
+	}
+	
+	private boolean reloadTownyDatabase() {
+		//reload towny config to ensure the custom plot types are loaded correctly
+		try {
+			(new TownyAdminCommand(Towny.getPlugin())).parseTownyAdminCommand(Bukkit.getConsoleSender(), new String[]{"reload", "database"});
+		} catch (TownyException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
 	}
 	
 	private boolean registerAdminCommands() {
