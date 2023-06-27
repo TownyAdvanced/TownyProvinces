@@ -83,15 +83,27 @@ public class BukkitListener implements Listener {
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_source_town_and_destination_town_are_the_same", destinationTownName));
 			return;
 		}
-		if(TownMetaDataController.getJumpNodeSigns(sourceTown).get(destinationTownName) != null) {
-			event.setCancelled(true);
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_sign_already_exists_at_jump_node", destinationTownName));
-			return;
-		}
-		//Sign creation successful
+		
 		if(townBlockTypeNameLowercase.equals("jump-node")) {
+			if(TownMetaDataController.getJumpNodeSigns(sourceTown).get(destinationTownName) != null) {
+				event.setCancelled(true);
+				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_sign_already_exists_at_jump_node", destinationTownName));
+				return;
+			}
+			//Sign creation successful
 			TownMetaDataController.addJumpNodeSign(sourceTown, event.getBlock(), destinationTown.getName());
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_success_fast_travel_sign_created", destinationTownName));
+		
+		} else if (townBlockTypeNameLowercase.equals("port")) {
+			if(TownMetaDataController.getPortSigns(sourceTown).get(destinationTownName) != null) {
+				event.setCancelled(true);
+				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_sign_already_exists_at_port", destinationTownName));
+				return;
+			}
+			//Sign creation successful
+			TownMetaDataController.addPortSign(sourceTown, event.getBlock(), destinationTown.getName());
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_success_fast_travel_sign_created", destinationTownName));
+
 		}
 	}
 
@@ -173,6 +185,7 @@ public class BukkitListener implements Listener {
 			}
 			//Jump now
 			event.getPlayer().teleport(returnSign.getLocation());
+			event.setCancelled(true);
 		}
 	}
 
