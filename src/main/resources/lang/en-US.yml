@@ -104,11 +104,13 @@ dynmap_province_homeblock_label: "Town Costs: New %s, Upkeep %s"
 dynmap_layer_label_town_costs: "Town Costs"
 dynmap_layer_label_borders: "Borders"
 
-# Creating Jump Nodes
+# Creating Travel Plots
 
 msg_err_cannot_add_a_second_jump_node: "&cTowns cannot have more than one Jump-Node."
-#msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs:  "&cFast-Travel-Signs can only be placed in Home-Blocks, Outposts, Ports, and Jump-Nodes."
-msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs:  "&cFast-Travel Signs can only be placed in Jump-Nodes."
+msg_err_cannot_add_a_second_port: "&cTowns cannot have more than one Port."
+msg_err_ports_can_only_be_created_in_ocean_biomes: "&cPorts can only be created in Ocean or Beach biomes."
+#msg_err_cannot_create_fast_travel_signs_except_in_travel_plots:  "&cFast-Travel-Signs can only be placed in Home-Blocks, Outposts, Ports, and Jump-Nodes."
+msg_err_cannot_create_fast_travel_signs_except_in_travel_plots:  "&cFast-Travel Signs can only be placed in Jump-Nodes or ports."
 msg_err_cannot_create_fast_travel_sign_bad_town_data:  "&cCannot create Fast-Travel Sign, because there was a problem with the data of the town or townblock."
 msg_err_cannot_create_fast_travel_sign_incorrect_second_line: "&cCannot create Fast-Travel Sign, because the 2nd line of the text was incorrect."
 msg_err_cannot_create_fast_travel_sign_unknown_destination_town: "&cCannot create Fast-Travel Sign, because the destination town (%s) is unknown."
@@ -120,7 +122,9 @@ msg_success_fast_travel_sign_created: "&bFast-Travel Sign Created. Right-Click t
 
 msg_err_fast_travel_sign_did_not_work_not_in_a_town: "&cThe Fast-Travel Sign did not work, because you are not in a town."
 #msg_err_fast_travel_sign_did_not_work_bad_plot_type: "&cThe Fast-Travel sign did not work, because it is not in a Home-Block, Outpost, Port, or Jump-Node."
-msg_err_fast_travel_sign_did_not_work_bad_plot_type: "&cThe Fast-Travel Sign did not work, because it is not in a Jump-Node."
+msg_err_fast_travel_sign_did_not_work_bad_plot_type: "&cThe Fast-Travel Sign did not work, because it is not in a Jump-Node or port."
 msg_err_fast_travel_sign_did_not_work_unknown_destination_town: "&cThe Fast-Travel Sign did not work, because the destination town is unknown."
-msg_err_fast_travel_sign_did_not_work_destination_town_has_no_jump_hub: "&cThe Fast-Travel Sign did not work, because the destination town has no Jump-Node."
+msg_err_fast_travel_sign_did_not_work_destination_town_has_no_jump_node: "&cThe Fast-Travel Sign did not work, because the destination town has no Jump-Node."
+msg_err_fast_travel_sign_did_not_work_destination_town_has_no_port: "&cThe Fast-Travel Sign did not work, because the destination town has no Port."
 msg_err_fast_travel_sign_did_not_work_destination_plot_had_no_return_sign: "&cThe Fast-Travel Sign did not work, because the destination plot did not contain a return Fast-Travel Sign."
+

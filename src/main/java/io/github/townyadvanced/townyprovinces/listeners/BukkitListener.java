@@ -3,6 +3,7 @@ package io.github.townyadvanced.townyprovinces.listeners;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
+import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
@@ -30,7 +31,7 @@ public class BukkitListener implements Listener {
 		}
 		if (TownyAPI.getInstance().isWilderness(event.getBlock())) {
 			//Can't create sign in the wilderness
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs"));
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_signs_except_in_travel_plots"));
 			event.setCancelled(true);
 			return;
 		}
@@ -49,10 +50,10 @@ public class BukkitListener implements Listener {
 		if (
 			//!townBlock.isHomeBlock()
 			//&& !townBlockTypeNameLowercase.equals("outpost")
-			//&& !townBlockTypeNameLowercase.equals("port")
-			!townBlockTypeNameLowercase.equals("jump-node")) {
+			!townBlockTypeNameLowercase.equals("port")
+			&& !townBlockTypeNameLowercase.equals("jump-node")) {
 			//Can only create travel node in certain plot types
-			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_signs_except_in_travel_hubs"));
+			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_signs_except_in_travel_plots"));
 			event.setCancelled(true);
 			return;
 		}
@@ -119,8 +120,8 @@ public class BukkitListener implements Listener {
 		if (
 			//!townBlock.isHomeBlock()
 			///&& !townBlockTypeNameLowercase.equals("outpost")
-			//&& !townBlockTypeNameLowercase.equals("port")
-			!townBlockTypeNameLowercase.equals("jump-node")) {
+			!townBlockTypeNameLowercase.equals("port")
+			&& !townBlockTypeNameLowercase.equals("jump-node")) {
 			//Sign not in a travel node type of plot
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_bad_plot_type"));
 			return;
@@ -134,11 +135,25 @@ public class BukkitListener implements Listener {
 		//Check individual travel types
 		if (townBlockTypeNameLowercase.equals("jump-node")) {
 			if (!TownMetaDataController.hasJumpNode(destinationTown)) {
-				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_town_has_no_jump_hub", line3));
+				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_town_has_no_jump_node", line3));
 				return;
 			}
 			//Find the return sign at the destination
 			Block returnSign = TownMetaDataController.getJumpNodeSigns(destinationTown).get(sourceTown.getName());
+			if(returnSign == null) {
+				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_plot_had_no_return_sign", line3));
+				return;
+			}
+			//Jump now
+			event.getPlayer().teleport(returnSign.getLocation());
+
+		} else if (townBlockTypeNameLowercase.equals("port")) {
+			if (!TownMetaDataController.hasPort(destinationTown)) {
+				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_town_has_no_port", line3));
+				return;
+			}
+			//Find the return sign at the destination
+			Block returnSign = TownMetaDataController.getPortSigns(destinationTown).get(sourceTown.getName());
 			if(returnSign == null) {
 				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_plot_had_no_return_sign", line3));
 				return;
@@ -162,8 +177,17 @@ public class BukkitListener implements Listener {
 			Town town = townBlock.getTownOrNull();
 			if(town == null)
 				return;
-			if(TownMetaDataController.hasJumpNode(town)) {
-				TownMetaDataController.removeJumpNodeSign(town, event.getBlock());
+			TownBlockType townBlockType = townBlock.getType();
+			if(townBlockType == null)
+				return;
+			if(townBlockType.getName().equalsIgnoreCase("jump-node")) {
+				if(TownMetaDataController.hasJumpNode(town)) {
+					TownMetaDataController.removeJumpNodeSign(town, event.getBlock());
+				}
+			} else if (townBlockType.getName().equalsIgnoreCase("port")) {
+				if(TownMetaDataController.hasPort(town)) {
+					TownMetaDataController.removePortSign(town, event.getBlock());
+				}
 			}
 		}
 		

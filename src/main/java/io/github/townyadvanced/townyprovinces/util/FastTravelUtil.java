@@ -17,6 +17,17 @@ public class FastTravelUtil {
 		TownMetaDataController.removeJumpNodeSigns(town);
 		town.save();
 	}
+
+	public static void removeAllTracesOfPort(Town town) {
+		//Break the fast travel signs
+		for(Block block: TownMetaDataController.getPortSigns(town).values()) {
+			block.breakNaturally();
+		}
+		//Remove metadata
+		TownMetaDataController.removePortCoord(town);
+		TownMetaDataController.removePortSigns(town);
+		town.save();
+	}
 	
 	public static boolean isFastTravelSign(Block block) {
 		return block.getState() instanceof Sign
