@@ -21,6 +21,13 @@ public enum ConfigNodes {
 			"",
 			"# The name of the world where TownyProvinces appplies.",
 			"# TownyProvinces does not yet support multiple worlds"),
+	BIOME_LOOKUP_BY_BLOCK(
+		"biome_lookup_by_block",
+		"false",
+		"",
+		"# If this is true, then biome lookups are done via world.getHighestBlockAt(x,z).getBiome()",
+		"# If this is false, then biome lookups are done via world.getBiome(x,y,z).",
+		"# One any given server, one method will give correct results, the other will not."),
 	PROVINCE_VISUALS(
 			"province_visuals",
 			"",

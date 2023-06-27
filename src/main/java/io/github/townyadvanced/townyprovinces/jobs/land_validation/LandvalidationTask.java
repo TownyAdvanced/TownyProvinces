@@ -5,9 +5,7 @@ import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
-import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
+import io.github.townyadvanced.townyprovinces.util.BiomeUtil;
 import org.bukkit.block.Biome;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -58,11 +56,11 @@ public class LandvalidationTask extends BukkitRunnable {
 	 * then set the isSea boolean as appropriate
 	 * <p>
 	 * This method will not always work perfectly
-	 * because it checks only a selection if the biomes.
+	 * because it checks only a selection if the chunks in the province.
 	 * It does this because checking a biome is hard on the processor
 	 * <p>
 	 * Mistakes are expected,
-	 * which is why server owners can run /tp province sea x,y
+	 * which is why server owners can run /tp province sea [x,y] ([x2,y2])
 	 */
 	private void executeLandValidation() {
 		TownyProvinces.info("Now Running land validation job.");
@@ -74,7 +72,7 @@ public class LandvalidationTask extends BukkitRunnable {
 		}
 		for(Province province: copyOfProvincesSet) {
 			if (province.isLandValidationRequested()) {
-				boolean isSea = isProvinceMainlyOcean(province);
+				boolean isSea = BiomeUtil.isProvinceMainlyOceanBiome(province);
 				if(isSea != province.isSea()) {
 					province.setSea(isSea);
 				}
@@ -113,28 +111,5 @@ public class LandvalidationTask extends BukkitRunnable {
 		LandValidationTaskController.stopTask();
 		TownyProvinces.info("Land Validation Job Complete.");
 	}
-
-	private static boolean isProvinceMainlyOcean(Province province) {
-		List<TPCoord> coordsInProvince = province.getListOfCoordsInProvince();
-		String worldName = TownyProvincesSettings.getWorldName();
-		World world = Bukkit.getWorld(worldName);
-		Biome biome;
-		TPCoord coordToTest;
-		for(int i = 0; i < 10; i++) {
-			coordToTest = coordsInProvince.get((int)(Math.random() * coordsInProvince.size()));
-			int x = (coordToTest.getX() * TownyProvincesSettings.getChunkSideLength()) + 8;
-			int z = (coordToTest.getZ() * TownyProvincesSettings.getChunkSideLength()) + 8;
-			biome = world.getHighestBlockAt(x,z).getBiome();
-			try {
-				Thread.sleep(200);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-			if(!biome.name().toLowerCase().contains("ocean") && !biome.name().toLowerCase().contains("beach")) {
-				return false;
-			}
-		}
-		return true;
-	}
-
+	
 }
