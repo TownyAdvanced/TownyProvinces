@@ -9,12 +9,12 @@ public class FastTravelUtil {
 	
 	public static void removeAllTracesOfJumpNode(Town town) {
 		//Break the fast travel signs
-		for(Block block: TownMetaDataController.getJumpHubSigns(town).values()) {
+		for(Block block: TownMetaDataController.getJumpNodeSigns(town).values()) {
 			block.breakNaturally();
 		}
 		//Remove metadata
-		TownMetaDataController.removeJumpHubCoord(town);
-		TownMetaDataController.removeJumpHubSigns(town);
+		TownMetaDataController.removeJumpNodeCoord(town);
+		TownMetaDataController.removeJumpNodeSigns(town);
 		town.save();
 	}
 	

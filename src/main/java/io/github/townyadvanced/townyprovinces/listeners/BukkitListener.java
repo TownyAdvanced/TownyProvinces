@@ -80,14 +80,14 @@ public class BukkitListener implements Listener {
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_source_town_and_destination_town_are_the_same", destinationTownName));
 			return;
 		}
-		if(TownMetaDataController.getJumpHubSigns(sourceTown).get(destinationTownName) != null) {
+		if(TownMetaDataController.getJumpNodeSigns(sourceTown).get(destinationTownName) != null) {
 			event.setCancelled(true);
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_cannot_create_fast_travel_sign_sign_already_exists_at_jump_node", destinationTownName));
 			return;
 		}
 		//Sign creation successful
 		if(townBlockTypeNameLowercase.equals("jump-node")) {
-			TownMetaDataController.addJumpHubSign(sourceTown, event.getBlock(), destinationTown.getName());
+			TownMetaDataController.addJumpNodeSign(sourceTown, event.getBlock(), destinationTown.getName());
 			Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_success_fast_travel_sign_created", destinationTownName));
 		}
 	}
@@ -133,12 +133,12 @@ public class BukkitListener implements Listener {
 		}
 		//Check individual travel types
 		if (townBlockTypeNameLowercase.equals("jump-node")) {
-			if (!TownMetaDataController.hasJumpHub(destinationTown)) {
+			if (!TownMetaDataController.hasJumpNode(destinationTown)) {
 				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_town_has_no_jump_hub", line3));
 				return;
 			}
 			//Find the return sign at the destination
-			Block returnSign = TownMetaDataController.getJumpHubSigns(destinationTown).get(sourceTown.getName());
+			Block returnSign = TownMetaDataController.getJumpNodeSigns(destinationTown).get(sourceTown.getName());
 			if(returnSign == null) {
 				Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_err_fast_travel_sign_did_not_work_destination_plot_had_no_return_sign", line3));
 				return;
@@ -162,8 +162,8 @@ public class BukkitListener implements Listener {
 			Town town = townBlock.getTownOrNull();
 			if(town == null)
 				return;
-			if(TownMetaDataController.hasJumpHub(town)) {
-				TownMetaDataController.removeJumpHubSign(town, event.getBlock());
+			if(TownMetaDataController.hasJumpNode(town)) {
+				TownMetaDataController.removeJumpNodeSign(town, event.getBlock());
 			}
 		}
 		

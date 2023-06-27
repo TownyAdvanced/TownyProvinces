@@ -218,7 +218,7 @@ public class TownyListener implements Listener {
 		}
 		boolean oldTypeIsJumpNode = event.getOldType().getName().equalsIgnoreCase("jump-node");
 		boolean newTypeIsJumpNode = event.getNewType().getName().equalsIgnoreCase("jump-node");
-		boolean townHasJumpNode = TownMetaDataController.hasJumpHub(town);
+		boolean townHasJumpNode = TownMetaDataController.hasJumpNode(town);
 
 		if(oldTypeIsJumpNode) {
 			if(!newTypeIsJumpNode) {
@@ -250,8 +250,8 @@ public class TownyListener implements Listener {
 		Town town = event.getTown();
 		
 		//If this was a jump hub, cleanup
-		if(TownMetaDataController.hasJumpHub(town)) {
-			WorldCoord jumpHubWorldCoord = TownMetaDataController.getJumpHubWorldCoord(town);
+		if(TownMetaDataController.hasJumpNode(town)) {
+			WorldCoord jumpHubWorldCoord = TownMetaDataController.getJumpNodeWorldCoord(town);
 			if(jumpHubWorldCoord != null && jumpHubWorldCoord.equals(event.getWorldCoord())) {
 				FastTravelUtil.removeAllTracesOfJumpNode(town);
 			}
@@ -290,7 +290,7 @@ public class TownyListener implements Listener {
 			return;
 		}
 		//If there was a jump hub, remove the signs
-		if(TownMetaDataController.hasJumpHub(event.getTown())) {
+		if(TownMetaDataController.hasJumpNode(event.getTown())) {
 			FastTravelUtil.removeAllTracesOfJumpNode(event.getTown());
 		}
 	}
