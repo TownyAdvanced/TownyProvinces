@@ -27,7 +27,7 @@ public enum ConfigNodes {
 			"",
 			"# If this is true, then biome lookups are done via world.getHighestBlockAt(x,z).getBiome()",
 			"# If this is false, then biome lookups are done via world.getBiome(x,y,z).",
-			"# One any given server, one method will give correct results, the other will not."),
+			"# On any given server, one method will give correct results, the other will not."),
 	PROVINCE_VISUALS(
 			"province_visuals",
 			"",
