@@ -240,7 +240,7 @@ public class TownyListener implements Listener {
 		}
 		boolean newTypeIsPort = event.getNewType().getName().equalsIgnoreCase("port");
 		boolean townHasPort = TownMetaDataController.hasPort(town);
-		
+
 		if(newTypeIsPort) {
 			if(townHasPort) {
 				//Can't add a second port
@@ -269,21 +269,27 @@ public class TownyListener implements Listener {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
 			return;
 		}
+		String oldType = event.getOldType().getName();
+		String newType = event.getNewType().getName();
 		if (TownyProvincesSettings.isPortsEnabled()) {
-			if (event.getOldType().getName().equalsIgnoreCase("port")) {
+			//If this is a removal, nuke all traces of port
+			if (oldType.equalsIgnoreCase("port") && !newType.equalsIgnoreCase("port")) {
 				FastTravelUtil.removeAllTracesOfPort(event.getTownBlock().getTownOrNull());
 			}
-			if (event.getNewType().getName().equalsIgnoreCase("port")) {
+			//If this is an addition, add metadata
+			if (!oldType.equalsIgnoreCase("port") && newType.equalsIgnoreCase("port")) {
 				TownMetaDataController.setPortCoord(event.getTownBlock().getTownOrNull(), event.getTownBlock().getWorldCoord());
 				event.getTownBlock().getTownOrNull().save();
 			}
 		}
 		if (TownyProvincesSettings.isJumpNodesEnabled()) {
-			if (event.getOldType().getName().equalsIgnoreCase("jump-node")) {
-				FastTravelUtil.removeAllTracesOfJumpNode(event.getTownBlock().getTownOrNull());
+			//If this is a removal, nuke all traces of port
+			if (oldType.equalsIgnoreCase("jump-node") && !newType.equalsIgnoreCase("jump-node")) {
+				FastTravelUtil.removeAllTracesOfPort(event.getTownBlock().getTownOrNull());
 			}
-			if (event.getNewType().getName().equalsIgnoreCase("jump-node")) {
-				TownMetaDataController.setJumpNodeCoord(event.getTownBlock().getTownOrNull(), event.getTownBlock().getWorldCoord());
+			//If this is an addition, add metadata
+			if (!oldType.equalsIgnoreCase("jump-node") && newType.equalsIgnoreCase("jump-node")) {
+				TownMetaDataController.setPortCoord(event.getTownBlock().getTownOrNull(), event.getTownBlock().getWorldCoord());
 				event.getTownBlock().getTownOrNull().save();
 			}
 		}
