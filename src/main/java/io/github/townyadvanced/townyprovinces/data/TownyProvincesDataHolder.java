@@ -1,5 +1,6 @@
 package io.github.townyadvanced.townyprovinces.data;
 
+import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
@@ -210,6 +211,23 @@ public class TownyProvincesDataHolder {
 		}
 		
 		//Return result
+		return result;
+	}
+
+	public Set<Province> getProvincesInArea(int topLeftX, int topLeftZ, int bottomRightX, int bottomRightZ) {
+		Set<Province> result = new HashSet<>();
+		TPCoord homeBlock;
+		Coord topLeftCoord = (Coord.parseCoord(topLeftX,topLeftZ));
+		Coord bottomRightCoord = (Coord.parseCoord(bottomRightX,bottomRightZ));
+		for(Province province: provincesSet) {
+			homeBlock = province.getHomeBlock();
+			if(homeBlock.getX() >= topLeftCoord.getX()
+					&& homeBlock.getX() <= bottomRightCoord.getX()
+					&& homeBlock.getZ() >= topLeftCoord.getZ()
+					&& homeBlock.getZ() <= bottomRightCoord.getZ()) {
+				result.add(province);
+			}
+		}
 		return result;
 	}
 }

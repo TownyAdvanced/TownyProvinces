@@ -34,10 +34,12 @@ msg_err_unknown_world: "&cERROR: The world_name field in TownyProvinces/config.y
 # Set province to land or sea
 
 msg_err_invalid_province_location: "&cThe given co-ordinate was either mis-formatted, on a border, or outside the map."
-msg_province_successfully_set_to_sea: "&bProvince Type set to Sea. The map will be updated shortly."
-msg_province_already_sea: "&cProvince Type is already Sea."
-msg_province_successfully_set_to_land: "&bProvince Type set to Land. The map will be updated shortly."
-msg_province_already_land: "&cProvince Type is already Land."
+msg_province_successfully_set_to_sea: "&bProvince type was set to Sea. The map will be updated shortly."
+msg_province_already_sea: "&cProvince type is already Sea."
+msg_province_successfully_set_to_land: "&bProvince type was set to Land. The map will be updated shortly."
+msg_province_already_land: "&cProvince type is already Land."
+msg_provinces_in_area_set_to_sea: "&bAll provinces in the given area were set to type Sea."
+msg_provinces_in_area_set_to_land: "&bAll provinces in the given area were set to type Land."
 
 # Regenerate region
 
