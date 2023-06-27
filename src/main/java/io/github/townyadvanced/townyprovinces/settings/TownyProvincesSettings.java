@@ -56,6 +56,10 @@ public class TownyProvincesSettings {
 		return Settings.getBoolean(ConfigNodes.ENABLED);
 	}
 
+	public static boolean isBiomeLookupByBlock() {
+		return Settings.getBoolean(ConfigNodes.BIOME_LOOKUP_BY_BLOCK);
+	}
+
 	//TODO - Later make this "get worlds" etc.
 	public static @Nullable World getWorld() {
 		return Bukkit.getWorld(getWorldName());
