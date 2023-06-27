@@ -230,6 +230,9 @@ public class TownyProvincesSettings {
 		return Settings.getDouble(ConfigNodes.PORTS_PURCHASE_PRICE);
 	}
 
+	public static double getPortsUpkeepCost() {
+		return Settings.getDouble(ConfigNodes.PORTS_UPKEEP_COST);
+	}
 	public static boolean isJumpNodesEnabled() {
 		return Settings.getBoolean(ConfigNodes.JUMP_NODES_ENABLED);
 	}
@@ -237,4 +240,10 @@ public class TownyProvincesSettings {
 	public static double getJumpNodesPurchasePrice() {
 		return Settings.getDouble(ConfigNodes.JUMP_NODES_PURCHASE_PRICE);
 	}
+
+	public static double getJumpNodesUpkeepCost() {
+		return Settings.getDouble(ConfigNodes.JUMP_NODES_UPKEEP_COST);
+	}
+	
+	public static double getPortsMaxFastTravelRange() { return Settings.getDouble(ConfigNodes.PORTS_MAX_FAST_TRAVEL_RANGE); }
 }

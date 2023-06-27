@@ -17,7 +17,9 @@ public class BiomeUtil {
 		TPCoord coordToTest;
 		for(int i = 0; i < 10; i++) {
 			coordToTest = coordsInProvince.get((int)(Math.random() * coordsInProvince.size()));
-			biome = lookupBiome(coordToTest);
+			String worldName = TownyProvincesSettings.getWorldName();
+			World world = Bukkit.getWorld(worldName);
+			biome = lookupBiome(coordToTest, world);
 			try {
 				Thread.sleep(200); //Sleep because the biome lookup can be hard on processor
 			} catch (InterruptedException e) {
@@ -30,9 +32,7 @@ public class BiomeUtil {
 		return true;
 	}
 	
-	public static Biome lookupBiome(TPCoord coordToTest) {
-		String worldName = TownyProvincesSettings.getWorldName();
-		World world = Bukkit.getWorld(worldName);
+	public static Biome lookupBiome(TPCoord coordToTest, World world) {
 		int x = (coordToTest.getX() * TownyProvincesSettings.getChunkSideLength()) + 8;
 		int z = (coordToTest.getZ() * TownyProvincesSettings.getChunkSideLength()) + 8;
 		if(TownyProvincesSettings.isBiomeLookupByBlock()) {

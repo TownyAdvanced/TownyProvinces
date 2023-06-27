@@ -3,6 +3,7 @@ package io.github.townyadvanced.townyprovinces.listeners;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
+import com.palmergames.bukkit.towny.event.PlotChangeTypeEvent;
 import com.palmergames.bukkit.towny.event.PlotPreChangeTypeEvent;
 import com.palmergames.bukkit.towny.event.PreDeleteTownEvent;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
@@ -25,9 +26,11 @@ import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.util.BiomeUtil;
 import io.github.townyadvanced.townyprovinces.util.CustomPlotUtil;
-import io.github.townyadvanced.townyprovinces.util.FastTravelUtil;
+import org.bukkit.block.Biome;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -134,6 +137,15 @@ public class TownyListener implements Listener {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled() || !TownySettings.isUsingEconomy()) {
 			return;
 		}
+		//Add new plot upkeeps
+		if(TownyProvincesSettings.isJumpNodesEnabled() && TownMetaDataController.hasJumpNode(event.getTown())) {
+			double updatedUpkeepCost = event.getUpkeep() + TownyProvincesSettings.getJumpNodesUpkeepCost();
+			event.setUpkeep(updatedUpkeepCost);
+		}
+		if(TownyProvincesSettings.isPortsEnabled() && TownMetaDataController.hasPort(event.getTown())) {
+			double updatedUpkeepCost = event.getUpkeep() + TownyProvincesSettings.getPortsUpkeepCost();
+			event.setUpkeep(updatedUpkeepCost);
+		}
 		//Can't work it if the town has no homeblock
 		if (!event.getTown().hasHomeBlock()) {
 			return;
@@ -189,57 +201,115 @@ public class TownyListener implements Listener {
 			return;
 		}
 	}
-
-	/**
-	 * - When a plot is about to be converted to a jump hub
-	 *   first check the town metadata
-	 *    - If the jump hub metadata exists, forbid a second one
-	 *    - If no jump hub metadata exists, add the jump hub metadata
-	 *    
-	 * - When a plot is about to be converted FROM a jump hub, (PlotChangeTypeEvent)
-	 *   Remove the jump hub metadata if it exists	 
-	 *    
-	 * @param event
-	 */
+	
 	@EventHandler(ignoreCancelled = true)
-	private void onPlotConversion(PlotPreChangeTypeEvent event) {
+	private void onPlotPreChangeTypeEvent(PlotPreChangeTypeEvent event) {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
 			return;
 		}
 		if (TownyProvincesSettings.isJumpNodesEnabled()) {
-			evaluatePlotConversionForJumpNodes(event);
+			evaluatePrePlotConversionForJumpNodes(event);
+		}
+		if (TownyProvincesSettings.isPortsEnabled()) {
+			evaluatePrePlotConversionForPorts(event);
 		}
 	}
 	
-	private void evaluatePlotConversionForJumpNodes(PlotPreChangeTypeEvent event) {
+	private void evaluatePrePlotConversionForJumpNodes(PlotPreChangeTypeEvent event) {
 		Town town = event.getTownBlock().getTownOrNull();
 		if(town == null) {
 			return;
 		}
-		boolean oldTypeIsJumpNode = event.getOldType().getName().equalsIgnoreCase("jump-node");
 		boolean newTypeIsJumpNode = event.getNewType().getName().equalsIgnoreCase("jump-node");
-		boolean townHasJumpNode = TownMetaDataController.hasJumpHub(town);
+		boolean townHasJumpNode = TownMetaDataController.hasJumpNode(town);
 
-		if(oldTypeIsJumpNode) {
-			if(!newTypeIsJumpNode) {
-				FastTravelUtil.removeAllTracesOfJumpNode(town);
-			}
-		} else {
-			if(newTypeIsJumpNode) {
-				if(townHasJumpNode) {
-					//Can't add a second jump node
+		if(newTypeIsJumpNode) {
+			if(townHasJumpNode) {
+				//Can't add a second jump node
+				event.setCancelled(true);
+				event.setCancelMessage(Translatable.of("msg_err_cannot_add_a_second_jump_node").translate(Locale.ROOT));
+			} 
+		}
+	}
+
+	private void evaluatePrePlotConversionForPorts(PlotPreChangeTypeEvent event) {
+		Town town = event.getTownBlock().getTownOrNull();
+		if(town == null) {
+			return;
+		}
+		boolean newTypeIsPort = event.getNewType().getName().equalsIgnoreCase("port");
+		boolean townHasPort = TownMetaDataController.hasPort(town);
+
+		if(newTypeIsPort) {
+			if(townHasPort) {
+				//Can't add a second port
+				event.setCancelled(true);
+				event.setCancelMessage(Translatable.of("msg_err_cannot_add_a_second_port").translate(Locale.ROOT));
+			} else {
+				//Can only create port in ocean biome
+				Coord coord = event.getTownBlock().getCoord();
+				TPCoord tpCoord = new TPFinalCoord(coord.getX(), coord.getZ());
+				Biome biome = BiomeUtil.lookupBiome(tpCoord, event.getTownBlock().getWorld().getBukkitWorld());
+				if(!biome.name().toLowerCase().contains("ocean") && !biome.name().toLowerCase().contains("beach")) {
 					event.setCancelled(true);
-					event.setCancelMessage(Translatable.of("msg_err_cannot_add_a_second_jump_node").translate(Locale.ROOT));
-				} else {
-					//Jump hub added to town
-					TownMetaDataController.setJumpNodeCoord(town, event.getTownBlock().getWorldCoord());
+					event.setCancelMessage(Translatable.of("msg_err_ports_can_only_be_created_in_ocean_biomes").translate(Locale.ROOT));
+				}
+			}
+		}
+	}
+
+	/**
+	 * When the travel plot is actually created, register it in metadata
+	 * 
+	 * @param event the event
+	 */
+	@EventHandler(ignoreCancelled = true)
+	private void onPlotChangeTypeEvent(PlotChangeTypeEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		String newType = event.getNewType().getName();
+		Town town = event.getTownBlock().getTownOrNull();
+		WorldCoord eventWorldCoord = event.getTownBlock().getWorldCoord();
+
+		if (TownyProvincesSettings.isPortsEnabled()) {
+			WorldCoord existingTravelPlotWorldCoord = TownMetaDataController.getPortWorldCoord(town);
+			if (existingTravelPlotWorldCoord == null) {
+				//If this is an addition, add metadata
+				if(newType.equalsIgnoreCase("port")) {
+					TownMetaDataController.setPortCoord(town, eventWorldCoord);
+					town.save();
+				}
+			} else {
+				//If this is a removal, remove metadata
+				if (eventWorldCoord.equals(existingTravelPlotWorldCoord)
+						&& !newType.equalsIgnoreCase("port")) {
+					TownMetaDataController.removeAllPortMetadata(town);
+					town.save();
+				}
+			}
+		}
+
+		if (TownyProvincesSettings.isJumpNodesEnabled()) {
+			WorldCoord existingTravelPlotWorldCoord = TownMetaDataController.getJumpNodeWorldCoord(town);
+			if (existingTravelPlotWorldCoord == null) {
+				//If this is an addition, add metadata
+				if (newType.equalsIgnoreCase("jump-node")) {
+					TownMetaDataController.setJumpNodeCoord(town, eventWorldCoord);
+					town.save();
+				}
+			} else {
+				//If this is a removal, remove metadata
+				if (eventWorldCoord.equals(existingTravelPlotWorldCoord)
+					&& !newType.equalsIgnoreCase("jump-node")) {
+					TownMetaDataController.removeAllJumpNodeMetadata(town);
 					town.save();
 				}
 			}
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	private void onTownUnclaim(TownUnclaimEvent event) {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
 			return;
@@ -249,11 +319,19 @@ public class TownyListener implements Listener {
 		}
 		Town town = event.getTown();
 		
-		//If this was a jump hub, cleanup
-		if(TownMetaDataController.hasJumpHub(town)) {
-			WorldCoord jumpHubWorldCoord = TownMetaDataController.getJumpHubWorldCoord(town);
-			if(jumpHubWorldCoord != null && jumpHubWorldCoord.equals(event.getWorldCoord())) {
-				FastTravelUtil.removeAllTracesOfJumpNode(town);
+		if(TownMetaDataController.hasJumpNode(town)) {
+			WorldCoord worldCoord = TownMetaDataController.getJumpNodeWorldCoord(town);
+			if(worldCoord != null && worldCoord.equals(event.getWorldCoord())) {
+				TownMetaDataController.removeAllJumpNodeMetadata(town);
+				town.save();
+			}
+		}
+
+		if(TownMetaDataController.hasPort(town)) {
+			WorldCoord worldCoord = TownMetaDataController.getPortWorldCoord(town);
+			if(worldCoord != null && worldCoord.equals(event.getWorldCoord())) {
+				TownMetaDataController.removeAllPortMetadata(town);
+				town.save();
 			}
 		}
 	}
@@ -278,23 +356,5 @@ public class TownyListener implements Listener {
 		}
 		CustomPlotUtil.registerCustomPlots();
 	}
-
-	/**
-	 * When delete town occurs ---> break fast travel signs in the town
-	When unclaim occurs ---> break all signs
-	
-	 */
-	@EventHandler
-	public void onPreDeleteTown(PreDeleteTownEvent event) {
-		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
-			return;
-		}
-		//If there was a jump hub, remove the signs
-		if(TownMetaDataController.hasJumpHub(event.getTown())) {
-			FastTravelUtil.removeAllTracesOfJumpNode(event.getTown());
-		}
-	}
-	
-	
 	
 }
