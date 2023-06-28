@@ -1,7 +1,7 @@
 # TownyProvinces
 
 ## :information_source: Overview
-- :world_map: An add-on plugin for *Towny*, which makes claiming more organized, thus reducing staff workload and server toxicity. The plugin also contains its own Fast-Transport system, including Ports, Roads, and Jump-Hubs.
+- :world_map: An add-on plugin for *Towny*, which makes claiming more organized, and contains its own Fast-Transport system.
   
 ## :gift: Features
 - :globe_with_meridians: **Divides The Map Automatically, Into Multiple 1-Town-Only Provinces.**
@@ -20,9 +20,9 @@
 - :santa: ***Hermits***: Upkeep can be lowered in unpopular regions, supporting players with isolationist styles of play.
 - :railway_track: ***Transport***:
     - Drives the emergence of a hub-node pattern of towns on the map.
-    - Encourages the building of roads on the map.
-    - Supports mayors who wish to detach their transport system from their politics.
     - Allows every town to become a Fast-Travel destination, if it so chooses.
+    - Supports mayors who wish to detach their transport system from their politics.
+    - Encourages the building of roads on the map.
     
 ## :eye: Map View
 - ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/b0778012-7023-4372-b599-b5de6a336d4f)
