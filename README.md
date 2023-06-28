@@ -1,7 +1,7 @@
 # TownyProvinces
 
 ## :information_source: Overview
-- :world_map: An add-on plugin for *Towny*, which makes claiming more organized, & contains its own Fast-Transport system.
+- :world_map: An add-on plugin for *Towny*, which makes claiming more organized, & contains a Fast-Transport system.
   
 ## :gift: Features
 - :globe_with_meridians: **Divides The Map Automatically, Into Multiple 1-Town-Only Provinces.**
