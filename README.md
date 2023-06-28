@@ -45,11 +45,21 @@
 - Fast Transport
   - Ports
     - As a mayor, run `/plot set port` to convert one of your plots to a port.
+    - Ports cost $50 to create, with an upkeep of $5 (*default*).
+    - Ports have a Fast-Travel range of 3000 blocks (*default*).
     - Ports must be on Ocean, Beach, or River biomes.
-    - A Port has a Fast-Travel range of 3000 blocks (*default*)
-    - Create a Fast-Travel sign at your port, like this
+    - Create a Fast-Travel sign at your port, like this:
+    - Get the mayor of the destination port, to create a "Return" sign, like this:
+    - Now simply right-click the signs to travel from one port to the other.
   - Jump Nodes
-
+    - As a mayor, run `/plot set jump-node` to convert one of your plots to a port.
+    - Jump Nodes cost $200 to create, with an upkeep of $20 (*default*).
+    - Jump Nodes have an unlimited Fast-Travel range.
+    - Jump Nodes can be placed in any biome.
+    - Create a Fast-Travel sign at your jump-nodes, like this:
+    - Get the mayor of the destination jump-node, to create a "Return" sign, like this:
+    - Now simply right-click the signs to travel from one jump-node to the other.
+    
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
 - `tpra region [newtowncost] [<Region Name>] [amount]` -> Set the new-town-cost for a region.
