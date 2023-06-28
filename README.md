@@ -36,30 +36,29 @@
    - Example: With Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`.
 
 ## :football: Player Guide
-- Provinces
-  - Province borders are shown on the dynmap (Borders layer)
-  - Province costs are shown on the dynmap (Town Costs layer)
+- :world_map: Provinces
+  - Borders are shown on the dynmap (Borders layer)
+  - Town Costs are shown on the dynmap (Town Costs layer)
   - There can only be one town per province
   - Each province has its own "New Town Cost", which applies when creating a new town in the province.
   - Each province has its own "Upkeep Town Cost", which applies each day to the town in the province.
-- Fast Transport
-  - Ports
-    - As a mayor, run `/plot set port` to convert one of your plots to a port.
-    - Ports cost $50 to create, with an upkeep of $5 (*default*).
-    - Ports have a Fast-Travel range of 3000 blocks (*default*).
-    - Ports must be on Ocean, Beach, or River biomes.
-    - Create a Fast-Travel sign at your port, like this:
-    - Get the mayor of the destination port, to create a "Return" sign, like this:
-    - Now simply right-click the signs to travel from one port to the other.
-  - Jump Nodes
-    - As a mayor, run `/plot set jump-node` to convert one of your plots to a port.
-    - Jump Nodes cost $200 to create, with an upkeep of $20 (*default*).
-    - Jump Nodes have an unlimited Fast-Travel range.
-    - Jump Nodes can be placed in any biome.
-    - Create a Fast-Travel sign at your jump-nodes, like this:
-    - Get the mayor of the destination jump-node, to create a "Return" sign, like this:
-    - Now simply right-click the signs to travel from one jump-node to the other.
-    
+
+- :fast_forward: Fast Transport:
+  ### :ship: Port
+    - Cost: $50, Upkeep: $5, must be on Ocean, Beach, or River biome.
+    - Fast-Travel Range: 3000 blocks.
+    - As a mayor, run `/plot set port` to convert one of your plots to a Port.
+    - Pick a destination town, and create a **Fast-Travel Sign** at your port, aimed at that town:![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/541b2b53-6501-401c-a46a-1bb493ed6e27)
+    - Get the mayor of the destination port, to create a "Return" sign at their Port: ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/91f52a8e-b027-4441-9d25-895d64a9ac02)
+    - Now Simply right-click the signs to travel from one town to the other.
+  ### :rocket: Jump-Node
+    - Cost: $200, Upkeep: $20.
+    - Fast-Travel Range: Unlimited.
+    - As a mayor, run `/plot set jump-node` to convert one of your plots to a Jump_node.
+    - Pick a destination town, and create a **Fast-Travel Sign** at your Jump_node, aimed at that town:![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/541b2b53-6501-401c-a46a-1bb493ed6e27)
+    - Get the mayor of the destination port, to create a "Return" sign at their Jump_node: ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/91f52a8e-b027-4441-9d25-895d64a9ac02)
+    - Now Simply right-click the signs to travel from one town to the other.
+
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
 - `tpra region [newtowncost] [<Region Name>] [amount]` -> Set the new-town-cost for a region.
