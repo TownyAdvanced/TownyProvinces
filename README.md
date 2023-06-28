@@ -6,6 +6,7 @@
 ## :gift: Features
 - :globe_with_meridians: **Divides The Map Automatically, Into Multiple 1-Town-Only Provinces.**
 - :moneybag: **Applies Different Town Costs Depending On Province Location.**
+- :bullettrain_front: **Installs with an inbuilt Fast-Transport system.**
 
 ## :hammer_and_wrench: Solves
 - :money_with_wings: ***Overclaiming***: Each town has a reserved claiming area; No need to throw away money on overclaiming.
@@ -15,9 +16,14 @@
 - :hamburger: ***Town Surrounding***: A town cannot surrounded itself with another town (*e.g. to become un-attackable*).
 - :no_pedestrians: ***Travel Blocking***: Travel cannot be blocked by claims, because province borders are always wilderness.
 - :tent: ***Inactive towns in popular areas***: Upkeep can be raised in popular regions, discouraging inactive towns.
+- :merman: ***Sea Peoples***: Founding towns in the open sea can be prevented, if a server so chooses.
 - :santa: ***Hermits***: Upkeep can be lowered in unpopular regions, supporting players with isolationist styles of play.
-- :railway_track: ***Road Claiming***: Two adjacent towns can easily link up by roads/railways without anyone interfering.
-
+- :railway_track: ***Transport***:
+    - Drives the emergence of a hub-node pattern of towns on the map.
+    - Encourages the building of roads on the map.
+    - Supports mayors who wish to detach their transport system from their politics.
+    - Allows every town to become a Fast-Travel destination, if it so chooses.
+    
 ## :eye: Map View
 - ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/b0778012-7023-4372-b599-b5de6a336d4f)
 
