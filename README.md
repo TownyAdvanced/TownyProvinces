@@ -35,6 +35,21 @@
 5. Start your server with plenty of memory (*especially for big maps*).
    - Example: With Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`.
 
+## :football: Player Guide
+- Provinces
+  - Province borders are shown on the dynmap (Borders layer)
+  - Province costs are shown on the dynmap (Town Costs layer)
+  - There can only be one town per province
+  - Each province has its own "New Town Cost", which applies when creating a new town in the province.
+  - Each province has its own "Upkeep Town Cost", which applies each day to the town in the province.
+- Fast Transport
+  - Ports
+    - As a mayor, run `/plot set port` to convert one of your plots to a port.
+    - Ports must be on Ocean, Beach, or River biomes.
+    - A Port has a Fast-Travel range of 3000 blocks (*default*)
+    - Create a Fast-Travel sign at your port, like this
+  - Jump Nodes
+
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
 - `tpra region [newtowncost] [<Region Name>] [amount]` -> Set the new-town-cost for a region.
