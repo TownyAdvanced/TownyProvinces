@@ -251,7 +251,9 @@ public class TownyListener implements Listener {
 				Coord coord = event.getTownBlock().getCoord();
 				TPCoord tpCoord = new TPFinalCoord(coord.getX(), coord.getZ());
 				Biome biome = BiomeUtil.lookupBiome(tpCoord, event.getTownBlock().getWorld().getBukkitWorld());
-				if(!biome.name().toLowerCase().contains("ocean") && !biome.name().toLowerCase().contains("beach")) {
+				if(!biome.name().toLowerCase().contains("ocean") 
+						&& !biome.name().toLowerCase().contains("beach")
+						&& !biome.name().toLowerCase().contains("river")) {
 					event.setCancelled(true);
 					event.setCancelMessage(Translatable.of("msg_err_ports_can_only_be_created_in_ocean_biomes").translate(Locale.ROOT));
 				}
