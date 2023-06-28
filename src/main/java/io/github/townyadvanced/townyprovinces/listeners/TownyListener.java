@@ -247,13 +247,15 @@ public class TownyListener implements Listener {
 				event.setCancelled(true);
 				event.setCancelMessage(Translatable.of("msg_err_cannot_add_a_second_port").translate(Locale.ROOT));
 			} else {
-				//Can only create port in ocean biome
+				//Can only create port in non-frozen water biome
 				Coord coord = event.getTownBlock().getCoord();
 				TPCoord tpCoord = new TPFinalCoord(coord.getX(), coord.getZ());
 				Biome biome = BiomeUtil.lookupBiome(tpCoord, event.getTownBlock().getWorld().getBukkitWorld());
-				if(!biome.name().toLowerCase().contains("ocean") 
-						&& !biome.name().toLowerCase().contains("beach")
-						&& !biome.name().toLowerCase().contains("river")) {
+				boolean isWaterBiome = biome.name().toLowerCase().contains("ocean")
+						|| biome.name().toLowerCase().contains("beach")
+						|| biome.name().toLowerCase().contains("river");
+				boolean isFrozen = biome.name().toLowerCase().contains("frozen");
+				if(!isWaterBiome || isFrozen) {
 					event.setCancelled(true);
 					event.setCancelMessage(Translatable.of("msg_err_ports_can_only_be_created_in_ocean_biomes").translate(Locale.ROOT));
 				}
