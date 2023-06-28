@@ -30,6 +30,7 @@ import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.BiomeUtil;
 import io.github.townyadvanced.townyprovinces.util.CustomPlotUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Biome;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -279,6 +280,9 @@ public class TownyListener implements Listener {
 				if(newType.equalsIgnoreCase("port")) {
 					TownMetaDataController.setPortCoord(town, eventWorldCoord);
 					town.save();
+					Bukkit.getScheduler().runTask(
+						TownyProvinces.getPlugin(),
+						() -> TownMetaDataController.addExistingSignsAtPort(town, eventWorldCoord));
 				}
 			} else {
 				//If this is a removal, remove metadata
@@ -297,6 +301,9 @@ public class TownyListener implements Listener {
 				if (newType.equalsIgnoreCase("jump-node")) {
 					TownMetaDataController.setJumpNodeCoord(town, eventWorldCoord);
 					town.save();
+					Bukkit.getScheduler().runTask(
+						TownyProvinces.getPlugin(), 
+						() -> TownMetaDataController.addExistingSignsAtJumpNode(town, eventWorldCoord));
 				}
 			} else {
 				//If this is a removal, remove metadata

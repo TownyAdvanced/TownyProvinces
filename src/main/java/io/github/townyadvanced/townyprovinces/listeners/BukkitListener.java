@@ -6,7 +6,6 @@ import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.util.MathUtil;
-import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -112,7 +111,7 @@ public class BukkitListener implements Listener {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK  
 				|| !event.hasBlock() 
 				|| event.getClickedBlock() == null
-				|| !FastTravelUtil.isFastTravelSign(event.getClickedBlock())) {
+				|| !FastTravelUtil.isFastTravelSign(event.getClickedBlock().getState())) {
 			return;
 		}
 		//Player clicked a fast travel sign. Lets see if we can move them
@@ -196,7 +195,7 @@ public class BukkitListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void on(BlockBreakEvent event) {
 		if(!TownyAPI.getInstance().isWilderness(event.getBlock()) 
-				&& FastTravelUtil.isFastTravelSign(event.getBlock())) {
+				&& FastTravelUtil.isFastTravelSign(event.getBlock().getState())) {
 			TownBlock townBlock = TownyAPI.getInstance().getTownBlock(event.getBlock().getLocation());
 			if(townBlock == null)
 				return;

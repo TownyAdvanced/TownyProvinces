@@ -5,14 +5,22 @@ import com.palmergames.bukkit.towny.object.WorldCoord;
 import com.palmergames.bukkit.towny.object.metadata.StringDataField;
 import com.palmergames.bukkit.towny.utils.MetaDataUtil;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
+import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.util.FastTravelUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class TownMetaDataController {
 	
@@ -262,6 +270,32 @@ public class TownMetaDataController {
 		removePortSigns(town);
 	}
 
+	public static void addExistingSignsAtPort(Town town, WorldCoord eventWorldCoord) {
+		addExistingSignsAtTravelPlot(town, eventWorldCoord, portSigns, "townyprovinces_portSigns");
+	}
+
+	public static void addExistingSignsAtJumpNode(Town town, WorldCoord eventWorldCoord) {
+		addExistingSignsAtTravelPlot(town, eventWorldCoord, jumpNodeSigns, "townyprovinces_jumpNodeSigns");
+	}
+
+	private static void addExistingSignsAtTravelPlot(Town town, WorldCoord eventWorldCoord, StringDataField metadataField, String metadataFieldName) {
+		Set<BlockState> existingSignBlockStates = new HashSet<>();
+		int x = (eventWorldCoord.getX());
+		int z = (eventWorldCoord.getZ());
+		Chunk chunk =  eventWorldCoord.getBukkitWorld().getChunkAt(x,z);
+		for(BlockState blockState: chunk.getTileEntities()) {
+			if(blockState instanceof Sign && FastTravelUtil.isFastTravelSign(blockState)) {
+				existingSignBlockStates.add(blockState);
+			}
+		}
+		String destinationTownName;
+		for(BlockState existingSignBlockState: existingSignBlockStates) {
+			destinationTownName = ((Sign)existingSignBlockState).getLine(2);
+			addTravelPlotSign(town, existingSignBlockState.getBlock(), destinationTownName, metadataField, metadataFieldName);
+		}
+		town.save();
+	}
+	
 	///////////////////////////////////////////////
 
 }
