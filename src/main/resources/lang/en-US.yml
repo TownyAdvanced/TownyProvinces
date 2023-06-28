@@ -108,7 +108,7 @@ dynmap_layer_label_borders: "Borders"
 
 msg_err_cannot_add_a_second_jump_node: "&cTowns cannot have more than one Jump-Node."
 msg_err_cannot_add_a_second_port: "&cTowns cannot have more than one Port."
-msg_err_ports_can_only_be_created_in_ocean_biomes: "&cPorts can only be created in Ocean or Beach biomes."
+msg_err_ports_can_only_be_created_in_ocean_biomes: "&cPorts can only be created on Ocean, Beach, or River biomes."
 #msg_err_cannot_create_fast_travel_signs_except_in_travel_plots:  "&cFast-Travel-Signs can only be placed in Home-Blocks, Outposts, Ports, and Jump-Nodes."
 msg_err_cannot_create_fast_travel_signs_except_in_travel_plots:  "&cFast-Travel Signs can only be placed in Jump-Nodes or ports."
 msg_err_cannot_create_fast_travel_sign_bad_town_data:  "&cCannot create Fast-Travel Sign, because there was a problem with the data of the town or townblock."
