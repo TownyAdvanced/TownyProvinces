@@ -37,9 +37,9 @@
 
 ## :football: Player Guide
 - :world_map: Provinces
-  - Borders are shown on the dynmap (Borders layer)
-  - Town Costs are shown on the dynmap (Town Costs layer)
-  - There can only be one town per province
+  - Borders are shown on the dynmap (Borders layer).
+  - Town Costs are shown on the dynmap (Town Costs layer).
+  - There can only be one town per province.
   - Each province has its own "New Town Cost", which applies when creating a new town in the province.
   - Each province has its own "Upkeep Town Cost", which applies each day to the town in the province.
 
