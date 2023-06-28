@@ -48,16 +48,16 @@
     - Cost: $50, Upkeep: $5, must be on Ocean, Beach, or River biome.
     - Fast-Travel Range: 3000 blocks.
     - As a mayor, run `/plot set port` to convert one of your plots to a Port.
-    - Pick a destination town, and create a **Fast-Travel Sign** at your port, aimed at that town:![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/541b2b53-6501-401c-a46a-1bb493ed6e27)
-    - Get the mayor of the destination port, to create a "Return" sign at their Port: ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/91f52a8e-b027-4441-9d25-895d64a9ac02)
-    - Now Simply right-click the signs to travel from one town to the other.
+    - Pick a destination town, and create a **Fast-Travel Sign** at your Port, aimed at that town:![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/541b2b53-6501-401c-a46a-1bb493ed6e27)
+    - Get the mayor of the destination Port, to create a "Return" sign at their Port: ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/91f52a8e-b027-4441-9d25-895d64a9ac02)
+    - Now simply right-click the signs to travel from one town to the other.
   ### :rocket: Jump-Node
     - Cost: $200, Upkeep: $20.
     - Fast-Travel Range: Unlimited.
-    - As a mayor, run `/plot set jump-node` to convert one of your plots to a Jump-node.
-    - Pick a destination town, and create a **Fast-Travel Sign** at your Jump_node, aimed at that town:![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/541b2b53-6501-401c-a46a-1bb493ed6e27)
-    - Get the mayor of the destination port, to create a "Return" sign at their Jump_node: ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/91f52a8e-b027-4441-9d25-895d64a9ac02)
-    - Now Simply right-click the signs to travel from one town to the other.
+    - As a mayor, run `/plot set jump-node` to convert one of your plots to a Jump-Node.
+    - Pick a destination town, and create a **Fast-Travel Sign** at your Jump-Node, aimed at that town:![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/541b2b53-6501-401c-a46a-1bb493ed6e27)
+    - Get the mayor of the destination port, to create a "Return" sign at their Jump-Node: ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/91f52a8e-b027-4441-9d25-895d64a9ac02)
+    - Now simply right-click the signs to travel from one town to the other.
 
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
