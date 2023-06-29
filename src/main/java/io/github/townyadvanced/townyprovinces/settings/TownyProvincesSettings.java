@@ -149,16 +149,16 @@ public class TownyProvincesSettings {
 		return (int)((Math.sqrt(averageProvinceSize)) / 2);
 	}
 
-	public static int getNewTownCost(String regionName) {
+	public static double getNewTownCostPerChunk(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String intString = regionDefinitions.get("new_town_cost");
-		return Integer.parseInt(intString);
+		String intString = regionDefinitions.get("new_town_cost_per_chunk");
+		return Double.parseDouble(intString);
 	}
 
-	public static int getUpkeepTownCost(String regionName) {
+	public static double getUpkeepTownCostPerChunk(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String intString = regionDefinitions.get("upkeep_town_cost");
-		return Integer.parseInt(intString);
+		String intString = regionDefinitions.get("upkeep_town_cost_per_chunk");
+		return Double.parseDouble(intString);
 	}
 	
 	public static int getLandProvinceBorderWeight() {

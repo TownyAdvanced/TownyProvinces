@@ -9,8 +9,8 @@ import java.util.Set;
 public class Province {
 	
 	private final TPCoord homeBlock;
-	private int newTownCost;
-	private int upkeepTownCost;
+	private double newTownCost;
+	private double upkeepTownCost;
 	private boolean isSea;
 	private final String id; //convenience variable. In memory only. Used for dynmap and file operations
 	private boolean landValidationRequested;
@@ -21,7 +21,7 @@ public class Province {
 		return homeBlock.equals(((Province)object).getHomeBlock());
 	}
 	
-	public Province(TPCoord homeBlock, boolean isSea, boolean landValidationRequested, int newTownCost, int upkeepTownCost) {
+	public Province(TPCoord homeBlock, boolean isSea, boolean landValidationRequested, double newTownCost, double upkeepTownCost) {
 		this.homeBlock = homeBlock;
 		this.isSea = isSea;
 		this.newTownCost = newTownCost;
@@ -38,19 +38,19 @@ public class Province {
 		return homeBlock;
 	}
 	
-	public void setNewTownCost(int i) {
-		this.newTownCost = i;
+	public void setNewTownCost(double d) {
+		this.newTownCost = d;
 	}
 
-	public void setUpkeepTownCost(int i) {
-		this.upkeepTownCost = i;
+	public void setUpkeepTownCost(double d) {
+		this.upkeepTownCost = d;
 	}
 
-	public int getNewTownCost() {
+	public double getNewTownCost() {
 		return newTownCost;
 	}
 
-	public int getUpkeepTownCost() {
+	public double getUpkeepTownCost() {
 		return upkeepTownCost;
 	}
 	

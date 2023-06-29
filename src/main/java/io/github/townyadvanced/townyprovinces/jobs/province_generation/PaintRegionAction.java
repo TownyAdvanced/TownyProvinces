@@ -45,8 +45,8 @@ public class PaintRegionAction {
 	private final Location bottomRightRegionCorner;
 	private final int averageProvinceSize;
 	private final int maxBrushMoves;
-	private final int newTownCost;
-	private final int upkeepTownCost;
+	private final double newTownCostPerChunk;
+	private final double upkeepTownCostPerChunk;
 	
 	public PaintRegionAction(String regionName, Map<TPCoord,TPCoord> unclaimedCoordsMap) {
 		this.regionName = regionName;
@@ -70,8 +70,8 @@ public class PaintRegionAction {
 		this.bottomRightRegionCorner = TownyProvincesSettings.getBottomRightCornerLocation(regionName);
 		this.averageProvinceSize = TownyProvincesSettings.getAverageProvinceSize(regionName);
 		this.maxBrushMoves = TownyProvincesSettings.getMaxBrushMoves(regionName);
-		this.newTownCost = TownyProvincesSettings.getNewTownCost(regionName);
-		this.upkeepTownCost = TownyProvincesSettings.getUpkeepTownCost(regionName);
+		this.newTownCostPerChunk = TownyProvincesSettings.getNewTownCostPerChunk(regionName);
+		this.upkeepTownCostPerChunk = TownyProvincesSettings.getUpkeepTownCostPerChunk(regionName);
 	}
 	
 	boolean executeAction(boolean deleteExistingProvincesInRegion) {
@@ -208,7 +208,7 @@ public class PaintRegionAction {
 			int zCoord = coord.getZ();
 			TPCoord homeBlockCoord = new TPFinalCoord(xCoord, zCoord);
 			//Create province object
-			Province province = new Province(homeBlockCoord, isSea, landValidationRequested, newTownCost, upkeepTownCost);
+			Province province = new Province(homeBlockCoord, isSea, landValidationRequested, 0, 0);
 			//Validate province homeblock position
 			if(validatePositionOfProvinceHomeBlock(province)) {
 				return province;
@@ -481,6 +481,5 @@ public class PaintRegionAction {
 		TownyProvinces.info("Empty Provinces Deleted.");
 		return true;
 	}
-
-
+	
 }
