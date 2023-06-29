@@ -61,8 +61,8 @@
 
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
-- `tpra region [newtowncost] [<Region Name>] [amount]` -> Set the new-town-cost for a region.
-- `tpra region [upkeeptowncost] [<Region Name>] [amount]` -> Set the upkeep-town-cost for a region.
+- `tpra region [newtowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk new-town-cost for a region.
+- `tpra region [upkeeptowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk upkeep-town-cost for a region.
 - `tpra landvalidationjob [status|start|stop|restart|pause]` -> Control the land validation job.
   - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below command.* 
 - `tpra province [sea|land] [<x>,<z>]` -> Set a province to sea/land.
