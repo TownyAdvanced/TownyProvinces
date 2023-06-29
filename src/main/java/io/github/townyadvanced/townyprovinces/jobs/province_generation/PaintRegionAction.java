@@ -108,12 +108,6 @@ public class PaintRegionAction {
 			TownyProvinces.info("Problem deleting empty provinces");
 			return false;
 		}
-		
-		//Recalculate Prices of all provinces
-		if(!recalculateProvincePrices()) {
-			TownyProvinces.info("Recalculating province prices");
-			return false;
-		}
 
 		TownyProvinces.info("Finished Painting Provinces In Region: " + regionName);
 		return true;
@@ -487,14 +481,5 @@ public class PaintRegionAction {
 		TownyProvinces.info("Empty Provinces Deleted.");
 		return true;
 	}
-
-	private boolean recalculateProvincePrices() {
-		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			int numChunks = province.getListOfCoordsInProvince().size();
-			province.setNewTownCost(numChunks * newTownCostPerChunk);
-			province.setUpkeepTownCost(numChunks * upkeepTownCostPerChunk);
-		}
-		return true;
-	}
-
+	
 }
