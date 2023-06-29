@@ -7,6 +7,7 @@ import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.utils.NameUtil;
 import com.palmergames.bukkit.util.ChatTools;
 import com.palmergames.util.StringMgmt;
+import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.jobs.land_validation.LandValidationJobStatus;
@@ -17,6 +18,7 @@ import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -32,7 +34,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 
 	private static final List<String> adminTabCompletes = Arrays.asList("province","region", "landvalidationjob");
 	private static final List<String> adminTabCompletesProvince = Arrays.asList("sea","land");
-	private static final List<String> adminTabCompletesRegion = Arrays.asList("regenerate", "newtowncost", "upkeeptowncost");
+	private static final List<String> adminTabCompletesRegion = Arrays.asList("regenerate", "newtowncostperchunk", "upkeeptowncostperchunk");
 	private static final List<String> adminTabCompletesSeaProvincesJob = Arrays.asList("status", "start", "stop", "restart", "pause");
 
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
@@ -116,8 +118,8 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "province [sea|land] [<x>,<z>]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "province [sea|land] [<x>,<z>] [<x>,<z>]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [regenerate] [<Region Name>]", ""));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [newtowncost] [<Region Name>] [amount]", ""));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [upkeeptowncost] [<Region Name>] [amount]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [newtowncostperchunk] [<Region Name>] [amount]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [upkeeptowncostperchunk] [<Region Name>] [amount]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "landvalidationjob [status|start|stop|restart|pause]", ""));
 	}
 
@@ -142,10 +144,10 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		}
 		if (args[0].equalsIgnoreCase("regenerate")) {
 			parseRegionRegenerateCommand(sender, args);
-		} else if (args[0].equalsIgnoreCase("newtowncost")) {
-			parseRegionSetNewTownCostCommand(sender, args);
-		} else if (args[0].equalsIgnoreCase("upkeeptowncost")) {
-			parseRegionSetTownUpkeepCostCommand(sender, args);
+		} else if (args[0].equalsIgnoreCase("newtowncostperchunk")) {
+			Bukkit.getScheduler().runTaskAsynchronously(TownyProvinces.getPlugin(), () ->parseRegionSetNewTownCostCommand(sender, args));
+		} else if (args[0].equalsIgnoreCase("upkeeptowncostperchunk")) {
+			Bukkit.getScheduler().runTaskAsynchronously(TownyProvinces.getPlugin(), () -> parseRegionSetTownUpkeepCostCommand(sender, args));
 		} else {
 			showHelp(sender);
 		}
@@ -308,29 +310,32 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 	private void parseRegionSetNewTownCostCommand(CommandSender sender, String[] args) {
 		try {
 			String givenRegionName = args[1];
-			int newTownCost = Integer.parseInt(args[2]);
-			String formattedNewTownCost = TownyEconomyHandler.getFormattedBalance(newTownCost);
+			double townCostPerChunk = Double.parseDouble(args[2]);
+			String formattedTownCostPerChunk = TownyEconomyHandler.getFormattedBalance(townCostPerChunk);;
+			double townCost;
 			String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 			
 			if(givenRegionName.equalsIgnoreCase("all")) {
 				//Set cost for all provinces, regardless of region
 				for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-					province.setNewTownCost(newTownCost);
+					townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
+					province.setNewTownCost(townCost);
 					province.saveData();
 				}
 				DynmapDisplayTaskController.requestHomeBlocksRefresh();
-				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_all_regions", formattedNewTownCost));
+				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_all_regions", formattedTownCostPerChunk));
 
 			} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
 				//Set cost for just one region
 				for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 					if(TownyProvincesSettings.isProvinceInRegion(province, caseCorrectRegionName)) {
-						province.setNewTownCost(newTownCost);
+						townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
+						province.setNewTownCost(townCost);
 						province.saveData();
 					}
 				}
 				DynmapDisplayTaskController.requestHomeBlocksRefresh();
-				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_one_region", caseCorrectRegionName, formattedNewTownCost));
+				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCostPerChunk));
 				
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
@@ -343,29 +348,32 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 	private void parseRegionSetTownUpkeepCostCommand(CommandSender sender, String[] args) {
 		try {
 			String givenRegionName = args[1];
-			int townCost = Integer.parseInt(args[2]);
-			String formattedTownCost = TownyEconomyHandler.getFormattedBalance(townCost);
+			double townCostPerChunk = Double.parseDouble(args[2]);
+			String formattedTownCostPerChunk = TownyEconomyHandler.getFormattedBalance(townCostPerChunk);;
+			double townCost;
 			String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 
 			if(givenRegionName.equalsIgnoreCase("all")) {
 				//Set cost for all provinces, regardless of region
 				for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+					townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
 					province.setUpkeepTownCost(townCost);
 					province.saveData();
 				}
 				DynmapDisplayTaskController.requestHomeBlocksRefresh();
-				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_all_regions", formattedTownCost));
+				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_all_regions", formattedTownCostPerChunk));
 
 			} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
 				//Set cost for just one region
 				for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 					if(TownyProvincesSettings.isProvinceInRegion(province, caseCorrectRegionName)) {
+						townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
 						province.setUpkeepTownCost(townCost);
 						province.saveData();
 					}
 				}
 				DynmapDisplayTaskController.requestHomeBlocksRefresh();
-				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCost));
+				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCostPerChunk));
 
 			} else {
 				Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));

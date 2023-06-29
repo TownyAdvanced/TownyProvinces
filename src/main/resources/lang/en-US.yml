@@ -54,10 +54,10 @@ msg_successfully_regenerated_one_regions: "&bSuccessfully regenerated region: %s
 # Set town costs
 
 msg_err_value_must_be_and_integer: "&cThe given value must be an integer."
-msg_new_town_cost_set_for_all_regions: "&bNew-Town-Cost set for all regions, to: %s"
-msg_new_town_cost_set_for_one_region: "&bNew-Town-Cost set for region %s, to: %s"
-msg_upkeep_town_cost_set_for_all_regions: "&bUpkeep-Town-Cost set for all regions, to: %s"
-msg_upkeep_town_cost_set_for_one_region: "&bUpkeep-Town-Cost set for region %s, to: %s"
+msg_new_town_cost_set_for_all_regions: "&bNew-Town-Cost-Per-Chunk set for all regions, to: %s"
+msg_new_town_cost_set_for_one_region: "&bNew-Town-Cost-Per-Chunk set for region %s, to: %s"
+msg_upkeep_town_cost_set_for_all_regions: "&bUpkeep-Town-Cost-Per-Chunk set for all regions, to: %s"
+msg_upkeep_town_cost_set_for_one_region: "&bUpkeep-Town-Cost-Per-Chunk set for region %s, to: %s"
 
 # Land validation job
 

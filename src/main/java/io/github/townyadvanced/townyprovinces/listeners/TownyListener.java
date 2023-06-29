@@ -5,7 +5,6 @@ import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.event.PlotChangeTypeEvent;
 import com.palmergames.bukkit.towny.event.PlotPreChangeTypeEvent;
-import com.palmergames.bukkit.towny.event.PreDeleteTownEvent;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
 import com.palmergames.bukkit.towny.event.TownBlockTypeRegisterEvent;
 import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
@@ -168,7 +167,7 @@ public class TownyListener implements Listener {
 	}
 
 	@EventHandler(ignoreCancelled = true)
-	public void onTownClaimAttempt(TownPreClaimEvent event) {
+	public void onTownPreClaimAttempt(TownPreClaimEvent event) {
 		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
 			return;
 		}
