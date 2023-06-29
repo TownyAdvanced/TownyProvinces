@@ -94,10 +94,10 @@ DataHandlerUtil {
 			isLandValidationRequested = Boolean.parseBoolean(fileEntries.get("is_land_validation_requested"));
 		}
 		if(fileEntries.containsKey("new_town_cost")) {
-			newTownCost = Double.parseDouble(fileEntries.get("new_town_cost_per_chunk"));
+			newTownCost = Double.parseDouble(fileEntries.get("new_town_cost"));
 		}
 		if(fileEntries.containsKey("upkeep_town_cost")) {
-			upkeepTownCost = Double.parseDouble(fileEntries.get("upkeep_town_cost_per_chunk"));
+			upkeepTownCost = Double.parseDouble(fileEntries.get("upkeep_town_cost"));
 		}
 		//Create province
 		Province province = new Province(homeBlock, isSea, isLandValidationRequested, newTownCost, upkeepTownCost);
