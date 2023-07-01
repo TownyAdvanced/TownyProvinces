@@ -2,6 +2,7 @@ package io.github.townyadvanced.townyprovinces.objects;
 
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 
 import java.util.List;
 import java.util.Set;
@@ -54,12 +55,26 @@ public class Province {
 		this.upkeepTownCost = d;
 	}
 
-	public double getNewTownCost() {
-		return newTownCost;
+	public double getNewTownCost() { return newTownCost; }
+	
+	public double getBiomeAdjustedNewTownCost() {
+		double goodLandCost = newTownCost * estimatedProportionOfGoodLand;
+		double waterCost = newTownCost * estimatedProportionOfWater;
+		double hotLandCost = newTownCost * estimatedProportionOfHotLand;
+		double coldLandCost = newTownCost * estimatedProportionOfColdLand;
+		return goodLandCost + waterCost + hotLandCost + coldLandCost;
 	}
 
 	public double getUpkeepTownCost() {
 		return upkeepTownCost;
+	}
+
+	public double getBiomeAdjustedUpkeepTownCost() {
+		double goodLandCost = upkeepTownCost * estimatedProportionOfGoodLand;
+		double waterCost = upkeepTownCost * estimatedProportionOfWater;
+		double hotLandCost = upkeepTownCost * estimatedProportionOfHotLand;
+		double coldLandCost = upkeepTownCost * estimatedProportionOfColdLand;
+		return goodLandCost + waterCost + hotLandCost + coldLandCost;
 	}
 	
 	public boolean isSea() { 

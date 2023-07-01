@@ -91,6 +91,7 @@ public class DisplayProvincesOnDynmapAction {
 	
 	private void drawProvinceHomeBlocks() {
 		String border_icon_id = "coins";
+		boolean biomeCostAdjustmentsEnabled = TownyProvincesSettings.isBiomeCostAdjustmentsEnabled();
 		MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(border_icon_id);
 		Set<Province> copyOfProvincesSet = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet());
 		for (Province province : copyOfProvincesSet) {
@@ -114,9 +115,11 @@ public class DisplayProvincesOnDynmapAction {
 
 					String markerLabel;
 					if(TownyEconomyHandler.isActive()) {
-						String newTownCost = TownyEconomyHandler.getFormattedBalance(province.getNewTownCost());
-						String upkeepTownCost = TownyEconomyHandler.getFormattedBalance(province.getUpkeepTownCost());
-						markerLabel = Translatable.of("dynmap_province_homeblock_label", newTownCost, upkeepTownCost).translate(Locale.ROOT);
+						int newTownCost = (int)(biomeCostAdjustmentsEnabled ? province.getBiomeAdjustedNewTownCost() : province.getNewTownCost());
+						String newTownCostString = TownyEconomyHandler.getFormattedBalance(newTownCost);
+						int upkeepTownCost = (int)(biomeCostAdjustmentsEnabled ? province.getBiomeAdjustedUpkeepTownCost() : province.getUpkeepTownCost());
+						String upkeepTownCostString = TownyEconomyHandler.getFormattedBalance(upkeepTownCost);
+						markerLabel = Translatable.of("dynmap_province_homeblock_label", newTownCostString, upkeepTownCostString).translate(Locale.ROOT);
 					} else {
 						markerLabel = "";
 					}

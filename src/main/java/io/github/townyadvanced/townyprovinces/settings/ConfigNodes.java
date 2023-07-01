@@ -47,7 +47,7 @@ public enum ConfigNodes {
 	BIOME_COST_ADJUSTMENTS_WATER(
 		"biome_cost_adjustments.water",
 		"0.01",
-		"Assuming the server doesn't allow modifying coastline, these chunks can only be settled by going underground."),
+		"Assuming server doesn't allow modifying coastline, these chunks can only be settled by going underground."),
 	BIOME_COST_ADJUSTMENTS_HOT_LAND(
 		"biome_cost_adjustments.hot_land",
 		"0.3",

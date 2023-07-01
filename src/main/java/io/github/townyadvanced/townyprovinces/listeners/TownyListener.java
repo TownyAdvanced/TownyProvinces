@@ -115,18 +115,18 @@ public class TownyListener implements Listener {
 		 * If the player does, pay the region settlement cost
 		 */
 		if (TownySettings.isUsingEconomy() && province.getNewTownCost() > 0) {
-			double regionSettlementCost = province.getNewTownCost();
-			double newTownCost = TownySettings.getNewTownPrice() + regionSettlementCost;
+			int regionSettlementCost = (int)(TownyProvincesSettings.isBiomeCostAdjustmentsEnabled() ? province.getBiomeAdjustedNewTownCost() : province.getNewTownCost());
+			double totalNewTownCost = TownySettings.getNewTownPrice() + regionSettlementCost;
 			Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
 			if (resident != null && resident.getAccountOrNull() != null) {
-				if (resident.getAccountOrNull().canPayFromHoldings(newTownCost)) {
+				if (resident.getAccountOrNull().canPayFromHoldings(totalNewTownCost)) {
 					//Pay the region settlement cost
 					resident.getAccountOrNull().withdraw(regionSettlementCost, "Region Settlement Cost");
 					Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_you_paid_region_settlement_cost", TownyEconomyHandler.getFormattedBalance(regionSettlementCost)));
 				} else {
 					//Cancel the event
 					event.setCancelled(true);
-					event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_afford_new_town", TownyEconomyHandler.getFormattedBalance(newTownCost)).translate(Locale.ROOT));
+					event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_afford_new_town", TownyEconomyHandler.getFormattedBalance(totalNewTownCost)).translate(Locale.ROOT));
 				}
 			}
 		}
@@ -158,7 +158,7 @@ public class TownyListener implements Listener {
 		Coord coord = event.getTown().getHomeBlockOrNull().getCoord();
 		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord.getX(),coord.getZ());
 		if(province != null) {
-			double regionUpkeepCost = province.getUpkeepTownCost();
+			int regionUpkeepCost = (int)(TownyProvincesSettings.isBiomeCostAdjustmentsEnabled() ? province.getBiomeAdjustedUpkeepTownCost() : province.getUpkeepTownCost());
 			if (regionUpkeepCost > 0) {
 				double updatedUpkeepCost = event.getUpkeep() + regionUpkeepCost;
 				event.setUpkeep(updatedUpkeepCost);
