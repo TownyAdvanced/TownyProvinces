@@ -246,4 +246,13 @@ public class TownyProvincesSettings {
 	}
 	
 	public static double getPortsMaxFastTravelRange() { return Settings.getDouble(ConfigNodes.PORTS_MAX_FAST_TRAVEL_RANGE); }
+
+	public static boolean isBiomeCostAdjustmentsEnabled() {
+		return Settings.getBoolean(ConfigNodes.BIOME_COST_ADJUSTMENTS_ENABLED);
+	}
+	public static double getBiomeCostAdjustmentsWater() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_WATER); }
+
+	public static double getBiomeCostAdjustmentsHotLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_HOT_LAND); }
+	public static double getBiomeCostAdjustmentsColdLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_COLD_LAND); }
+
 }

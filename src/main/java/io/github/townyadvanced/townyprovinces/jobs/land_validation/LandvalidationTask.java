@@ -5,12 +5,15 @@ import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
+import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.BiomeUtil;
-import org.bukkit.block.Biome;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class LandvalidationTask extends BukkitRunnable {
@@ -72,10 +75,7 @@ public class LandvalidationTask extends BukkitRunnable {
 		}
 		for(Province province: copyOfProvincesSet) {
 			if (province.isLandValidationRequested()) {
-				boolean isSea = BiomeUtil.isProvinceMainlyOceanBiome(province);
-				if(isSea != province.isSea()) {
-					province.setSea(isSea);
-				}
+				doLandValidation(province);
 				province.setLandValidationRequested(false);
 				numProvincesProcessed++;
 			}
@@ -88,28 +88,83 @@ public class LandvalidationTask extends BukkitRunnable {
 				case STOP_REQUESTED:
 					TownyProvinces.info("Land Validation Task: Clearing all validation requests");
 					setLandValidationRequestsForAllProvinces(false);  //Clear all requests
-					TownyProvinces.info("Land Validation Task: Saving data");
-					DataHandlerUtil.saveAllData();
+					TownyProvinces.info("Land Validation Task: Stopping");
 					LandValidationTaskController.stopTask();
 					return;
 				case PAUSE_REQUESTED:
-					TownyProvinces.info("Land Validation Task: Saving data");
-					DataHandlerUtil.saveAllData();
+					TownyProvinces.info("Land Validation Task: Pausing");
 					LandValidationTaskController.pauseTask();
 					return;
 				case RESTART_REQUESTED:
 					TownyProvinces.info("Land Validation Task: Clearing all validation requests");
 					setLandValidationRequestsForAllProvinces(false);  //Clear all requests
 					TownyProvinces.info("Land Validation Task: Saving data");
-					DataHandlerUtil.saveAllData();
 					LandValidationTaskController.restartTask();
 					return;
 			}
 		}
-		TownyProvinces.info("Land Validation Task: Saving data");
-		DataHandlerUtil.saveAllData();
 		LandValidationTaskController.stopTask();
 		TownyProvinces.info("Land Validation Job Complete.");
 	}
-	
+
+	/**
+	 * 1. Record the proportions of different lands
+	 * 2. Set the province to land or sea, depending on the result
+	 * 3. Save
+	 * @param province
+	 */
+	private void doLandValidation(Province province) {
+		List<TPCoord> coordsInProvince = province.getListOfCoordsInProvince();
+		World world = Bukkit.getWorld(TownyProvincesSettings.getWorldName());
+		TPCoord coordToTest;
+		double goodLand = 0;
+		double water = 0;
+		double hotLand = 0;
+		double coldLand = 0;
+		double totalChunksToScan = 20;
+
+		for(int i = 0; i < totalChunksToScan; i++) {
+			coordToTest = coordsInProvince.get((int) (Math.random() * coordsInProvince.size()));
+			BiomeType biomeType = BiomeUtil.getBiomeType(world, coordToTest);
+			switch (Objects.requireNonNull(biomeType)) {
+				case GOOD_LAND:
+					goodLand++;
+					break;
+				case WATER:
+					water++;
+					break;
+				case HOT_LAND:
+					hotLand++;
+					break;
+				case COLD_LAND:
+					coldLand++;
+					break;
+			}
+		}
+		
+		//Set land sea
+		province.setSea(water == totalChunksToScan);
+			
+		//Set proportions
+		province.setEstimatedProportionOfGoodLand(goodLand / totalChunksToScan);
+		province.setEstimatedProportionOfWater(water / totalChunksToScan);
+		province.setEstimatedProportionOfHotLand(hotLand / totalChunksToScan);
+		province.setEstimatedProportionOfColdLand(coldLand / totalChunksToScan);
+		
+		//Save province
+		province.saveData();
+		
+			World world = Bukkit.getWorld(worldName);
+			biome = lookupBiome(coordToTest, world);
+
+		}
+		return true;
+
+		boolean isSea = BiomeUtil.isProvinceMainlyOceanBiome(province);
+		if(isSea != province.isSea()) {
+			province.setSea(isSea);
+			DataHandlerUtil.saveProvince(province);
+		}
+	}
+
 }

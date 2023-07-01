@@ -1,5 +1,6 @@
 package io.github.townyadvanced.townyprovinces.util;
 
+import io.github.townyadvanced.townyprovinces.jobs.land_validation.BiomeType;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -40,5 +41,36 @@ public class BiomeUtil {
 		} else {
 			return world.getBiome(x,64, z);
 		}
+	}
+
+	public static BiomeType getBiomeType(World world, TPCoord coordToTest) {
+		int x = (coordToTest.getX() * TownyProvincesSettings.getChunkSideLength()) + 8;
+		int z = (coordToTest.getZ() * TownyProvincesSettings.getChunkSideLength()) + 8;
+		
+		
+		if(TownyProvincesSettings.isBiomeLookupByBlock()) {
+			
+		} else {
+			Biome biome = world.getBiome(x,64, z);
+			if(biome.name().toLowerCase().contains("ocean")) {
+				return BiomeType.WATER;
+			} else if (biome.name().toLowerCase().contains("desert")) {
+				return BiomeType.HOT_LAND;
+			} else if (biome.name().toLowerCase().contains("ice")) {
+				return BiomeType.COLD_LAND;	
+			} else {
+				return BiomeType.GOOD_LAND;
+			}
+		}
+		
+		try {
+			Thread.sleep(100); //Sleep because the biome lookup can be hard on processor
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		
+		
+		
+		return null;
 	}
 }

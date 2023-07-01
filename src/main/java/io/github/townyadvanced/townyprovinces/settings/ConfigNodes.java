@@ -25,9 +25,37 @@ public enum ConfigNodes {
 			"biome_lookup_by_block",
 			"false",
 			"",
-			"# If this is true, then biome lookups are done via world.getHighestBlockAt(x,z).getBiome()",
+			"# If this is true, then biome lookups are done via getting the Material of blocks.",
 			"# If this is false, then biome lookups are done via world.getBiome(x,y,z).",
 			"# On any given server, one method will give correct results, the other will not."),
+	BIOME_COST_ADJUSTMENTS(
+		"biome_cost_adjustments",
+		"",
+		"",
+		"",
+		"############################################################",
+		"# +------------------------------------------------------+ #",
+		"# |                 BIOME COST ADJUSTMENTS               | #",
+		"# +------------------------------------------------------+ #",
+		"############################################################",
+		""),
+	BIOME_COST_ADJUSTMENTS_ENABLED(
+		"biome_cost_adjustments.enabled",
+		"true",
+		"",
+		"# If this is true, then province costs are adjusted by the biomes contained in the province."),
+	BIOME_COST_ADJUSTMENTS_WATER(
+		"biome_cost_adjustments.water",
+		"0.01",
+		"Assuming the server doesn't allow modifying coastline, these chunks can only be settled by going underground."),
+	BIOME_COST_ADJUSTMENTS_HOT_LAND(
+		"biome_cost_adjustments.hot_land",
+		"0.3",
+		"Desert. Hard to grow crops, can't find animals, and sand is easily griefable."),
+	BIOME_COST_ADJUSTMENTS_COLD_LAND(
+		"biome_cost_adjustments.cold_land",
+		"0.1",
+		"Snow and ice. Very hard to live in."),
 	PROVINCE_VISUALS(
 			"province_visuals",
 			"",
