@@ -50,6 +50,10 @@ DataHandlerUtil {
 		fileEntries.put("is_land_validation_requested", "" + province.isLandValidationRequested());
 		fileEntries.put("new_town_cost", "" + province.getNewTownCost());
 		fileEntries.put("upkeep_town_cost", "" + province.getUpkeepTownCost());
+		fileEntries.put("estimated_proportion_of_good_land", "" + province.getEstimatedProportionOfGoodLand());
+		fileEntries.put("estimated_proportion_of_water", "" + province.getEstimatedProportionOfWater());
+		fileEntries.put("estimated_proportion_of_hot_land", "" + province.getEstimatedProportionOfHotLand());
+		fileEntries.put("estimated_proportion_of_cold_land", "" + province.getEstimatedProportionOfColdLand());
 		fileEntries.put("coords", "" + getCoordsAsWriteableString(province));
 		FileUtil.saveHashMapIntoFile(fileEntries, fileName);
 	}
@@ -82,25 +86,37 @@ DataHandlerUtil {
 		TownyProvinces.info("All Provinces Loaded");
 	}
 
-	public static void loadProvince(File regionDefinitionFile) {
+	public static void loadProvince(File provinceFile) {
 		//Read values from province file
-		Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(regionDefinitionFile);
+		Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(provinceFile);
 		TPCoord homeBlock = unpackCoord(fileEntries.get("home_block"));
-		boolean isSea = Boolean.parseBoolean(fileEntries.get("is_sea"));
-		boolean isLandValidationRequested = false; 
-		double newTownCost = 0;
-		double upkeepTownCost = 0;
-		if(fileEntries.containsKey("is_land_validation_requested")) {
-			isLandValidationRequested = Boolean.parseBoolean(fileEntries.get("is_land_validation_requested"));
-		}
+		//Create province object
+		Province province = new Province(homeBlock);
+		//Read more values
 		if(fileEntries.containsKey("new_town_cost")) {
-			newTownCost = Double.parseDouble(fileEntries.get("new_town_cost"));
+			province.setNewTownCost(Double.parseDouble(fileEntries.get("new_town_cost")));
 		}
 		if(fileEntries.containsKey("upkeep_town_cost")) {
-			upkeepTownCost = Double.parseDouble(fileEntries.get("upkeep_town_cost"));
+			province.setUpkeepTownCost(Double.parseDouble(fileEntries.get("upkeep_town_cost")));
 		}
-		//Create province
-		Province province = new Province(homeBlock, isSea, isLandValidationRequested, newTownCost, upkeepTownCost);
+		if(fileEntries.containsKey("is_land_validation_requested")) {
+			province.setLandValidationRequested(Boolean.parseBoolean(fileEntries.get("is_land_validation_requested")));
+		}
+		if(fileEntries.containsKey("is_sea")) {
+			province.setSea(Boolean.parseBoolean(fileEntries.get("is_sea")));
+		}
+		if(fileEntries.containsKey("estimated_proportion_of_good_land")) {
+			province.setEstimatedProportionOfGoodLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_good_land")));
+		}
+		if(fileEntries.containsKey("estimated_proportion_of_water")) {
+			province.setEstimatedProportionOfGoodLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_water")));
+		}
+		if(fileEntries.containsKey("estimated_proportion_of_hot_land")) {
+			province.setEstimatedProportionOfGoodLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_hot_land")));
+		}
+		if(fileEntries.containsKey("estimated_proportion_of_cold_land")) {
+			province.setEstimatedProportionOfGoodLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_cold_land")));
+		}
 		//Add province to provinces set
 		TownyProvincesDataHolder.getInstance().addProvince(province);
 		//Add coords to coord-province map

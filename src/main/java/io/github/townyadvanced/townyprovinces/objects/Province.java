@@ -25,13 +25,13 @@ public class Province {
 		return homeBlock.equals(((Province)object).getHomeBlock());
 	}
 	
-	public Province(TPCoord homeBlock, boolean isSea, boolean landValidationRequested, double newTownCost, double upkeepTownCost) {
+	public Province(TPCoord homeBlock) {
 		this.homeBlock = homeBlock;
-		this.isSea = isSea;
-		this.newTownCost = newTownCost;
-		this.upkeepTownCost = upkeepTownCost;
+		this.isSea = false;
+		this.newTownCost = 0;
+		this.upkeepTownCost = 0;
 		this.id = "province_x" + homeBlock.getX() + "_z_" + homeBlock.getZ();
-		this.landValidationRequested = landValidationRequested;
+		this.landValidationRequested = false;
 		this.estimatedProportionOfGoodLand = 1;
 		this.estimatedProportionOfWater = 0;
 		this.estimatedProportionOfHotLand = 0;

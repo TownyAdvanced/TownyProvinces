@@ -153,18 +153,6 @@ public class LandvalidationTask extends BukkitRunnable {
 		
 		//Save province
 		province.saveData();
-		
-			World world = Bukkit.getWorld(worldName);
-			biome = lookupBiome(coordToTest, world);
-
-		}
-		return true;
-
-		boolean isSea = BiomeUtil.isProvinceMainlyOceanBiome(province);
-		if(isSea != province.isSea()) {
-			province.setSea(isSea);
-			DataHandlerUtil.saveProvince(province);
-		}
 	}
 
 }
