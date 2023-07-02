@@ -151,14 +151,14 @@ public class TownyProvincesSettings {
 
 	public static double getNewTownCostPerChunk(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String intString = regionDefinitions.get("new_town_cost_per_chunk");
-		return Double.parseDouble(intString);
+		String numberString = regionDefinitions.get("new_town_cost_per_chunk");
+		return Double.parseDouble(numberString);
 	}
 
 	public static double getUpkeepTownCostPerChunk(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String intString = regionDefinitions.get("upkeep_town_cost_per_chunk");
-		return Double.parseDouble(intString);
+		String numberString = regionDefinitions.get("upkeep_town_cost_per_chunk");
+		return Double.parseDouble(numberString);
 	}
 	
 	public static int getLandProvinceBorderWeight() {

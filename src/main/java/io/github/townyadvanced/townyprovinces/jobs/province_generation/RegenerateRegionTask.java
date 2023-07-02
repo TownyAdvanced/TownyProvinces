@@ -100,7 +100,7 @@ public class RegenerateRegionTask extends BukkitRunnable {
 
 	
 	private void recalculateProvincePrices() {
-		TownyProvinces.info("Recalculating province prices");
+		TownyProvinces.info("Settings province prices");
 		for (String regionName: TownyProvincesSettings.getOrderedRegionNames()) {
 			double newTownCostPerChunk = TownyProvincesSettings.getNewTownCostPerChunk(regionName);
 			double upkeepTownCostPerChunk = TownyProvincesSettings.getUpkeepTownCostPerChunk(regionName);
@@ -111,7 +111,7 @@ public class RegenerateRegionTask extends BukkitRunnable {
 				}
 			}
 		}
-		TownyProvinces.info("Province Prices recalculated");
+		TownyProvinces.info("Province Prices set");
 	}
 	
 	public boolean paintAllRegions() {

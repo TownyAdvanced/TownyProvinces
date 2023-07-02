@@ -3,6 +3,7 @@ package io.github.townyadvanced.townyprovinces.jobs.land_validation;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -90,20 +91,24 @@ public class LandvalidationTask extends BukkitRunnable {
 					setLandValidationRequestsForAllProvinces(false);  //Clear all requests
 					TownyProvinces.info("Land Validation Task: Stopping");
 					LandValidationTaskController.stopTask();
+					DynmapDisplayTaskController.requestFullMapRefresh();
 					return;
 				case PAUSE_REQUESTED:
 					TownyProvinces.info("Land Validation Task: Pausing");
 					LandValidationTaskController.pauseTask();
+					DynmapDisplayTaskController.requestFullMapRefresh();
 					return;
 				case RESTART_REQUESTED:
 					TownyProvinces.info("Land Validation Task: Clearing all validation requests");
 					setLandValidationRequestsForAllProvinces(false);  //Clear all requests
 					TownyProvinces.info("Land Validation Task: Saving data");
 					LandValidationTaskController.restartTask();
+					DynmapDisplayTaskController.requestFullMapRefresh();
 					return;
 			}
 		}
 		LandValidationTaskController.stopTask();
+		DynmapDisplayTaskController.requestFullMapRefresh();
 		TownyProvinces.info("Land Validation Job Complete.");
 	}
 
