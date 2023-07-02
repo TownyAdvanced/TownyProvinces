@@ -90,24 +90,20 @@ public class LandvalidationTask extends BukkitRunnable {
 					setLandValidationRequestsForAllProvinces(false);  //Clear all requests
 					TownyProvinces.info("Land Validation Task: Stopping");
 					LandValidationTaskController.stopTask();
-					DynmapDisplayTaskController.requestFullMapRefresh();
 					return;
 				case PAUSE_REQUESTED:
 					TownyProvinces.info("Land Validation Task: Pausing");
 					LandValidationTaskController.pauseTask();
-					DynmapDisplayTaskController.requestFullMapRefresh();
 					return;
 				case RESTART_REQUESTED:
 					TownyProvinces.info("Land Validation Task: Clearing all validation requests");
 					setLandValidationRequestsForAllProvinces(false);  //Clear all requests
 					TownyProvinces.info("Land Validation Task: Saving data");
 					LandValidationTaskController.restartTask();
-					DynmapDisplayTaskController.requestFullMapRefresh();
 					return;
 			}
 		}
 		LandValidationTaskController.stopTask();
-		DynmapDisplayTaskController.requestFullMapRefresh();
 		TownyProvinces.info("Land Validation Job Complete.");
 	}
 
@@ -160,7 +156,9 @@ public class LandvalidationTask extends BukkitRunnable {
 		
 		//Save data
 		province.saveData();
-
+		
+		//Request dynmap refresh of homeblocks 
+		// (no need to refresh border colour changes, the dynmap task will do that where needed)
+		DynmapDisplayTaskController.requestHomeBlocksRefresh();
 	}
-
 }
