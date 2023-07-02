@@ -64,6 +64,9 @@
 - `tpra region [newtowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk new-town-cost for a region.
 - `tpra region [upkeeptowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk upkeep-town-cost for a region.
 - `tpra landvalidationjob [status|start|stop|restart|pause]` -> Control the land validation job.
+  - This Job does 2 things:
+    - 1. Assesses and records the Biome proportions in each province. These proportions affect the new/upkeep prices.
+    - 2. Assigns each province as either "land" or "Sea", depending on the biome results.
   - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below command.* 
 - `tpra province [sea|land] [<x>,<z>]` -> Set a province to sea/land.
   - Sea provinces cannot be settled.
