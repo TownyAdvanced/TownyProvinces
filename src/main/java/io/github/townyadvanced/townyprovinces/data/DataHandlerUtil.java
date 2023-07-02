@@ -109,13 +109,13 @@ DataHandlerUtil {
 			province.setEstimatedProportionOfGoodLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_good_land")));
 		}
 		if(fileEntries.containsKey("estimated_proportion_of_water")) {
-			province.setEstimatedProportionOfGoodLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_water")));
+			province.setEstimatedProportionOfWater(Double.parseDouble(fileEntries.get("estimated_proportion_of_water")));
 		}
 		if(fileEntries.containsKey("estimated_proportion_of_hot_land")) {
-			province.setEstimatedProportionOfGoodLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_hot_land")));
+			province.setEstimatedProportionOfHotLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_hot_land")));
 		}
 		if(fileEntries.containsKey("estimated_proportion_of_cold_land")) {
-			province.setEstimatedProportionOfGoodLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_cold_land")));
+			province.setEstimatedProportionOfColdLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_cold_land")));
 		}
 		//Add province to provinces set
 		TownyProvincesDataHolder.getInstance().addProvince(province);

@@ -77,7 +77,6 @@ public class LandvalidationTask extends BukkitRunnable {
 		for(Province province: copyOfProvincesSet) {
 			if (province.isLandValidationRequested()) {
 				doLandValidation(province);
-				province.setLandValidationRequested(false);
 				numProvincesProcessed++;
 			}
 			int percentCompletion = (int)((numProvincesProcessed / copyOfProvincesSet.size()) * 100);
@@ -155,9 +154,13 @@ public class LandvalidationTask extends BukkitRunnable {
 		province.setEstimatedProportionOfWater(water / totalChunksToScan);
 		province.setEstimatedProportionOfHotLand(hotLand / totalChunksToScan);
 		province.setEstimatedProportionOfColdLand(coldLand / totalChunksToScan);
+
+		//Mark as validated
+		province.setLandValidationRequested(false);
 		
-		//Save province
+		//Save data
 		province.saveData();
+
 	}
 
 }

@@ -59,9 +59,9 @@ public class Province {
 	
 	public double getBiomeAdjustedNewTownCost() {
 		double goodLandCost = newTownCost * estimatedProportionOfGoodLand;
-		double waterCost = newTownCost * estimatedProportionOfWater;
-		double hotLandCost = newTownCost * estimatedProportionOfHotLand;
-		double coldLandCost = newTownCost * estimatedProportionOfColdLand;
+		double waterCost = newTownCost * estimatedProportionOfWater  * TownyProvincesSettings.getBiomeCostAdjustmentsWater();
+		double hotLandCost = newTownCost * estimatedProportionOfHotLand * TownyProvincesSettings.getBiomeCostAdjustmentsHotLand();
+		double coldLandCost = newTownCost * estimatedProportionOfColdLand *  TownyProvincesSettings.getBiomeCostAdjustmentsColdLand();
 		return goodLandCost + waterCost + hotLandCost + coldLandCost;
 	}
 
@@ -71,9 +71,9 @@ public class Province {
 
 	public double getBiomeAdjustedUpkeepTownCost() {
 		double goodLandCost = upkeepTownCost * estimatedProportionOfGoodLand;
-		double waterCost = upkeepTownCost * estimatedProportionOfWater;
-		double hotLandCost = upkeepTownCost * estimatedProportionOfHotLand;
-		double coldLandCost = upkeepTownCost * estimatedProportionOfColdLand;
+		double waterCost = upkeepTownCost * estimatedProportionOfWater  * TownyProvincesSettings.getBiomeCostAdjustmentsWater();
+		double hotLandCost = upkeepTownCost * estimatedProportionOfHotLand * TownyProvincesSettings.getBiomeCostAdjustmentsHotLand();
+		double coldLandCost = upkeepTownCost * estimatedProportionOfColdLand *  TownyProvincesSettings.getBiomeCostAdjustmentsColdLand();
 		return goodLandCost + waterCost + hotLandCost + coldLandCost;
 	}
 	
