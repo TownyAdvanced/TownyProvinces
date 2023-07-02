@@ -191,8 +191,6 @@ public class PaintRegionAction {
 	 * @return the province on success, or null if you fail (usually due to map being full)
 	 */
 	private @Nullable Province generateProvinceObject() {
-		boolean isSea = false;
-		boolean landValidationRequested = false;
 		//Establish boundaries of where the homeblock might be placed
 		double xLowest = regionMinX + brushSquareRadiusInChunks + 3;
 		double xHighest = regionMaxX - brushSquareRadiusInChunks - 3;
@@ -208,7 +206,7 @@ public class PaintRegionAction {
 			int zCoord = coord.getZ();
 			TPCoord homeBlockCoord = new TPFinalCoord(xCoord, zCoord);
 			//Create province object
-			Province province = new Province(homeBlockCoord, isSea, landValidationRequested, 0, 0);
+			Province province = new Province(homeBlockCoord);
 			//Validate province homeblock position
 			if(validatePositionOfProvinceHomeBlock(province)) {
 				return province;

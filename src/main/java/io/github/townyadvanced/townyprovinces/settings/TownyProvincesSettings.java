@@ -151,14 +151,14 @@ public class TownyProvincesSettings {
 
 	public static double getNewTownCostPerChunk(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String intString = regionDefinitions.get("new_town_cost_per_chunk");
-		return Double.parseDouble(intString);
+		String numberString = regionDefinitions.get("new_town_cost_per_chunk");
+		return Double.parseDouble(numberString);
 	}
 
 	public static double getUpkeepTownCostPerChunk(String regionName) {
 		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String intString = regionDefinitions.get("upkeep_town_cost_per_chunk");
-		return Double.parseDouble(intString);
+		String numberString = regionDefinitions.get("upkeep_town_cost_per_chunk");
+		return Double.parseDouble(numberString);
 	}
 	
 	public static int getLandProvinceBorderWeight() {
@@ -246,4 +246,13 @@ public class TownyProvincesSettings {
 	}
 	
 	public static double getPortsMaxFastTravelRange() { return Settings.getDouble(ConfigNodes.PORTS_MAX_FAST_TRAVEL_RANGE); }
+
+	public static boolean isBiomeCostAdjustmentsEnabled() {
+		return Settings.getBoolean(ConfigNodes.BIOME_COST_ADJUSTMENTS_ENABLED);
+	}
+	public static double getBiomeCostAdjustmentsWater() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_WATER); }
+
+	public static double getBiomeCostAdjustmentsHotLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_HOT_LAND); }
+	public static double getBiomeCostAdjustmentsColdLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_COLD_LAND); }
+
 }
