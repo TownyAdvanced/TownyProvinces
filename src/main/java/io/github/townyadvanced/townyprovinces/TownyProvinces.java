@@ -29,6 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 
+import static com.palmergames.util.JavaUtil.classExists;
+
 public class TownyProvinces extends JavaPlugin {
 	/**
 	 * Lock this if you want to change or display the map,
@@ -101,8 +103,39 @@ public class TownyProvinces extends JavaPlugin {
 		getCommand("townyprovincesadmin").setExecutor(new TownyProvincesAdminCommand());
 		return true;
 	}
+	
+	private boolean loadPl3xMapIntegration() {
+		try {
+			if (getServer().getPluginManager().isPluginEnabled("Pl3xMap")) {
+				info("Found Pl3xMap plugin.");
+				if (classExists("net.pl3x.map.core.Pl3xMap")) {
+					//Pl3xMap v3
+					info("Enabling Pl3xMap v3 integration.");
+					//TODO: Implement Pl3xMap v3 integration
+				}
+				else if (classExists("net.pl3x.map.Pl3xMap")) {
+					//Pl3xMap v2
+					info("Pl3xMap v2 is not supported. Cannot enable Pl3xMap integration.");
+					return false;
+				}
+				else {
+					//Pl3xMap v1
+					info("Pl3xMap v1 is not supported. Cannot enable Pl3xMap integration.");
+					return false;
+				}
+				return true;
+			} else {
+				info("Did not find Pl3xMap plugin. Cannot enable Pl3xMap integration.");
+				return false;
+			}
+		} catch (Exception e) {
+			Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling Pl3xMap integration: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+	}
 
-	private boolean loadIntegrations() {
+	private boolean loadDynmapIntegration() {
 		try {
 			if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
 				info("Found Dynmap plugin. Enabling Dynmap integration.");
@@ -117,6 +150,11 @@ public class TownyProvinces extends JavaPlugin {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	private void loadIntegrations() {
+		loadDynmapIntegration();
+		loadPl3xMapIntegration();
 	}
 	
 	private boolean checkTownyVersion() {
