@@ -5,7 +5,7 @@
   
 ## :gift: Features
 - :globe_with_meridians: **Divides The Map Automatically, Into Multiple 1-Town-Only Provinces.**
-- :moneybag: **Applies Different Town Costs Depending On Province Location.**
+- :moneybag: **Applies Different Town Costs Depending On Province location, size, and the type of terrain inside.**
 - :bullettrain_front: **Installs with an inbuilt Fast-Transport system.**
 
 ## :hammer_and_wrench: Solves
