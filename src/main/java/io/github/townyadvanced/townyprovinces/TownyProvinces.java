@@ -68,6 +68,22 @@ public class TownyProvinces extends JavaPlugin {
 
 		info("TownyProvinces Loaded Successfully");
 	}
+
+	public void reloadConfigsAndData() {
+		if(!loadConfig()
+			|| !loadLocalization(false)
+			|| !TownyProvincesDataHolder.initialize()
+			|| !FileUtil.setupPluginDataFoldersIfRequired()
+			|| !FileUtil.createRegionDefinitionsFolderAndSampleFiles()
+			|| !DataHandlerUtil.loadAllData()
+		) {
+			severe("TownyProvinces Did Not Reload Successfully.");
+			onDisable();
+			return;
+		}
+
+		info("TownyProvinces Reloaded Successfully");
+	}
 	
 	private boolean reloadTownyDatabase() {
 		//reload towny config to ensure the custom plot types are loaded correctly
