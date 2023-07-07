@@ -20,7 +20,7 @@ public class BiomeUtil {
 		int z = (coordToTest.getZ() * TownyProvincesSettings.getChunkSideLength()) + 8;
 		Material material = world.getHighestBlockAt(x,z).getType();
 		try {
-			Thread.sleep(100); //Sleep because the biome lookup can be hard on processor
+			Thread.sleep(TownyProvincesSettings.getPauseMillisecondsBetweenBiomeLookups()); //Sleep because the biome lookup can be hard on processor
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}

@@ -165,6 +165,10 @@ public class TownyProvincesSettings {
 		return Settings.getDouble(ConfigNodes.LAND_PROVINCE_BORDER_OPACITY);
 	}
 
+	public static int getPauseMillisecondsBetweenBiomeLookups() {
+		return Settings.getInt(ConfigNodes.PAUSE_MILLISECONDS_BETWEEN_BIOME_LOOKUPS);
+	}
+
 	public static int getLandProvinceBorderColour() {
 		return Integer.parseInt(Settings.getString(ConfigNodes.LAND_PROVINCE_BORDER_COLOUR),16);
 	}
