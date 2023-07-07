@@ -83,7 +83,7 @@ public class TownyProvinces extends JavaPlugin {
 		}
 
 		//Refresh 
-		DynmapDisplayTaskController.requestHomeBlocksRefresh();
+		DynmapDisplayTaskController.requestFullMapRefresh();
 		info("TownyProvinces Reloaded Successfully");
 	}
 	
