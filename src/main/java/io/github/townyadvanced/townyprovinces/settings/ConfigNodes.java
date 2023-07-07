@@ -22,6 +22,13 @@ public enum ConfigNodes {
 		"",
 		"# The name of the world where TownyProvinces appplies.",
 		"# TownyProvinces does not yet support multiple worlds"),
+	PAUSE_MILLISECONDS_BETWEEN_BIOME_LOOKUPS(
+		"pause_milliseconds_between_biome_lookups",
+		"500",
+		"",
+		"# Governs the pause between biome lookups.",
+		"# A high value will make the landvalidation job run slow",
+		"# A low value will make the landvalidation job take up lots of CPU"),
 	BIOME_COST_ADJUSTMENTS(
 		"biome_cost_adjustments",
 		"",
