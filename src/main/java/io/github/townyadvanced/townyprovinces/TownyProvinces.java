@@ -82,6 +82,8 @@ public class TownyProvinces extends JavaPlugin {
 			return;
 		}
 
+		//Refresh 
+		DynmapDisplayTaskController.requestFullMapRefresh();
 		info("TownyProvinces Reloaded Successfully");
 	}
 	
