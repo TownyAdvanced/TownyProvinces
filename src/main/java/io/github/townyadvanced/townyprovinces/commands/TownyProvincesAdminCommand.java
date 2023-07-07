@@ -32,7 +32,7 @@ import java.util.Set;
 
 public class TownyProvincesAdminCommand implements TabExecutor {
 
-	private static final List<String> adminTabCompletes = Arrays.asList("province","region", "landvalidationjob");
+	private static final List<String> adminTabCompletes = Arrays.asList("province","region","landvalidationjob", "reload");
 	private static final List<String> adminTabCompletesProvince = Arrays.asList("sea","land");
 	private static final List<String> adminTabCompletesRegion = Arrays.asList("regenerate", "newtowncostperchunk", "upkeeptowncostperchunk");
 	private static final List<String> adminTabCompletesSeaProvincesJob = Arrays.asList("status", "start", "stop", "restart", "pause");
@@ -97,6 +97,9 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				case "landvalidationjob":
 					parseLandValidationJobCommand(sender, StringMgmt.remFirstArg(args));
 					break;
+				case "reload":
+					parseReloadCommand(sender, StringMgmt.remFirstArg(args));
+					break;
 
 				/*
 				 * Show help if no command found.
@@ -121,7 +124,13 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [newtowncostperchunk] [<Region Name>] [amount]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [upkeeptowncostperchunk] [<Region Name>] [amount]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "landvalidationjob [status|start|stop|restart|pause]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "reload", ""));
 	}
+
+	private void parseReloadCommand(CommandSender sender, String[] args) {
+		TownyProvinces.getPlugin().reloadConfigsAndData();
+	}
+
 
 	private void parseProvinceCommand(CommandSender sender, String[] args) {
 		if (args.length < 2) {
