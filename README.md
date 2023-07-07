@@ -56,7 +56,7 @@
     - Fast-Travel Range: Unlimited.
     - As a mayor, run `/plot set jump-node` to convert one of your plots to a Jump-Node.
     - Pick a destination town, and create a **Fast-Travel Sign** at your Jump-Node, aimed at that town:![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/541b2b53-6501-401c-a46a-1bb493ed6e27)
-    - Get the mayor of the destination port, to create a "Return" sign at their Jump-Node: ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/91f52a8e-b027-4441-9d25-895d64a9ac02)
+    - Get the mayor of the destination Jump-Node, to create a "Return" sign at their Jump-Node: ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/91f52a8e-b027-4441-9d25-895d64a9ac02)
     - Now simply right-click the signs to travel from one town to the other.
 
 ## :keyboard: Admin Commands *(best run from console)*
