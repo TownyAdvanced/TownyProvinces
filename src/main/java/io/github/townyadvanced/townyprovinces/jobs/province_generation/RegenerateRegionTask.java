@@ -1,10 +1,12 @@
 package io.github.townyadvanced.townyprovinces.jobs.province_generation;
 
+import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
@@ -42,13 +44,17 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	public void run() {
 		try {
 			TownyProvinces.info("Regeneration Job Started");
-			TownyProvinces.info("Regeneration Job: Acquiring map change lock");
-			synchronized (TownyProvinces.MAP_CHANGE_LOCK) {
-				TownyProvinces.info("Regeneration Job: Map Change lock acquired");
-				executeRegionRegenerationJob();
+			TownyProvinces.info("Regeneration Job: Acquiring land validation lock");
+			synchronized (TownyProvinces.LAND_VALIDATION_LOCK) {
+				TownyProvinces.info("Regeneration Job: Land Validation lock acquired");
+				TownyProvinces.info("Regeneration Job: Acquiring dynmap display lock");
+				synchronized (TownyProvinces.DYNMAP_DISPLAY_LOCK) {
+					TownyProvinces.info("Regeneration Job: Dynmap display lock acquired");
+					executeRegionRegenerationJob();
+				}
 			}
 		} finally {
-			TownyProvinces.info("Regeneration Job: Map Change lock released");
+			TownyProvinces.info("Regeneration Job: Dynmap display lock released");
 			RegenerateRegionTaskController.endTask();
 			TownyProvinces.info("Regeneration Job Completed");
 		}
@@ -78,6 +84,8 @@ public class RegenerateRegionTask extends BukkitRunnable {
 			TownyProvinces.info("Problem Painting Regions");
 			return;
 		}
+		//Recalculated all prices
+		recalculateProvincePrices();
 		//Save data and request full dynmap refresh
 		DataHandlerUtil.saveAllData();
 		DynmapDisplayTaskController.requestFullMapRefresh();
@@ -88,6 +96,22 @@ public class RegenerateRegionTask extends BukkitRunnable {
 			TownyProvinces.info(Translatable.of("msg_successfully_regenerated_one_regions", regionName).translate(Locale.ROOT));
 		}
 		TownyProvinces.info("Region regeneration Job Complete"); //TODO - maybe global message?
+	}
+
+	
+	private void recalculateProvincePrices() {
+		TownyProvinces.info("Settings province prices");
+		for (String regionName: TownyProvincesSettings.getOrderedRegionNames()) {
+			double newTownCostPerChunk = TownyProvincesSettings.getNewTownCostPerChunk(regionName);
+			double upkeepTownCostPerChunk = TownyProvincesSettings.getUpkeepTownCostPerChunk(regionName);
+			for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+				if (TownyProvincesSettings.isProvinceInRegion(province, regionName)) {
+					province.setNewTownCost(newTownCostPerChunk * province.getListOfCoordsInProvince().size());
+					province.setUpkeepTownCost(upkeepTownCostPerChunk * province.getListOfCoordsInProvince().size());
+				}
+			}
+		}
+		TownyProvinces.info("Province Prices set");
 	}
 	
 	public boolean paintAllRegions() {

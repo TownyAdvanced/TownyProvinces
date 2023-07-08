@@ -25,7 +25,7 @@ description: >
 
 # Plugin prefix
 
-plugin_prefix: '&6[TownyProvinces] '
+townyprovinces_plugin_prefix: '&6[TownyProvinces] '
 
 # World validation
 
@@ -34,10 +34,12 @@ msg_err_unknown_world: "&cERROR: The world_name field in TownyProvinces/config.y
 # Set province to land or sea
 
 msg_err_invalid_province_location: "&cThe given co-ordinate was either mis-formatted, on a border, or outside the map."
-msg_province_successfully_set_to_sea: "&bProvince Type set to Sea. The map will be updated shortly."
-msg_province_already_sea: "&cProvince Type is already Sea."
-msg_province_successfully_set_to_land: "&bProvince Type set to Land. The map will be updated shortly."
-msg_province_already_land: "&cProvince Type is already Land."
+msg_province_successfully_set_to_sea: "&bProvince type was set to Sea. The map will be updated shortly."
+msg_province_already_sea: "&cProvince type is already Sea."
+msg_province_successfully_set_to_land: "&bProvince type was set to Land. The map will be updated shortly."
+msg_province_already_land: "&cProvince type is already Land."
+msg_provinces_in_area_set_to_sea: "&bAll provinces in the given area were set to type Sea."
+msg_provinces_in_area_set_to_land: "&bAll provinces in the given area were set to type Land."
 
 # Regenerate region
 
@@ -52,10 +54,10 @@ msg_successfully_regenerated_one_regions: "&bSuccessfully regenerated region: %s
 # Set town costs
 
 msg_err_value_must_be_and_integer: "&cThe given value must be an integer."
-msg_new_town_cost_set_for_all_regions: "&bNew-Town-Cost set for all regions, to: %s"
-msg_new_town_cost_set_for_one_region: "&bNew-Town-Cost set for region %s, to: %s"
-msg_upkeep_town_cost_set_for_all_regions: "&bUpkeep-Town-Cost set for all regions, to: %s"
-msg_upkeep_town_cost_set_for_one_region: "&bUpkeep-Town-Cost set for region %s, to: %s"
+msg_new_town_cost_set_for_all_regions: "&bNew-Town-Cost-Per-Chunk set for all regions, to: %s"
+msg_new_town_cost_set_for_one_region: "&bNew-Town-Cost-Per-Chunk set for region %s, to: %s"
+msg_upkeep_town_cost_set_for_all_regions: "&bUpkeep-Town-Cost-Per-Chunk set for all regions, to: %s"
+msg_upkeep_town_cost_set_for_one_region: "&bUpkeep-Town-Cost-Per-Chunk set for region %s, to: %s"
 
 # Land validation job
 
@@ -101,3 +103,30 @@ msg_err_cannot_claim_land_outside_own_province: "&cTowns cannot claim land outsi
 dynmap_province_homeblock_label: "Town Costs: New %s, Upkeep %s"
 dynmap_layer_label_town_costs: "Town Costs"
 dynmap_layer_label_borders: "Borders"
+
+# Creating Travel Plots
+
+msg_err_cannot_add_a_second_jump_node: "&cTowns cannot have more than one Jump-Node."
+msg_err_cannot_add_a_second_port: "&cTowns cannot have more than one Port."
+msg_err_ports_can_only_be_created_in_ocean_biomes: "&cPorts can only be created on Ocean, Beach, or River biomes."
+#msg_err_cannot_create_fast_travel_signs_except_in_travel_plots:  "&cFast-Travel-Signs can only be placed in Home-Blocks, Outposts, Ports, and Jump-Nodes."
+msg_err_cannot_create_fast_travel_signs_except_in_travel_plots:  "&cFast-Travel Signs can only be placed in Jump-Nodes or ports."
+msg_err_cannot_create_fast_travel_sign_bad_town_data:  "&cCannot create Fast-Travel Sign, because there was a problem with the data of the town or townblock."
+msg_err_cannot_create_fast_travel_sign_incorrect_second_line: "&cCannot create Fast-Travel Sign, because the 2nd line of the text was incorrect."
+msg_err_cannot_create_fast_travel_sign_unknown_destination_town: "&cCannot create Fast-Travel Sign, because the destination town (%s) is unknown."
+msg_err_cannot_create_fast_travel_sign_source_town_and_destination_town_are_the_same: "&cCannot create Fast-Travel sign, because the source town and destination town are the same (%s)."
+msg_err_cannot_create_fast_travel_sign_sign_already_exists_at_jump_node: "&cThis Jump-Node already contains a Fast-Travel sign for the destination town (%s)."
+msg_err_cannot_create_fast_travel_sign_sign_already_exists_at_port: "&cThis Port already contains a Fast-Travel sign for the destination town (%s)."
+msg_success_fast_travel_sign_created: "&bFast-Travel Sign Created. Right-Click the sign to instantly travel to the destination town: %s."
+
+# Using Fast Travel
+
+msg_err_fast_travel_sign_did_not_work_not_in_a_town: "&cThe Fast-Travel Sign did not work, because you are not in a town."
+#msg_err_fast_travel_sign_did_not_work_bad_plot_type: "&cThe Fast-Travel sign did not work, because it is not in a Home-Block, Outpost, Port, or Jump-Node."
+msg_err_fast_travel_sign_did_not_work_bad_plot_type: "&cThe Fast-Travel Sign did not work, because it is not in a Jump-Node or port."
+msg_err_fast_travel_sign_did_not_work_unknown_destination_town: "&cThe Fast-Travel Sign did not work, because the destination town is unknown."
+msg_err_fast_travel_sign_did_not_work_destination_town_has_no_jump_node: "&cThe Fast-Travel Sign did not work, because the destination town has no Jump-Node."
+msg_err_fast_travel_sign_did_not_work_destination_town_has_no_port: "&cThe Fast-Travel Sign did not work, because the destination town has no Port."
+msg_err_fast_travel_sign_did_not_work_destination_port_is_too_far_away: "&cThe Fast-Travel Sign did not work, because the destination Port is too far away. Max Distance: %d, Actual Distance: %d."
+msg_err_fast_travel_sign_did_not_work_destination_plot_had_no_return_sign: "&cThe Fast-Travel Sign did not work, because the destination plot did not contain a return Fast-Travel Sign."
+

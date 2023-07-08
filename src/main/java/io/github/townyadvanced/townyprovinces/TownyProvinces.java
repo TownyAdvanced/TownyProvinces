@@ -1,18 +1,23 @@
 package io.github.townyadvanced.townyprovinces;
 
+import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.command.TownyAdminCommand;
+import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.exceptions.initialization.TownyInitException;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
+import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.listeners.BukkitListener;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
+import io.github.townyadvanced.townyprovinces.util.CustomPlotUtil;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -29,7 +34,8 @@ public class TownyProvinces extends JavaPlugin {
 	 * Lock this if you want to change or display the map,
 	 * to avoid concurrent modification problems
 	 */
-	public static final Integer MAP_CHANGE_LOCK = 1;
+	public static final Object DYNMAP_DISPLAY_LOCK = new Object();
+	public static final Object LAND_VALIDATION_LOCK = new Object();
 	private static TownyProvinces plugin;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.1.0");
 	
@@ -47,17 +53,48 @@ public class TownyProvinces extends JavaPlugin {
 				|| !FileUtil.setupPluginDataFoldersIfRequired()
 				|| !FileUtil.createRegionDefinitionsFolderAndSampleFiles()
 				|| !DataHandlerUtil.loadAllData()
+				|| !CustomPlotUtil.registerCustomPlots()
+				|| !reloadTownyDatabase()
 				|| !registerListeners()
-				|| !registerAdminCommands()) {
+				|| !registerAdminCommands()
+			) {
 			severe("TownyProvinces Did Not Load Successfully.");
 			onDisable();
 			return;
-		} 
+		}
 
 		//Load optional stuff 
 		loadIntegrations();
 
 		info("TownyProvinces Loaded Successfully");
+	}
+
+	public void reloadConfigsAndData() {
+		if(!loadConfig()
+			|| !loadLocalization(false)
+			|| !TownyProvincesDataHolder.initialize()
+			|| !FileUtil.setupPluginDataFoldersIfRequired()
+			|| !FileUtil.createRegionDefinitionsFolderAndSampleFiles()
+			|| !DataHandlerUtil.loadAllData()
+		) {
+			severe("TownyProvinces Did Not Reload Successfully.");
+			onDisable();
+			return;
+		}
+
+		//Refresh 
+		DynmapDisplayTaskController.requestFullMapRefresh();
+		info("TownyProvinces Reloaded Successfully");
+	}
+	
+	private boolean reloadTownyDatabase() {
+		//reload towny config to ensure the custom plot types are loaded correctly
+		try {
+			(new TownyAdminCommand(Towny.getPlugin())).parseTownyAdminCommand(Bukkit.getConsoleSender(), new String[]{"reload", "database"});
+		} catch (TownyException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
 	}
 	
 	private boolean registerAdminCommands() {
@@ -137,6 +174,7 @@ public class TownyProvinces extends JavaPlugin {
 	private boolean registerListeners() {
 		PluginManager pluginManager = this.getServer().getPluginManager();
 		pluginManager.registerEvents(new TownyListener(), this);
+		pluginManager.registerEvents(new BukkitListener(), this);
 		return true;
 	}
 	public String getVersion() {
@@ -152,7 +190,7 @@ public class TownyProvinces extends JavaPlugin {
 	 * @return plugin prefix
 	 */
 	public static String getTranslatedPrefix() {
-		return Translatable.of("plugin_prefix").translate(Locale.ROOT);
+		return Translatable.of("townyprovinces_plugin_prefix").translate(Locale.ROOT);
 	}
 	
 	private boolean townyVersionCheck() {

@@ -19,7 +19,7 @@ public class DynmapDisplayTask extends BukkitRunnable {
 			} else {
 				jobRunning = true;
 			}
-			synchronized (TownyProvinces.MAP_CHANGE_LOCK) {
+			synchronized (TownyProvinces.DYNMAP_DISPLAY_LOCK) {
 				dynmapDisplayMapAction.executeAction(DynmapDisplayTaskController.getBordersRefreshRequested(), DynmapDisplayTaskController.getHomeBlocksRefreshRequested());
 			}
 		} finally {

@@ -1,13 +1,10 @@
 package io.github.townyadvanced.townyprovinces.data;
 
-import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
-import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
-import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 
 import java.io.File;
@@ -17,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class DataHandlerUtil {
+public class 
+DataHandlerUtil {
 
 	public static boolean loadAllData() {
 		loadAllProvinces();
@@ -28,8 +26,7 @@ public class DataHandlerUtil {
 		saveAllProvinces();
 		return true;
 	}
-
-
+	
 	private static void saveAllProvinces() {
 		TownyProvinces.info("Now Saving Provinces");
 		//Delete existing files
@@ -53,6 +50,10 @@ public class DataHandlerUtil {
 		fileEntries.put("is_land_validation_requested", "" + province.isLandValidationRequested());
 		fileEntries.put("new_town_cost", "" + province.getNewTownCost());
 		fileEntries.put("upkeep_town_cost", "" + province.getUpkeepTownCost());
+		fileEntries.put("estimated_proportion_of_good_land", "" + province.getEstimatedProportionOfGoodLand());
+		fileEntries.put("estimated_proportion_of_water", "" + province.getEstimatedProportionOfWater());
+		fileEntries.put("estimated_proportion_of_hot_land", "" + province.getEstimatedProportionOfHotLand());
+		fileEntries.put("estimated_proportion_of_cold_land", "" + province.getEstimatedProportionOfColdLand());
 		fileEntries.put("coords", "" + getCoordsAsWriteableString(province));
 		FileUtil.saveHashMapIntoFile(fileEntries, fileName);
 	}
@@ -65,7 +66,7 @@ public class DataHandlerUtil {
 	private static String getCoordsAsWriteableString(Province province) {
 		StringBuilder result = new StringBuilder();
 		boolean firstCoord = true;
-		for(TPCoord coord: province.getCoordsInProvince()) {
+		for(TPCoord coord: province.getListOfCoordsInProvince()) {
 			if(firstCoord) {
 				firstCoord = false;
 			} else {
@@ -85,25 +86,37 @@ public class DataHandlerUtil {
 		TownyProvinces.info("All Provinces Loaded");
 	}
 
-	public static void loadProvince(File regionDefinitionFile) {
+	public static void loadProvince(File provinceFile) {
 		//Read values from province file
-		Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(regionDefinitionFile);
+		Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(provinceFile);
 		TPCoord homeBlock = unpackCoord(fileEntries.get("home_block"));
-		boolean isSea = Boolean.parseBoolean(fileEntries.get("is_sea"));
-		boolean isLandValidationRequested = false; 
-		int newTownCost = 0;
-		int upkeepTownCost = 0;
-		if(fileEntries.containsKey("is_land_validation_requested")) {
-			isLandValidationRequested = Boolean.parseBoolean(fileEntries.get("is_land_validation_requested"));
-		}
+		//Create province object
+		Province province = new Province(homeBlock);
+		//Read more values
 		if(fileEntries.containsKey("new_town_cost")) {
-			newTownCost = Integer.parseInt(fileEntries.get("new_town_cost"));
+			province.setNewTownCost(Double.parseDouble(fileEntries.get("new_town_cost")));
 		}
 		if(fileEntries.containsKey("upkeep_town_cost")) {
-			upkeepTownCost = Integer.parseInt(fileEntries.get("upkeep_town_cost"));
+			province.setUpkeepTownCost(Double.parseDouble(fileEntries.get("upkeep_town_cost")));
 		}
-		//Create province
-		Province province = new Province(homeBlock, isSea, isLandValidationRequested, newTownCost, upkeepTownCost);
+		if(fileEntries.containsKey("is_land_validation_requested")) {
+			province.setLandValidationRequested(Boolean.parseBoolean(fileEntries.get("is_land_validation_requested")));
+		}
+		if(fileEntries.containsKey("is_sea")) {
+			province.setSea(Boolean.parseBoolean(fileEntries.get("is_sea")));
+		}
+		if(fileEntries.containsKey("estimated_proportion_of_good_land")) {
+			province.setEstimatedProportionOfGoodLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_good_land")));
+		}
+		if(fileEntries.containsKey("estimated_proportion_of_water")) {
+			province.setEstimatedProportionOfWater(Double.parseDouble(fileEntries.get("estimated_proportion_of_water")));
+		}
+		if(fileEntries.containsKey("estimated_proportion_of_hot_land")) {
+			province.setEstimatedProportionOfHotLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_hot_land")));
+		}
+		if(fileEntries.containsKey("estimated_proportion_of_cold_land")) {
+			province.setEstimatedProportionOfColdLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_cold_land")));
+		}
 		//Add province to provinces set
 		TownyProvincesDataHolder.getInstance().addProvince(province);
 		//Add coords to coord-province map
@@ -132,6 +145,5 @@ public class DataHandlerUtil {
 		int z = Integer.parseInt(coordAsArray[1]);
 		return new TPFinalCoord(x,z);
 	}
-
 
 }

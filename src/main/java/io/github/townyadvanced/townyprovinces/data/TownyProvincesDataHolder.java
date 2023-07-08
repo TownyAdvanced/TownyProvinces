@@ -29,6 +29,7 @@ public class TownyProvincesDataHolder {
 	 * Set of provinces
 	 */
 	private final Set<Province> provincesSet;
+	
 	/**
 	 * Coord province map
 	 * 
@@ -37,15 +38,6 @@ public class TownyProvincesDataHolder {
 	 *   If it doesn't have the given coord, then its a border
 	 */
 	private final Map<TPCoord, Province> coordProvinceMap;
-
-
-	/**
-	 * An array of which provinces are at which chunks
-	 * 
-	 * - Size is initialized using the first province, which is assumed to cover all others.
-	 * 
-	 */
-	//private final Province[][] chunkAssignmentArray;
 	
 	/**
 	 * Static Coord Search key
@@ -75,7 +67,7 @@ public class TownyProvincesDataHolder {
 		return true;
 	}
 
-	public List<TPCoord> getCoordsInProvince(Province province) {
+	public List<TPCoord> getListOfCoordsInProvince(Province province) {
 		List<TPCoord> result = new ArrayList<>();
 		for(Map.Entry<TPCoord,Province> mapEntry: coordProvinceMap.entrySet()) {
 			if(mapEntry.getValue().equals(province)) {
@@ -87,10 +79,6 @@ public class TownyProvincesDataHolder {
 	
 	public void addProvince(Province province) {
 		provincesSet.add(province);
-	}
-	
-	public int getNumProvinces() {
-		return provincesSet.size();
 	}
 	
 	public void claimCoordForProvince(TPCoord coord, Province province) {
@@ -112,7 +100,7 @@ public class TownyProvincesDataHolder {
 
 
 	public void deleteProvince(Province province, Map<TPCoord,TPCoord> unclaimedCoordsMap) {
-		List<TPCoord> coordsInProvince = province.getCoordsInProvince();
+		List<TPCoord> coordsInProvince = province.getListOfCoordsInProvince();
 		for(TPCoord coord: coordsInProvince) {
 			coordProvinceMap.remove(coord);
 			unclaimedCoordsMap.put(coord,coord);
@@ -223,6 +211,23 @@ public class TownyProvincesDataHolder {
 		}
 		
 		//Return result
+		return result;
+	}
+
+	public Set<Province> getProvincesInArea(int topLeftX, int topLeftZ, int bottomRightX, int bottomRightZ) {
+		Set<Province> result = new HashSet<>();
+		TPCoord homeBlock;
+		Coord topLeftCoord = (Coord.parseCoord(topLeftX,topLeftZ));
+		Coord bottomRightCoord = (Coord.parseCoord(bottomRightX,bottomRightZ));
+		for(Province province: provincesSet) {
+			homeBlock = province.getHomeBlock();
+			if(homeBlock.getX() >= topLeftCoord.getX()
+					&& homeBlock.getX() <= bottomRightCoord.getX()
+					&& homeBlock.getZ() >= topLeftCoord.getZ()
+					&& homeBlock.getZ() <= bottomRightCoord.getZ()) {
+				result.add(province);
+			}
+		}
 		return result;
 	}
 }
