@@ -17,6 +17,7 @@ import net.pl3x.map.core.markers.marker.Icon;
 import net.pl3x.map.core.markers.marker.Marker;
 import net.pl3x.map.core.markers.marker.Polygon;
 import net.pl3x.map.core.markers.marker.Polyline;
+import net.pl3x.map.core.markers.option.Fill;
 import net.pl3x.map.core.markers.option.Options;
 import net.pl3x.map.core.markers.option.Stroke;
 import net.pl3x.map.core.world.World;
@@ -348,6 +349,7 @@ public class DisplayProvincesOnPl3xMapV3Action {
 		
 		Options markerOptions = Options.builder()
 			.stroke(stroke)
+			.fill(new Fill(false))
 			.build();
 		
 		polygonMarker.setOptions(markerOptions);
@@ -424,6 +426,7 @@ public class DisplayProvincesOnPl3xMapV3Action {
 		
 		Options markerOptions = Options.builder()
 			.stroke(new Stroke(4, 0xffff0000))
+			.fill(new Fill(false))
 			.tooltipContent(markerName)
 			.build();
 
