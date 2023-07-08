@@ -12,6 +12,7 @@ import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminComman
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.pl3xmap_v3_display.Pl3xMapV3DisplayTaskController;
 import io.github.townyadvanced.townyprovinces.listeners.BukkitListener;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
@@ -37,6 +38,7 @@ public class TownyProvinces extends JavaPlugin {
 	 * to avoid concurrent modification problems
 	 */
 	public static final Object DYNMAP_DISPLAY_LOCK = new Object();
+	public static final Object PL3XMAP_DISPLAY_LOCK = new Object();
 	public static final Object LAND_VALIDATION_LOCK = new Object();
 	private static TownyProvinces plugin;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.1.0");
@@ -86,6 +88,7 @@ public class TownyProvinces extends JavaPlugin {
 
 		//Refresh 
 		DynmapDisplayTaskController.requestFullMapRefresh();
+		Pl3xMapV3DisplayTaskController.requestFullMapRefresh();
 		info("TownyProvinces Reloaded Successfully");
 	}
 	
@@ -107,11 +110,10 @@ public class TownyProvinces extends JavaPlugin {
 	private boolean loadPl3xMapIntegration() {
 		try {
 			if (getServer().getPluginManager().isPluginEnabled("Pl3xMap")) {
-				info("Found Pl3xMap plugin.");
+				info("Found Pl3xMap plugin. Enabling Pl3xMap integration.");
 				if (classExists("net.pl3x.map.core.Pl3xMap")) {
 					//Pl3xMap v3
-					info("Enabling Pl3xMap v3 integration.");
-					//TODO: Implement Pl3xMap v3 integration
+					Pl3xMapV3DisplayTaskController.startTask();
 				}
 				else if (classExists("net.pl3x.map.Pl3xMap")) {
 					//Pl3xMap v2
