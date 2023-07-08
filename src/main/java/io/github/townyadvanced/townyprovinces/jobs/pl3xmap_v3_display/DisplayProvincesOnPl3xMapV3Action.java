@@ -15,6 +15,7 @@ import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.layer.SimpleLayer;
 import net.pl3x.map.core.markers.marker.Icon;
 import net.pl3x.map.core.markers.marker.Marker;
+import net.pl3x.map.core.markers.marker.Polygon;
 import net.pl3x.map.core.markers.marker.Polyline;
 import net.pl3x.map.core.markers.option.Options;
 import net.pl3x.map.core.markers.option.Stroke;
@@ -261,7 +262,7 @@ public class DisplayProvincesOnPl3xMapV3Action {
 		int landBorderWeight = TownyProvincesSettings.getLandProvinceBorderWeight();
 		int seaProvinceBorderColour = TownyProvincesSettings.getSeaProvinceBorderColour();
 		int seaProvinceBorderWeight = TownyProvincesSettings.getSeaProvinceBorderWeight();
-		
+
 		List<Point> points = new ArrayList<>();
 		for (TPCoord drawableLineOfBorderCoord : drawableLineOfBorderCoords) {
 			int x = (drawableLineOfBorderCoord.getX() * TownyProvincesSettings.getChunkSideLength());
@@ -314,8 +315,10 @@ public class DisplayProvincesOnPl3xMapV3Action {
 		}
 
 		//Draw border line
-		Polyline polyLineMarker = new Polyline(
-			markerId, points);
+		Polyline polyLine = new Polyline(markerId, points);
+
+		//Convert line to polygon for display
+		Polygon polygonMarker  = new Polygon("polygon"+markerId, polyLine);
 		
 		//Set colour
 		Stroke stroke;
@@ -328,10 +331,10 @@ public class DisplayProvincesOnPl3xMapV3Action {
 		Options markerOptions = Options.builder()
 			.stroke(stroke)
 			.build();
-		
-		polyLineMarker.setOptions(markerOptions);
-		
-		bordersLayer.addMarker(polyLineMarker);
+
+		polygonMarker.setOptions(markerOptions);
+
+		bordersLayer.addMarker(new Polygon(markerId + "two", polyLine).setOptions(markerOptions));
 	}
 	
 	private void calculatePullStrengthFromNearbyProvince(TPCoord borderCoordBeingPulled, Province provinceDoingThePulling, TPFreeCoord freeCoord) {
