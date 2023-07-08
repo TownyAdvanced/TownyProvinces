@@ -37,6 +37,8 @@ msg_province_successfully_set_to_sea: "&bCette province est désormais une provi
 msg_province_already_sea: "&cCette province est déjà une province marritime."
 msg_province_successfully_set_to_land: "&bCette province est désormais une province terrestre. La carte va se mettre à jour bientôt."
 msg_province_already_land: "&cCette province est déjà une province terrestre."
+msg_provinces_in_area_set_to_sea: "&bToutes les province dans cette zone sont désormais des provinces maritimes."
+msg_provinces_in_area_set_to_land: "&bToutes les province dans cette zone sont désormais des provinces terrestres."
 
 # Regenerate region
 
@@ -97,6 +99,30 @@ msg_err_cannot_claim_land_outside_own_province: "&cUne ville ne peut pas annexer
 
 #Dynmap
 
-dynmap_province_homeblock_label: "Prix des villes: Prix %s, Taxe journallière %s"
+dynmap_province_homeblock_label: "Prix des villes: Prix %s, Taxe quotidienne %s"
 dynmap_layer_label_town_costs: "Prix des villes"
 dynmap_layer_label_borders: "Frontières"
+
+# Creating Travel Plots
+
+msg_err_cannot_add_a_second_jump_node: "&cUne ville ne peut avoir qu'un seul Jump-Node."
+msg_err_cannot_add_a_second_port: "&cUne ville ne peut avoir qu'un seul Port."
+msg_err_ports_can_only_be_created_in_ocean_biomes: "&cLes ports doivent être placées dans des biomes d'Océan, de Plage ou de Rivière."
+msg_err_cannot_create_fast_travel_signs_except_in_travel_plots:  "&cLes Pancartes de voyage instantané doivent être placées dans un port ou dans un jump-node."
+msg_err_cannot_create_fast_travel_sign_bad_town_data:  "&cImpossible de créer une Pancarte de voyage instantané car une erreur est survenue avec les données de la ville ou d'un bloc de ville."
+msg_err_cannot_create_fast_travel_sign_incorrect_second_line: "&cImpossible de créer une Pancarte de voyage instantané car la 2nde ligne est incorrecte."
+msg_err_cannot_create_fast_travel_sign_unknown_destination_town: "&cImpossible de créer une Pancarte de voyage instantané car la destination (%s) est inconnue."
+msg_err_cannot_create_fast_travel_sign_source_town_and_destination_town_are_the_same: "&cImpossible de créer une Pancarte de voyage instantané car la ville d'arrivée et la ville de départ sont les mêmes (%s)."
+msg_err_cannot_create_fast_travel_sign_sign_already_exists_at_jump_node: "&cCe Jump-Node contient déjà une Pancarte de voyage instantané pour cette ville d'arrivée (%s)."
+msg_err_cannot_create_fast_travel_sign_sign_already_exists_at_port: "&cCe Port contient déjà une Pancarte de voyage instantané pour cette ville d'arrivée (%s)."
+msg_success_fast_travel_sign_created: "&bLa pancarte de voyage instantané à été crée. Clic droit pour voyager instantanément à la ville d'arrivée: %s."
+
+# Using Fast Travel
+
+msg_err_fast_travel_sign_did_not_work_not_in_a_town: "&cLe voyage instantané n'a pas fonctionné car vous n'êtes pas dans un ville."
+msg_err_fast_travel_sign_did_not_work_bad_plot_type: "&cLe voyage instantané n'a pas fonctionné car vous n'êtes pas dans un Jump-Node ou dans un port."
+msg_err_fast_travel_sign_did_not_work_unknown_destination_town: "&Le voyage instantané n'a pas fonctionné car la destination est inconnue."
+msg_err_fast_travel_sign_did_not_work_destination_town_has_no_jump_node: "&cLe voyage instantané n'a pas fonctionné car la destination n'a pas de Jump-Node."
+msg_err_fast_travel_sign_did_not_work_destination_town_has_no_port: "&cLe voyage instantané n'a pas fonctionné car la destination n'a pas de Port."
+msg_err_fast_travel_sign_did_not_work_destination_port_is_too_far_away: "&cLe voyage instantané n'a pas fonctionné car la destination est trop loin. Distance maximale: %d, Distance actuelle: %d."
+msg_err_fast_travel_sign_did_not_work_destination_plot_had_no_return_sign: "&cLe voyage instantané n'a pas fonctionné car la destination n'a pas de pancartes de voyage instantané pour le retour."
