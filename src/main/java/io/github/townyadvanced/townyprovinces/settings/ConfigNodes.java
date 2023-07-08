@@ -193,7 +193,48 @@ public enum ConfigNodes {
 		"20",
 		"",
 		"# The value determines the upkeep cost of a jump node plot.",
-		"# This is on top of any normal plot upkeep cost.");
+		"# This is on top of any normal plot upkeep cost."),
+	PL3XMAP(
+		"pl3xmap",
+		"",
+		"",
+		"",
+		"############################################################",
+		"# +------------------------------------------------------+ #",
+		"# |                        PL3XMAP                       | #",
+		"# +------------------------------------------------------+ #",
+		"############################################################",
+		""),
+	PROVINCES_LAYER_PRIORITY(
+		"pl3xmap.province_layer_priority",
+		"6",
+		"",
+		"# You do not need to change this unless other map addons conflict with the provinces layer."),
+	PROVINCES_LAYER_ZINDEX(
+		"pl3xmap.provinces_layer_zindex",
+		"250",
+		"",
+		"# You can decrease this value to blend the provinces layer with the map more."),
+	PROVINCES_LAYER_TOGGLE(
+		"pl3xmap.provinces_layer_toggle",
+		"true",
+		"",
+		"# Set to false to disallow users from toggling the provinces layer."),
+	TOWN_COSTS_LAYER_PRIORITY(
+		"pl3xmap.town_costs_layer_priority",
+		"6",
+		"",
+		"# You do not need to change this unless other map addons conflict with the town costs layer."),
+	TOWN_COSTS_LAYER_ZINDEX(
+		"pl3xmap.town_costs_layer_zindex",
+		"250",
+		"",
+		"# You can decrease this value to blend the town costs layer with the map more."),
+	TOWN_COSTS_LAYER_TOGGLE(
+		"pl3xmap.town_costs_layer_toggle",
+		"true",
+		"",
+		"# Set to false to disallow users from toggling the town costs layer.");
 
 	private final String Root;
 	private final String Default;
