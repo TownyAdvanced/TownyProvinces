@@ -334,7 +334,7 @@ public class DisplayProvincesOnPl3xMapV3Action {
 
 		polygonMarker.setOptions(markerOptions);
 
-		bordersLayer.addMarker(new Polygon(markerId + "two", polyLine).setOptions(markerOptions));
+		bordersLayer.addMarker(new Polygon(markerId, polyLine).setOptions(markerOptions));
 	}
 	
 	private void calculatePullStrengthFromNearbyProvince(TPCoord borderCoordBeingPulled, Province provinceDoingThePulling, TPFreeCoord freeCoord) {
