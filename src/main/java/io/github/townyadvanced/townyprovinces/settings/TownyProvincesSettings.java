@@ -273,6 +273,10 @@ public class TownyProvincesSettings {
 			return null;
 		}
 	}
+	
+	public static int getTownCostsIconWidth() { return Settings.getInt(ConfigNodes.TOWN_COSTS_ICON_WIDTH); }
+	
+	public static int getTownCostsIconHeight() { return Settings.getInt(ConfigNodes.TOWN_COSTS_ICON_HEIGHT); }
 
 	public static boolean getDynmapUsesTownCostsIcon() { return Settings.getBoolean(ConfigNodes.DYNMAP_USE_ICON); }
 
