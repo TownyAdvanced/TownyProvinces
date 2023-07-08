@@ -29,6 +29,7 @@ public class DisplayProvincesOnPl3xMapV3Action {
 	private SimpleLayer bordersLayer;
 	private SimpleLayer homeBlocksLayer;
 	private final TPFreeCoord tpFreeCoord;
+	private World world;
 
 	public DisplayProvincesOnPl3xMapV3Action() {
 		TownyProvinces.info("Enabling Pl3xMap v3 support.");
@@ -40,20 +41,26 @@ public class DisplayProvincesOnPl3xMapV3Action {
 	 * Display all TownyProvinces items
 	 */
 	void executeAction(boolean bordersRefreshRequested, boolean homeBlocksRefreshRequested) {
+		world = Pl3xMap.api().getWorldRegistry().get(TownyProvincesSettings.getWorldName());
+		if (world == null) {
+			TownyProvinces.severe("World is not in Pl3xMap registry!");
+			return;
+		}
+		
+		bordersLayer = (SimpleLayer) world.getLayerRegistry().get("townyprovinces.layer.borders");
+		homeBlocksLayer = (SimpleLayer) world.getLayerRegistry().get("townyprovinces.layer.homeblocks");
+		
 		if(bordersRefreshRequested) {
 			if(bordersLayer != null) {
 				bordersLayer.clearMarkers();
 			}
-			else {
-				addProvinceBordersLayer();
-			}
+			addProvinceBordersLayer();
 		}
 		if(homeBlocksRefreshRequested) {
 			if(homeBlocksLayer != null) {
 				homeBlocksLayer.clearMarkers();
-			} else {
-				addProvinceHomeBlocksLayer();
 			}
+			addProvinceHomeBlocksLayer();
 		}
 		drawProvinceHomeBlocks();
 		drawProvinceBorders();
@@ -61,7 +68,7 @@ public class DisplayProvincesOnPl3xMapV3Action {
 	
 	private void addProvinceHomeBlocksLayer() {
 		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_town_costs").translate(Locale.ROOT);		
-		homeBlocksLayer = createLayer("townyprovinces.markerset.homeblocks", name, true, 
+		homeBlocksLayer = createLayer("townyprovinces.layer.homeblocks", name, true, 
 			TownyProvincesSettings.getTownCostsLayerPriority(),
 			TownyProvincesSettings.getTownCostsLayerZIndex(),
 			TownyProvincesSettings.getTownCostsLayerIsToggleable());
@@ -69,7 +76,7 @@ public class DisplayProvincesOnPl3xMapV3Action {
 
 	private void addProvinceBordersLayer() {
 		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_borders").translate(Locale.ROOT);
-		bordersLayer = createLayer("townyprovinces.markerset.borders", name, false, 
+		bordersLayer = createLayer("townyprovinces.layer.borders", name, false, 
 			TownyProvincesSettings.getProvincesLayerPriority(), 
 			TownyProvincesSettings.getProvincesLayerZIndex(), 
 			TownyProvincesSettings.getProvincesLayerIsToggleable());
@@ -77,11 +84,8 @@ public class DisplayProvincesOnPl3xMapV3Action {
 	
 	private SimpleLayer createLayer(String layerKey, String layerName, boolean hideByDefault, int priority, int zIndex, boolean showControls) {
 		//Create simple layer
-		World world = Pl3xMap.api().getWorldRegistry().get(TownyProvincesSettings.getWorldName());
-		if (world == null) {
-			TownyProvinces.severe("World is not in Pl3xMap registry!");
-			return null;
-		}
+		if (world.getLayerRegistry().get(layerKey) != null)
+			return (SimpleLayer)world.getLayerRegistry().get(layerKey);
 		
 		SimpleLayer layer = new SimpleLayer(layerKey, layerName::toString);
 
