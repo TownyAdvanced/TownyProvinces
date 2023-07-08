@@ -255,6 +255,8 @@ public class TownyProvincesSettings {
 	public static double getBiomeCostAdjustmentsHotLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_HOT_LAND); }
 	public static double getBiomeCostAdjustmentsColdLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_COLD_LAND); }
 
+	public static boolean getDynmapUsesTownCostsIcon() { return Settings.getBoolean(ConfigNodes.DYNMAP_USE_ICON); }
+
 	public static int getProvincesLayerPriority() { return Settings.getInt(ConfigNodes.PROVINCES_LAYER_PRIORITY); }
 
 	public static int getProvincesLayerZIndex() { return Settings.getInt(ConfigNodes.PROVINCES_LAYER_ZINDEX); }
