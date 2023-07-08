@@ -22,6 +22,7 @@ import net.pl3x.map.core.markers.option.Stroke;
 import net.pl3x.map.core.world.World;
 
 import java.util.*;
+import java.util.List;
 
 public class DisplayProvincesOnPl3xMapV3Action {
 	
@@ -43,13 +44,16 @@ public class DisplayProvincesOnPl3xMapV3Action {
 			if(bordersLayer != null) {
 				bordersLayer.clearMarkers();
 			}
-			addProvinceBordersLayer();
+			else {
+				addProvinceBordersLayer();
+			}
 		}
 		if(homeBlocksRefreshRequested) {
 			if(homeBlocksLayer != null) {
 				homeBlocksLayer.clearMarkers();
+			} else {
+				addProvinceHomeBlocksLayer();
 			}
-			addProvinceHomeBlocksLayer();
 		}
 		drawProvinceHomeBlocks();
 		drawProvinceBorders();
@@ -190,21 +194,25 @@ public class DisplayProvincesOnPl3xMapV3Action {
 				TownyProvinces.severe("WARNING: Marker stroke color is null for province border marker " + markerId + ".");
 			}
 			//Re-evaluate colour
+			Integer argbColor = stroke.getColor();
 			if (province.isSea()) {
 				if (stroke.getColor().equals(TownyProvincesSettings.getSeaProvinceBorderColour())) {
 					//Change colour of marker
-					stroke.setColor(TownyProvincesSettings.getSeaProvinceBorderColour());
+					argbColor = TownyProvincesSettings.getSeaProvinceBorderColour() << 8 +
+						(int)(255*TownyProvincesSettings.getSeaProvinceBorderOpacity());
 					stroke.setWeight(TownyProvincesSettings.getSeaProvinceBorderWeight());
 					//Does not support opacity
 				}
 			} else {
 				if (!stroke.getColor().equals(TownyProvincesSettings.getLandProvinceBorderColour())) {
 					//Change colour of marker
-					stroke.setColor(TownyProvincesSettings.getLandProvinceBorderColour());
+					argbColor = TownyProvincesSettings.getLandProvinceBorderColour() << 8 +
+						(int)(255*TownyProvincesSettings.getLandProvinceBorderOpacity());
 					stroke.setWeight(TownyProvincesSettings.getLandProvinceBorderWeight());
 					//Does not support opacity
 				}
 			}
+			stroke.setColor(argbColor);
 		} 
 	}
 
@@ -260,8 +268,10 @@ public class DisplayProvincesOnPl3xMapV3Action {
 	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
 		int landBorderColour = TownyProvincesSettings.getLandProvinceBorderColour();
 		int landBorderWeight = TownyProvincesSettings.getLandProvinceBorderWeight();
+		double landBorderOpacity = TownyProvincesSettings.getLandProvinceBorderOpacity();
 		int seaProvinceBorderColour = TownyProvincesSettings.getSeaProvinceBorderColour();
 		int seaProvinceBorderWeight = TownyProvincesSettings.getSeaProvinceBorderWeight();
+		double seaProvinceBorderOpacity = TownyProvincesSettings.getSeaProvinceBorderOpacity();
 
 		List<Point> points = new ArrayList<>();
 		for (TPCoord drawableLineOfBorderCoord : drawableLineOfBorderCoords) {
@@ -318,20 +328,26 @@ public class DisplayProvincesOnPl3xMapV3Action {
 		Polyline polyLine = new Polyline(markerId, points);
 
 		//Convert line to polygon for display
-		Polygon polygonMarker  = new Polygon("polygon"+markerId, polyLine);
+		Polygon polygonMarker  = new Polygon("polygon_"+markerId, polyLine);
 		
 		//Set colour
-		Stroke stroke;
+		Stroke stroke = new Stroke(true);
+		Integer argbColor;
 		if (province.isSea()) {
-			stroke = new Stroke(seaProvinceBorderWeight, seaProvinceBorderColour);
+			argbColor = seaProvinceBorderColour << 8 +
+				(int)(255*seaProvinceBorderOpacity);
+			stroke.setWeight(seaProvinceBorderWeight);
 		} else {
-			stroke = new Stroke(landBorderWeight, landBorderColour);
+			argbColor = landBorderColour << 8 +
+				(int)(255*landBorderOpacity);
+			stroke.setWeight(landBorderWeight);
 		}
+		stroke.setColor(argbColor);
 		
 		Options markerOptions = Options.builder()
 			.stroke(stroke)
 			.build();
-
+		
 		polygonMarker.setOptions(markerOptions);
 
 		bordersLayer.addMarker(new Polygon(markerId, polyLine).setOptions(markerOptions));
@@ -405,7 +421,7 @@ public class DisplayProvincesOnPl3xMapV3Action {
 			markerId, points);
 		
 		Options markerOptions = Options.builder()
-			.stroke(new Stroke(4, 0xff0000))
+			.stroke(new Stroke(4, 0xff0000ff))
 			.tooltipContent(markerName)
 			.build();
 
