@@ -194,6 +194,22 @@ public enum ConfigNodes {
 		"",
 		"# The value determines the upkeep cost of a jump node plot.",
 		"# This is on top of any normal plot upkeep cost."),
+	DYNMAP(
+		"dynmap",
+		"",
+		"",
+		"",
+		"############################################################",
+		"# +------------------------------------------------------+ #",
+		"# |                        DYNMAP                        | #",
+		"# +------------------------------------------------------+ #",
+		"############################################################",
+		""),
+	DYNMAP_USE_ICON(
+		"dynmap.use_town_costs_icon",
+		"false",
+		"",
+		"# Toggle whether Dynmap should use your specified town_costs_icon, or an inbuilt Dynmap icon."),
 	PL3XMAP(
 		"pl3xmap",
 		"",
