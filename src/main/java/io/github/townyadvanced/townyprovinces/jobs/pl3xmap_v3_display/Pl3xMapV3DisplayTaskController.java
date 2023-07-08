@@ -1,5 +1,8 @@
 package io.github.townyadvanced.townyprovinces.jobs.pl3xmap_v3_display;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
+import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import net.pl3x.map.core.Pl3xMap;
+import net.pl3x.map.core.image.IconImage;
 
 public class Pl3xMapV3DisplayTaskController {
 
@@ -12,6 +15,15 @@ public class Pl3xMapV3DisplayTaskController {
 			return false;
 		} else {
 			TownyProvinces.info("Pl3xMap Display Job Starting");
+
+			if (TownyProvincesSettings.getTownCostsIcon() == null) {
+				TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to start Pl3xMap Display Job");
+				return false;
+			}
+
+			Pl3xMap.api().getIconRegistry().register(new IconImage(
+				"provinces_costs_icon", TownyProvincesSettings.getTownCostsIcon(), "png"));
+			
 			bordersRefreshRequested = true;
 			homeBlocksRefreshRequested = true;
 			pl3xMapDisplayTask = new Pl3xMapV3DisplayTask();

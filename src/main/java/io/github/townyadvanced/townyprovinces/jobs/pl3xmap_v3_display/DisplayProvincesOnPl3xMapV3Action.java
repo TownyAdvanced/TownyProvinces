@@ -91,7 +91,7 @@ public class DisplayProvincesOnPl3xMapV3Action {
 	}
 	
 	private void drawProvinceHomeBlocks() {
-		String border_icon_id = "coins";
+		String border_icon_id = "provinces_costs_icon";
 		boolean biomeCostAdjustmentsEnabled = TownyProvincesSettings.isBiomeCostAdjustmentsEnabled();
 		Set<Province> copyOfProvincesSet = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet());
 		for (Province province : copyOfProvincesSet) {
