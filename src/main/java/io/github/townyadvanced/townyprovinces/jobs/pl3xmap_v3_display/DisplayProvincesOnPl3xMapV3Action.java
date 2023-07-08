@@ -168,6 +168,12 @@ public class DisplayProvincesOnPl3xMapV3Action {
 	}
 	
 	private void drawProvinceBorder(Province province) {
+		int landBorderColour = TownyProvincesSettings.getLandProvinceBorderColour() +
+			(int)(255*TownyProvincesSettings.getLandProvinceBorderOpacity()) << 24;
+		int landBorderWeight = TownyProvincesSettings.getLandProvinceBorderWeight();
+		int seaProvinceBorderColour = TownyProvincesSettings.getSeaProvinceBorderColour() +
+			(int)(255*TownyProvincesSettings.getSeaProvinceBorderOpacity()) << 24;
+		int seaProvinceBorderWeight = TownyProvincesSettings.getSeaProvinceBorderWeight();
 		String markerId = province.getId();
 		Marker<?> polyLineMarker = bordersLayer.registeredMarkers().get(markerId);
 		if(polyLineMarker == null) {
@@ -198,25 +204,21 @@ public class DisplayProvincesOnPl3xMapV3Action {
 				TownyProvinces.severe("WARNING: Marker stroke color is null for province border marker " + markerId + ".");
 			}
 			//Re-evaluate colour
-			Integer argbColor = stroke.getColor();
 			if (province.isSea()) {
-				if (stroke.getColor().equals(TownyProvincesSettings.getSeaProvinceBorderColour())) {
+				if (!stroke.getColor().equals(seaProvinceBorderColour)) {
 					//Change colour of marker
-					argbColor = TownyProvincesSettings.getSeaProvinceBorderColour() << 8 +
-						(int)(255*TownyProvincesSettings.getSeaProvinceBorderOpacity());
-					stroke.setWeight(TownyProvincesSettings.getSeaProvinceBorderWeight());
+					stroke.setColor(seaProvinceBorderColour);
+					stroke.setWeight(seaProvinceBorderWeight);
 					//Does not support opacity
 				}
 			} else {
-				if (!stroke.getColor().equals(TownyProvincesSettings.getLandProvinceBorderColour())) {
+				if (!stroke.getColor().equals(landBorderColour)) {
 					//Change colour of marker
-					argbColor = TownyProvincesSettings.getLandProvinceBorderColour() << 8 +
-						(int)(255*TownyProvincesSettings.getLandProvinceBorderOpacity());
-					stroke.setWeight(TownyProvincesSettings.getLandProvinceBorderWeight());
+					stroke.setColor(landBorderColour);
+					stroke.setWeight(landBorderWeight);
 					//Does not support opacity
 				}
 			}
-			stroke.setColor(argbColor);
 		} 
 	}
 
@@ -270,12 +272,12 @@ public class DisplayProvincesOnPl3xMapV3Action {
 	}
 
 	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
-		int landBorderColour = TownyProvincesSettings.getLandProvinceBorderColour();
+		int landBorderColour = TownyProvincesSettings.getLandProvinceBorderColour() +
+			(int)(255*TownyProvincesSettings.getLandProvinceBorderOpacity()) << 24;
 		int landBorderWeight = TownyProvincesSettings.getLandProvinceBorderWeight();
-		double landBorderOpacity = TownyProvincesSettings.getLandProvinceBorderOpacity();
-		int seaProvinceBorderColour = TownyProvincesSettings.getSeaProvinceBorderColour();
+		int seaProvinceBorderColour = TownyProvincesSettings.getSeaProvinceBorderColour() +
+			(int)(255*TownyProvincesSettings.getSeaProvinceBorderOpacity()) << 24;
 		int seaProvinceBorderWeight = TownyProvincesSettings.getSeaProvinceBorderWeight();
-		double seaProvinceBorderOpacity = TownyProvincesSettings.getSeaProvinceBorderOpacity();
 
 		List<Point> points = new ArrayList<>();
 		for (TPCoord drawableLineOfBorderCoord : drawableLineOfBorderCoords) {
@@ -336,17 +338,13 @@ public class DisplayProvincesOnPl3xMapV3Action {
 		
 		//Set colour
 		Stroke stroke = new Stroke(true);
-		Integer argbColor;
 		if (province.isSea()) {
-			argbColor = seaProvinceBorderColour << 8 +
-				(int)(255*seaProvinceBorderOpacity);
+			stroke.setColor(seaProvinceBorderColour);
 			stroke.setWeight(seaProvinceBorderWeight);
 		} else {
-			argbColor = landBorderColour << 8 +
-				(int)(255*landBorderOpacity);
+			stroke.setColor(landBorderColour);
 			stroke.setWeight(landBorderWeight);
 		}
-		stroke.setColor(argbColor);
 		
 		Options markerOptions = Options.builder()
 			.stroke(stroke)
@@ -425,7 +423,7 @@ public class DisplayProvincesOnPl3xMapV3Action {
 			markerId, points);
 		
 		Options markerOptions = Options.builder()
-			.stroke(new Stroke(4, 0xff0000ff))
+			.stroke(new Stroke(4, 0xffff0000))
 			.tooltipContent(markerName)
 			.build();
 
