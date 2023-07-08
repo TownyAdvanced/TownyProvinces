@@ -255,4 +255,16 @@ public class TownyProvincesSettings {
 	public static double getBiomeCostAdjustmentsHotLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_HOT_LAND); }
 	public static double getBiomeCostAdjustmentsColdLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_COLD_LAND); }
 
+	public static int getProvincesLayerPriority() { return Settings.getInt(ConfigNodes.PROVINCES_LAYER_PRIORITY); }
+
+	public static int getProvincesLayerZIndex() { return Settings.getInt(ConfigNodes.PROVINCES_LAYER_ZINDEX); }
+
+	public static boolean getProvincesLayerIsToggleable() { return Settings.getBoolean(ConfigNodes.PROVINCES_LAYER_TOGGLE); }
+
+	public static int getTownCostsLayerPriority() { return Settings.getInt(ConfigNodes.TOWN_COSTS_LAYER_PRIORITY); }
+
+	public static int getTownCostsLayerZIndex() { return Settings.getInt(ConfigNodes.TOWN_COSTS_LAYER_ZINDEX); }
+
+	public static boolean getTownCostsLayerIsToggleable() { return Settings.getBoolean(ConfigNodes.TOWN_COSTS_LAYER_TOGGLE); }
+
 }
