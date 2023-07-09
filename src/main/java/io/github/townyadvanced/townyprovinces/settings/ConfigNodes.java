@@ -60,53 +60,123 @@ public enum ConfigNodes {
 		"0.1",
 		"",
 		"# Snow and ice. Very hard to live in."),
-	PROVINCE_VISUALS(
-		"province_visuals",
+	PROVINCE_TYPES(
+		"province_types",
 		"",
 		"",
 		"",
 		"############################################################",
 		"# +------------------------------------------------------+ #",
-		"# |                   PROVINCE VISUALS                   | #",
+		"# |                   PROVINCE TYPES                   | #",
 		"# +------------------------------------------------------+ #",
 		"############################################################",
 		""),
-	LAND_PROVINCE_BORDER(
-		"province_visuals.land_province_border",
+	CIVILIZED(
+		"province_types.civilized",
+		"",
+		"",
+		"",
+		"# +------------------------------------------------------+ #",
+		"# |                      CIVILIZED                       | #",
+		"# +------------------------------------------------------+ #",
+		""),
+	CIVILIZED_NEW_TOWNS_ALLOWED(
+		"province_types.civilized.new_towns_allowed",
+		"true",
+		""),
+	CIVILIZED_OUTPOSTS_ALLOWED(
+		"province_types.civilized.foreign_outposts_allowed",
+		"false",
+		""),
+	CIVILIZED_BORDER_APPEARANCE(
+		"province_types.civilized.border_appearance",
 		"",
 		""),
-	LAND_PROVINCE_BORDER_WEIGHT(
-		"province_visuals.land_province_border.weight",
+	CIVILIZED_BORDER_APPEARANCE_WEIGHT(
+		"province_types.civilized.border_appearance.weight",
 		"1",
 		"",
 		"# This value determines the weight of the border."),
-	LAND_PROVINCE_BORDER_OPACITY(
-		"province_visuals.land_province_border.opacity",
+	CIVILIZED_BORDER_APPEARANCE_OPACITY(
+		"province_types.civilized.border_appearance.opacity",
 		"1",
 		"",
 		"# This value determines the opacity of the border."),
-	LAND_PROVINCE_BORDER_COLOUR(
-		"province_visuals.land_province_border.color",
+	CIVILIZED_BORDER_APPEARANCE_COLOUR(
+		"province_types.civilized.border_appearance.color",
 		"0",
 		"",
 		"# This value, in hex format, determines the color of the border."),
-	SEA_PROVINCE_BORDER(
-		"province_visuals.sea_province_border",
+	SEA(
+		"province_types.sea",
+		"",
+		"",
+		"",
+		"# +------------------------------------------------------+ #",
+		"# |                          SEA                         | #",
+		"# +------------------------------------------------------+ #",
+		""),
+	SEA_NEW_TOWNS_ALLOWED(
+		"province_types.sea.new_towns_allowed",
+		"false",
+		""),
+	SEA_OUTPOSTS_ALLOWED(
+		"province_types.sea.foreign_outposts_allowed",
+		"true",
+		""),
+	SEA_BORDER_APPEARANCE(
+		"province_types.sea.border_appearance",
 		"",
 		""),
-	SEA_PROVINCE_BORDER_WEIGHT(
-		"province_visuals.sea_province_border.weight",
+	SEA_BORDER_APPEARANCE_WEIGHT(
+		"province_types.sea.border_appearance.weight",
 		"1",
 		"",
 		"# This value determines the weight of the border."),
-	SEA_PROVINCE_BORDER_OPACITY(
-		"province_visuals.sea_province_border.opacity",
+	SEA_BORDER_APPEARANCE_OPACITY(
+		"province_types.sea.border_appearance.opacity",
 		"0.1",
 		"",
-		"# This value determines the opcacity of the border."),
-	SEA_PROVINCE_BORDER_COLOUR(
-		"province_visuals.sea_province_border.color",
+		"# This value determines the opacity of the border."),
+	SEA_BORDER_APPEARANCE_COLOUR(
+		"province_types.sea.border_appearance.color",
 		"33FFFF",
+		"",
+		"# This value, in hex format, determines the color of the border."),
+	WASTELAND(
+		"province_types.wasteland",
+		"",
+		"",
+		"",
+		"# +------------------------------------------------------+ #",
+		"# |                      WASTELAND                       | #",
+		"# +------------------------------------------------------+ #",
+		""),
+	WASTELAND_NEW_TOWNS_ALLOWED(
+		"province_types.wasteland.new_towns_allowed",
+		"false",
+		""),
+	WASTELAND_OUTPOSTS_ALLOWED(
+		"province_types.wasteland.foreign_outposts_allowed",
+		"true",
+		""),
+	WASTELAND_BORDER_APPEARANCE(
+		"province_types.wasteland.border_appearance",
+		"",
+		""),
+	WASTELAND_BORDER_APPEARANCE_WEIGHT(
+		"province_types.wasteland.border_appearance.weight",
+		"1",
+		"",
+		"# This value determines the weight of the border."),
+	WASTELAND_BORDER_APPEARANCE_OPACITY(
+		"province_types.wasteland.border_appearance.opacity",
+		"0.1",
+		"",
+		"# This value determines the opacity of the border."),
+	WASTELAND_BORDER_APPEARANCE_COLOUR(
+		"province_types.wasteland.border_appearance.color",
+		"333",
 		"",
 		"# This value, in hex format, determines the color of the border."),
 	TRAVEL(

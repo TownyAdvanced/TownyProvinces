@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Translatable;
+import com.palmergames.bukkit.towny.object.Translation;
 import com.palmergames.bukkit.towny.utils.NameUtil;
 import com.palmergames.bukkit.util.ChatTools;
 import com.palmergames.util.StringMgmt;
@@ -15,6 +16,7 @@ import io.github.townyadvanced.townyprovinces.jobs.land_validation.LandValidatio
 import io.github.townyadvanced.townyprovinces.jobs.province_generation.RegenerateRegionTaskController;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceType;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
@@ -33,7 +35,8 @@ import java.util.Set;
 public class TownyProvincesAdminCommand implements TabExecutor {
 
 	private static final List<String> adminTabCompletes = Arrays.asList("province","region","landvalidationjob", "reload");
-	private static final List<String> adminTabCompletesProvince = Arrays.asList("sea","land");
+	private static final List<String> adminTabCompletesProvince = Arrays.asList("settype");
+	private static final List<String> adminTabCompletesProvinceSetType = Arrays.asList("civilized","sea","wasteland");
 	private static final List<String> adminTabCompletesRegion = Arrays.asList("regenerate", "newtowncostperchunk", "upkeeptowncostperchunk");
 	private static final List<String> adminTabCompletesSeaProvincesJob = Arrays.asList("status", "start", "stop", "restart", "pause");
 
@@ -41,8 +44,11 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 
 		switch (args[0].toLowerCase()) {
 			case "province":
-				if (args.length == 2)
+				if (args.length == 2) {
 					return NameUtil.filterByStart(adminTabCompletesProvince, args[1]);
+				} else if (args.length == 3) {
+					return NameUtil.filterByStart(adminTabCompletesProvinceSetType, args[1]);
+				}
 				break;
 			case "region":
 				if (args.length == 2)
@@ -118,8 +124,8 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 
 	private void showHelp(CommandSender sender) {
 		TownyMessaging.sendMessage(sender, ChatTools.formatTitle("/townyprovincesadmin"));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "province [sea|land] [<x>,<z>]", ""));
-		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "province [sea|land] [<x>,<z>] [<x>,<z>]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "province settype [civilized|sea|wasteland] [<x>,<z>]", ""));
+		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "province settype [civilized|sea|wasteland] [<x>,<z>] [<x>,<z>]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [regenerate] [<Region Name>]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [newtowncostperchunk] [<Region Name>] [amount]", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Eg", "/tpra", "region [upkeeptowncostperchunk] [<Region Name>] [amount]", ""));
@@ -131,16 +137,13 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		TownyProvinces.getPlugin().reloadConfigsAndData();
 	}
 
-
 	private void parseProvinceCommand(CommandSender sender, String[] args) {
 		if (args.length < 2) {
 			showHelp(sender);
 			return;
 		}
-		if (args[0].equalsIgnoreCase("sea")) {
-			parseProvinceSetToSeaCommand(sender, args);
-		} else if (args[0].equalsIgnoreCase("land")) {
-			parseProvinceSetToLandCommand(sender,args);
+		if (args[0].equalsIgnoreCase("settype")) {
+			parseProvinceSetTypeCommand(sender, args);
 		} else {
 			showHelp(sender);
 		}
@@ -209,27 +212,24 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		}
 	}
 	
-	private void parseProvinceSetToSeaCommand(CommandSender sender, String[] args) {
+	private void parseProvinceSetTypeCommand(CommandSender sender, String[] args) {
 		try {
-			if (args.length == 2) {
-				parseProvinceSetToSeaCommandByPoint(sender, args);
-			} else if (args.length == 3){
-				parseProvinceSetToSeaCommandByArea(sender, args);
-			} else{
+			ProvinceType provinceType;
+			if(args[1].equalsIgnoreCase("civilized")) {
+				provinceType = ProvinceType.CIVILISED;
+			} else if(args[1].equalsIgnoreCase("sea")) {
+				provinceType = ProvinceType.SEA;
+			} else if(args[1].equalsIgnoreCase("wasteland")) {
+				provinceType = ProvinceType.WASTELAND;
+			} else {
 				showHelp(sender);
+				return;
 			}
-		} catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
-			showHelp(sender);
-		}
-	}
-
-	private void parseProvinceSetToLandCommand(CommandSender sender, String[] args) {
-		try {
-			if (args.length == 2) {
-				parseProvinceSetToLandCommandByPoint(sender, args);
-			} else if (args.length == 3){
-				parseProvinceSetToLandCommandByArea(sender, args);
+				
+			if (args.length == 3) {
+				parseProvinceSetTypeCommandByPoint(sender, args, provinceType);
+			} else if (args.length == 4){
+				parseProvinceSetTypeCommandByArea(sender, args, provinceType);
 			} else{
 				showHelp(sender);
 			}
@@ -239,8 +239,8 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		}
 	}
 	
-	private void parseProvinceSetToSeaCommandByPoint(CommandSender sender, String[] args) throws NumberFormatException, ArrayIndexOutOfBoundsException{
-		String[] locationAsArray = args[1].split(",");
+	private void parseProvinceSetTypeCommandByPoint(CommandSender sender, String[] args, ProvinceType provinceType) throws NumberFormatException, ArrayIndexOutOfBoundsException{
+		String[] locationAsArray = args[2].split(",");
 		if(locationAsArray.length != 2) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
 			showHelp(sender);
@@ -256,18 +256,22 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 			showHelp(sender);
 			return;
 		}
-		if(province.isSea()) {
-			Messaging.sendMsg(sender, Translatable.of("msg_province_already_sea"));
+
+		//Error if province is already the given type
+		String typeTranslated = Translation.of("word_" + provinceType.name().toLowerCase());
+		if(province.getType() == provinceType) {
+			Messaging.sendMsg(sender, Translatable.of("msg_province_already_given_type", typeTranslated));
 			return;
 		}
-		//Set province to be sea
-		province.setSea(true);
+		
+		//Set province type
+		province.setType(provinceType);
 		province.saveData();
 		DynmapDisplayTaskController.requestHomeBlocksRefresh();
-		Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_sea"));
+		Messaging.sendMsg(sender, Translatable.of("msg_province_type_successfully_set", typeTranslated));
 	}
 
-	private void parseProvinceSetToSeaCommandByArea(CommandSender sender, String[] args) {
+	private void parseProvinceSetTypeCommandByArea(CommandSender sender, String[] args, ProvinceType provinceType) {
 		String[] topLeftCornerAsArray = args[1].split(",");
 		if(topLeftCornerAsArray.length != 2) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
@@ -288,13 +292,15 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		Set<Province> provinces = TownyProvincesDataHolder.getInstance().getProvincesInArea(topLeftX, topLeftZ, bottomRightX, bottomRightZ);
 		
 		for(Province province: provinces) {
-			if(!province.isSea()) {
-				province.setSea(true);
+			if(province.getType() != provinceType) {
+				province.setType(provinceType);
 				province.saveData();
 			}
 		}
+		
 		DynmapDisplayTaskController.requestHomeBlocksRefresh();
-		Messaging.sendMsg(sender, Translatable.of("msg_provinces_in_area_set_to_sea"));
+		String typeTranslated = Translation.of("word_" + provinceType.name().toLowerCase());
+		Messaging.sendMsg(sender, Translatable.of("msg_province_types_in_area_successfully_set", typeTranslated));
 	}
 	
 	private void parseRegionRegenerateCommand(CommandSender sender, String[] args) {
@@ -390,64 +396,6 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		} catch (NumberFormatException nfe) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_value_must_be_and_integer"));
 		}
-	}
-	
-	private void parseProvinceSetToLandCommandByPoint(CommandSender sender, String[] args) {
-		String[] locationAsArray = args[1].split(",");
-		if(locationAsArray.length != 2) {
-			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
-			showHelp(sender);
-			return;
-		}
-		int x = Integer.parseInt(locationAsArray[0]);
-		int y = Integer.parseInt(locationAsArray[1]);
-		Coord coord = Coord.parseCoord(x,y);
-		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord.getX(), coord.getZ());
-		//Validate action
-		if(province == null) {
-			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
-			showHelp(sender);
-			return;
-		}
-		if(!province.isSea()) {
-			Messaging.sendMsg(sender, Translatable.of("msg_province_already_land"));
-			return;
-		}
-		//Set province to be land
-		province.setSea(false);
-		province.saveData();
-		DynmapDisplayTaskController.requestHomeBlocksRefresh();
-		Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_land"));
-	}
-
-	private void parseProvinceSetToLandCommandByArea(CommandSender sender, String[] args) {
-		String[] topLeftCornerAsArray = args[1].split(",");
-		if(topLeftCornerAsArray.length != 2) {
-			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
-			showHelp(sender);
-			return;
-		}
-		String[] bottomRightCornerAsArray = args[2].split(",");
-		if(bottomRightCornerAsArray.length != 2) {
-			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
-			showHelp(sender);
-			return;
-		}
-		int topLeftX = Integer.parseInt(topLeftCornerAsArray[0]);
-		int topLeftZ = Integer.parseInt(topLeftCornerAsArray[1]);
-		int bottomRightX = Integer.parseInt(bottomRightCornerAsArray[0]);
-		int bottomRightZ = Integer.parseInt(bottomRightCornerAsArray[1]);
-
-		Set<Province> provinces = TownyProvincesDataHolder.getInstance().getProvincesInArea(topLeftX, topLeftZ, bottomRightX, bottomRightZ);
-
-		for(Province province: provinces) {
-			if(province.isSea()) {
-				province.setSea(false);
-				province.saveData();
-			}
-		}
-		DynmapDisplayTaskController.requestHomeBlocksRefresh();
-		Messaging.sendMsg(sender, Translatable.of("msg_provinces_in_area_set_to_land"));
 	}
 }
 

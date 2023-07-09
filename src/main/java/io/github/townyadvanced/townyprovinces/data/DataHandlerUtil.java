@@ -3,6 +3,7 @@ package io.github.townyadvanced.townyprovinces.data;
 import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceType;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
@@ -46,7 +47,7 @@ DataHandlerUtil {
 		String fileName = folderPath + "/" + province.getId() + ".yml";
 		Map<String, String> fileEntries = new HashMap<>();
 		fileEntries.put("home_block", "" + province.getHomeBlock().getX() + "," + province.getHomeBlock().getZ());
-		fileEntries.put("is_sea", "" + province.isSea());
+		fileEntries.put("type", "" + province.getType().name());
 		fileEntries.put("is_land_validation_requested", "" + province.isLandValidationRequested());
 		fileEntries.put("new_town_cost", "" + province.getNewTownCost());
 		fileEntries.put("upkeep_town_cost", "" + province.getUpkeepTownCost());
@@ -103,7 +104,14 @@ DataHandlerUtil {
 			province.setLandValidationRequested(Boolean.parseBoolean(fileEntries.get("is_land_validation_requested")));
 		}
 		if(fileEntries.containsKey("is_sea")) {
-			province.setSea(Boolean.parseBoolean(fileEntries.get("is_sea")));
+			if (Boolean.parseBoolean(fileEntries.get("is_sea"))) {
+				province.setType(ProvinceType.SEA);
+			} else {
+				province.setType(ProvinceType.CIVILISED);
+			}
+		}
+		if(fileEntries.containsKey("type")) {
+			province.setType(ProvinceType.parseProvinceType(fileEntries.get("type")));
 		}
 		if(fileEntries.containsKey("estimated_proportion_of_good_land")) {
 			province.setEstimatedProportionOfGoodLand(Double.parseDouble(fileEntries.get("estimated_proportion_of_good_land")));

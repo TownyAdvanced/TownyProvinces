@@ -17,6 +17,7 @@ import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.Translatable;
+import com.palmergames.bukkit.towny.object.Translation;
 import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
@@ -24,6 +25,7 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceType;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -99,9 +101,10 @@ public class TownyListener implements Listener {
 			return;
 		}
 		//Can't place town in Sea province
-		if (province.isSea()) {
+		if (!province.getType().canNewTownsBeCreated()) {
+			String provinceTypeTranslation = Translation.of("word_" + province.getType().name().toLowerCase());
 			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_create_town_in_sea_provinces").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_create_town_in_province_type", provinceTypeTranslation).translate(Locale.ROOT));
 			return;
 		}
 		//Can't place new town is province-at-location already has one

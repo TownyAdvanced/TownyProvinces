@@ -31,15 +31,15 @@ townyprovinces_plugin_prefix: '&6[TownyProvinces] '
 
 msg_err_unknown_world: "&cERROR: The world_name field in TownyProvinces/config.yml in incorrect. It must be the name of a world on your server."
 
-# Set province to land or sea
+# Set province type
 
+word_civilized: "Civilized"
+word_sea: "Sea"
+word_wasteland: "Wasteland"
+msg_province_already_given_type: "&cProvince type is already %s."
+msg_province_type_successfully_set: "&bProvince type was set to %s. The map will be updated shortly."
+msg_province_types_in_area_successfully_set: "&bAll provinces in the given area were set to type %s."
 msg_err_invalid_province_location: "&cThe given co-ordinate was either mis-formatted, on a border, or outside the map."
-msg_province_successfully_set_to_sea: "&bProvince type was set to Sea. The map will be updated shortly."
-msg_province_already_sea: "&cProvince type is already Sea."
-msg_province_successfully_set_to_land: "&bProvince type was set to Land. The map will be updated shortly."
-msg_province_already_land: "&cProvince type is already Land."
-msg_provinces_in_area_set_to_sea: "&bAll provinces in the given area were set to type Sea."
-msg_provinces_in_area_set_to_land: "&bAll provinces in the given area were set to type Land."
 
 # Regenerate region
 
@@ -83,7 +83,7 @@ land_validation_job_status_restart_requested: "&aRestart Requested"
 # Creating new towns
 
 msg_err_cannot_create_town_on_province_border: "&cTowns cannot be created on province borders."
-msg_err_cannot_create_town_in_sea_provinces: "&cTowns cannot be created in Sea provinces."
+msg_err_cannot_create_town_in_province_type: "&cTowns cannot be created in %s provinces."
 msg_err_cannot_create_town_in_full_province: "&cOnly 1 town is allowed in each province. This province already contains a town."
 msg_err_cannot_afford_new_town: "&cYou can't afford to settle a new town in this province, which costs %s."
 msg_you_paid_region_settlement_cost: "&aYou paid the region settlement cost of %s."
