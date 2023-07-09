@@ -130,6 +130,67 @@ public enum ConfigNodes {
 		"35",
 		"",
 		"# Width in pixels for the town costs icon to be displayed as."),
+	DYNMAP(
+		"province_visuals.dynmap",
+		"",
+		"",
+		"",
+		"# +------------------------------------------------------+ #",
+		"# |                        DYNMAP                        | #",
+		"# +------------------------------------------------------+ #",
+		""),
+	DYNMAP_USE_TOWN_COSTS_ICON(
+		"province_visuals.dynmap.use_town_costs_icon",
+		"false",
+		"",
+		"# Toggle whether Dynmap should use your specified town_costs_icon, or an inbuilt Dynmap icon."),
+	PL3XMAP(
+		"province_visuals.pl3xmap",
+		"",
+		"",
+		"",
+		"# +------------------------------------------------------+ #",
+		"# |                        PL3XMAP                       | #",
+		"# +------------------------------------------------------+ #",
+		""),
+	PL3XMAP_PROVINCES_LAYER(
+		"province_visuals.pl3xmap.provinces_layer",
+		"",
+		""),
+	PL3XMAP_PROVINCES_LAYER_PRIORITY(
+		"province_visuals.pl3xmap.provinces_layer.priority",
+		"6",
+		"",
+		"# You do not need to change this unless other map addons conflict with the provinces layer."),
+	PL3XMAP_PROVINCES_LAYER_ZINDEX(
+		"province_visuals.pl3xmap.provinces_layer.zindex",
+		"250",
+		"",
+		"# You can decrease this value to blend the provinces layer with the map more."),
+	PL3XMAP_PROVINCES_LAYER_TOGGLEABLE(
+		"province_visuals.pl3xmap.provinces_layer.toggleable",
+		"true",
+		"",
+		"# Set to false to disallow users from toggling the provinces layer."),
+	PL3XMAP_TOWN_COSTS_LAYER(
+		"province_visuals.pl3xmap.town_costs_layer",
+		"",
+		""),
+	PL3XMAP_TOWN_COSTS_LAYER_PRIORITY(
+		"province_visuals.pl3xmap.town_costs_layer.priority",
+		"6",
+		"",
+		"# You do not need to change this unless other map addons conflict with the town costs layer."),
+	PL3XMAP_TOWN_COSTS_LAYER_ZINDEX(
+		"province_visuals.pl3xmap.town_costs_layer.zindex",
+		"250",
+		"",
+		"# You can decrease this value to blend the town costs layer with the map more."),
+	PL3XMAP_TOWN_COSTS_LAYER_TOGGLEABLE(
+		"province_visuals.pl3xmap.town_costs_layer.toggleable",
+		"true",
+		"",
+		"# Set to false to disallow users from toggling the town costs layer."),
 	TRAVEL(
 		"travel",
 		"",
@@ -214,72 +275,7 @@ public enum ConfigNodes {
 		"20",
 		"",
 		"# The value determines the upkeep cost of a jump node plot.",
-		"# This is on top of any normal plot upkeep cost."),
-	DYNMAP(
-		"dynmap",
-		"",
-		"",
-		"",
-		"############################################################",
-		"# +------------------------------------------------------+ #",
-		"# |                        DYNMAP                        | #",
-		"# +------------------------------------------------------+ #",
-		"############################################################",
-		""),
-	DYNMAP_USE_ICON(
-		"dynmap.use_town_costs_icon",
-		"false",
-		"",
-		"# Toggle whether Dynmap should use your specified town_costs_icon, or an inbuilt Dynmap icon."),
-	PL3XMAP(
-		"pl3xmap",
-		"",
-		"",
-		"",
-		"############################################################",
-		"# +------------------------------------------------------+ #",
-		"# |                        PL3XMAP                       | #",
-		"# +------------------------------------------------------+ #",
-		"############################################################",
-		""),
-	PROVINCES_LAYER(
-		"pl3xmap.provinces_layer",
-		"",
-		""),
-	PROVINCES_LAYER_PRIORITY(
-		"pl3xmap.provinces_layer.priority",
-		"6",
-		"",
-		"# You do not need to change this unless other map addons conflict with the provinces layer."),
-	PROVINCES_LAYER_ZINDEX(
-		"pl3xmap.provinces_layer.zindex",
-		"250",
-		"",
-		"# You can decrease this value to blend the provinces layer with the map more."),
-	PROVINCES_LAYER_TOGGLE(
-		"pl3xmap.provinces_layer.toggle",
-		"true",
-		"",
-		"# Set to false to disallow users from toggling the provinces layer."),
-	TOWN_COSTS_LAYER(
-		"pl3xmap.town_costs_layer",
-		"",
-		""),
-	TOWN_COSTS_LAYER_PRIORITY(
-		"pl3xmap.town_costs_layer.priority",
-		"6",
-		"",
-		"# You do not need to change this unless other map addons conflict with the town costs layer."),
-	TOWN_COSTS_LAYER_ZINDEX(
-		"pl3xmap.town_costs_layer.zindex",
-		"250",
-		"",
-		"# You can decrease this value to blend the town costs layer with the map more."),
-	TOWN_COSTS_LAYER_TOGGLE(
-		"pl3xmap.town_costs_layer.toggle",
-		"true",
-		"",
-		"# Set to false to disallow users from toggling the town costs layer.");
+		"# This is on top of any normal plot upkeep cost.");
 
 	private final String Root;
 	private final String Default;

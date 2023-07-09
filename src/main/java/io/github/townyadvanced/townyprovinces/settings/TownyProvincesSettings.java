@@ -278,18 +278,18 @@ public class TownyProvincesSettings {
 	
 	public static int getTownCostsIconHeight() { return Settings.getInt(ConfigNodes.TOWN_COSTS_ICON_HEIGHT); }
 
-	public static boolean getDynmapUsesTownCostsIcon() { return Settings.getBoolean(ConfigNodes.DYNMAP_USE_ICON); }
+	public static boolean getDynmapUsesTownCostsIcon() { return Settings.getBoolean(ConfigNodes.DYNMAP_USE_TOWN_COSTS_ICON); }
 
-	public static int getProvincesLayerPriority() { return Settings.getInt(ConfigNodes.PROVINCES_LAYER_PRIORITY); }
+	public static int getPl3xMapProvincesLayerPriority() { return Settings.getInt(ConfigNodes.PL3XMAP_PROVINCES_LAYER_PRIORITY); }
 
-	public static int getProvincesLayerZIndex() { return Settings.getInt(ConfigNodes.PROVINCES_LAYER_ZINDEX); }
+	public static int getPl3xMapProvincesLayerZIndex() { return Settings.getInt(ConfigNodes.PL3XMAP_PROVINCES_LAYER_ZINDEX); }
 
-	public static boolean getProvincesLayerIsToggleable() { return Settings.getBoolean(ConfigNodes.PROVINCES_LAYER_TOGGLE); }
+	public static boolean getPl3xMapProvincesLayerIsToggleable() { return Settings.getBoolean(ConfigNodes.PL3XMAP_PROVINCES_LAYER_TOGGLEABLE); }
 
-	public static int getTownCostsLayerPriority() { return Settings.getInt(ConfigNodes.TOWN_COSTS_LAYER_PRIORITY); }
+	public static int getPl3xMapTownCostsLayerPriority() { return Settings.getInt(ConfigNodes.PL3XMAP_TOWN_COSTS_LAYER_PRIORITY); }
 
-	public static int getTownCostsLayerZIndex() { return Settings.getInt(ConfigNodes.TOWN_COSTS_LAYER_ZINDEX); }
+	public static int getPl3xMapTownCostsLayerZIndex() { return Settings.getInt(ConfigNodes.PL3XMAP_TOWN_COSTS_LAYER_ZINDEX); }
 
-	public static boolean getTownCostsLayerIsToggleable() { return Settings.getBoolean(ConfigNodes.TOWN_COSTS_LAYER_TOGGLE); }
+	public static boolean getPl3xMapTownCostsLayerIsToggleable() { return Settings.getBoolean(ConfigNodes.PL3XMAP_TOWN_COSTS_LAYER_TOGGLEABLE); }
 
 }

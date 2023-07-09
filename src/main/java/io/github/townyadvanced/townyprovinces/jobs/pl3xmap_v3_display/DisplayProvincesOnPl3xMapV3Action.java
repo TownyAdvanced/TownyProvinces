@@ -70,17 +70,17 @@ public class DisplayProvincesOnPl3xMapV3Action {
 	private void addProvinceHomeBlocksLayer() {
 		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_town_costs").translate(Locale.ROOT);		
 		homeBlocksLayer = createLayer("townyprovinces.layer.homeblocks", name, true, 
-			TownyProvincesSettings.getTownCostsLayerPriority(),
-			TownyProvincesSettings.getTownCostsLayerZIndex(),
-			TownyProvincesSettings.getTownCostsLayerIsToggleable());
+			TownyProvincesSettings.getPl3xMapTownCostsLayerPriority(),
+			TownyProvincesSettings.getPl3xMapTownCostsLayerZIndex(),
+			TownyProvincesSettings.getPl3xMapTownCostsLayerIsToggleable());
 	}
 
 	private void addProvinceBordersLayer() {
 		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_borders").translate(Locale.ROOT);
 		bordersLayer = createLayer("townyprovinces.layer.borders", name, false, 
-			TownyProvincesSettings.getProvincesLayerPriority(), 
-			TownyProvincesSettings.getProvincesLayerZIndex(), 
-			TownyProvincesSettings.getProvincesLayerIsToggleable());
+			TownyProvincesSettings.getPl3xMapProvincesLayerPriority(), 
+			TownyProvincesSettings.getPl3xMapProvincesLayerZIndex(), 
+			TownyProvincesSettings.getPl3xMapProvincesLayerIsToggleable());
 	}
 	
 	private SimpleLayer createLayer(String layerKey, String layerName, boolean hideByDefault, int priority, int zIndex, boolean showControls) {
