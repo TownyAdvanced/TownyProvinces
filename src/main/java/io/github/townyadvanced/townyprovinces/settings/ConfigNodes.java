@@ -161,7 +161,7 @@ public enum ConfigNodes {
 		"# This value determines the weight of the border."),
 	WASTELAND_BORDER_APPEARANCE_OPACITY(
 		"province_types.wasteland.border_appearance.opacity",
-		"0.1",
+		"1",
 		"",
 		"# This value determines the opacity of the border."),
 	WASTELAND_BORDER_APPEARANCE_COLOUR(

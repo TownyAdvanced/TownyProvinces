@@ -189,13 +189,13 @@ public class TownyListener implements Listener {
 		Province provinceAtClaimLocation = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(event.getTownBlock().getX(), event.getTownBlock().getZ());
 		if (provinceAtClaimLocation == null) {
 			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_on_province_border").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_claim_land_on_province_border").translate(Locale.ROOT));
 			return;
 		}
 		//Can't claim without homeblock
 		if(!event.getTown().hasHomeBlock()) {
 			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_without_homeblock").translate(Locale.ROOT));
+			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_claim_land_without_homeblock").translate(Locale.ROOT));
 			return;
 		}
 		
@@ -218,7 +218,7 @@ public class TownyListener implements Listener {
 					errorMessage = Translatable.of("msg_err_outpost_claim_rules_home");
 				}
 				event.setCancelled(true);
-				event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + errorMessage.translate(Locale.ROOT));
+				event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + errorMessage.translate(Locale.ROOT));
 				return;
 			}
 			
@@ -226,7 +226,7 @@ public class TownyListener implements Listener {
 			int numTownBlocksInProvince = TownyProvincesDataHolder.getInstance().getNumTownBlocksInProvince(event.getTown(), provinceAtClaimLocation);
 			if (numTownBlocksInProvince >= TownyProvincesSettings.getMaxNumTownBlocksInEachForeignProvince()) {
 				event.setCancelled(true);
-				event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_too_many_townblocks_in_province").translate(Locale.ROOT));
+				event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_too_many_townblocks_in_province", TownyProvincesSettings.getMaxNumTownBlocksInEachForeignProvince()).translate(Locale.ROOT));
 				return;
 			}
 		}

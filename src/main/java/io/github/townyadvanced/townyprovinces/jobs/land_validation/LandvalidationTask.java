@@ -148,7 +148,7 @@ public class LandvalidationTask extends BukkitRunnable {
 		} else if (goodLand == 0) {
 			province.setType(ProvinceType.WASTELAND);
 		} else {
-			province.setType(ProvinceType.CIVILISED);
+			province.setType(ProvinceType.CIVILIZED);
 		}
 			
 		//Set proportions

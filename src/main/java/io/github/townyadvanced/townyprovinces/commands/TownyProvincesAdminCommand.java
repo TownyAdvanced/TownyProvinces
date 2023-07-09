@@ -47,7 +47,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				if (args.length == 2) {
 					return NameUtil.filterByStart(adminTabCompletesProvince, args[1]);
 				} else if (args.length == 3) {
-					return NameUtil.filterByStart(adminTabCompletesProvinceSetType, args[1]);
+					return NameUtil.filterByStart(adminTabCompletesProvinceSetType, args[2]);
 				}
 				break;
 			case "region":
@@ -216,7 +216,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		try {
 			ProvinceType provinceType;
 			if(args[1].equalsIgnoreCase("civilized")) {
-				provinceType = ProvinceType.CIVILISED;
+				provinceType = ProvinceType.CIVILIZED;
 			} else if(args[1].equalsIgnoreCase("sea")) {
 				provinceType = ProvinceType.SEA;
 			} else if(args[1].equalsIgnoreCase("wasteland")) {

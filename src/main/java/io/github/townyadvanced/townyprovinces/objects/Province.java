@@ -28,7 +28,7 @@ public class Province {
 	
 	public Province(TPCoord homeBlock) {
 		this.homeBlock = homeBlock;
-		this.type = ProvinceType.CIVILISED;
+		this.type = ProvinceType.CIVILIZED;
 		this.newTownCost = 0;
 		this.upkeepTownCost = 0;
 		this.id = "province_x" + homeBlock.getX() + "_z_" + homeBlock.getZ();

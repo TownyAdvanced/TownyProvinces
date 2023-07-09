@@ -107,7 +107,7 @@ DataHandlerUtil {
 			if (Boolean.parseBoolean(fileEntries.get("is_sea"))) {
 				province.setType(ProvinceType.SEA);
 			} else {
-				province.setType(ProvinceType.CIVILISED);
+				province.setType(ProvinceType.CIVILIZED);
 			}
 		}
 		if(fileEntries.containsKey("type")) {

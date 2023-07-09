@@ -3,13 +3,13 @@ package io.github.townyadvanced.townyprovinces.objects;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 
 public enum ProvinceType {
-	CIVILISED,
+	CIVILIZED,
 	SEA,
 	WASTELAND;
 
 	public static ProvinceType parseProvinceType(String typeAsString) {
 		if(typeAsString.equalsIgnoreCase("civilized")) {
-			return CIVILISED;
+			return CIVILIZED;
 		} else if(typeAsString.equalsIgnoreCase("sea")) {
 			return SEA;
 		} else if(typeAsString.equalsIgnoreCase("wasteland")) {
@@ -21,7 +21,7 @@ public enum ProvinceType {
 
 	public int getBorderColour() {
 		switch(this) {
-			case CIVILISED:
+			case CIVILIZED:
 				return TownyProvincesSettings.getCivilizedProvinceBorderColour();
 			case SEA:
 				return TownyProvincesSettings.getSeaProvinceBorderColour();
@@ -34,7 +34,7 @@ public enum ProvinceType {
 
 	public int getBorderWeight() {
 		switch(this) {
-			case CIVILISED:
+			case CIVILIZED:
 				return TownyProvincesSettings.getCivilizedProvinceBorderWeight();
 			case SEA:
 				return TownyProvincesSettings.getSeaProvinceBorderWeight();
@@ -47,7 +47,7 @@ public enum ProvinceType {
 
 	public double getBorderOpacity() {
 		switch(this) {
-			case CIVILISED:
+			case CIVILIZED:
 				return TownyProvincesSettings.getCivilizedProvinceBorderOpacity();
 			case SEA:
 				return TownyProvincesSettings.getSeaProvinceBorderOpacity();
@@ -60,7 +60,7 @@ public enum ProvinceType {
 	
 	public boolean canNewTownsBeCreated() {
 		switch(this) {
-			case CIVILISED:
+			case CIVILIZED:
 				return true;
 			case SEA:
 			case WASTELAND:
@@ -72,7 +72,7 @@ public enum ProvinceType {
 
 	public boolean canForeignOutpostsBeCreated() {
 		switch(this) {
-			case CIVILISED:
+			case CIVILIZED:
 				return false;
 			case SEA:
 				return TownyProvincesSettings.getSeaProvinceOutpostsAllowed();
