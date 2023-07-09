@@ -13,7 +13,7 @@ public class Province {
 	private double newTownCost;  //The base cost, not adjusted by biome
 	private double upkeepTownCost;  //The base cost, not adjusted by biome
 	private boolean isSea;
-	private final String id; //convenience variable. In memory only. Used for dynmap and file operations
+	private final String id; //convenience variable. In memory only. Used for map and file operations
 	private boolean landValidationRequested;
 	private double estimatedProportionOfGoodLand;
 	private double estimatedProportionOfWater;

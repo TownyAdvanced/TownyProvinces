@@ -1,4 +1,4 @@
-package io.github.townyadvanced.townyprovinces.jobs.pl3xmap_v3_display;
+package io.github.townyadvanced.townyprovinces.jobs.map_display;
 
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Translatable;
@@ -25,7 +25,7 @@ import net.pl3x.map.core.world.World;
 import java.util.*;
 import java.util.List;
 
-public class DisplayProvincesOnPl3xMapV3Action {
+public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapAction {
 	
 	private SimpleLayer bordersLayer;
 	private SimpleLayer homeBlocksLayer;

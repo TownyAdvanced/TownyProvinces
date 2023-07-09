@@ -9,9 +9,9 @@ import com.palmergames.bukkit.util.ChatTools;
 import com.palmergames.util.StringMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.jobs.land_validation.LandValidationJobStatus;
 import io.github.townyadvanced.townyprovinces.jobs.land_validation.LandValidationTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.jobs.province_generation.RegenerateRegionTaskController;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
@@ -263,7 +263,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		//Set province to be sea
 		province.setSea(true);
 		province.saveData();
-		DynmapDisplayTaskController.requestHomeBlocksRefresh();
+		MapDisplayTaskController.requestHomeBlocksRefresh();
 		Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_sea"));
 	}
 
@@ -293,7 +293,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				province.saveData();
 			}
 		}
-		DynmapDisplayTaskController.requestHomeBlocksRefresh();
+		MapDisplayTaskController.requestHomeBlocksRefresh();
 		Messaging.sendMsg(sender, Translatable.of("msg_provinces_in_area_set_to_sea"));
 	}
 	
@@ -331,7 +331,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 					province.setNewTownCost(townCost);
 					province.saveData();
 				}
-				DynmapDisplayTaskController.requestHomeBlocksRefresh();
+				MapDisplayTaskController.requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_all_regions", formattedTownCostPerChunk));
 
 			} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
@@ -343,7 +343,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 						province.saveData();
 					}
 				}
-				DynmapDisplayTaskController.requestHomeBlocksRefresh();
+				MapDisplayTaskController.requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCostPerChunk));
 				
 			} else {
@@ -369,7 +369,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 					province.setUpkeepTownCost(townCost);
 					province.saveData();
 				}
-				DynmapDisplayTaskController.requestHomeBlocksRefresh();
+				MapDisplayTaskController.requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_all_regions", formattedTownCostPerChunk));
 
 			} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
@@ -381,7 +381,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 						province.saveData();
 					}
 				}
-				DynmapDisplayTaskController.requestHomeBlocksRefresh();
+				MapDisplayTaskController.requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCostPerChunk));
 
 			} else {
@@ -416,7 +416,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		//Set province to be land
 		province.setSea(false);
 		province.saveData();
-		DynmapDisplayTaskController.requestHomeBlocksRefresh();
+		MapDisplayTaskController.requestHomeBlocksRefresh();
 		Messaging.sendMsg(sender, Translatable.of("msg_province_successfully_set_to_land"));
 	}
 
@@ -446,7 +446,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				province.saveData();
 			}
 		}
-		DynmapDisplayTaskController.requestHomeBlocksRefresh();
+		MapDisplayTaskController.requestHomeBlocksRefresh();
 		Messaging.sendMsg(sender, Translatable.of("msg_provinces_in_area_set_to_land"));
 	}
 }

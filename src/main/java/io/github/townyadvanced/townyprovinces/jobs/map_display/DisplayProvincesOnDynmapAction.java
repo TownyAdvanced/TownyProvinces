@@ -1,4 +1,4 @@
-package io.github.townyadvanced.townyprovinces.jobs.dynmap_display;
+package io.github.townyadvanced.townyprovinces.jobs.map_display;
 
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Translatable;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class DisplayProvincesOnDynmapAction {
+public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction {
 	
 	private final MarkerAPI markerapi;
 	private MarkerSet bordersMarkerSet;

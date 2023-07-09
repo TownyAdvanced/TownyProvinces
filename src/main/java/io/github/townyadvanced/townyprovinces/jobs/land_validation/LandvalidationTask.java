@@ -1,9 +1,8 @@
 package io.github.townyadvanced.townyprovinces.jobs.land_validation;
 
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
-import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -159,6 +158,6 @@ public class LandvalidationTask extends BukkitRunnable {
 		
 		//Request dynmap refresh of homeblocks 
 		// (no need to refresh border colour changes, the dynmap task will do that where needed)
-		DynmapDisplayTaskController.requestHomeBlocksRefresh();
+		MapDisplayTaskController.requestHomeBlocksRefresh();
 	}
 }

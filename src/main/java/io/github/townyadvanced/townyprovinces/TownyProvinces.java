@@ -11,8 +11,7 @@ import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
-import io.github.townyadvanced.townyprovinces.jobs.pl3xmap_v3_display.Pl3xMapV3DisplayTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.listeners.BukkitListener;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
@@ -37,8 +36,7 @@ public class TownyProvinces extends JavaPlugin {
 	 * Lock this if you want to change or display the map,
 	 * to avoid concurrent modification problems
 	 */
-	public static final Object DYNMAP_DISPLAY_LOCK = new Object();
-	public static final Object PL3XMAP_DISPLAY_LOCK = new Object();
+	public static final Object MAP_DISPLAY_LOCK = new Object();
 	public static final Object LAND_VALIDATION_LOCK = new Object();
 	private static TownyProvinces plugin;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.1.0");
@@ -87,8 +85,7 @@ public class TownyProvinces extends JavaPlugin {
 		}
 
 		//Refresh 
-		DynmapDisplayTaskController.requestFullMapRefresh();
-		Pl3xMapV3DisplayTaskController.requestFullMapRefresh();
+		MapDisplayTaskController.requestFullMapRefresh();
 		info("TownyProvinces Reloaded Successfully");
 	}
 	
@@ -107,56 +104,37 @@ public class TownyProvinces extends JavaPlugin {
 		return true;
 	}
 	
-	private boolean loadPl3xMapIntegration() {
+	private boolean loadIntegrations() {
 		try {
 			if (getServer().getPluginManager().isPluginEnabled("Pl3xMap")) {
-				info("Found Pl3xMap plugin. Enabling Pl3xMap integration.");
 				if (classExists("net.pl3x.map.core.Pl3xMap")) {
-					//Pl3xMap v3
-					Pl3xMapV3DisplayTaskController.startTask();
+					info("Found Pl3xMap v3. Enabling Pl3xMap integration.");
+					MapDisplayTaskController.enablePl3xMapV3();
 				}
 				else if (classExists("net.pl3x.map.Pl3xMap")) {
 					//Pl3xMap v2
 					info("Pl3xMap v2 is not supported. Cannot enable Pl3xMap integration.");
-					return false;
 				}
 				else {
 					//Pl3xMap v1
 					info("Pl3xMap v1 is not supported. Cannot enable Pl3xMap integration.");
-					return false;
 				}
-				return true;
-			} else {
-				info("Did not find Pl3xMap plugin. Cannot enable Pl3xMap integration.");
-				return false;
 			}
-		} catch (Exception e) {
-			Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling Pl3xMap integration: " + e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	private boolean loadDynmapIntegration() {
-		try {
 			if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
 				info("Found Dynmap plugin. Enabling Dynmap integration.");
-				DynmapDisplayTaskController.startTask();
-				return true;
-			} else {
-				info("Did not find Dynmap plugin. Cannot enable Dynmap integration.");
+				MapDisplayTaskController.enableDynmap();
+			}
+			if (!MapDisplayTaskController.isMapSupported()) {
+				info("Did not find a supported map plugin. Cannot enable map integration.");
 				return false;
 			}
+			MapDisplayTaskController.startTask();
+			return true;
 		} catch (Exception e) {
-			Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling Dynmap integration: " + e.getMessage());
+			Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling map integration: " + e.getMessage());
 			e.printStackTrace();
 			return false;
 		}
-	}
-	
-	private void loadIntegrations() {
-		loadDynmapIntegration();
-		loadPl3xMapIntegration();
 	}
 	
 	private boolean checkTownyVersion() {
