@@ -97,6 +97,6 @@ msg_err_cannot_claim_land_outside_own_province: "&cГopoдa не могут со
 
 #Dynmap
 
-dynmap_province_homeblock_label: "Стоимость города: New %s, Новый %s"
+dynmap_province_homeblock_label: "Стоимость города: Новый %s, Налог %s"
 dynmap_layer_label_town_costs: "Стоимость города"
 dynmap_layer_label_borders: "Границы"
