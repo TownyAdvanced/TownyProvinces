@@ -8,7 +8,6 @@ import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
-import org.dynmap.markers.PolyLineMarker;
 
 import java.util.ArrayList;
 import java.util.HashSet;
