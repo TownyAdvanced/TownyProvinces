@@ -12,7 +12,7 @@ public class Province {
 	private final TPCoord homeBlock;
 	private double newTownCost;  //The base cost, not adjusted by biome
 	private double upkeepTownCost;  //The base cost, not adjusted by biome
-	private boolean isSea;
+	private ProvinceType type;  //Civilized, Sea, Wasteland
 	private final String id; //convenience variable. In memory only. Used for dynmap and file operations
 	private boolean landValidationRequested;
 	private double estimatedProportionOfGoodLand;
@@ -28,7 +28,7 @@ public class Province {
 	
 	public Province(TPCoord homeBlock) {
 		this.homeBlock = homeBlock;
-		this.isSea = false;
+		this.type = ProvinceType.CIVILIZED;
 		this.newTownCost = 0;
 		this.upkeepTownCost = 0;
 		this.id = "province_x" + homeBlock.getX() + "_z_" + homeBlock.getZ();
@@ -77,12 +77,12 @@ public class Province {
 		return goodLandCost + waterCost + hotLandCost + coldLandCost;
 	}
 	
-	public boolean isSea() { 
-		return isSea; 
+	public ProvinceType getType() { 
+		return type; 
 	}
 	
-	public void setSea(boolean b) {
-		this.isSea = b;
+	public void setType(ProvinceType p) {
+		this.type = p;
 	}
 
 	public List<TPCoord> getListOfCoordsInProvince() {

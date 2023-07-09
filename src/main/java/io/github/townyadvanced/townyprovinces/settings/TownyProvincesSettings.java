@@ -157,34 +157,46 @@ public class TownyProvincesSettings {
 		return Double.parseDouble(numberString);
 	}
 	
-	public static int getLandProvinceBorderWeight() {
-		return Settings.getInt(ConfigNodes.LAND_PROVINCE_BORDER_WEIGHT);
+	public static int getCivilizedProvinceBorderWeight() {
+		return Settings.getInt(ConfigNodes.CIVILIZED_BORDER_APPEARANCE_WEIGHT);
 	}
 
-	public static double getLandProvinceBorderOpacity() {
-		return Settings.getDouble(ConfigNodes.LAND_PROVINCE_BORDER_OPACITY);
+	public static double getCivilizedProvinceBorderOpacity() {
+		return Settings.getDouble(ConfigNodes.CIVILIZED_BORDER_APPEARANCE_OPACITY);
+	}
+
+	public static int getCivilizedProvinceBorderColour() {
+		return Integer.parseInt(Settings.getString(ConfigNodes.CIVILIZED_BORDER_APPEARANCE_COLOUR),16);
+	}
+
+	public static int getWastelandProvinceBorderWeight() {
+		return Settings.getInt(ConfigNodes.WASTELAND_BORDER_APPEARANCE_WEIGHT);
+	}
+
+	public static double getWastelandProvinceBorderOpacity() {
+		return Settings.getDouble(ConfigNodes.WASTELAND_BORDER_APPEARANCE_OPACITY);
+	}
+
+	public static int getWastelandProvinceBorderColour() {
+		return Integer.parseInt(Settings.getString(ConfigNodes.WASTELAND_BORDER_APPEARANCE_COLOUR),16);
+	}
+	
+	public static int getSeaProvinceBorderWeight() {
+		return Settings.getInt(ConfigNodes.SEA_BORDER_APPEARANCE_WEIGHT);
+	}
+
+	public static double getSeaProvinceBorderOpacity() {
+		return Settings.getDouble(ConfigNodes.SEA_BORDER_APPEARANCE_OPACITY);
+	}
+
+	public static int getSeaProvinceBorderColour() {
+		return Integer.parseInt(Settings.getString(ConfigNodes.SEA_BORDER_APPEARANCE_COLOUR),16);
 	}
 
 	public static int getPauseMillisecondsBetweenBiomeLookups() {
 		return Settings.getInt(ConfigNodes.PAUSE_MILLISECONDS_BETWEEN_BIOME_LOOKUPS);
 	}
 
-	public static int getLandProvinceBorderColour() {
-		return Integer.parseInt(Settings.getString(ConfigNodes.LAND_PROVINCE_BORDER_COLOUR),16);
-	}
-
-	public static int getSeaProvinceBorderWeight() {
-		return Settings.getInt(ConfigNodes.SEA_PROVINCE_BORDER_WEIGHT);
-	}
-
-	public static double getSeaProvinceBorderOpacity() {
-		return Settings.getDouble(ConfigNodes.SEA_PROVINCE_BORDER_OPACITY);
-	}
-
-	public static int getSeaProvinceBorderColour() {
-		return Integer.parseInt(Settings.getString(ConfigNodes.SEA_PROVINCE_BORDER_COLOUR),16);
-	}
-	
 	public static List<String> getOrderedRegionNames() {
 		return orderedRegionNames;
 	}
@@ -255,4 +267,16 @@ public class TownyProvincesSettings {
 	public static double getBiomeCostAdjustmentsHotLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_HOT_LAND); }
 	public static double getBiomeCostAdjustmentsColdLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_COLD_LAND); }
 
+	public static boolean getSeaProvinceOutpostsAllowed() {
+		return Settings.getBoolean(ConfigNodes.SEA_OUTPOSTS_ALLOWED);
+	}
+
+	public static boolean getWastelandProvinceOutpostsAllowed() {
+		return Settings.getBoolean(ConfigNodes.WASTELAND_OUTPOSTS_ALLOWED);
+	}
+
+	public static int getMaxNumTownBlocksInEachForeignProvince() {
+		return Settings.getInt(ConfigNodes.MAX_NUM_TOWNBLOCKS_IN_EACH_FOREIGN_PROVINCE);
+	}
+	
 }

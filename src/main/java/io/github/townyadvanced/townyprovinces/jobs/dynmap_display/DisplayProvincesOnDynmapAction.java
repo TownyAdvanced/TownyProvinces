@@ -100,14 +100,8 @@ public class DisplayProvincesOnDynmapAction {
 				String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
 				Marker homeBlockMarker = homeBlocksMarkerSet.findMarker(homeBlockMarkerId);
 
-				if(province.isSea()) {
-					//This is sea. If the marker is there, we need to remove it
-					if(homeBlockMarker == null)
-						continue;
-					homeBlockMarker.deleteMarker();
-					return;
-				} else {
-					//This is land If the marker is not there, we need to add it
+				if(province.getType().canNewTownsBeCreated()) {
+					//Province is settle-able. If the marker is not there, we need to add it
 					if(homeBlockMarker != null)
 						continue;
 					int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getChunkSideLength();
@@ -123,12 +117,18 @@ public class DisplayProvincesOnDynmapAction {
 					} else {
 						markerLabel = "";
 					}
-					
+
 					homeBlockMarker = homeBlocksMarkerSet.createMarker(
 						homeBlockMarkerId, markerLabel, TownyProvincesSettings.getWorldName(),
 						realHomeBlockX, 64, realHomeBlockZ,
 						homeBlockIcon, true);
 					homeBlockMarker.setDescription(markerLabel);
+				} else {
+					//Province is not settle-able. If the marker is there, we need to remove it
+					if(homeBlockMarker == null)
+						continue;
+					homeBlockMarker.deleteMarker();
+					return;
 				}
 			} catch (Exception ex) {
 				TownyProvinces.severe("Problem adding homeblock marker");
@@ -169,17 +169,10 @@ public class DisplayProvincesOnDynmapAction {
 				}
 			}
 		} else {
-			//Re-evaluate colour 
-			if (province.isSea()) {
-				if (polyLineMarker.getLineColor() != TownyProvincesSettings.getSeaProvinceBorderColour()) {
-					//Change colour of marker
-					polyLineMarker.setLineStyle(TownyProvincesSettings.getSeaProvinceBorderWeight(), TownyProvincesSettings.getSeaProvinceBorderOpacity(), TownyProvincesSettings.getSeaProvinceBorderColour());
-				}
-			} else {
-				if (polyLineMarker.getLineColor() != TownyProvincesSettings.getLandProvinceBorderColour()) {
-					//Change colour of marker
-					polyLineMarker.setLineStyle(TownyProvincesSettings.getLandProvinceBorderWeight(), TownyProvincesSettings.getLandProvinceBorderOpacity(), TownyProvincesSettings.getLandProvinceBorderColour());
-				}
+			//Re-evaluate colour
+			if (polyLineMarker.getLineColor() != province.getType().getBorderColour()) {
+				//Change colour of marker
+				polyLineMarker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
 			}
 		} 
 	}
@@ -235,13 +228,10 @@ public class DisplayProvincesOnDynmapAction {
 
 	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
 		String worldName = TownyProvincesSettings.getWorldName();
-		int landBorderColour = TownyProvincesSettings.getLandProvinceBorderColour();
-		int landBorderWeight = TownyProvincesSettings.getLandProvinceBorderWeight();
-		double landBorderOpacity = TownyProvincesSettings.getLandProvinceBorderOpacity();
-		int seaProvinceBorderColour = TownyProvincesSettings.getSeaProvinceBorderColour();
-		int seaProvinceBorderWeight = TownyProvincesSettings.getSeaProvinceBorderWeight();
-		double seaProvinceBorderOpacity = TownyProvincesSettings.getSeaProvinceBorderOpacity();
-
+		int borderColour = province.getType().getBorderColour();
+		int borderWeight = province.getType().getBorderWeight();
+		double borderOpacity = province.getType().getBorderOpacity();
+		
 		double[] xPoints = new double[drawableLineOfBorderCoords.size()];
 		double[] zPoints = new double[drawableLineOfBorderCoords.size()];
 		for (int i = 0; i < drawableLineOfBorderCoords.size(); i++) {
@@ -301,11 +291,7 @@ public class DisplayProvincesOnDynmapAction {
 			xPoints, zPoints, zPoints, unknown2);
 		
 		//Set colour
-		if (province.isSea()) {
-			polyLineMarker.setLineStyle(seaProvinceBorderWeight, seaProvinceBorderOpacity, seaProvinceBorderColour);
-		} else {
-			polyLineMarker.setLineStyle(landBorderWeight, landBorderOpacity, landBorderColour);
-		}
+		polyLineMarker.setLineStyle(borderWeight, borderOpacity, borderColour);
 	}
 	
 	private void calculatePullStrengthFromNearbyProvince(TPCoord borderCoordBeingPulled, Province provinceDoingThePulling, TPFreeCoord freeCoord) {
@@ -314,7 +300,7 @@ public class DisplayProvincesOnDynmapAction {
 		Set<TPCoord> adjacentCoords = RegenerateRegionTask.findAllAdjacentCoords(borderCoordBeingPulled);
 		Province adjacenProvince;
 		for(TPCoord adjacentCoord: adjacentCoords) {
-			adjacenProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord.getX(), adjacentCoord.getZ());
+			adjacenProvince = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(adjacentCoord.getX(), adjacentCoord.getZ());
 			if(adjacenProvince != null && adjacenProvince.equals(provinceDoingThePulling)) {
 				pullStrengthX += (adjacentCoord.getX() - borderCoordBeingPulled.getX());
 				pullStrengthZ += (adjacentCoord.getZ() - borderCoordBeingPulled.getZ());

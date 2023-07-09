@@ -1,6 +1,9 @@
 package io.github.townyadvanced.townyprovinces.data;
 
 import com.palmergames.bukkit.towny.object.Coord;
+import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownBlock;
+import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
@@ -8,6 +11,7 @@ import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -89,11 +93,19 @@ public class TownyProvincesDataHolder {
 		return coordProvinceMap;
 	}
 	
-	public Province getProvinceAt(int x, int z) {
+	public @Nullable Province getProvinceAtCoord(int x, int z) {
 		searchCoord.setValues(x,z);
 		return coordProvinceMap.get(searchCoord);
 	}
 
+	public @Nullable Province getProvinceAtWorldCoord(WorldCoord worldCoord) {
+		if(!TownyProvincesSettings.getWorld().equals(worldCoord.getBukkitWorld())) {
+			return null;
+		}
+		searchCoord.setValues(worldCoord.getX(),worldCoord.getZ());
+		return coordProvinceMap.get(searchCoord);
+	}
+	
 	public Set<Province> getProvincesSet() {
 		return provincesSet;
 	}
@@ -226,6 +238,18 @@ public class TownyProvincesDataHolder {
 					&& homeBlock.getZ() >= topLeftCoord.getZ()
 					&& homeBlock.getZ() <= bottomRightCoord.getZ()) {
 				result.add(province);
+			}
+		}
+		return result;
+	}
+
+	public int getNumTownBlocksInProvince(Town town, Province province) {
+		int result = 0;
+		Province provinceAtWorldCoord;
+		for(TownBlock townBlock: town.getTownBlocks()) {
+			provinceAtWorldCoord = getProvinceAtWorldCoord(townBlock.getWorldCoord());
+			if(provinceAtWorldCoord != null && provinceAtWorldCoord.equals(province)) {
+				result++;	
 			}
 		}
 		return result;
