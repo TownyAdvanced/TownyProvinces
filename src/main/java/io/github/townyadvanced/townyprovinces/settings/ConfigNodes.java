@@ -176,7 +176,7 @@ public enum ConfigNodes {
 		"# This value determines the opacity of the border."),
 	WASTELAND_BORDER_APPEARANCE_COLOUR(
 		"province_types.wasteland.border_appearance.color",
-		"333",
+		"e60909",
 		"",
 		"# This value, in hex format, determines the color of the border."),
 	TRAVEL(
