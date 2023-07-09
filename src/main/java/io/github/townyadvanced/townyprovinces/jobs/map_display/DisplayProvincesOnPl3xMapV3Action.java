@@ -119,7 +119,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 				String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
 				Marker<?> homeBlockMarker = homeBlocksLayer.registeredMarkers().get(homeBlockMarkerId);
 
-				if(province.isSea()) {
+				if(province.getType().canNewTownsBeCreated()) {
 					//This is sea. If the marker is there, we need to remove it
 					if(homeBlockMarker == null)
 						continue;
@@ -167,12 +167,9 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 	
 	@Override
 	protected void drawProvinceBorder(Province province) {
-		int landBorderColour = TownyProvincesSettings.getLandProvinceBorderColour() +
-			(int)(255*TownyProvincesSettings.getLandProvinceBorderOpacity()) << 24;
-		int landBorderWeight = TownyProvincesSettings.getLandProvinceBorderWeight();
-		int seaProvinceBorderColour = TownyProvincesSettings.getSeaProvinceBorderColour() +
-			(int)(255*TownyProvincesSettings.getSeaProvinceBorderOpacity()) << 24;
-		int seaProvinceBorderWeight = TownyProvincesSettings.getSeaProvinceBorderWeight();
+		int borderColour = province.getType().getBorderColour() +
+			(int)(255*province.getType().getBorderOpacity()) << 24;
+		int borderWeight = province.getType().getBorderWeight();
 		String markerId = province.getId();
 		Marker<?> polyLineMarker = bordersLayer.registeredMarkers().get(markerId);
 		if(polyLineMarker == null) {
@@ -203,31 +200,18 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 				TownyProvinces.severe("WARNING: Marker stroke color is null for province border marker " + markerId + ".");
 			}
 			//Re-evaluate colour
-			if (province.isSea()) {
-				if (!stroke.getColor().equals(seaProvinceBorderColour)) {
-					//Change colour of marker
-					stroke.setColor(seaProvinceBorderColour);
-					stroke.setWeight(seaProvinceBorderWeight);
-					//Does not support opacity
-				}
-			} else {
-				if (!stroke.getColor().equals(landBorderColour)) {
-					//Change colour of marker
-					stroke.setColor(landBorderColour);
-					stroke.setWeight(landBorderWeight);
-					//Does not support opacity
-				}
+			if (!stroke.getColor().equals(borderColour)) {
+				//Change colour of marker
+				stroke.setColor(borderColour);
+				stroke.setWeight(borderWeight);
 			}
 		} 
 	}
 
 	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
-		int landBorderColour = TownyProvincesSettings.getLandProvinceBorderColour() +
-			(int)(255*TownyProvincesSettings.getLandProvinceBorderOpacity()) << 24;
-		int landBorderWeight = TownyProvincesSettings.getLandProvinceBorderWeight();
-		int seaProvinceBorderColour = TownyProvincesSettings.getSeaProvinceBorderColour() +
-			(int)(255*TownyProvincesSettings.getSeaProvinceBorderOpacity()) << 24;
-		int seaProvinceBorderWeight = TownyProvincesSettings.getSeaProvinceBorderWeight();
+		int borderColour = province.getType().getBorderColour() +
+			(int)(255*province.getType().getBorderOpacity()) << 24;
+		int borderWeight = province.getType().getBorderWeight();
 
 		List<Point> points = new ArrayList<>();
 		for (TPCoord drawableLineOfBorderCoord : drawableLineOfBorderCoords) {
@@ -287,14 +271,9 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 		Polygon polygonMarker  = new Polygon("polygon_"+markerId, polyLine);
 		
 		//Set colour
-		Stroke stroke = new Stroke(true);
-		if (province.isSea()) {
-			stroke.setColor(seaProvinceBorderColour);
-			stroke.setWeight(seaProvinceBorderWeight);
-		} else {
-			stroke.setColor(landBorderColour);
-			stroke.setWeight(landBorderWeight);
-		}
+		Stroke stroke = new Stroke(true)
+			.setColor(borderColour)
+			.setWeight(borderWeight);
 		
 		Options markerOptions = Options.builder()
 			.stroke(stroke)
