@@ -120,12 +120,6 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 				Marker<?> homeBlockMarker = homeBlocksLayer.registeredMarkers().get(homeBlockMarkerId);
 
 				if(province.getType().canNewTownsBeCreated()) {
-					//This is sea. If the marker is there, we need to remove it
-					if(homeBlockMarker == null)
-						continue;
-					homeBlocksLayer.removeMarker(homeBlockMarkerId);
-					return;
-				} else {
 					//This is land If the marker is not there, we need to add it
 					if(homeBlockMarker != null)
 						continue;
@@ -157,6 +151,12 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 					homeBlockMarker.setOptions(markerOptions);
 					
 					homeBlocksLayer.addMarker(homeBlockMarker);
+				} else {
+					//This is sea. If the marker is there, we need to remove it
+					if(homeBlockMarker == null)
+						continue;
+					homeBlocksLayer.removeMarker(homeBlockMarkerId);
+					return;
 				}
 			} catch (Exception ex) {
 				TownyProvinces.severe("Problem adding homeblock marker");
