@@ -73,7 +73,7 @@
  
 ## :fast_forward: Quick-Start Guide
 1. Run `tpra region regenerate all`. This will generate 2 small sample regions.
-2. Run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, and adjust prices accordingly. If the province is found to be all-water, the job will change it to a sea-province.
+2. Run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, and adjust prices accordingly. If the province is found to be all-water, the job will change it to a sea-province. Expect this to take a while, you can adjust the milliseconds before lookup in `config.yml`.
 3. To see the generated provinces, view your dynmap. 
 
 ## :eight_spoked_asterisk: Region Definitions Guide
