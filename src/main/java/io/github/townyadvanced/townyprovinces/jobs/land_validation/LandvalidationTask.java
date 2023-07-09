@@ -4,6 +4,7 @@ import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceType;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.BiomeUtil;
@@ -141,8 +142,14 @@ public class LandvalidationTask extends BukkitRunnable {
 			}
 		}
 		
-		//Set land sea
-		province.setSea(water == totalChunksToScan);
+		//Set type
+		if(water == totalChunksToScan) {
+			province.setType(ProvinceType.SEA);
+		} else if (goodLand == 0) {
+			province.setType(ProvinceType.WASTELAND);
+		} else {
+			province.setType(ProvinceType.CIVILIZED);
+		}
 			
 		//Set proportions
 		province.setEstimatedProportionOfGoodLand(goodLand / totalChunksToScan);

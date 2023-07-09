@@ -319,7 +319,7 @@ public class PaintRegionAction {
 		Province province;
 		for(int x = brushMinCoordX -1; x <= (brushMaxCoordX +1); x++) {
 			for(int z = brushMinCoordZ -1; z <= (brushMaxCoordZ +1); z++) {
-				province = TownyProvincesDataHolder.getInstance().getProvinceAt(x,z);
+				province = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(x,z);
 				if(province != null && province != provinceBeingPainted) {
 					return false;
 				}
@@ -439,7 +439,7 @@ public class PaintRegionAction {
 		int[] x = new int[]{0,0,1,-1};
 		int[] z = new int[]{-1,1,0,0};
 		for(int i = 0; i < 4; i++) {
-			province = TownyProvincesDataHolder.getInstance().getProvinceAt(unclaimedCoord.getX() + x[i], unclaimedCoord.getZ() + z[i]);
+			province = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(unclaimedCoord.getX() + x[i], unclaimedCoord.getZ() + z[i]);
 			if (province != null) {
 				if(result == null) {
 					result = province;
@@ -456,7 +456,7 @@ public class PaintRegionAction {
 		x = new int[]{-1,1,1,-1};
 		z = new int[]{-1,-1,1,1};
 		for(int i = 0; i < 4; i++) {
-			province = TownyProvincesDataHolder.getInstance().getProvinceAt(unclaimedCoord.getX() + x[i], unclaimedCoord.getZ() + z[i]);
+			province = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(unclaimedCoord.getX() + x[i], unclaimedCoord.getZ() + z[i]);
 			if (province != null && province != result) {
 				return null; //2 different adjacent provinces found. Return null, as this chunk will be a border.
 			}
