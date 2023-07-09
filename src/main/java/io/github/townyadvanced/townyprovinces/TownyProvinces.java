@@ -11,6 +11,8 @@ import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnDynmapAction;
+import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnPl3xMapV3Action;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.listeners.BukkitListener;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
@@ -109,7 +111,7 @@ public class TownyProvinces extends JavaPlugin {
 			if (getServer().getPluginManager().isPluginEnabled("Pl3xMap")) {
 				if (classExists("net.pl3x.map.core.Pl3xMap")) {
 					info("Found Pl3xMap v3. Enabling Pl3xMap integration.");
-					MapDisplayTaskController.enablePl3xMapV3();
+					MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnPl3xMapV3Action());
 				}
 				else if (classExists("net.pl3x.map.Pl3xMap")) {
 					//Pl3xMap v2
@@ -122,7 +124,7 @@ public class TownyProvinces extends JavaPlugin {
 			}
 			if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
 				info("Found Dynmap plugin. Enabling Dynmap integration.");
-				MapDisplayTaskController.enableDynmap();
+				MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnDynmapAction());
 			}
 			if (!MapDisplayTaskController.isMapSupported()) {
 				info("Did not find a supported map plugin. Cannot enable map integration.");

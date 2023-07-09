@@ -9,6 +9,7 @@ import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import net.pl3x.map.core.Pl3xMap;
+import net.pl3x.map.core.image.IconImage;
 import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.layer.SimpleLayer;
 import net.pl3x.map.core.markers.marker.Icon;
@@ -33,8 +34,17 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 	public DisplayProvincesOnPl3xMapV3Action() {
 		TownyProvinces.info("Enabling Pl3xMap v3 support.");
 		tpFreeCoord = new TPFreeCoord(0,0);
+		
+		if (TownyProvincesSettings.getTownCostsIcon() == null) {
+			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Pl3xMap V3.");
+			return;
+		}
+
+		Pl3xMap.api().getIconRegistry().register(new IconImage(
+			"provinces_costs_icon", TownyProvincesSettings.getTownCostsIcon(), "png"));
+		
 		TownyProvinces.info("Pl3xMap v3 support enabled.");
-	}	
+	}
 
 	/**
 	 * Display all TownyProvinces items

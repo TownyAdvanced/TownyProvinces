@@ -69,49 +69,6 @@ public class MapDisplayTaskController {
 		return mapDisplayActions.size() > 0;
 	}
 	
-	public static void enableDynmap() {
-		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Dynmap.");
-			return;
-		}
-		
-		DynmapAPI dynmapAPI = (DynmapAPI) TownyProvinces.getPlugin().getServer().getPluginManager().getPlugin("dynmap");
-
-		final MarkerIcon oldMarkerIcon = dynmapAPI.getMarkerAPI().getMarkerIcon("provinces_costs_icon");
-		if (oldMarkerIcon != null) {
-			oldMarkerIcon.deleteIcon();
-		}
-		
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		try {
-			ImageIO.write(TownyProvincesSettings.getTownCostsIcon(), "png", outputStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-		MarkerIcon markerIcon = dynmapAPI.getMarkerAPI().createMarkerIcon("provinces_costs_icon", 
-			"provinces_costs_icon", inputStream);
-		
-		if (markerIcon == null) {
-			TownyProvinces.severe("Error registering Town Costs Icon on Dynmap! Unable to support Dynmap.");
-		}
-		
-		mapDisplayActions.add(new DisplayProvincesOnDynmapAction());
-	}
-	
-	public static void enablePl3xMapV3() {
-		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Pl3xMap V3.");
-			return;
-		}
-
-		Pl3xMap.api().getIconRegistry().register(new IconImage(
-			"provinces_costs_icon", TownyProvincesSettings.getTownCostsIcon(), "png"));
-		
-		mapDisplayActions.add(new DisplayProvincesOnPl3xMapV3Action());
-	}
-	
 	public static void addMapDisplayAction(DisplayProvincesOnMapAction action) {
 		mapDisplayActions.add(action);
 	}

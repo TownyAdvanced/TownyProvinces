@@ -15,6 +15,10 @@ import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.PolyLineMarker;
 
+import javax.imageio.ImageIO;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -32,6 +36,31 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		DynmapAPI dynmapAPI = (DynmapAPI) TownyProvinces.getPlugin().getServer().getPluginManager().getPlugin("dynmap");
 		markerapi = dynmapAPI.getMarkerAPI();
 		tpFreeCoord = new TPFreeCoord(0,0);
+
+		if (TownyProvincesSettings.getTownCostsIcon() == null) {
+			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Dynmap.");
+			return;
+		}
+		
+		final MarkerIcon oldMarkerIcon = markerapi.getMarkerIcon("provinces_costs_icon");
+		if (oldMarkerIcon != null) {
+			oldMarkerIcon.deleteIcon();
+		}
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(TownyProvincesSettings.getTownCostsIcon(), "png", outputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		MarkerIcon markerIcon = markerapi.createMarkerIcon("provinces_costs_icon",
+			"provinces_costs_icon", inputStream);
+
+		if (markerIcon == null) {
+			TownyProvinces.severe("Error registering Town Costs Icon on Dynmap! Unable to support Dynmap.");
+		}
 		TownyProvinces.info("Dynmap support enabled.");
 	}
 	

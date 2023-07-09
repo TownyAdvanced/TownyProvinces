@@ -117,4 +117,5 @@ public abstract class DisplayProvincesOnMapAction {
 	abstract protected void debugDrawProvinceBorders();
 
 	abstract protected void debugDrawChunk(TPCoord coord, Province province, String worldName);
+	
 }
