@@ -4,12 +4,10 @@ import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.jobs.province_generation.RegenerateRegionTask;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.layer.SimpleLayer;
@@ -100,7 +98,8 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 		return layer;
 	}
 	
-	private void drawProvinceHomeBlocks() {
+	@Override
+	protected void drawProvinceHomeBlocks() {
 		String border_icon_id = "provinces_costs_icon";
 		boolean biomeCostAdjustmentsEnabled = TownyProvincesSettings.isBiomeCostAdjustmentsEnabled();
 		Set<Province> copyOfProvincesSet = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet());
@@ -155,20 +154,9 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 			}
 		}
 	}
-
-	private void drawProvinceBorders() {
-		//Find and draw the borders around each province
-		for (Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			try {
-				drawProvinceBorder(province);
-			} catch (Throwable t) {
-				TownyProvinces.severe("Could not draw province borders for province at x " + province.getHomeBlock().getX() + " z " + province.getHomeBlock().getZ());
-				t.printStackTrace();
-			}
-		}
-	}
 	
-	private void drawProvinceBorder(Province province) {
+	@Override
+	protected void drawProvinceBorder(Province province) {
 		int landBorderColour = TownyProvincesSettings.getLandProvinceBorderColour() +
 			(int)(255*TownyProvincesSettings.getLandProvinceBorderOpacity()) << 24;
 		int landBorderWeight = TownyProvincesSettings.getLandProvinceBorderWeight();
@@ -221,42 +209,6 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 				}
 			}
 		} 
-	}
-
-	private List<TPCoord> arrangeBorderCoordsIntoDrawableLine(Set<TPCoord> unprocessedBorderCoords) {
-		List<TPCoord> result = new ArrayList<>();
-		TPCoord lineHead = null;
-		for(TPCoord coord: unprocessedBorderCoords) {
-			lineHead = coord;
-			break;
-		}
-		TPCoord coordToAddToLine;
-		while(unprocessedBorderCoords.size() > 0) {
-			//Cycle the list of unprocessed coords. Add the first one which suits then exit loop
-			coordToAddToLine = null;
-			for(TPCoord unprocessedBorderCoord: unprocessedBorderCoords) {
-				if(TownyProvincesMathUtil.areCoordsCardinallyAdjacent(unprocessedBorderCoord, lineHead)) {
-					coordToAddToLine = unprocessedBorderCoord;
-					break;
-				}
-			}
-			
-			/*
-			 * If we found a coord to add to line. Add it
-			 * Otherwise throw exception because we could not make a drawable line
-			 */
-			if(coordToAddToLine != null) {
-				lineHead = coordToAddToLine;
-				result.add(coordToAddToLine);
-				unprocessedBorderCoords.remove(coordToAddToLine);
-			} else {
-				result.clear();
-				return result;
-			}
-		}
-		//Add last block to line, to make a circuit
-		result.add(result.get(0));
-		return result;
 	}
 
 	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
@@ -344,40 +296,20 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 		bordersLayer.addMarker(new Polygon(markerId, polyLine).setOptions(markerOptions));
 	}
 	
-	private void calculatePullStrengthFromNearbyProvince(TPCoord borderCoordBeingPulled, Province provinceDoingThePulling, TPFreeCoord freeCoord) {
-		int pullStrengthX = 0;
-		int pullStrengthZ = 0;
-		Set<TPCoord> adjacentCoords = RegenerateRegionTask.findAllAdjacentCoords(borderCoordBeingPulled);
-		Province adjacenProvince;
-		for(TPCoord adjacentCoord: adjacentCoords) {
-			adjacenProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord.getX(), adjacentCoord.getZ());
-			if(adjacenProvince != null && adjacenProvince.equals(provinceDoingThePulling)) {
-				pullStrengthX += (adjacentCoord.getX() - borderCoordBeingPulled.getX());
-				pullStrengthZ += (adjacentCoord.getZ() - borderCoordBeingPulled.getZ());
-			}
-		}
-		freeCoord.setValues(pullStrengthX,pullStrengthZ);
-	}
-	
 	////////////////////////// DEBUG SECTION ////////////////////////
-
-
-
-	private void debugDrawProvinceChunks(Province province) {
-		for(TPCoord tpCoord: TownyProvincesDataHolder.getInstance().getListOfCoordsInProvince(province)) {
-			debugDrawChunk(tpCoord, province);
-		}
-	}
 	
 	
 	//Shows all borders. But not for production
-	private void debugDrawProvinceBorders() {
+	@Override
+	protected void debugDrawProvinceBorders() {
 		//for (Coord coord : TownyProvincesDataHolder.getInstance().getProvinceBorderBlocks()) {
 		//	debugDrawProvinceBorderBlock(worldName, provinceBlock);
 		//}
 	}
 	
-	private void debugDrawChunk(TPCoord coord, Province province) {
+	
+	@Override
+	protected void debugDrawChunk(TPCoord coord, Province province, String worldName) {
 		double[] xPoints = new double[5];
 		xPoints[0] = coord.getX() * TownyProvincesSettings.getChunkSideLength();
 		xPoints[1] = xPoints[0] + TownyProvincesSettings.getChunkSideLength();
