@@ -12,6 +12,7 @@ import com.palmergames.bukkit.towny.event.TownUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.event.TownyLoadedDatabaseEvent;
 import com.palmergames.bukkit.towny.event.TranslationLoadEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreMergeEvent;
+import com.palmergames.bukkit.towny.event.town.TownPreSetHomeBlockEvent;
 import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -31,7 +32,6 @@ import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.BiomeUtil;
 import io.github.townyadvanced.townyprovinces.util.CustomPlotUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.event.EventHandler;
@@ -41,10 +41,8 @@ import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 public class TownyListener implements Listener {
 
@@ -224,9 +222,9 @@ public class TownyListener implements Listener {
 				return;
 			}
 			
-			//For any type of claim, cancel if the claiming town already has too many townblocks in the province
+			//For any type of claim, cancel if the claiming town already has max-num-townblocks in the province
 			int numTownBlocksInProvince = TownyProvincesDataHolder.getInstance().getNumTownBlocksInProvince(event.getTown(), provinceAtClaimLocation);
-			if (numTownBlocksInProvince > TownyProvincesSettings.getMaxTownBlocksInEachForeignProvince()) {
+			if (numTownBlocksInProvince >= TownyProvincesSettings.getMaxNumTownBlocksInEachForeignProvince()) {
 				event.setCancelled(true);
 				event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_too_many_townblocks_in_province").translate(Locale.ROOT));
 				return;
@@ -397,5 +395,23 @@ public class TownyListener implements Listener {
 		}
 		CustomPlotUtil.registerCustomPlots();
 	}
-	
+
+	@EventHandler
+	public void onPreSetHomeBlockEvent(TownPreSetHomeBlockEvent event) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled()) {
+			return;
+		}
+		if(event.getTown().getHomeBlockOrNull() == null) {
+			return;
+		}
+		//Can't move homeblock outside current province
+		Province currentHomeProvince = TownyProvincesDataHolder.getInstance().getProvinceAtWorldCoord(event.getTown().getHomeBlockOrNull().getWorldCoord());
+		Province updatedHomeProvince = TownyProvincesDataHolder.getInstance().getProvinceAtWorldCoord(event.getTownBlock().getWorldCoord());
+		if(currentHomeProvince != updatedHomeProvince) {
+			event.setCancelled(true);
+			event.setCancelMessage(Translatable.of("msg_err_cannot_move_homeblock_to_different_province").translate(Locale.ROOT));
+		}
+	}
+
+
 }

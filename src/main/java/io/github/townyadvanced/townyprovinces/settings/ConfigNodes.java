@@ -29,8 +29,8 @@ public enum ConfigNodes {
 		"# Governs the pause between biome lookups.",
 		"# A high value will make the landvalidation job run slow",
 		"# A low value will make the landvalidation job take up lots of CPU"),
-	MAX_TOWNBLOCKS_IN_EACH_FOREIGN_PROVINCE(
-		"max_townblocks_in_each_foreign_province",
+	MAX_NUM_TOWNBLOCKS_IN_EACH_FOREIGN_PROVINCE(
+		"max_num_townblocks_in_each_foreign_province",
 		"8",
 		"",
 		"# Determines how many townblocks a town can have in each foreign province.",

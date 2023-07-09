@@ -275,8 +275,8 @@ public class TownyProvincesSettings {
 		return Settings.getBoolean(ConfigNodes.WASTELAND_OUTPOSTS_ALLOWED);
 	}
 
-	public static int getMaxTownBlocksInEachForeignProvince() {
-		return Settings.getInt(ConfigNodes.MAX_TOWNBLOCKS_IN_EACH_FOREIGN_PROVINCE);
+	public static int getMaxNumTownBlocksInEachForeignProvince() {
+		return Settings.getInt(ConfigNodes.MAX_NUM_TOWNBLOCKS_IN_EACH_FOREIGN_PROVINCE);
 	}
 	
 }

@@ -105,8 +105,7 @@ msg_err_outpost_claim_rules_home_sea: "&cYou cannot claim an outpost here. Outpo
 msg_err_outpost_claim_rules_home_wasteland: "&cYou cannot claim an outpost here. Outposts can only be claimed in Wasteland provinces, and in the Town's Home-province."
 msg_err_outpost_claim_rules_home_sea_wasteland: "&cYou cannot claim an outpost here. Outposts can only be claimed in Sea provinces, Wasteland provinces, and in the Town's Home-provinces"
 msg_err_too_many_townblocks_in_province: "&cYou have already claimed the maximum number townblocks in this province. In any province other than its home province, a town can have a maximum of %d townblocks."
-
-
+msg_err_cannot_move_homeblock_to_different_province: "&cYou cannot move your Home-Block to a different province."
 
 
 #Dynmap
