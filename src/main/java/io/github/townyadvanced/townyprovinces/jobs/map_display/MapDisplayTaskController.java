@@ -3,7 +3,13 @@ import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.image.IconImage;
+import org.dynmap.DynmapAPI;
+import org.dynmap.markers.MarkerIcon;
 
+import javax.imageio.ImageIO;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +70,33 @@ public class MapDisplayTaskController {
 	}
 	
 	public static void enableDynmap() {
-		//TODO: Register the icon as an OPTION, let the class check settings to use or not
+		if (TownyProvincesSettings.getTownCostsIcon() == null) {
+			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Dynmap.");
+			return;
+		}
+		
+		DynmapAPI dynmapAPI = (DynmapAPI) TownyProvinces.getPlugin().getServer().getPluginManager().getPlugin("dynmap");
+
+		final MarkerIcon oldMarkerIcon = dynmapAPI.getMarkerAPI().getMarkerIcon("provinces_costs_icon");
+		if (oldMarkerIcon != null) {
+			oldMarkerIcon.deleteIcon();
+		}
+		
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(TownyProvincesSettings.getTownCostsIcon(), "png", outputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		MarkerIcon markerIcon = dynmapAPI.getMarkerAPI().createMarkerIcon("provinces_costs_icon", 
+			"provinces_costs_icon", inputStream);
+		
+		if (markerIcon == null) {
+			TownyProvinces.severe("Error registering Town Costs Icon on Dynmap! Unable to support Dynmap.");
+		}
+		
 		mapDisplayActions.add(new DisplayProvincesOnDynmapAction());
 	}
 	
@@ -78,6 +110,10 @@ public class MapDisplayTaskController {
 			"provinces_costs_icon", TownyProvincesSettings.getTownCostsIcon(), "png"));
 		
 		mapDisplayActions.add(new DisplayProvincesOnPl3xMapV3Action());
+	}
+	
+	public static void addMapDisplayAction(DisplayProvincesOnMapAction action) {
+		mapDisplayActions.add(action);
 	}
 	
 	static List<DisplayProvincesOnMapAction> getMapDisplayActions() {

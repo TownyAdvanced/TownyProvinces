@@ -90,7 +90,8 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 	}
 	
 	private void drawProvinceHomeBlocks() {
-		String border_icon_id = "coins";
+		String border_icon_id = TownyProvincesSettings.getDynmapUsesTownCostsIcon() ?
+			"provinces_costs_icon" : "coins";
 		boolean biomeCostAdjustmentsEnabled = TownyProvincesSettings.isBiomeCostAdjustmentsEnabled();
 		MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(border_icon_id);
 		Set<Province> copyOfProvincesSet = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet());
