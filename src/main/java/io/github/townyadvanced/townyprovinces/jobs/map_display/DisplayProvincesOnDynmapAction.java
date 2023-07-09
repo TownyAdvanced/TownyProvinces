@@ -259,21 +259,6 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		polyLineMarker.setLineStyle(borderWeight, borderOpacity, borderColour);
 	}
 	
-	private void calculatePullStrengthFromNearbyProvince(TPCoord borderCoordBeingPulled, Province provinceDoingThePulling, TPFreeCoord freeCoord) {
-		int pullStrengthX = 0;
-		int pullStrengthZ = 0;
-		Set<TPCoord> adjacentCoords = RegenerateRegionTask.findAllAdjacentCoords(borderCoordBeingPulled);
-		Province adjacenProvince;
-		for(TPCoord adjacentCoord: adjacentCoords) {
-			adjacenProvince = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(adjacentCoord.getX(), adjacentCoord.getZ());
-			if(adjacenProvince != null && adjacenProvince.equals(provinceDoingThePulling)) {
-				pullStrengthX += (adjacentCoord.getX() - borderCoordBeingPulled.getX());
-				pullStrengthZ += (adjacentCoord.getZ() - borderCoordBeingPulled.getZ());
-			}
-		}
-		freeCoord.setValues(pullStrengthX,pullStrengthZ);
-	}
-	
 	////////////////////////// DEBUG SECTION ////////////////////////
 
 	
