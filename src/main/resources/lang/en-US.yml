@@ -98,6 +98,17 @@ msg_err_cannot_claim_land_on_province_border: "&cTowns cannot claim land on prov
 msg_err_cannot_claim_land_without_homeblock: "&cTowns without homeblocks cannot claim land."
 msg_err_cannot_claim_land_outside_own_province: "&cTowns cannot claim land outside their own provinces."
 
+# Outposts
+
+msg_err_outpost_claim_rules_home: "&cYou cannot claim an outpost here. Outposts can only be claimed in the Town's home province."
+msg_err_outpost_claim_rules_home_sea: "&cYou cannot claim an outpost here. Outposts can only be claimed in Sea provinces, and in the Town's Home-province."
+msg_err_outpost_claim_rules_home_wasteland: "&cYou cannot claim an outpost here. Outposts can only be claimed in Wasteland provinces, and in the Town's Home-province."
+msg_err_outpost_claim_rules_home_sea_wasteland: "&cYou cannot claim an outpost here. Outposts can only be claimed in Sea provinces, Wasteland provinces, and in the Town's Home-provinces"
+msg_err_too_many_townblocks_in_province: "&cYou have already claimed the maximum number townblocks in this province. In any province other than its home province, a town can have a maximum of %d townblocks."
+
+
+
+
 #Dynmap
 
 dynmap_province_homeblock_label: "Town Costs: New %s, Upkeep %s"

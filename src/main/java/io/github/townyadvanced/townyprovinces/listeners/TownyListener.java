@@ -25,13 +25,14 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.metadata.TownMetaDataController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.objects.ProvinceType;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.BiomeUtil;
 import io.github.townyadvanced.townyprovinces.util.CustomPlotUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -40,8 +41,10 @@ import org.bukkit.plugin.Plugin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class TownyListener implements Listener {
 
@@ -94,7 +97,7 @@ public class TownyListener implements Listener {
 		 * is on a province border.
 		 */
 		Coord coord = Coord.parseCoord(event.getTownLocation());
-		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord.getX(), coord.getZ());
+		Province province = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(coord.getX(), coord.getZ());
 		if (province == null) {
 			event.setCancelled(true);
 			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_create_town_on_province_border").translate(Locale.ROOT));
@@ -159,7 +162,7 @@ public class TownyListener implements Listener {
 		}
 		//Add extra upkeep
 		Coord coord = event.getTown().getHomeBlockOrNull().getCoord();
-		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord.getX(),coord.getZ());
+		Province province = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(coord.getX(),coord.getZ());
 		if(province != null) {
 			int regionUpkeepCost = (int)(TownyProvincesSettings.isBiomeCostAdjustmentsEnabled() ? province.getBiomeAdjustedUpkeepTownCost() : province.getUpkeepTownCost());
 			if (regionUpkeepCost > 0) {
@@ -175,7 +178,8 @@ public class TownyListener implements Listener {
 			return;
 		}
 		//No restriction if it is not in the TP-enabled world
-		if (!event.getTownBlock().getWorld().getName().equalsIgnoreCase(TownyProvincesSettings.getWorldName())) {
+		World townyProvinceWorld = TownyProvincesSettings.getWorld();
+		if (!event.getTownBlock().getWorld().getBukkitWorld().equals(townyProvinceWorld)) {
 			return;
 		}
 		/*
@@ -184,7 +188,7 @@ public class TownyListener implements Listener {
 		 * the only possible place, this can occur,
 		 * is on a province border.
 		 */
-		Province provinceAtClaimLocation = TownyProvincesDataHolder.getInstance().getProvinceAt(event.getTownBlock().getX(), event.getTownBlock().getZ());
+		Province provinceAtClaimLocation = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(event.getTownBlock().getX(), event.getTownBlock().getZ());
 		if (provinceAtClaimLocation == null) {
 			event.setCancelled(true);
 			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_on_province_border").translate(Locale.ROOT));
@@ -196,12 +200,37 @@ public class TownyListener implements Listener {
 			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_without_homeblock").translate(Locale.ROOT));
 			return;
 		}
-		//Can't claim outside town's province
-		Province provinceOfClaimingTown = TownyProvincesDataHolder.getInstance().getProvinceAt(event.getTown().getHomeBlockOrNull().getX(), event.getTown().getHomeBlockOrNull().getZ());
+		
+		//Apply special rules if claiming outside home province
+		Province provinceOfClaimingTown = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(event.getTown().getHomeBlockOrNull().getX(), event.getTown().getHomeBlockOrNull().getZ());
 		if(!provinceOfClaimingTown.equals(provinceAtClaimLocation)) {
-			event.setCancelled(true);
-			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_cannot_claim_land_outside_own_province").translate(Locale.ROOT));
-			return;
+
+			//For outposts, cancel if the target province does not allow foreign outposts
+			if(event.isOutpost() && !provinceAtClaimLocation.getType().canForeignOutpostsBeCreated()) {
+				Translatable errorMessage;
+				boolean sea = TownyProvincesSettings.getSeaProvinceOutpostsAllowed();
+				boolean wasteland = TownyProvincesSettings.getWastelandProvinceOutpostsAllowed();
+				if (sea && wasteland) {
+					errorMessage = Translatable.of("msg_err_outpost_claim_rules_home_sea_wasteland");
+				} else if (sea) {
+					errorMessage = Translatable.of("msg_err_outpost_claim_rules_home_sea");
+				} else if (wasteland) {
+					errorMessage = Translatable.of("msg_err_outpost_claim_rules_home_wasteland");
+				} else {
+					errorMessage = Translatable.of("msg_err_outpost_claim_rules_home");
+				}
+				event.setCancelled(true);
+				event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + errorMessage.translate(Locale.ROOT));
+				return;
+			}
+			
+			//For any type of claim, cancel if the claiming town already has too many townblocks in the province
+			int numTownBlocksInProvince = TownyProvincesDataHolder.getInstance().getNumTownBlocksInProvince(event.getTown(), provinceAtClaimLocation);
+			if (numTownBlocksInProvince > TownyProvincesSettings.getMaxTownBlocksInEachForeignProvince()) {
+				event.setCancelled(true);
+				event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + " " + Translatable.of("msg_err_too_many_townblocks_in_province").translate(Locale.ROOT));
+				return;
+			}
 		}
 	}
 	

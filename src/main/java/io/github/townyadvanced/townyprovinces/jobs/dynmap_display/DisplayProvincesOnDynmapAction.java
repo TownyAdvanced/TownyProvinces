@@ -300,7 +300,7 @@ public class DisplayProvincesOnDynmapAction {
 		Set<TPCoord> adjacentCoords = RegenerateRegionTask.findAllAdjacentCoords(borderCoordBeingPulled);
 		Province adjacenProvince;
 		for(TPCoord adjacentCoord: adjacentCoords) {
-			adjacenProvince = TownyProvincesDataHolder.getInstance().getProvinceAt(adjacentCoord.getX(), adjacentCoord.getZ());
+			adjacenProvince = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(adjacentCoord.getX(), adjacentCoord.getZ());
 			if(adjacenProvince != null && adjacenProvince.equals(provinceDoingThePulling)) {
 				pullStrengthX += (adjacentCoord.getX() - borderCoordBeingPulled.getX());
 				pullStrengthZ += (adjacentCoord.getZ() - borderCoordBeingPulled.getZ());

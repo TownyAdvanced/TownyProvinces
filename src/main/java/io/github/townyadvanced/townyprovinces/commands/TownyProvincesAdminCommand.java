@@ -249,7 +249,7 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		int x = Integer.parseInt(locationAsArray[0]);
 		int y = Integer.parseInt(locationAsArray[1]);
 		Coord coord = Coord.parseCoord(x,y);
-		Province province = TownyProvincesDataHolder.getInstance().getProvinceAt(coord.getX(), coord.getZ());
+		Province province = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(coord.getX(), coord.getZ());
 		//Validate action
 		if(province == null) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));

@@ -267,23 +267,6 @@ public class TownyProvincesSettings {
 	public static double getBiomeCostAdjustmentsHotLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_HOT_LAND); }
 	public static double getBiomeCostAdjustmentsColdLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_COLD_LAND); }
 
-	public static boolean getCivilizedProvinceNewTownsAllowed() {
-		return Settings.getBoolean(ConfigNodes.CIVILIZED_NEW_TOWNS_ALLOWED);
-	}
-	
-	public static boolean getSeaProvinceNewTownsAllowed() {
-		return Settings.getBoolean(ConfigNodes.WASTELAND_NEW_TOWNS_ALLOWED);
-	}
-	
-	public static boolean getWastelandProvinceNewTownsAllowed() {
-		return Settings.getBoolean(ConfigNodes.SEA_NEW_TOWNS_ALLOWED);
-	}
-
-
-	public static boolean getCivilizedProvinceOutpostsAllowed() {
-		return Settings.getBoolean(ConfigNodes.CIVILIZED_NEW_TOWNS_ALLOWED);
-	}
-
 	public static boolean getSeaProvinceOutpostsAllowed() {
 		return Settings.getBoolean(ConfigNodes.SEA_OUTPOSTS_ALLOWED);
 	}
@@ -292,4 +275,8 @@ public class TownyProvincesSettings {
 		return Settings.getBoolean(ConfigNodes.WASTELAND_OUTPOSTS_ALLOWED);
 	}
 
+	public static int getMaxTownBlocksInEachForeignProvince() {
+		return Settings.getInt(ConfigNodes.MAX_TOWNBLOCKS_IN_EACH_FOREIGN_PROVINCE);
+	}
+	
 }

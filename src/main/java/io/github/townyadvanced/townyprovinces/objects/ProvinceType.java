@@ -61,14 +61,25 @@ public enum ProvinceType {
 	public boolean canNewTownsBeCreated() {
 		switch(this) {
 			case CIVILISED:
-				return TownyProvincesSettings.getCivilizedProvinceNewTownsAllowed();
+				return true;
 			case SEA:
-				return TownyProvincesSettings.getSeaProvinceNewTownsAllowed();
 			case WASTELAND:
-				return TownyProvincesSettings.getWastelandProvinceNewTownsAllowed();
+				return false;
 			default:
 				throw new RuntimeException("Unknown province type");
 		}
 	}
 
+	public boolean canForeignOutpostsBeCreated() {
+		switch(this) {
+			case CIVILISED:
+				return false;
+			case SEA:
+				return TownyProvincesSettings.getSeaProvinceOutpostsAllowed();
+			case WASTELAND:
+				return TownyProvincesSettings.getWastelandProvinceOutpostsAllowed();
+			default:
+				throw new RuntimeException("Unknown province type");
+		}
+	}
 }

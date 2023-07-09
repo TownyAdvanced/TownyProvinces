@@ -29,6 +29,12 @@ public enum ConfigNodes {
 		"# Governs the pause between biome lookups.",
 		"# A high value will make the landvalidation job run slow",
 		"# A low value will make the landvalidation job take up lots of CPU"),
+	MAX_TOWNBLOCKS_IN_EACH_FOREIGN_PROVINCE(
+		"max_townblocks_in_each_foreign_province",
+		"8",
+		"",
+		"# Determines how many townblocks a town can have in each foreign province.",
+		"# These townblocks can only be unlocked by building an outpost in a sea or wasteland province."),
 	BIOME_COST_ADJUSTMENTS(
 		"biome_cost_adjustments",
 		"",
@@ -80,14 +86,6 @@ public enum ConfigNodes {
 		"# |                      CIVILIZED                       | #",
 		"# +------------------------------------------------------+ #",
 		""),
-	CIVILIZED_NEW_TOWNS_ALLOWED(
-		"province_types.civilized.new_towns_allowed",
-		"true",
-		""),
-	CIVILIZED_OUTPOSTS_ALLOWED(
-		"province_types.civilized.foreign_outposts_allowed",
-		"false",
-		""),
 	CIVILIZED_BORDER_APPEARANCE(
 		"province_types.civilized.border_appearance",
 		"",
@@ -115,10 +113,6 @@ public enum ConfigNodes {
 		"# +------------------------------------------------------+ #",
 		"# |                          SEA                         | #",
 		"# +------------------------------------------------------+ #",
-		""),
-	SEA_NEW_TOWNS_ALLOWED(
-		"province_types.sea.new_towns_allowed",
-		"false",
 		""),
 	SEA_OUTPOSTS_ALLOWED(
 		"province_types.sea.foreign_outposts_allowed",
@@ -151,10 +145,6 @@ public enum ConfigNodes {
 		"# +------------------------------------------------------+ #",
 		"# |                      WASTELAND                       | #",
 		"# +------------------------------------------------------+ #",
-		""),
-	WASTELAND_NEW_TOWNS_ALLOWED(
-		"province_types.wasteland.new_towns_allowed",
-		"false",
 		""),
 	WASTELAND_OUTPOSTS_ALLOWED(
 		"province_types.wasteland.foreign_outposts_allowed",
