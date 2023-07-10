@@ -1,5 +1,7 @@
 package io.github.townyadvanced.townyprovinces.objects;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Town;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -135,6 +137,18 @@ public class Province {
 
 	public void setEstimatedProportionOfColdLand(double estimatedProportionOfColdLand) {
 		this.estimatedProportionOfColdLand = estimatedProportionOfColdLand;
+	}
+
+	public Town getTownOrNull() {
+		for(Town town: TownyAPI.getInstance().getTowns()) {
+			if(town.hasHomeBlock()) {
+				Province province = TownyProvincesDataHolder.getInstance().getProvinceAtWorldCoord(town.getHomeBlockOrNull().getWorldCoord());
+				if(province == this) {
+					return town;
+				}
+			}
+		}
+		return null;
 	}
 }
  

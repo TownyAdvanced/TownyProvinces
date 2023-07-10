@@ -1,24 +1,29 @@
 package io.github.townyadvanced.townyprovinces.jobs.map_display;
 
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
+import com.palmergames.bukkit.towny.object.Nation;
+import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceType;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.dynmap.DynmapAPI;
+import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
-import org.dynmap.markers.PolyLineMarker;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -165,8 +170,8 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 	@Override
 	protected void drawProvinceBorder(Province province) {
 		String markerId = province.getId();
-		PolyLineMarker polyLineMarker = bordersMarkerSet.findPolyLineMarker(markerId);
-		if(polyLineMarker == null) {
+		AreaMarker marker = bordersMarkerSet.findAreaMarker(markerId);
+		if(marker == null) {
 			//Get border blocks
 			Set<TPCoord> borderCoords = findAllBorderCoords(province);
 			if(borderCoords.size() > 0) {
@@ -178,25 +183,19 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 					drawBorderLine(drawableLineOfBorderCoords, province, markerId);
 				} else {
 					TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line. If this message has not stopped repeating a few minutes after your server starts, please report it to TownyAdvanced.");
-					//The below line will draw the province if uncommented
-					//debugDrawProvinceChunks(province);
 				}
 			}
 		} else {
-			//Re-evaluate colour
-			if (polyLineMarker.getLineColor() != province.getType().getBorderColour()) {
+			//Re-evaluate province border colour
+			if (marker.getLineColor() != province.getType().getBorderColour()) {
 				//Change colour of marker
-				polyLineMarker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
+				marker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
 			}
 		} 
 	}
 
 	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
 		String worldName = TownyProvincesSettings.getWorldName();
-		int borderColour = province.getType().getBorderColour();
-		int borderWeight = province.getType().getBorderWeight();
-		double borderOpacity = province.getType().getBorderOpacity();
-		
 		double[] xPoints = new double[drawableLineOfBorderCoords.size()];
 		double[] zPoints = new double[drawableLineOfBorderCoords.size()];
 		for (int i = 0; i < drawableLineOfBorderCoords.size(); i++) {
@@ -251,66 +250,76 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		boolean unknown2 = false;
 
 		//Draw border line
-		PolyLineMarker polyLineMarker = bordersMarkerSet.createPolyLineMarker(
+		AreaMarker areaMarker = bordersMarkerSet.createAreaMarker(
 			markerId, null, unknown, worldName,
-			xPoints, zPoints, zPoints, unknown2);
-		
-		//Set colour
-		polyLineMarker.setLineStyle(borderWeight, borderOpacity, borderColour);
+			xPoints, zPoints, unknown2);
 	}
 	
-	////////////////////////// DEBUG SECTION ////////////////////////
-
-	
-	//Shows all borders. But not for production
-	@Override
-	protected void debugDrawProvinceBorders() {
-		String worldName = TownyProvincesSettings.getWorldName();
-
-		//for (Coord coord : TownyProvincesDataHolder.getInstance().getProvinceBorderBlocks()) {
-		//	debugDrawProvinceBorderBlock(worldName, provinceBlock);
-		//}
-	}
-	
-	@Override
-	protected void debugDrawChunk(TPCoord coord, Province province, String worldName) {
-		double[] xPoints = new double[5];
-		xPoints[0] = coord.getX() * TownyProvincesSettings.getChunkSideLength();
-		xPoints[1] = xPoints[0] + TownyProvincesSettings.getChunkSideLength();
-		xPoints[2] = xPoints[1];
-		xPoints[3] = xPoints[0];
-		xPoints[4] = xPoints[0];
-
-		double[] zPoints = new double[5];
-		zPoints[0] = coord.getZ() * TownyProvincesSettings.getChunkSideLength();
-		zPoints[1] = zPoints[0]; 
-		zPoints[2] = zPoints[1] + TownyProvincesSettings.getChunkSideLength();;
-		zPoints[3] = zPoints[2];
-		zPoints[4] = zPoints[0];
-		
-		String markerId = "Debug Drawn Chunk" + coord.getX() + "-" + coord.getZ() + ". Province: " + province.getId();
-		//String markerName = "xx";
-		String markerName = "ID: " + markerId;
-		//markerName += " Is Border: " + provinceBlock.isProvinceBorder();
-		
-		boolean unknown = false;
-		boolean unknown2 = false;
-		
-		//AreaMarker areaMarker = markerSet.createAreaMarker(
-		//	markerId, markerName, unknown, worldName,
-	//		xPoints, zPoints, unknown2);
-
-		PolyLineMarker polyLineMarker =  bordersMarkerSet.createPolyLineMarker(
-			markerId, markerName, unknown, worldName,
-			xPoints, zPoints, zPoints, unknown2);
-
-		if(polyLineMarker != null) {
-			polyLineMarker.setLineStyle(4,1, 0xff0000);
+	protected void setProvinceStyles() {
+		//Construct province-town hash map
+		HashMap<Province, Town> provinceTownHashMap = new HashMap<>();
+		{
+			Province province;
+			for (Town town : TownyAPI.getInstance().getTowns()) {
+				if (!town.hasHomeBlock()) {
+					continue;
+				}
+				province = TownyProvincesDataHolder.getInstance().getProvinceAtWorldCoord(town.getHomeBlockOrNull().getWorldCoord());
+				if (province == null) {
+					continue;
+				}
+				provinceTownHashMap.put(province, town);
+			}
 		}
-//polyLineMarker.setLineStyle(4,1, 300000);
-//polyLineMarker.set
-		//areaMarker.setFillStyle(0, 300000);
-		//areaMarker.setLineStyle(1, 0.2, 300000);
+
+		//Convenience Vars
+		AreaMarker areaMarker;
+		Nation nation;
+		double targetFillOpacity;
+		int targetFillColour;
+		int targetBorderColour;
+		int targetBborderWeight;
+		double targetBborderOpacity;
+
+		//Cycle provinces
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+			if(province.getType() == ProvinceType.CIVILIZED) {
+				//Civilized
+				if(provinceTownHashMap.containsKey(province)) {
+					//Town present
+					nation = provinceTownHashMap.get(province).getNationOrNull();
+					if(nation == null) {
+						targetFillOpacity = 0;
+						targetFillColour = 0;
+					} else {
+						targetFillOpacity = 0.20;;
+						targetFillColour = Integer.parseInt(nation.getMapColorHexCode(),16);
+					}
+				} else {
+					//No town present
+					targetFillOpacity = 0;
+					targetFillColour = 0;
+				}
+			} else {
+				//Sea or wasteland
+				targetFillOpacity = 0;
+				targetFillColour = 0;
+			}
+			
+			//Set fill colour if needed
+			areaMarker = bordersMarkerSet.findAreaMarker(province.getId());
+			if(areaMarker.getFillOpacity() != targetFillOpacity || areaMarker.getFillColor() != targetFillColour) {
+				areaMarker.setFillStyle(targetFillOpacity, targetFillColour);
+			}
+
+			//Set border colour if needed
+			targetBorderColour = province.getType().getBorderColour();
+			if(areaMarker.getLineColor() != targetBorderColour) {
+				targetBborderWeight = province.getType().getBorderWeight();
+				targetBborderOpacity = province.getType().getBorderOpacity();
+				areaMarker.setLineStyle(targetBborderWeight, targetBborderOpacity, targetBorderColour);
+			}
+
+		}
 	}
-	 
 }

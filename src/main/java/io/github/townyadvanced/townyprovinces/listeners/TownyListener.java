@@ -8,6 +8,7 @@ import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
 import com.palmergames.bukkit.towny.event.TownUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.event.TownyLoadedDatabaseEvent;
 import com.palmergames.bukkit.towny.event.TranslationLoadEvent;
+import com.palmergames.bukkit.towny.event.town.TownMapColourLocalCalculationEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreMergeEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreSetHomeBlockEvent;
 import com.palmergames.bukkit.towny.object.Coord;
@@ -241,5 +242,10 @@ public class TownyListener implements Listener {
 		}
 	}
 
+
+	@EventHandler(ignoreCancelled = true)
+	public void on(TownMapColourLocalCalculationEvent event) {
+		
+	}
 
 }

@@ -284,67 +284,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 
 		bordersLayer.addMarker(new Polygon(markerId, polyLine).setOptions(markerOptions));
 	}
-	
-	////////////////////////// DEBUG SECTION ////////////////////////
-	
-	
-	//Shows all borders. But not for production
-	@Override
-	protected void debugDrawProvinceBorders() {
-		//for (Coord coord : TownyProvincesDataHolder.getInstance().getProvinceBorderBlocks()) {
-		//	debugDrawProvinceBorderBlock(worldName, provinceBlock);
-		//}
-	}
-	
-	
-	@Override
-	protected void debugDrawChunk(TPCoord coord, Province province, String worldName) {
-		double[] xPoints = new double[5];
-		xPoints[0] = coord.getX() * TownyProvincesSettings.getChunkSideLength();
-		xPoints[1] = xPoints[0] + TownyProvincesSettings.getChunkSideLength();
-		xPoints[2] = xPoints[1];
-		xPoints[3] = xPoints[0];
-		xPoints[4] = xPoints[0];
 
-		double[] zPoints = new double[5];
-		zPoints[0] = coord.getZ() * TownyProvincesSettings.getChunkSideLength();
-		zPoints[1] = zPoints[0]; 
-		zPoints[2] = zPoints[1] + TownyProvincesSettings.getChunkSideLength();
-		zPoints[3] = zPoints[2];
-		zPoints[4] = zPoints[0];
-		
-		//This is not the ideal way to do this; but it simplifies it for debugging between platforms.
-		List<Point> points = new ArrayList<>();
-		for (int i = 0; i < xPoints.length; i++) {
-			points.add(Point.of(xPoints[i], zPoints[i]));
-		}
-		
-		
-		String markerId = "Debug Drawn Chunk" + coord.getX() + "-" + coord.getZ() + ". Province: " + province.getId();
-		//String markerName = "xx";
-		String markerName = "ID: " + markerId;
-		//markerName += " Is Border: " + provinceBlock.isProvinceBorder();
-		
-		//AreaMarker areaMarker = markerSet.createAreaMarker(
-		//	markerId, markerName, unknown, worldName,
-	//		xPoints, zPoints, unknown2);
-		
-		Polyline polyLineMarker = new Polyline(
-			markerId, points);
-		
-		Options markerOptions = Options.builder()
-			.stroke(new Stroke(4, 0xffff0000))
-			.fill(new Fill(false))
-			.tooltipContent(markerName)
-			.build();
-
-		polyLineMarker.setOptions(markerOptions);
-		
-		bordersLayer.addMarker(polyLineMarker);
-//polyLineMarker.setLineStyle(4,1, 300000);
-//polyLineMarker.set
-		//areaMarker.setFillStyle(0, 300000);
-		//areaMarker.setLineStyle(1, 0.2, 300000);
+	protected void setProvinceStyles() {
 	}
-	 
 }
