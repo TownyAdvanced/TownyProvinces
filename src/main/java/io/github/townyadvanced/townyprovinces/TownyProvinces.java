@@ -11,7 +11,6 @@ import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnDynmapAction;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnPl3xMapV3Action;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
-import io.github.townyadvanced.townyprovinces.listeners.BukkitListener;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
