@@ -1,9 +1,6 @@
 package io.github.townyadvanced.townyprovinces;
 
-import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.command.TownyAdminCommand;
-import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.exceptions.initialization.TownyInitException;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.object.TranslationLoader;
@@ -12,12 +9,10 @@ import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminComman
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
-import io.github.townyadvanced.townyprovinces.listeners.BukkitListener;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import io.github.townyadvanced.townyprovinces.util.CustomPlotUtil;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -53,8 +48,6 @@ public class TownyProvinces extends JavaPlugin {
 				|| !FileUtil.setupPluginDataFoldersIfRequired()
 				|| !FileUtil.createRegionDefinitionsFolderAndSampleFiles()
 				|| !DataHandlerUtil.loadAllData()
-				|| !CustomPlotUtil.registerCustomPlots()
-				|| !reloadTownyDatabase()
 				|| !registerListeners()
 				|| !registerAdminCommands()
 			) {
@@ -86,17 +79,7 @@ public class TownyProvinces extends JavaPlugin {
 		DynmapDisplayTaskController.requestFullMapRefresh();
 		info("TownyProvinces Reloaded Successfully");
 	}
-	
-	private boolean reloadTownyDatabase() {
-		//reload towny config to ensure the custom plot types are loaded correctly
-		try {
-			(new TownyAdminCommand(Towny.getPlugin())).parseTownyAdminCommand(Bukkit.getConsoleSender(), new String[]{"reload", "database"});
-		} catch (TownyException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-	
+
 	private boolean registerAdminCommands() {
 		getCommand("townyprovincesadmin").setExecutor(new TownyProvincesAdminCommand());
 		return true;
@@ -174,7 +157,6 @@ public class TownyProvinces extends JavaPlugin {
 	private boolean registerListeners() {
 		PluginManager pluginManager = this.getServer().getPluginManager();
 		pluginManager.registerEvents(new TownyListener(), this);
-		pluginManager.registerEvents(new BukkitListener(), this);
 		return true;
 	}
 	public String getVersion() {
