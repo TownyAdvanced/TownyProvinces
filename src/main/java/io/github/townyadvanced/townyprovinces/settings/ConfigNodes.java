@@ -97,7 +97,7 @@ public enum ConfigNodes {
 		"# This value determines the weight of the border."),
 	CIVILIZED_BORDER_APPEARANCE_OPACITY(
 		"province_types.civilized.border_appearance.opacity",
-		"1",
+		"0.9",
 		"",
 		"# This value determines the opacity of the border."),
 	CIVILIZED_BORDER_APPEARANCE_COLOUR(
