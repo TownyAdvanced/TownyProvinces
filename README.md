@@ -47,7 +47,7 @@
 ## :arrow_forward: Admin Full Guide
 1. Assess suitability for map:
    - TownyProvinces currently works best on "non-historical" maps (such as procedurally generated Minecraft maps).
-   - In contrast, townyProvinces sometimes does not work as well on "Historical" maps, such as "Earth". The main reason is because players on those maps often seek to build in historical locations, and province lines can cut through some of these locations. A feature is under way to preserve historical city areas, but is is unclear if it wil be sufficient for conservative players.
+   - At this time, townyProvinces does not work as well on "Historical" maps, such as "Earth". The main reason is because players on those maps often seek to build in historical locations, and province lines can cut through some of these locations. A feature is under way to preserve historical city areas, but is is unclear if it wil be sufficient for conservative players.
 2. Assess suitability for playerbase:
     - The main benefit of TownyProvinces is for you, the server owner/staff, because it will reduce both your workload relating to claiming/overclaiming, and the toxicity you have to deal with on your server.
     - If you have a mature playerbase, they will easily understand this, however if you have a lot of younger players, you can expect them to struggle to understand why the benefit of improving your life is worth the cost of slightly curtailing their freedoms.
