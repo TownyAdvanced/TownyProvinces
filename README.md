@@ -25,7 +25,7 @@
 
 ## :floppy_disk: Installation Guide
 1. Ensure your server has *Towny 0.99.1.0* or newer.
-2. If possible, ensure your server has *Dynmap*.
+2. Ensure you have a map-display plugin: Either *Pl3xmap* or *Dynmap*.
 3. Download the *TownyProvinces* plugin jar file from [here](https://github.com/TownyAdvanced/TownyProvinces/releases), and drop it into your server plugins folder.
 4. Stop your server.
 5. Start your server with plenty of memory (*especially for big maps*).
