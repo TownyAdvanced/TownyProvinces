@@ -9,7 +9,12 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -237,6 +242,36 @@ public class TownyProvincesSettings {
 
 	public static double getBiomeCostAdjustmentsHotLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_HOT_LAND); }
 	public static double getBiomeCostAdjustmentsColdLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_COLD_LAND); }
+	
+	public static @Nullable BufferedImage getTownCostsIcon() {
+		URL imageURL;
+		try {
+			imageURL = new URL(Settings.getString(ConfigNodes.TOWN_COSTS_ICON_URL));
+			return ImageIO.read(imageURL);
+		} catch (MalformedURLException e) {
+			TownyProvinces.severe("Error: Invalid Town Costs Icon URL in configuration file.");
+			return null;
+		} catch (IOException e) {
+			TownyProvinces.severe("Error: Failed to load Town Costs Icon from URL provided in configuration file.");
+			return null;
+		}
+	}
+	
+	public static int getTownCostsIconWidth() { return Settings.getInt(ConfigNodes.TOWN_COSTS_ICON_WIDTH); }
+	
+	public static int getTownCostsIconHeight() { return Settings.getInt(ConfigNodes.TOWN_COSTS_ICON_HEIGHT); }
+
+	public static boolean getDynmapUsesTownCostsIcon() { return Settings.getBoolean(ConfigNodes.DYNMAP_USE_TOWN_COSTS_ICON); }
+
+	public static int getPl3xMapProvincesLayerPriority() { return Settings.getInt(ConfigNodes.PL3XMAP_PROVINCES_LAYER_PRIORITY); }
+
+	public static int getPl3xMapProvincesLayerZIndex() { return Settings.getInt(ConfigNodes.PL3XMAP_PROVINCES_LAYER_ZINDEX); }
+
+	public static boolean getPl3xMapProvincesLayerIsToggleable() { return Settings.getBoolean(ConfigNodes.PL3XMAP_PROVINCES_LAYER_TOGGLEABLE); }
+
+	public static int getPl3xMapTownCostsLayerPriority() { return Settings.getInt(ConfigNodes.PL3XMAP_TOWN_COSTS_LAYER_PRIORITY); }
+
+	public static int getPl3xMapTownCostsLayerZIndex() { return Settings.getInt(ConfigNodes.PL3XMAP_TOWN_COSTS_LAYER_ZINDEX); }
 
 	public static boolean getSeaProvinceOutpostsAllowed() {
 		return Settings.getBoolean(ConfigNodes.SEA_OUTPOSTS_ALLOWED);

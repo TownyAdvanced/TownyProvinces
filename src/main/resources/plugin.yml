@@ -6,7 +6,7 @@ author: Goosius
 website: 'http://townyadvanced.github.io'
 prefix: ${project.artifactId}
 depend: [Towny]
-softdepend: [dynmap]
+softdepend: [dynmap, Pl3xMap]
 
 description: Automatically divides the map up into one-town-only provinces, reducing staff workload and server toxicity.
 

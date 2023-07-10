@@ -1,11 +1,10 @@
 package io.github.townyadvanced.townyprovinces.jobs.province_generation;
 
-import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.jobs.dynmap_display.DynmapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
@@ -47,14 +46,14 @@ public class RegenerateRegionTask extends BukkitRunnable {
 			TownyProvinces.info("Regeneration Job: Acquiring land validation lock");
 			synchronized (TownyProvinces.LAND_VALIDATION_LOCK) {
 				TownyProvinces.info("Regeneration Job: Land Validation lock acquired");
-				TownyProvinces.info("Regeneration Job: Acquiring dynmap display lock");
-				synchronized (TownyProvinces.DYNMAP_DISPLAY_LOCK) {
-					TownyProvinces.info("Regeneration Job: Dynmap display lock acquired");
+				TownyProvinces.info("Regeneration Job: Acquiring map display lock");
+				synchronized (TownyProvinces.MAP_DISPLAY_LOCK) {
+					TownyProvinces.info("Regeneration Job: Map display lock acquired");
 					executeRegionRegenerationJob();
 				}
 			}
 		} finally {
-			TownyProvinces.info("Regeneration Job: Dynmap display lock released");
+			TownyProvinces.info("Regeneration Job: Map display lock released");
 			RegenerateRegionTaskController.endTask();
 			TownyProvinces.info("Regeneration Job Completed");
 		}
@@ -86,9 +85,9 @@ public class RegenerateRegionTask extends BukkitRunnable {
 		}
 		//Recalculated all prices
 		recalculateProvincePrices();
-		//Save data and request full dynmap refresh
+		//Save data and request full map refresh
 		DataHandlerUtil.saveAllData();
-		DynmapDisplayTaskController.requestFullMapRefresh();
+		MapDisplayTaskController.requestFullMapRefresh();
 		//Messaging
 		if(regionName.equalsIgnoreCase("ALL")) {
 			TownyProvinces.info(Translatable.of("msg_successfully_regenerated_all_regions").translate(Locale.ROOT));

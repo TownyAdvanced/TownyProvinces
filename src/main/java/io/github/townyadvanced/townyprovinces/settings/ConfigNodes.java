@@ -168,7 +168,95 @@ public enum ConfigNodes {
 		"province_types.wasteland.border_appearance.color",
 		"e60909",
 		"",
-		"# This value, in hex format, determines the color of the border.");
+		"# This value, in hex format, determines the color of the border."),
+	MAP_INTEGRATION(
+		"map_integration",
+		"",
+		"",
+		"",
+		"############################################################",
+		"# +------------------------------------------------------+ #",
+		"# |                MAP PLUGIN INTEGRATION                | #",
+		"# +------------------------------------------------------+ #",
+		"############################################################",
+		""),
+	TOWN_COSTS_ICON(
+		"map_integration.town_costs_icon",
+		"",
+		""),
+	TOWN_COSTS_ICON_URL(
+		"map_integration.town_costs_icon.url",
+		"https://cdn-icons-png.flaticon.com/512/9729/9729309.png",
+		"",
+		"# Icon for the town costs. This must be a valid image URL.",
+		"# Default coin icon created by Md Tanvirul Haque - Flaticon",
+		"# https://www.flaticon.com/free-icon/dollar_9729309"),
+	TOWN_COSTS_ICON_HEIGHT(
+		"map_integration.town_costs_icon.height",
+		"35",
+		"",
+		"# Height in pixels for the town costs icon to be displayed as."),
+	TOWN_COSTS_ICON_WIDTH(
+		"map_integration.town_costs_icon.width",
+		"35",
+		"",
+		"# Width in pixels for the town costs icon to be displayed as."),
+	DYNMAP(
+		"map_integration.dynmap",
+		"",
+		"",
+		"",
+		"# +------------------------------------------------------+ #",
+		"# |                        DYNMAP                        | #",
+		"# +------------------------------------------------------+ #",
+		""),
+	DYNMAP_USE_TOWN_COSTS_ICON(
+		"map_integration.dynmap.use_town_costs_icon",
+		"false",
+		"",
+		"# Toggle whether Dynmap should use your specified town_costs_icon, or an inbuilt Dynmap icon."),
+	PL3XMAP(
+		"map_integration.pl3xmap",
+		"",
+		"",
+		"",
+		"# +------------------------------------------------------+ #",
+		"# |                        PL3XMAP                       | #",
+		"# +------------------------------------------------------+ #",
+		""),
+	PL3XMAP_PROVINCES_LAYER(
+		"map_integration.pl3xmap.provinces_layer",
+		"",
+		""),
+	PL3XMAP_PROVINCES_LAYER_PRIORITY(
+		"map_integration.pl3xmap.provinces_layer.priority",
+		"6",
+		"",
+		"# You do not need to change this unless other map addons conflict with the provinces layer."),
+	PL3XMAP_PROVINCES_LAYER_ZINDEX(
+		"map_integration.pl3xmap.provinces_layer.zindex",
+		"250",
+		"",
+		"# You can decrease this value to blend the provinces layer with the map more."),
+	PL3XMAP_PROVINCES_LAYER_TOGGLEABLE(
+		"map_integration.pl3xmap.provinces_layer.toggleable",
+		"true",
+		"",
+		"# Set to false to disallow users from toggling the provinces layer."),
+	PL3XMAP_TOWN_COSTS_LAYER(
+		"map_integration.pl3xmap.town_costs_layer",
+		"",
+		""),
+	PL3XMAP_TOWN_COSTS_LAYER_PRIORITY(
+		"map_integration.pl3xmap.town_costs_layer.priority",
+		"6",
+		"",
+		"# You do not need to change this unless other map addons conflict with the town costs layer."),
+	PL3XMAP_TOWN_COSTS_LAYER_ZINDEX(
+		"map_integration.pl3xmap.town_costs_layer.zindex",
+		"250",
+		"",
+		"# You can decrease this value to blend the town costs layer with the map more.");
 
 	private final String Root;
 	private final String Default;

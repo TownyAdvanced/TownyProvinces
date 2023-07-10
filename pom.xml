@@ -27,6 +27,10 @@
           <id>dynmap-repo</id>
           <url>https://repo.mikeprimm.com/</url>
       </repository>
+      <repository>
+          <id>Modrinth</id>
+          <url>https://api.modrinth.com/maven</url>
+      </repository>
   </repositories>
 
   <dependencies>
@@ -54,6 +58,12 @@
           <groupId>us.dynmap</groupId>
           <artifactId>dynmap-api</artifactId>
           <version>3.0-SNAPSHOT</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>maven.modrinth</groupId>
+          <artifactId>pl3xmap</artifactId>
+          <version>1.20.1-468</version>
           <scope>provided</scope>
       </dependency>
   </dependencies>
