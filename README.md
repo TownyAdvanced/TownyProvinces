@@ -5,7 +5,7 @@
   
 ## :gift: Features
 - :globe_with_meridians: **Divides The Map Automatically into Provinces:**
-  - :tophat: Civilised Provinces: 1 town only, no outposts allowed.
+  - :tophat: Civilised Provinces: 1 town only, no foreign outposts allowed.
   - :ocean: Sea Provinces: No towns, outposts allowed
   - :fire: Wasteland Provinces: No towns, outposts allowed
 
@@ -45,9 +45,7 @@
 - `tpra region [newtowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk new-town-cost for a region.
 - `tpra region [upkeeptowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk upkeep-town-cost for a region.
 - `tpra landvalidationjob [status|start|stop|restart|pause]` -> Control the land validation job.
-  - This Job does 2 things:
-    - 1. Assesses and records the Biome proportions in each province. These proportions affect the new/upkeep prices.
-    - 2. Assigns each province as either "land" or "Sea", depending on the biome results.
+  - This Job assigns a type to each provinces, either Civilized, Sea, or Wasteland. It also Assesses and records the Biome proportions in each province. These proportions affect the new/upkeep prices.
   - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below command.* 
 - `tpra province settype [civilized|sea|wasteland] [<x>,<z>]` -> Set the type of a province.
 - `tpra province settype [civilized|sea|wasteland] [<x1>,<z1>] [<2x>,<z2>]` -> Set the type of all provinces in a rectangular area.
