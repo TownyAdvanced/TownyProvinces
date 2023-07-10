@@ -234,36 +234,7 @@ public class TownyProvincesSettings {
 			return false;
 		}
 	}
-
-	public static boolean isRoadsEnabled() {
-		return Settings.getBoolean(ConfigNodes.ROADS_ENABLED);
-	}
-
-	public static boolean isPortsEnabled() {
-		return Settings.getBoolean(ConfigNodes.PORTS_ENABLED);
-	}
-
-	public static double getPortsPurchasePrice() {
-		return Settings.getDouble(ConfigNodes.PORTS_PURCHASE_PRICE);
-	}
-
-	public static double getPortsUpkeepCost() {
-		return Settings.getDouble(ConfigNodes.PORTS_UPKEEP_COST);
-	}
-	public static boolean isJumpNodesEnabled() {
-		return Settings.getBoolean(ConfigNodes.JUMP_NODES_ENABLED);
-	}
-
-	public static double getJumpNodesPurchasePrice() {
-		return Settings.getDouble(ConfigNodes.JUMP_NODES_PURCHASE_PRICE);
-	}
-
-	public static double getJumpNodesUpkeepCost() {
-		return Settings.getDouble(ConfigNodes.JUMP_NODES_UPKEEP_COST);
-	}
 	
-	public static double getPortsMaxFastTravelRange() { return Settings.getDouble(ConfigNodes.PORTS_MAX_FAST_TRAVEL_RANGE); }
-
 	public static boolean isBiomeCostAdjustmentsEnabled() {
 		return Settings.getBoolean(ConfigNodes.BIOME_COST_ADJUSTMENTS_ENABLED);
 	}
