@@ -80,7 +80,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 		homeBlocksLayer = createLayer("townyprovinces.layer.homeblocks", name, true, 
 			TownyProvincesSettings.getPl3xMapTownCostsLayerPriority(),
 			TownyProvincesSettings.getPl3xMapTownCostsLayerZIndex(),
-			TownyProvincesSettings.getPl3xMapTownCostsLayerIsToggleable());
+			true);
 	}
 
 	private void addProvinceBordersLayer() {

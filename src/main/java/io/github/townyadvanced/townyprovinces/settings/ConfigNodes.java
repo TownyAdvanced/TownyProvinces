@@ -256,12 +256,7 @@ public enum ConfigNodes {
 		"map_integration.pl3xmap.town_costs_layer.zindex",
 		"250",
 		"",
-		"# You can decrease this value to blend the town costs layer with the map more."),
-	PL3XMAP_TOWN_COSTS_LAYER_TOGGLEABLE(
-		"map_integration.pl3xmap.town_costs_layer.toggleable",
-		"true",
-		"",
-		"# Set to false to disallow users from toggling the town costs layer.");
+		"# You can decrease this value to blend the town costs layer with the map more.");
 
 	private final String Root;
 	private final String Default;

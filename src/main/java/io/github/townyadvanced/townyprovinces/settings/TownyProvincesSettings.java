@@ -273,8 +273,6 @@ public class TownyProvincesSettings {
 
 	public static int getPl3xMapTownCostsLayerZIndex() { return Settings.getInt(ConfigNodes.PL3XMAP_TOWN_COSTS_LAYER_ZINDEX); }
 
-	public static boolean getPl3xMapTownCostsLayerIsToggleable() { return Settings.getBoolean(ConfigNodes.PL3XMAP_TOWN_COSTS_LAYER_TOGGLEABLE); }
-
 	public static boolean getSeaProvinceOutpostsAllowed() {
 		return Settings.getBoolean(ConfigNodes.SEA_OUTPOSTS_ALLOWED);
 	}
