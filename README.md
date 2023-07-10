@@ -72,8 +72,7 @@
   
 
 ## :eight_spoked_asterisk: Region Definitions Guide
-
-4. To fully understand how to configure your region definition files, you must understand how provinces are generated:
+To fully understand how to configure your region definition files, you must understand how provinces are generated:
    * **STEP 1:** "Claim Brushes" are created and placed in the given region
      * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/1770c063-8cc2-453e-9b91-e169fd0bb5d5)
    * **STEP 2:** Each claim brush then moves in a random direction
