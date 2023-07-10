@@ -1,15 +1,5 @@
 package io.github.townyadvanced.townyprovinces.jobs.map_display;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
-import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import net.pl3x.map.core.Pl3xMap;
-import net.pl3x.map.core.image.IconImage;
-import org.dynmap.DynmapAPI;
-import org.dynmap.markers.MarkerIcon;
-
-import javax.imageio.ImageIO;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
