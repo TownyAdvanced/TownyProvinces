@@ -52,9 +52,11 @@
     - The main benefit of TownyProvinces is for you, the server owner/staff, because it will reduce both your workload relating to claiming/overclaiming, and the toxicity you have to deal with on your server.
     - If you have a mature playerbase, they will easily understand this, however if you have a lot of younger players, you can expect them to struggle to understand why the benefit of improving your life is worth the cost of slightly curtailing their freedoms.
 3. Be aware of known technical issues:
+    - TownyProvinces does not yet support multiple Worlds (*so for example, you can't have provinces in the Nether*). A fix is ticketed.
+    - The Hexagonal dynmap view does not look right. A fix is ticketed.
     - On very large maps. TownyProvinces tends to "sit" on plenty of memory. A fix is in development.
     - On provinces bordering 2 regions, the price can sometimes be too high. A fix is in development. As a workaround, edit the affected province files then run `tpra reload`.
-4. Configure
+5. Configure
    - Configure as many region definition files as you want, in /region_definitions.
    - Region definition files are evaluated in alpha-numeric order.
    - The first region definition file should be the size of the entire map.
@@ -69,7 +71,6 @@
   - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below command.* 
 - `tpra province settype [civilized|sea|wasteland] [<x>,<z>]` -> Set the type of a province.
 - `tpra province settype [civilized|sea|wasteland] [<x1>,<z1>] [<2x>,<z2>]` -> Set the type of all provinces in a rectangular area.
-  
 
 ## :eight_spoked_asterisk: Region Definitions Guide
 To fully understand how to configure your region definition files, you must understand how provinces are generated:
