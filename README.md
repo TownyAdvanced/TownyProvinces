@@ -39,7 +39,27 @@
 - :tent: Outposts:
   - Outposts can be placed in Sea and Wasteland provinces.
   - Outposts can be expanded, however each town can have a maximum of 8 townblocks per foreign province.
-  
+
+## :fast_forward: Admin Quick-Start Guide
+1. Run `tpra region regenerate all`. This will generate 2 small sample regions.
+2. To see the generated provinces, view your website-map. 
+
+## :arrow_forward: Admin Full Guide
+1. Assess suitability for map:
+   - TownyProvinces currently works best on "non-historical" maps (such as procedurally generated Minecraft maps).
+   - In contrast, townyProvinces sometimes does not work as well on "Historical" maps, such as "Earth". The main reason is because players on those maps often seek to build in historical locations, and province lines can cut through some of these locations. A feature is under way to preserve historical city areas, but is is unclear if it wil be sufficient for conservative players.
+2. Assess suitability for playerbase:
+    - The main benefit of TownyProvinces is for you, the server owner/staff, because it will reduce both your workload relating to claiming/overclaiming, and the toxicity you have to deal with on your server.
+    - If you have a mature playerbase, they will easily understand this, however if you have a lot of younger players, you can expect them to struggle to understand why the benefit of improving your life is worth the cost of slightly curtailing their freedoms.
+3. Be aware of known technical issues:
+    - On very large maps. TownyProvinces tends to "sit" on plenty of memory. A fix is in development.
+    - On provinces bordering 2 regions, the price can sometimes be too high. A fix is in development. As a workaround, edit the affected province files then run `tpra reload`.
+4. Configure
+   - Configure as many region definition files as you want, in /region_definitions.
+   - Region definition files are evaluated in alpha-numeric order.
+   - The first region definition file should be the size of the entire map.
+   - After you have generated your regions, run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, and adjust prices accordingly. It will also set each province type, as either Civilized, Sea, or Wasteland . Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
+   - After the Land Validation Job runs, expect to tweak a few regions for type and pricing.
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
 - `tpra region [newtowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk new-town-cost for a region.
@@ -50,15 +70,9 @@
 - `tpra province settype [civilized|sea|wasteland] [<x>,<z>]` -> Set the type of a province.
 - `tpra province settype [civilized|sea|wasteland] [<x1>,<z1>] [<2x>,<z2>]` -> Set the type of all provinces in a rectangular area.
   
-## :fast_forward: Quick-Start Guide
-1. Run `tpra region regenerate all`. This will generate 2 small sample regions.
-2. Run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, and adjust prices accordingly. It will also set each province type, as either Civilized, Sea, or Wasteland . Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
-3. To see the generated provinces, view your website-map. 
 
 ## :eight_spoked_asterisk: Region Definitions Guide
-1. Configure as many region definition files as you want, in /region_definitions.
-2. Region definition files are evaluated in alpha-numeric order.
-3. The first region definition file should be the size of the entire map.
+
 4. To fully understand how to configure your region definition files, you must understand how provinces are generated:
    * **STEP 1:** "Claim Brushes" are created and placed in the given region
      * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/1770c063-8cc2-453e-9b91-e169fd0bb5d5)
