@@ -112,6 +112,7 @@ public class FileUtil {
 				fileEntries.add("max_brush_moves: 100");
 				fileEntries.add("new_town_cost_per_chunk: 7.2");
 				fileEntries.add("upkeep_town_cost_per_chunk: 0.72");
+				fileEntries.add("protected_locations: london,-2,-1172|paris,37,-1090|rome,282,-952");
 				folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(FileUtil.REGION_DEFINITIONS_FOLDER_PATH).toString();
 				filePath = folderPath + "/" + fileName;
 				saveListIntoFile(fileEntries, filePath);
