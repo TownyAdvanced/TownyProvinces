@@ -1,11 +1,14 @@
 package io.github.townyadvanced.townyprovinces.data;
 
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Coord;
+import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.ProvinceType;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
@@ -253,5 +256,60 @@ public class TownyProvincesDataHolder {
 			}
 		}
 		return result;
+	}
+
+	public HashMap<Province, Town> getProvinceTownHashMap() {
+		HashMap<Province, Town> result = new HashMap<>();
+		{
+			Province province;
+			for (Town town : TownyAPI.getInstance().getTowns()) {
+				if (!town.hasHomeBlock()) {
+					continue;
+				}
+				province = TownyProvincesDataHolder.getInstance().getProvinceAtWorldCoord(town.getHomeBlockOrNull().getWorldCoord());
+				if (province == null) {
+					continue;
+				}
+				result.put(province, town);
+			}
+		}
+	return result;
+	}
+
+	public void recalculateProvinceMapStyles() {
+		Nation nation;
+		HashMap<Province, Town> provinceTownHashMap = TownyProvincesDataHolder.getInstance().getProvinceTownHashMap();
+		if(TownyProvincesSettings.isMapNationColorsEnabled()) {
+			for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+				//Determine fill colour
+				if (province.getType() == ProvinceType.CIVILIZED) {
+					//Civilized
+					if (provinceTownHashMap.containsKey(province)) {
+						//Town present
+						nation = provinceTownHashMap.get(province).getNationOrNull();
+						if (nation == null) {
+							province.setFillOpacity(0);
+							province.setFillColour(0);
+						} else {
+							province.setFillOpacity(TownyProvincesSettings.getMapNationColorsOpacity());
+							province.setFillColour(Integer.parseInt(nation.getMapColorHexCode(), 16));
+						}
+					} else {
+						//No town present
+						province.setFillOpacity(0);
+						province.setFillColour(0);
+					}
+				} else {
+					//Sea or wasteland
+					province.setFillOpacity(0);
+					province.setFillColour(0);
+				}
+			}
+		} else {
+			for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+				province.setFillOpacity(0);
+				province.setFillColour(0);
+			}
+		}
 	}
 }

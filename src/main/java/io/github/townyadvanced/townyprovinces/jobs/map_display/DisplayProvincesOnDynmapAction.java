@@ -1,6 +1,5 @@
 package io.github.townyadvanced.townyprovinces.jobs.map_display;
 
-import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
@@ -250,76 +249,24 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		boolean unknown2 = false;
 
 		//Draw border line
-		AreaMarker areaMarker = bordersMarkerSet.createAreaMarker(
+		bordersMarkerSet.createAreaMarker(
 			markerId, null, unknown, worldName,
 			xPoints, zPoints, unknown2);
 	}
 	
-	protected void setProvinceStyles() {
-		//Construct province-town hash map
-		HashMap<Province, Town> provinceTownHashMap = new HashMap<>();
-		{
-			Province province;
-			for (Town town : TownyAPI.getInstance().getTowns()) {
-				if (!town.hasHomeBlock()) {
-					continue;
-				}
-				province = TownyProvincesDataHolder.getInstance().getProvinceAtWorldCoord(town.getHomeBlockOrNull().getWorldCoord());
-				if (province == null) {
-					continue;
-				}
-				provinceTownHashMap.put(province, town);
-			}
-		}
-
-		//Convenience Vars
-		AreaMarker areaMarker;
-		Nation nation;
-		double targetFillOpacity;
-		int targetFillColour;
-		int targetBorderColour;
-		int targetBborderWeight;
-		double targetBborderOpacity;
-
+	protected void setProvinceMapStyles() {
 		//Cycle provinces
+		AreaMarker areaMarker;
 		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			if(province.getType() == ProvinceType.CIVILIZED) {
-				//Civilized
-				if(provinceTownHashMap.containsKey(province)) {
-					//Town present
-					nation = provinceTownHashMap.get(province).getNationOrNull();
-					if(nation == null) {
-						targetFillOpacity = 0;
-						targetFillColour = 0;
-					} else {
-						targetFillOpacity = 0.20;;
-						targetFillColour = Integer.parseInt(nation.getMapColorHexCode(),16);
-					}
-				} else {
-					//No town present
-					targetFillOpacity = 0;
-					targetFillColour = 0;
-				}
-			} else {
-				//Sea or wasteland
-				targetFillOpacity = 0;
-				targetFillColour = 0;
-			}
-			
-			//Set fill colour if needed
-			areaMarker = bordersMarkerSet.findAreaMarker(province.getId());
-			if(areaMarker.getFillOpacity() != targetFillOpacity || areaMarker.getFillColor() != targetFillColour) {
-				areaMarker.setFillStyle(targetFillOpacity, targetFillColour);
-			}
-
 			//Set border colour if needed
-			targetBorderColour = province.getType().getBorderColour();
-			if(areaMarker.getLineColor() != targetBorderColour) {
-				targetBborderWeight = province.getType().getBorderWeight();
-				targetBborderOpacity = province.getType().getBorderOpacity();
-				areaMarker.setLineStyle(targetBborderWeight, targetBborderOpacity, targetBorderColour);
+			areaMarker = bordersMarkerSet.findAreaMarker(province.getId());
+			if(areaMarker.getLineColor() != province.getType().getBorderColour()) {
+				areaMarker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
 			}
-
+			//Set fill colour if needed
+			if(areaMarker.getFillOpacity() != province.getFillOpacity() || areaMarker.getFillColor() != province.getFillColour()) {
+				areaMarker.setFillStyle(province.getFillOpacity(), province.getFillColour());
+			}
 		}
 	}
 }

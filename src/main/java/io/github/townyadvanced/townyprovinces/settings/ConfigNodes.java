@@ -180,27 +180,58 @@ public enum ConfigNodes {
 		"# +------------------------------------------------------+ #",
 		"############################################################",
 		""),
+	MAP_REFRESH_PERIOD_MILLISECONDS(
+		"map_integration.refresh_period_seconds",
+		"60",
+		"",
+		"# The period between map refreshes.",
+		"# A high value is softer on your CPU.",
+		"# A low value means quicker map changes in response to things like province type or nation-color changes"),
 	TOWN_COSTS_ICON(
 		"map_integration.town_costs_icon",
 		"",
+		"",
+		"",
+		"# +------------------------------------------------------+ #",
+		"# |                  TOWN COSTS ICON                     | #",
+		"# +------------------------------------------------------+ #",
 		""),
-	TOWN_COSTS_ICON_URL(
+	MAP_TOWN_COSTS_ICON_URL(
 		"map_integration.town_costs_icon.url",
 		"https://cdn-icons-png.flaticon.com/512/9729/9729309.png",
 		"",
 		"# Icon for the town costs. This must be a valid image URL.",
 		"# Default coin icon created by Md Tanvirul Haque - Flaticon",
 		"# https://www.flaticon.com/free-icon/dollar_9729309"),
-	TOWN_COSTS_ICON_HEIGHT(
+	MAP_TOWN_COSTS_ICON_HEIGHT(
 		"map_integration.town_costs_icon.height",
 		"35",
 		"",
 		"# Height in pixels for the town costs icon to be displayed as."),
-	TOWN_COSTS_ICON_WIDTH(
+	MAP_TOWN_COSTS_ICON_WIDTH(
 		"map_integration.town_costs_icon.width",
 		"35",
 		"",
 		"# Width in pixels for the town costs icon to be displayed as."),
+	MAP_NATION_COLOURS(
+		"map_integration.nation_colors",
+		"",
+		"",
+		"",
+		"# +------------------------------------------------------+ #",
+		"# |                   NATION COLORS                      | #",
+		"# +------------------------------------------------------+ #",
+		""),
+	MAP_NATION_COLOURS_ENABLED(
+		"map_integration.province_nation_colors.enabled",
+		"true",
+		"",
+		"# If this value is true, then a province containing a nation-town, gets filled with the map-color of that nation."),
+	MAP_NATION_COLOURS_OPACITY(
+		"map_integration.province_nation_colors.opacity",
+		"0.2",
+		"",
+		"# This value determines the opacity of the province nation color."),
 	DYNMAP(
 		"map_integration.dynmap",
 		"",

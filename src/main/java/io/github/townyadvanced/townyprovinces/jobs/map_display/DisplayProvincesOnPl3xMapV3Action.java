@@ -191,13 +191,16 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 		} else {
 			if (polyLineMarker.getOptions() == null) {
 				TownyProvinces.severe("WARNING: Marker options are null for province border marker " + markerId + ".");
+				return;
 			}
 			if (polyLineMarker.getOptions().getStroke() == null) {
 				TownyProvinces.severe("WARNING: Marker stroke is null for province border marker " + markerId + ".");
+				return;
 			}
 			Stroke stroke = polyLineMarker.getOptions().getStroke();
 			if (stroke.getColor() == null) {
 				TownyProvinces.severe("WARNING: Marker stroke color is null for province border marker " + markerId + ".");
+				return;
 			}
 			//Re-evaluate colour
 			if (!stroke.getColor().equals(borderColour)) {
@@ -285,6 +288,54 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 		bordersLayer.addMarker(new Polygon(markerId, polyLine).setOptions(markerOptions));
 	}
 
-	protected void setProvinceStyles() {
+	protected void setProvinceMapStyles() {
+		int requiredBorderColour;
+		int requiredBorderWeight;
+		int requiredFillColour;
+		Stroke stroke;
+		Fill fill;
+		String markerId;
+		//Cycle provinces
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+			//Set styles if needed
+			markerId = province.getId();
+			Marker<?> polyLineMarker = bordersLayer.registeredMarkers().get(markerId);
+			if (polyLineMarker.getOptions() == null) {
+				TownyProvinces.severe("WARNING: Marker options are null for province border marker " + markerId + ".");
+				continue;
+			}
+			if (polyLineMarker.getOptions().getStroke() == null) {
+				TownyProvinces.severe("WARNING: Marker stroke is null for province border marker " + markerId + ".");
+				continue;
+			}
+			stroke = polyLineMarker.getOptions().getStroke();
+			if (stroke.getColor() == null) {
+				TownyProvinces.severe("WARNING: Marker stroke color is null for province border marker " + markerId + ".");
+				continue;
+			}
+			fill = polyLineMarker.getOptions().getFill();
+			if (fill == null) {
+				TownyProvinces.severe("WARNING: Marker fill is null for province border marker " + markerId + ".");
+				continue;
+			}
+			if (fill.getColor() == null) {
+				TownyProvinces.severe("WARNING: Marker fill color is null for province border marker " + markerId + ".");
+				continue;
+			}
+			//Set border colour if needed
+			requiredBorderColour = province.getType().getBorderColour() +
+				(int) (255 * province.getType().getBorderOpacity()) << 24;
+			requiredBorderWeight = province.getType().getBorderWeight();
+			if (stroke.getColor() != requiredBorderColour) {
+				stroke.setColor(requiredBorderColour);
+				stroke.setWeight(requiredBorderWeight);
+			}
+			//Set fill colour if needed
+			requiredFillColour = province.getFillColour() +
+				(int) (255 * province.getFillOpacity()) << 24;
+			if (fill.getColor() != requiredFillColour) {
+				fill.setColor(requiredFillColour);
+			}
+		}
 	}
 }

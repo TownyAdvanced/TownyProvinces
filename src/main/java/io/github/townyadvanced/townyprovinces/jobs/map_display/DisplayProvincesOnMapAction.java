@@ -32,11 +32,13 @@ public abstract class DisplayProvincesOnMapAction {
 				t.printStackTrace();
 			}
 		}
-		//Re-evaluate province fill colours
-		setProvinceStyles();
+		//Recalculate province map styles
+		TownyProvincesDataHolder.getInstance().recalculateProvinceMapStyles();
+		//Set province map styles
+		setProvinceMapStyles();
 	}
 	
-	abstract protected void setProvinceStyles();
+	abstract protected void setProvinceMapStyles();
 	
 	abstract protected void drawProvinceBorder(Province province);
 
