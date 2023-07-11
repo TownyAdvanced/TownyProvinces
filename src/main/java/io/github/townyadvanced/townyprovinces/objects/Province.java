@@ -1,5 +1,7 @@
 package io.github.townyadvanced.townyprovinces.objects;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Town;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -14,6 +16,8 @@ public class Province {
 	private double upkeepTownCost;  //The base cost, not adjusted by biome
 	private ProvinceType type;  //Civilized, Sea, Wasteland
 	private final String id; //convenience variable. In memory only. Used for dynmap and file operations
+	private double fillOpacity; //Convenience Var, in memory only
+	private int fillColour; //Convenience Var, in memory only
 	private boolean landValidationRequested;
 	private double estimatedProportionOfGoodLand;
 	private double estimatedProportionOfWater;
@@ -32,6 +36,8 @@ public class Province {
 		this.newTownCost = 0;
 		this.upkeepTownCost = 0;
 		this.id = "province_x" + homeBlock.getX() + "_z_" + homeBlock.getZ();
+		this.fillOpacity = 0;
+		this.fillColour = 0;
 		this.landValidationRequested = false;
 		this.estimatedProportionOfGoodLand = 1;
 		this.estimatedProportionOfWater = 0;
@@ -135,6 +141,34 @@ public class Province {
 
 	public void setEstimatedProportionOfColdLand(double estimatedProportionOfColdLand) {
 		this.estimatedProportionOfColdLand = estimatedProportionOfColdLand;
+	}
+
+	public Town getTownOrNull() {
+		for(Town town: TownyAPI.getInstance().getTowns()) {
+			if(town.hasHomeBlock()) {
+				Province province = TownyProvincesDataHolder.getInstance().getProvinceAtWorldCoord(town.getHomeBlockOrNull().getWorldCoord());
+				if(province == this) {
+					return town;
+				}
+			}
+		}
+		return null;
+	}
+
+	public double getFillOpacity() {
+		return fillOpacity;
+	}
+
+	public void setFillOpacity(double fillOpacity) {
+		this.fillOpacity = fillOpacity;
+	}
+
+	public int getFillColour() {
+		return fillColour;
+	}
+
+	public void setFillColour(int fillColour) {
+		this.fillColour = fillColour;
 	}
 }
  

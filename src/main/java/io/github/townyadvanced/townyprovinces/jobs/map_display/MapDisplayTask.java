@@ -20,13 +20,13 @@ public class MapDisplayTask extends BukkitRunnable {
 			}
 			synchronized (TownyProvinces.MAP_DISPLAY_LOCK) {
 				for (DisplayProvincesOnMapAction mapDisplayAction : MapDisplayTaskController.getMapDisplayActions()) {
-					mapDisplayAction.executeAction(MapDisplayTaskController.getBordersRefreshRequested(), MapDisplayTaskController.getHomeBlocksRefreshRequested());
+					mapDisplayAction.executeAction(MapDisplayTaskController.getFullProvinceColoursRefreshRequested(), MapDisplayTaskController.getFullHomeBlockIconsRefreshRequest());
 				}
 			}
 		} finally {
 			//Reset refresh flags
-			MapDisplayTaskController.setBordersRefreshRequested(false);
-			MapDisplayTaskController.setHomeBlocksRefreshRequested(false);
+			MapDisplayTaskController.setFullProvinceColoursRefreshRequested(false);
+			MapDisplayTaskController.setFullHomeBlockIconsRefreshRequest(false);
 			jobRunning = false;
 		}
 	}

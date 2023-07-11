@@ -6,7 +6,6 @@ import io.github.townyadvanced.townyprovinces.jobs.province_generation.Regenerat
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
-import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.TownyProvincesMathUtil;
 
 import java.util.ArrayList;
@@ -33,7 +32,13 @@ public abstract class DisplayProvincesOnMapAction {
 				t.printStackTrace();
 			}
 		}
+		//Recalculate province map styles
+		TownyProvincesDataHolder.getInstance().recalculateProvinceMapStyles();
+		//Set province map styles
+		setProvinceMapStyles();
 	}
+	
+	abstract protected void setProvinceMapStyles();
 	
 	abstract protected void drawProvinceBorder(Province province);
 
@@ -100,22 +105,5 @@ public abstract class DisplayProvincesOnMapAction {
 		}
 		freeCoord.setValues(pullStrengthX,pullStrengthZ);
 	}
-
-	////////////////////////// DEBUG SECTION ////////////////////////
-
-
-
-	protected void debugDrawProvinceChunks(Province province ){
-		String worldName = TownyProvincesSettings.getWorldName();
-		for(TPCoord tpCoord: TownyProvincesDataHolder.getInstance().getListOfCoordsInProvince(province)) {
-			debugDrawChunk(tpCoord, province, worldName);
-		}
-	}
-
-
-	//Shows all borders. But not for production
-	abstract protected void debugDrawProvinceBorders();
-
-	abstract protected void debugDrawChunk(TPCoord coord, Province province, String worldName);
 	
 }

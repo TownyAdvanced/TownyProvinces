@@ -246,7 +246,7 @@ public class TownyProvincesSettings {
 	public static @Nullable BufferedImage getTownCostsIcon() {
 		URL imageURL;
 		try {
-			imageURL = new URL(Settings.getString(ConfigNodes.TOWN_COSTS_ICON_URL));
+			imageURL = new URL(Settings.getString(ConfigNodes.MAP_TOWN_COSTS_ICON_URL));
 			return ImageIO.read(imageURL);
 		} catch (MalformedURLException e) {
 			TownyProvinces.severe("Error: Invalid Town Costs Icon URL in configuration file.");
@@ -257,9 +257,9 @@ public class TownyProvincesSettings {
 		}
 	}
 	
-	public static int getTownCostsIconWidth() { return Settings.getInt(ConfigNodes.TOWN_COSTS_ICON_WIDTH); }
+	public static int getTownCostsIconWidth() { return Settings.getInt(ConfigNodes.MAP_TOWN_COSTS_ICON_WIDTH); }
 	
-	public static int getTownCostsIconHeight() { return Settings.getInt(ConfigNodes.TOWN_COSTS_ICON_HEIGHT); }
+	public static int getTownCostsIconHeight() { return Settings.getInt(ConfigNodes.MAP_TOWN_COSTS_ICON_HEIGHT); }
 
 	public static boolean getDynmapUsesTownCostsIcon() { return Settings.getBoolean(ConfigNodes.DYNMAP_USE_TOWN_COSTS_ICON); }
 
@@ -285,4 +285,16 @@ public class TownyProvincesSettings {
 		return Settings.getInt(ConfigNodes.MAX_NUM_TOWNBLOCKS_IN_EACH_FOREIGN_PROVINCE);
 	}
 	
+	public static long getMapRefreshPeriodMilliseconds() {
+		return Settings.getInt(ConfigNodes.MAP_REFRESH_PERIOD_MILLISECONDS);
+	}
+
+	public static boolean isMapNationColorsEnabled() {
+		return Settings.getBoolean(ConfigNodes.MAP_NATION_COLOURS_ENABLED);
+	}
+
+	public static double getMapNationColorsOpacity() {
+		return Settings.getDouble(ConfigNodes.MAP_NATION_COLOURS_OPACITY);
+	}
+
 }

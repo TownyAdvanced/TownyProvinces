@@ -184,20 +184,21 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 					drawBorderLine(drawableLineOfBorderCoords, province, markerId);
 				} else {
 					TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line. If this message has not stopped repeating a few minutes after your server starts, please report it to TownyAdvanced.");
-					//The below line will draw the province if uncommented
-					//debugDrawProvinceChunks(province);
 				}
 			}
 		} else {
 			if (polyLineMarker.getOptions() == null) {
 				TownyProvinces.severe("WARNING: Marker options are null for province border marker " + markerId + ".");
+				return;
 			}
 			if (polyLineMarker.getOptions().getStroke() == null) {
 				TownyProvinces.severe("WARNING: Marker stroke is null for province border marker " + markerId + ".");
+				return;
 			}
 			Stroke stroke = polyLineMarker.getOptions().getStroke();
 			if (stroke.getColor() == null) {
 				TownyProvinces.severe("WARNING: Marker stroke color is null for province border marker " + markerId + ".");
+				return;
 			}
 			//Re-evaluate colour
 			if (!stroke.getColor().equals(borderColour)) {
@@ -284,67 +285,58 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 
 		bordersLayer.addMarker(new Polygon(markerId, polyLine).setOptions(markerOptions));
 	}
-	
-	////////////////////////// DEBUG SECTION ////////////////////////
-	
-	
-	//Shows all borders. But not for production
-	@Override
-	protected void debugDrawProvinceBorders() {
-		//for (Coord coord : TownyProvincesDataHolder.getInstance().getProvinceBorderBlocks()) {
-		//	debugDrawProvinceBorderBlock(worldName, provinceBlock);
-		//}
-	}
-	
-	
-	@Override
-	protected void debugDrawChunk(TPCoord coord, Province province, String worldName) {
-		double[] xPoints = new double[5];
-		xPoints[0] = coord.getX() * TownyProvincesSettings.getChunkSideLength();
-		xPoints[1] = xPoints[0] + TownyProvincesSettings.getChunkSideLength();
-		xPoints[2] = xPoints[1];
-		xPoints[3] = xPoints[0];
-		xPoints[4] = xPoints[0];
 
-		double[] zPoints = new double[5];
-		zPoints[0] = coord.getZ() * TownyProvincesSettings.getChunkSideLength();
-		zPoints[1] = zPoints[0]; 
-		zPoints[2] = zPoints[1] + TownyProvincesSettings.getChunkSideLength();
-		zPoints[3] = zPoints[2];
-		zPoints[4] = zPoints[0];
-		
-		//This is not the ideal way to do this; but it simplifies it for debugging between platforms.
-		List<Point> points = new ArrayList<>();
-		for (int i = 0; i < xPoints.length; i++) {
-			points.add(Point.of(xPoints[i], zPoints[i]));
+	protected void setProvinceMapStyles() {
+		int requiredBorderColour;
+		int requiredBorderWeight;
+		int requiredFillColour;
+		Stroke stroke;
+		Fill fill;
+		String markerId;
+		//Cycle provinces
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+			//Set styles if needed
+			markerId = province.getId();
+			Marker<?> polyLineMarker = bordersLayer.registeredMarkers().get(markerId);
+			if (polyLineMarker == null) {
+				continue;
+			}
+			if (polyLineMarker.getOptions() == null) {
+				TownyProvinces.severe("WARNING: Marker options are null for province border marker " + markerId + ".");
+				continue;
+			}
+			if (polyLineMarker.getOptions().getStroke() == null) {
+				TownyProvinces.severe("WARNING: Marker stroke is null for province border marker " + markerId + ".");
+				continue;
+			}
+			stroke = polyLineMarker.getOptions().getStroke();
+			if (stroke.getColor() == null) {
+				TownyProvinces.severe("WARNING: Marker stroke color is null for province border marker " + markerId + ".");
+				continue;
+			}
+			fill = polyLineMarker.getOptions().getFill();
+			if (fill == null) {
+				TownyProvinces.severe("WARNING: Marker fill is null for province border marker " + markerId + ".");
+				continue;
+			}
+			if (fill.getColor() == null) {
+				TownyProvinces.severe("WARNING: Marker fill color is null for province border marker " + markerId + ".");
+				continue;
+			}
+			//Set border colour if needed
+			requiredBorderColour = province.getType().getBorderColour() +
+				(int) (255 * province.getType().getBorderOpacity()) << 24;
+			requiredBorderWeight = province.getType().getBorderWeight();
+			if (stroke.getColor() != requiredBorderColour) {
+				stroke.setColor(requiredBorderColour);
+				stroke.setWeight(requiredBorderWeight);
+			}
+			//Set fill colour if needed
+			requiredFillColour = province.getFillColour() +
+				(int) (255 * province.getFillOpacity()) << 24;
+			if (fill.getColor() != requiredFillColour) {
+				fill.setColor(requiredFillColour);
+			}
 		}
-		
-		
-		String markerId = "Debug Drawn Chunk" + coord.getX() + "-" + coord.getZ() + ". Province: " + province.getId();
-		//String markerName = "xx";
-		String markerName = "ID: " + markerId;
-		//markerName += " Is Border: " + provinceBlock.isProvinceBorder();
-		
-		//AreaMarker areaMarker = markerSet.createAreaMarker(
-		//	markerId, markerName, unknown, worldName,
-	//		xPoints, zPoints, unknown2);
-		
-		Polyline polyLineMarker = new Polyline(
-			markerId, points);
-		
-		Options markerOptions = Options.builder()
-			.stroke(new Stroke(4, 0xffff0000))
-			.fill(new Fill(false))
-			.tooltipContent(markerName)
-			.build();
-
-		polyLineMarker.setOptions(markerOptions);
-		
-		bordersLayer.addMarker(polyLineMarker);
-//polyLineMarker.setLineStyle(4,1, 300000);
-//polyLineMarker.set
-		//areaMarker.setFillStyle(0, 300000);
-		//areaMarker.setLineStyle(1, 0.2, 300000);
 	}
-	 
 }
