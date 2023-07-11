@@ -293,8 +293,8 @@ public class TownyProvincesSettings {
 		return Settings.getBoolean(ConfigNodes.MAP_NATION_COLOURS_ENABLED);
 	}
 
-	public static int getMapNationColorsOpacity() {
-		return Settings.getInt(ConfigNodes.MAP_NATION_COLOURS_OPACITY);
+	public static double getMapNationColorsOpacity() {
+		return Settings.getDouble(ConfigNodes.MAP_NATION_COLOURS_OPACITY);
 	}
 
 }

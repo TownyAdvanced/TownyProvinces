@@ -184,8 +184,6 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 					drawBorderLine(drawableLineOfBorderCoords, province, markerId);
 				} else {
 					TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line. If this message has not stopped repeating a few minutes after your server starts, please report it to TownyAdvanced.");
-					//The below line will draw the province if uncommented
-					//debugDrawProvinceChunks(province);
 				}
 			}
 		} else {
@@ -300,6 +298,9 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 			//Set styles if needed
 			markerId = province.getId();
 			Marker<?> polyLineMarker = bordersLayer.registeredMarkers().get(markerId);
+			if (polyLineMarker == null) {
+				continue;
+			}
 			if (polyLineMarker.getOptions() == null) {
 				TownyProvinces.severe("WARNING: Marker options are null for province border marker " + markerId + ".");
 				continue;

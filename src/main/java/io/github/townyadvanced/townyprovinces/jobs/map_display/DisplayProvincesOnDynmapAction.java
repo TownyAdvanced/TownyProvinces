@@ -260,12 +260,14 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
 			//Set border colour if needed
 			areaMarker = bordersMarkerSet.findAreaMarker(province.getId());
-			if(areaMarker.getLineColor() != province.getType().getBorderColour()) {
-				areaMarker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
-			}
-			//Set fill colour if needed
-			if(areaMarker.getFillOpacity() != province.getFillOpacity() || areaMarker.getFillColor() != province.getFillColour()) {
-				areaMarker.setFillStyle(province.getFillOpacity(), province.getFillColour());
+			if(areaMarker != null) {
+				if (areaMarker.getLineColor() != province.getType().getBorderColour()) {
+					areaMarker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
+				}
+				//Set fill colour if needed
+				if (areaMarker.getFillOpacity() != province.getFillOpacity() || areaMarker.getFillColor() != province.getFillColour()) {
+					areaMarker.setFillStyle(province.getFillOpacity(), province.getFillColour());
+				}
 			}
 		}
 	}
