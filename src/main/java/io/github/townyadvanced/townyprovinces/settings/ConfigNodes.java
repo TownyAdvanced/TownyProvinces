@@ -97,7 +97,7 @@ public enum ConfigNodes {
 		"# This value determines the weight of the border."),
 	CIVILIZED_BORDER_APPEARANCE_OPACITY(
 		"province_types.civilized.border_appearance.opacity",
-		"0.9",
+		"1",
 		"",
 		"# This value determines the opacity of the border."),
 	CIVILIZED_BORDER_APPEARANCE_COLOUR(
@@ -182,7 +182,7 @@ public enum ConfigNodes {
 		""),
 	MAP_REFRESH_PERIOD_MILLISECONDS(
 		"map_integration.refresh_period_seconds",
-		"15",
+		"60",
 		"",
 		"# The period between map refreshes.",
 		"# A high value is softer on your CPU.",
@@ -198,11 +198,8 @@ public enum ConfigNodes {
 		""),
 	MAP_TOWN_COSTS_ICON_URL(
 		"map_integration.town_costs_icon.url",
-		"https://cdn-icons-png.flaticon.com/512/9729/9729309.png",
-		"",
-		"# Icon for the town costs. This must be a valid image URL.",
-		"# Default coin icon created by Md Tanvirul Haque - Flaticon",
-		"# https://www.flaticon.com/free-icon/dollar_9729309"),
+		"https://cdn.discordapp.com/attachments/761101311545573420/1128291824683974686/coins.png",
+		""),
 	MAP_TOWN_COSTS_ICON_HEIGHT(
 		"map_integration.town_costs_icon.height",
 		"35",

@@ -2,7 +2,7 @@
 
 ## :information_source: Overview
 - :world_map: An add-on plugin for *Towny*, which makes claiming more organized, reducing staff workload and server toxicity.
-  
+
 ## :gift: Features
 - :globe_with_meridians: **Divides The Map Automatically into Provinces:**
   - :tophat: Civilised Provinces: 1 town only, no foreign outposts allowed.
@@ -42,7 +42,7 @@
 
 ## :fast_forward: Admin Quick-Start Guide
 1. Run `tpra region regenerate all`. This will generate 2 small sample regions.
-2. To see the generated provinces, view your website-map. 
+2. To see the generated provinces, view your website-map.
 
 ## :arrow_forward: Admin Full Guide
 1. Prepare Playerbase
@@ -70,7 +70,7 @@
 - `tpra region [upkeeptowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk upkeep-town-cost for a region.
 - `tpra landvalidationjob [status|start|stop|restart|pause]` -> Control the land validation job.
   - This Job assigns a type to each provinces, either Civilized, Sea, or Wasteland. It also Assesses and records the Biome proportions in each province. These proportions affect the new/upkeep prices.
-  - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below command.* 
+  - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below command.*
 - `tpra province settype [civilized|sea|wasteland] [<x>,<z>]` -> Set the type of a province.
 - `tpra province settype [civilized|sea|wasteland] [<x1>,<z1>] [<2x>,<z2>]` -> Set the type of all provinces in a rectangular area.
 

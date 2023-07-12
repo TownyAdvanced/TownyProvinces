@@ -5,9 +5,11 @@ import com.palmergames.bukkit.towny.exceptions.initialization.TownyInitException
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.util.Version;
+import de.bluecolored.bluemap.api.BlueMapAPI;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnBlueMapAction;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnDynmapAction;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnPl3xMapV3Action;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
@@ -22,8 +24,13 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 
 import static com.palmergames.util.JavaUtil.classExists;
@@ -105,6 +112,22 @@ public class TownyProvinces extends JavaPlugin {
 					info("Pl3xMap v1 is not supported. Cannot enable Pl3xMap integration.");
 				}
 			}
+			if(getServer().getPluginManager().isPluginEnabled("bluemap")){
+				info("Found BlueMap. Enabling BlueMap integration.");
+				BlueMapAPI.onEnable(e -> {
+					/** This basically turns the BufferedImage into a readable format(png) for bluemap markers to read
+					 *  I put it here, so it won't just fire everytime the scheduler fires and only when it restarts
+					 *  */
+					Path assetsFolder = e.getWebApp().getWebRoot().resolve("assets");
+					try(OutputStream out = Files.newOutputStream(assetsFolder.resolve("province.png"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)){
+						ImageIO.write(TownyProvincesSettings.getTownCostsIcon(),"png", out);
+					}catch (IOException ex) {
+						TownyProvinces.severe("Failed to put BlueMap Marker Icon as png file!");
+						throw new RuntimeException(ex);
+					}
+				});
+				BlueMapAPI.onEnable(blueMapAPI -> MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnBlueMapAction()));
+			}
 			if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
 				info("Found Dynmap plugin. Enabling Dynmap integration.");
 				MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnDynmapAction());
@@ -124,7 +147,7 @@ public class TownyProvinces extends JavaPlugin {
 	
 	private boolean checkTownyVersion() {
 		if (!townyVersionCheck()) {
-			severe("Towny version does not meet required minimum version: " + requiredTownyVersion.toString());
+			severe("Towny version does not meet required minimum version: " + requiredTownyVersion);
 			return false;
 		} else {
 			info("Towny version " + getTownyVersion() + " found.");
