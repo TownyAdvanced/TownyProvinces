@@ -133,8 +133,8 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 					//Province is settle-able. If the marker is not there, we need to add it
 					if(homeBlockMarker != null)
 						continue;
-					int realHomeBlockX = (homeBlock.getX() * TownyProvincesSettings.getChunkSideLength()) + 8;
-					int realHomeBlockZ = (homeBlock.getZ() * TownyProvincesSettings.getChunkSideLength()) + 8;
+					int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getChunkSideLength();
+					int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getChunkSideLength();
 
 					String markerLabel;
 					if(TownyEconomyHandler.isActive()) {
