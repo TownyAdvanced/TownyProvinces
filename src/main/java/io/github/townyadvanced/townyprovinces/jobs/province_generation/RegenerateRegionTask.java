@@ -6,6 +6,7 @@ import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.Region;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
@@ -31,11 +32,11 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	 * something which would be difficult if this was a set
 	 **/
 	private Map<TPCoord, TPCoord> unclaimedCoordsMap;
-	private final String regionName;  //This will either be the case correct name of a real region, or "All"
+	private final String givenRegionName;  //This will either be the case correct name of a real region, or "All"
 	public final TPCoord searchCoord;
 	
-	public RegenerateRegionTask(String regionName) {
-		this.regionName = regionName;
+	public RegenerateRegionTask(String givenRegionName) {
+		this.givenRegionName = givenRegionName;
 		this.searchCoord = new TPFreeCoord(0,0);
 	}
 	
@@ -62,7 +63,7 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	public void executeRegionRegenerationJob() {
 		//Paint region(s)
 		boolean paintingSuccess;
-		if(regionName.equalsIgnoreCase("ALL")) {
+		if(givenRegionName.equalsIgnoreCase("ALL")) {
 			//Initialize the unclaimed coords map
 			//Create a new local map of soon-to-be-unclaimed coords
 			Map<TPCoord, TPCoord> soonToBeUnclaimedCoords = TownyProvincesDataHolder.getInstance().getAllCoordsOnMap();
@@ -77,7 +78,8 @@ public class RegenerateRegionTask extends BukkitRunnable {
 			//Initialize the unclaimed coords map
 			unclaimedCoordsMap = TownyProvincesDataHolder.getInstance().getAllUnclaimedCoordsOnMap();
 			//Paint one region
-			paintingSuccess = paintOneRegion(regionName, true);
+			Region region = TownyProvincesSettings.getRegion(givenRegionName);
+			paintingSuccess = paintOneRegion(region, true);
 		}
 		if(!paintingSuccess) {
 			TownyProvinces.info("Problem Painting Regions");
@@ -89,21 +91,56 @@ public class RegenerateRegionTask extends BukkitRunnable {
 		DataHandlerUtil.saveAllData();
 		MapDisplayTaskController.requestFullMapRefresh();
 		//Messaging
-		if(regionName.equalsIgnoreCase("ALL")) {
+		if(givenRegionName.equalsIgnoreCase("ALL")) {
 			TownyProvinces.info(Translatable.of("msg_successfully_regenerated_all_regions").translate(Locale.ROOT));
 		} else {
-			TownyProvinces.info(Translatable.of("msg_successfully_regenerated_one_regions", regionName).translate(Locale.ROOT));
+			TownyProvinces.info(Translatable.of("msg_successfully_regenerated_one_regions", givenRegionName).translate(Locale.ROOT));
 		}
 		TownyProvinces.info("Region regeneration Job Complete"); //TODO - maybe global message?
 	}
 
-	
+	public boolean paintAllRegions() {
+		//Paint all Regions
+		boolean firstRegionProcessed = false;
+		for (Region region: TownyProvincesSettings.getOrderedRegionsList()) {
+			if(!firstRegionProcessed) {
+				firstRegionProcessed = true;
+				//Paint region
+				if(!paintOneRegion(region, false)) {
+					return false;
+				}
+			} else {
+				//Paint region
+				if(!paintOneRegion(region, true)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Recalculate province prices
+	 * 
+	 * 1. Cycle each provinces
+	 * 2. In each province, cycle each coord
+	 * 3. For each coord, determine what is the relevant region
+	 * 4. Whatever it is, add the total province costs
+	 * 5. When all chunks are cycled, set the province costs
+	 * 
+	 * TODO - Make sure to trigger this after a cost setting command
+	 */
 	private void recalculateProvincePrices() {
-		TownyProvinces.info("Settings province prices");
-		for (String regionName: TownyProvincesSettings.getOrderedRegionNames()) {
+		TownyProvinces.info("Recalculating province prices");
+		for (String regionName: TownyProvincesSettings.getOrderedRegionsList()) {
 			double newTownCostPerChunk = TownyProvincesSettings.getNewTownCostPerChunk(regionName);
 			double upkeepTownCostPerChunk = TownyProvincesSettings.getUpkeepTownCostPerChunk(regionName);
+			
+			
 			for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+				
+				
+				
 				if (TownyProvincesSettings.isProvinceInRegion(province, regionName)) {
 					province.setNewTownCost(newTownCostPerChunk * province.getListOfCoordsInProvince().size());
 					province.setUpkeepTownCost(upkeepTownCostPerChunk * province.getListOfCoordsInProvince().size());
@@ -111,30 +148,11 @@ public class RegenerateRegionTask extends BukkitRunnable {
 			}
 		}
 		TownyProvinces.info("Province Prices set");
+		 
 	}
 	
-	public boolean paintAllRegions() {
-		//Paint all Regions
-		boolean firstRegion = true;
-		for (String regionName: TownyProvincesSettings.getOrderedRegionNames()) {
-			if(firstRegion) {
-				firstRegion = false;
-				//Paint region
-				if(!paintOneRegion(regionName, false)) {
-					return false;
-				}
-			} else {
-				//Paint region
-				if(!paintOneRegion(regionName, true)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	private boolean paintOneRegion(String regionName, boolean deleteExistingProvincesInRegion) {
-		PaintRegionAction regionPaintTask = new PaintRegionAction(regionName, unclaimedCoordsMap);
+	private boolean paintOneRegion(Region region, boolean deleteExistingProvincesInRegion) {
+		PaintRegionAction regionPaintTask = new PaintRegionAction(region, unclaimedCoordsMap);
 		return regionPaintTask.executeAction(deleteExistingProvincesInRegion);
 	}
 

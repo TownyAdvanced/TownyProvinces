@@ -9,6 +9,7 @@ import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceType;
+import io.github.townyadvanced.townyprovinces.objects.Region;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
@@ -156,16 +157,15 @@ public class TownyProvincesDataHolder {
 	}
 
 	public Map<TPCoord, TPCoord> getAllUnclaimedCoordsOnMap() {
-		String nameOfFirstRegion = TownyProvincesSettings.getNameOfFirstRegion();
-		return getAllUnclaimedCoordsInRegion(nameOfFirstRegion);
+		return getAllUnclaimedCoordsInRegion(TownyProvincesSettings.getFirstRegion());
 	}
 	
-	private Map<TPCoord, TPCoord> getAllUnclaimedCoordsInRegion(String regionName) {
+	private Map<TPCoord, TPCoord> getAllUnclaimedCoordsInRegion(Region region) {
 		Map<TPCoord,TPCoord> result = new HashMap<>();
-		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		int minX = region.getTopLeftRegionCorner().getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		int maxX  = region.getBottomRightRegionCorner().getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		int minZ = region.getTopLeftRegionCorner().getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		int maxZ  = region.getBottomRightRegionCorner().getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		//Add to the result, any coords in the area which are not claimed
 		Map<TPCoord,Province> coordProvinceMap = TownyProvincesDataHolder.getInstance().getCoordProvinceMap();
 		TPCoord newCoord;
@@ -191,11 +191,11 @@ public class TownyProvincesDataHolder {
 	public Map<TPCoord,TPCoord> getAllCoordsOnMap() {
 		TownyProvinces.info("Now Getting all coords on map");
 		Map<TPCoord,TPCoord> result = new HashMap<>();
-		String regionName = TownyProvincesSettings.getNameOfFirstRegion();
-		int minX = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		int maxX  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		int minZ = TownyProvincesSettings.getTopLeftCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		int maxZ  = TownyProvincesSettings.getBottomRightCornerLocation(regionName).getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		Region firstRegion = TownyProvincesSettings.getFirstRegion();
+		int minX = firstRegion.getTopLeftRegionCorner().getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		int maxX  = firstRegion.getBottomRightRegionCorner().getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		int minZ = firstRegion.getTopLeftRegionCorner().getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		int maxZ  = firstRegion.getBottomRightRegionCorner().getBlockZ() / TownyProvincesSettings.getChunkSideLength();
 		
 		//First add any required coords which are already on the coord-province map
 		for(TPCoord coord: coordProvinceMap.keySet()) {

@@ -17,6 +17,7 @@ import io.github.townyadvanced.townyprovinces.jobs.province_generation.Regenerat
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceType;
+import io.github.townyadvanced.townyprovinces.objects.Region;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionNodes;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
@@ -59,10 +60,10 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 					//Create region definitions folder and sample files if needed
 					FileUtil.createRegionDefinitionsFolderAndSampleFiles();
 					//Reload region definitions
-					TownyProvincesSettings.loadRegionDefinitions();
+					TownyProvincesSettings.loadRegionsDefinitions();
 					List<String> regionOptions = new ArrayList<>();
 					regionOptions.add("All");
-					List<String> regionNames = new ArrayList<>(TownyProvincesSettings.getRegionDefinitions().keySet());
+					List<String> regionNames = new ArrayList<>(TownyProvincesSettings.getRegions().keySet());
 					Collections.sort(regionNames);
 					regionOptions.addAll(regionNames);
 					return NameUtil.filterByStart(regionOptions, args[2]);
@@ -309,13 +310,13 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		//Create region definitions folder and sample files if needed
 		FileUtil.createRegionDefinitionsFolderAndSampleFiles();
 		//Reload region definitions
-		TownyProvincesSettings.loadRegionDefinitions();
+		TownyProvincesSettings.loadRegionsDefinitions();
 		//Verify the given region name
 		String givenRegionName = args[1];
 		String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 		if(givenRegionName.equalsIgnoreCase("all")) {
 			RegenerateRegionTaskController.startTask(sender, givenRegionName);
-		} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
+		} else if(TownyProvincesSettings.getRegions().containsKey(caseCorrectRegionName)) {
 			RegenerateRegionTaskController.startTask(sender, caseCorrectRegionName);
 		} else {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
@@ -340,10 +341,11 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				MapDisplayTaskController.requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_all_regions", formattedTownCostPerChunk));
 
-			} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
+			} else if(TownyProvincesSettings.getRegions().containsKey(caseCorrectRegionName)) {
 				//Set cost for just one region
+				Region region = TownyProvincesSettings.getRegion(caseCorrectRegionName);
 				for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-					if(TownyProvincesSettings.isProvinceInRegion(province, caseCorrectRegionName)) {
+					if(TownyProvincesSettings.isProvinceInRegion(province, region)) {
 						townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
 						province.setNewTownCost(townCost);
 						province.saveData();
@@ -378,10 +380,11 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 				MapDisplayTaskController.requestHomeBlocksRefresh();
 				Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_all_regions", formattedTownCostPerChunk));
 
-			} else if(TownyProvincesSettings.getRegionDefinitions().containsKey(caseCorrectRegionName)) {
+			} else if(TownyProvincesSettings.getRegions().containsKey(caseCorrectRegionName)) {
 				//Set cost for just one region
+				Region region = TownyProvincesSettings.getRegion(caseCorrectRegionName);
 				for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-					if(TownyProvincesSettings.isProvinceInRegion(province, caseCorrectRegionName)) {
+					if(TownyProvincesSettings.isProvinceInRegion(province, region)) {
 						townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
 						province.setUpkeepTownCost(townCost);
 						province.saveData();
