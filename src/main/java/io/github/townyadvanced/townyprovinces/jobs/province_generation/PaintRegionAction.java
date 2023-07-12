@@ -141,10 +141,9 @@ public class PaintRegionAction {
 	}
 
 	/**
-	 * Generate province objects, including
+	 * Generate provinces, including
 	 * - Homeblocks
-	 * - New town costs
-	 * - Upkeep town costs
+	 * - Initial claimed area
 	 *
 	 * @return false if we failed to create sufficient province objects
 	 */
@@ -198,7 +197,8 @@ public class PaintRegionAction {
 	
 	/**
 	 * Generate a protected province.
-	 * Always successfully return the province 
+	 * 
+	 * @return the province on success, or null if you fail (usually due to the province location being too close to an existing protected province location)
 	 */
 	private Province generateProtectedProvince(Location location) {
 		Coord coord = Coord.parseCoord(location);
