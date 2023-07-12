@@ -16,19 +16,33 @@ import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction{
 	private MarkerSet borderMarkerSet;
 	private MarkerSet homeBlocksMarkersSet;
-	private Optional<BlueMapWorld> world;
-	private BlueMapAPI api = BlueMapAPI.getInstance().get();
 	private final TPFreeCoord tpFreeCoord;
 	
 	public DisplayProvincesOnBlueMapAction(){
 		TownyProvinces.info("Enabling BlueMap support.");
 
 		tpFreeCoord = new TPFreeCoord(0,0);
+		
+		BlueMapAPI.getInstance().ifPresent(e -> {
+			Path assetsFolder = e.getWebApp().getWebRoot().resolve("assets");
+			try (OutputStream out = Files.newOutputStream(assetsFolder.resolve("province.png"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+				ImageIO.write(TownyProvincesSettings.getTownCostsIcon(), "png", out);
+			} catch (IOException ex) {
+				TownyProvinces.severe("Failed to put BlueMap Marker Icon as png file!");
+				throw new RuntimeException(ex);
+			}
+		});
 
 		if (TownyProvincesSettings.getTownCostsIcon() == null) {
 			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support BlueMap.");
@@ -36,41 +50,45 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		}
 		
 		TownyProvinces.info("BlueMap support enabled.");
-	}
+	  }
+	  
 	@Override
 	void executeAction(boolean bordersRefreshRequested, boolean homeBlocksRefreshRequested) {
-			world = api.getWorld(TownyProvincesSettings.getWorld());
+		BlueMapAPI.getInstance().ifPresent( api -> {
+			Optional<BlueMapWorld> world = api.getWorld(TownyProvincesSettings.getWorld());
 			homeBlocksMarkersSet = MarkerSet.builder()
 				.label("TownyProvinces - Town Costs")
 				.build();
 			borderMarkerSet = MarkerSet.builder()
 				.label("TownyProvinces - Borders")
 				.build();
-			
-		if(!world.isPresent()){
-			TownyProvinces.severe("World is not in BlueMap registry!");
-			return;
-		}
-		
-		if(bordersRefreshRequested){
-			if(borderMarkerSet != null){
-				world.get().getMaps().forEach(e -> e.getMarkerSets().remove("townyprovinces.markersets.borders"));
+
+			if (!world.isPresent()) {
+				TownyProvinces.severe("World is not in BlueMap registry!");
+				return;
 			}
-			for(BlueMapMap map : world.get().getMaps()){
-				map.getMarkerSets().put("townyprovinces.markersets.borders", borderMarkerSet);
+
+			if (bordersRefreshRequested) {
+				if (borderMarkerSet != null) {
+					world.get().getMaps().forEach(e -> e.getMarkerSets().remove("townyprovinces.markersets.borders"));
+				}
+				for (BlueMapMap map : world.get().getMaps()) {
+					map.getMarkerSets().put("townyprovinces.markersets.borders", borderMarkerSet);
+				}
 			}
-		}
-		
-		if(homeBlocksRefreshRequested){
-			if(homeBlocksMarkersSet != null){
-				world.get().getMaps().forEach(e -> e.getMarkerSets().remove("townyprovinces.markerset.homeblocks"));
+
+			if (homeBlocksRefreshRequested) {
+				if (homeBlocksMarkersSet != null) {
+					world.get().getMaps().forEach(e -> e.getMarkerSets().remove("townyprovinces.markerset.homeblocks"));
+				}
+				for (BlueMapMap map : world.get().getMaps()) {
+					map.getMarkerSets().put("townyprovinces.markerset.homeblocks", homeBlocksMarkersSet);
+				}
 			}
-			for(BlueMapMap map : world.get().getMaps()){
-				map.getMarkerSets().put("townyprovinces.markerset.homeblocks", homeBlocksMarkersSet);
+			drawProvinceHomeBlocks();
+			drawProvinceBorders();
 			}
-		}
-		drawProvinceHomeBlocks();
-		drawProvinceBorders();
+		);
 	}
 
 	
