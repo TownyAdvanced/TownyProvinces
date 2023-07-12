@@ -132,23 +132,22 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	 */
 	private void recalculateProvincePrices() {
 		TownyProvinces.info("Recalculating province prices");
-		for (String regionName: TownyProvincesSettings.getOrderedRegionsList()) {
-			double newTownCostPerChunk = TownyProvincesSettings.getNewTownCostPerChunk(regionName);
-			double upkeepTownCostPerChunk = TownyProvincesSettings.getUpkeepTownCostPerChunk(regionName);
-			
-			
-			for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-				
-				
-				
-				if (TownyProvincesSettings.isProvinceInRegion(province, regionName)) {
-					province.setNewTownCost(newTownCostPerChunk * province.getListOfCoordsInProvince().size());
-					province.setUpkeepTownCost(upkeepTownCostPerChunk * province.getListOfCoordsInProvince().size());
-				}
+		double newTownCost;
+		double upkeepTownCost;
+		Region region;
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+			newTownCost = 0;
+			upkeepTownCost = 0;
+			for(TPCoord coord: province.getListOfCoordsInProvince()) {
+				region = TownyProvincesSettings.findPriceGoverningRegion(coord);
+				newTownCost += region.getNewTownCostPerChunk();
+				upkeepTownCost += region.getUpkeepTownCostPerChunk();
 			}
+			province.setNewTownCost(newTownCost);
+			province.setUpkeepTownCost(upkeepTownCost);
 		}
-		TownyProvinces.info("Province Prices set");
-		 
+		DataHandlerUtil.saveAllData();
+		TownyProvinces.info("Province Prices Recalculated");
 	}
 	
 	private boolean paintOneRegion(Region region, boolean deleteExistingProvincesInRegion) {

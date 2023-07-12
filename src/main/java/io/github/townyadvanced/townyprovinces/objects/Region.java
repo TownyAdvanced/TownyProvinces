@@ -1,10 +1,13 @@
 package io.github.townyadvanced.townyprovinces.objects;
 
 import com.palmergames.util.FileMgmt;
+import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import org.bukkit.Location;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 public class Region {
@@ -108,4 +111,24 @@ public class Region {
 		return protectedLocations;
 	}
 
+	public double getNewTownCostPerChunk() {
+		return newTownCostPerChunk;
+	}
+
+	public double getUpkeepTownCostPerChunk() {
+		return upkeepTownCostPerChunk;
+	}
+
+	public boolean containsCoord(TPCoord coord) {
+		if (coord.getX() < regionMinX)
+			return false;
+		else if (coord.getX() > regionMaxX)
+			return false;
+		else if (coord.getZ() < regionMinZ)
+			return false;
+		else if (coord.getZ() > regionMaxZ)
+			return false;
+		else 
+			return true;
+	}
 }

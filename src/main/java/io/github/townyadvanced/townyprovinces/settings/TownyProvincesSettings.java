@@ -3,6 +3,7 @@ package io.github.townyadvanced.townyprovinces.settings;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.Region;
+import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -307,5 +308,15 @@ public class TownyProvincesSettings {
 	public static double getMapNationColorsOpacity() {
 		return Settings.getDouble(ConfigNodes.MAP_NATION_COLOURS_OPACITY);
 	}
-	
+
+	public static Region findPriceGoverningRegion(TPCoord coord) {
+		Region region;
+		for(int i = orderedRegionsList.size()-1; i >= 0; i--) {
+			region = orderedRegionsList.get(i);
+			if(region.containsCoord(coord)) {
+				return region;
+			}
+		}
+		throw new RuntimeException("No price governing region was found");
+	}
 }
