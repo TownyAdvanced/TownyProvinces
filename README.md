@@ -7,7 +7,7 @@
 - :globe_with_meridians: **Divides The Map Automatically into Provinces:**
   - :tophat: Civilised Provinces: 1 town only, no foreign outposts allowed.
   - :ocean: Sea Provinces: No towns, outposts allowed
-  - :fire: Wasteland Provinces: No towns, outposts allowed
+  - :desert: Wasteland Provinces: No towns, outposts allowed
 
 ## :hammer_and_wrench: Solves
 - :money_with_wings: ***Overclaiming***: Each town has a reserved claiming area; No need to throw away money on overclaiming.
