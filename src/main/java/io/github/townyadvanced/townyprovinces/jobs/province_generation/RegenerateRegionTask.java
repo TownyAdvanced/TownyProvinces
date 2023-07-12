@@ -11,6 +11,7 @@ import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFinalCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.util.MoneyUtil;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
@@ -44,17 +45,12 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	public void run() {
 		try {
 			TownyProvinces.info("Regeneration Job Started");
-			TownyProvinces.info("Regeneration Job: Acquiring land validation lock");
-			synchronized (TownyProvinces.LAND_VALIDATION_LOCK) {
-				TownyProvinces.info("Regeneration Job: Land Validation lock acquired");
-				TownyProvinces.info("Regeneration Job: Acquiring map display lock");
-				synchronized (TownyProvinces.MAP_DISPLAY_LOCK) {
-					TownyProvinces.info("Regeneration Job: Map display lock acquired");
-					executeRegionRegenerationJob();
-				}
+			TownyProvinces.info("Regeneration Job: Acquiring province set change lock");
+			synchronized (TownyProvinces.PROVINCE_SET_CHANGE_LOCK) {
+				TownyProvinces.info("Regeneration Job: Province set change lock acquired");
+				executeRegionRegenerationJob();
 			}
 		} finally {
-			TownyProvinces.info("Regeneration Job: Map display lock released");
 			RegenerateRegionTaskController.endTask();
 			TownyProvinces.info("Regeneration Job Completed");
 		}
@@ -86,7 +82,7 @@ public class RegenerateRegionTask extends BukkitRunnable {
 			return;
 		}
 		//Recalculated all prices
-		recalculateProvincePrices();
+		MoneyUtil.recalculateProvincePrices();
 		//Save data and request full map refresh
 		DataHandlerUtil.saveAllData();
 		MapDisplayTaskController.requestFullMapRefresh();
@@ -117,37 +113,6 @@ public class RegenerateRegionTask extends BukkitRunnable {
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * Recalculate province prices
-	 * 
-	 * 1. Cycle each provinces
-	 * 2. In each province, cycle each coord
-	 * 3. For each coord, determine what is the relevant region
-	 * 4. Whatever it is, add the total province costs
-	 * 5. When all chunks are cycled, set the province costs
-	 * 
-	 * TODO - Make sure to trigger this after a cost setting command
-	 */
-	private void recalculateProvincePrices() {
-		TownyProvinces.info("Recalculating province prices");
-		double newTownCost;
-		double upkeepTownCost;
-		Region region;
-		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			newTownCost = 0;
-			upkeepTownCost = 0;
-			for(TPCoord coord: province.getListOfCoordsInProvince()) {
-				region = TownyProvincesSettings.findPriceGoverningRegion(coord);
-				newTownCost += region.getNewTownCostPerChunk();
-				upkeepTownCost += region.getUpkeepTownCostPerChunk();
-			}
-			province.setNewTownCost(newTownCost);
-			province.setUpkeepTownCost(upkeepTownCost);
-		}
-		DataHandlerUtil.saveAllData();
-		TownyProvinces.info("Province Prices Recalculated");
 	}
 	
 	private boolean paintOneRegion(Region region, boolean deleteExistingProvincesInRegion) {

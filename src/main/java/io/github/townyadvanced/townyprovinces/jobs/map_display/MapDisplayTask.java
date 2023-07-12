@@ -18,10 +18,8 @@ public class MapDisplayTask extends BukkitRunnable {
 			} else {
 				jobRunning = true;
 			}
-			synchronized (TownyProvinces.MAP_DISPLAY_LOCK) {
-				for (DisplayProvincesOnMapAction mapDisplayAction : MapDisplayTaskController.getMapDisplayActions()) {
-					mapDisplayAction.executeAction(MapDisplayTaskController.getFullProvinceColoursRefreshRequested(), MapDisplayTaskController.getFullHomeBlockIconsRefreshRequest());
-				}
+			for (DisplayProvincesOnMapAction mapDisplayAction : MapDisplayTaskController.getMapDisplayActions()) {
+				mapDisplayAction.executeAction(MapDisplayTaskController.getFullProvinceColoursRefreshRequested(), MapDisplayTaskController.getFullHomeBlockIconsRefreshRequest());
 			}
 		} finally {
 			//Reset refresh flags
