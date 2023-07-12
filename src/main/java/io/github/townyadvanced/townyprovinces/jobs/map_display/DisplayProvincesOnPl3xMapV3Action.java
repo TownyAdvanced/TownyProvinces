@@ -123,8 +123,8 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 					//This is land If the marker is not there, we need to add it
 					if(homeBlockMarker != null)
 						continue;
-					int realHomeBlockX = (homeBlock.getX() * TownyProvincesSettings.getChunkSideLength()) + 8;
-					int realHomeBlockZ = (homeBlock.getZ() * TownyProvincesSettings.getChunkSideLength()) + 8;
+					int realHomeBlockX = homeBlock.getX() * TownyProvincesSettings.getChunkSideLength();
+					int realHomeBlockZ = homeBlock.getZ() * TownyProvincesSettings.getChunkSideLength();
 
 					String markerLabel;
 					if(TownyEconomyHandler.isActive()) {
