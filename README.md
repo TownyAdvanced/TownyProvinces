@@ -3,6 +3,7 @@
 ## :information_source: Overview
 - :world_map: An add-on plugin for *Towny*, which makes claiming more organized, reducing staff workload and server toxicity.
 
+
 ## :gift: Features
 - :globe_with_meridians: **Divides The Map Automatically into Provinces:**
   - :tophat: Civilised Provinces: 1 town only, no foreign outposts allowed.
