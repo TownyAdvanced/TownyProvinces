@@ -172,8 +172,6 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 						drawBorderLine(drawableLineOfBorderCoords, province, markerId);
 					} else {
 						TownyProvinces.severe("WARNING: Could not arrange province coords into drawable line. If this message has not stopped repeating a few minutes after your server starts, please report it to TownyAdvanced.");
-						//The below line will draw the province if uncommented
-						//debugDrawProvinceChunks(province);
 					}
 				}
 			}
@@ -220,19 +218,6 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 			.lineColor(color)
 			.label(province.getId())
 			.build();
-
-
-		
-		
 		borderMarkerSet.put(markerId, marker);
-	}
-
-
-	protected void debugDrawProvinceBorders() {
-
-	}
-	
-	protected void debugDrawChunk(TPCoord coord, Province province, String worldName) {
-
 	}
 }
