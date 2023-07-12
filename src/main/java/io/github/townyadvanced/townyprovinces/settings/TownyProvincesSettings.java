@@ -18,8 +18,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TownyProvincesSettings {
 
@@ -297,4 +299,21 @@ public class TownyProvincesSettings {
 		return Settings.getDouble(ConfigNodes.MAP_NATION_COLOURS_OPACITY);
 	}
 
+	public static Map<String,Location> getProtectedLocations(String regionName) {
+		Map<String, Location> result = new HashMap<>();
+		Map<String, String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+		String locationsString = regionDefinitions.get("protected_locations");
+		if(locationsString != null) {
+			World world = getWorld();
+			String[] locationsArray = locationsString.split("\\|");
+			String[] singleLocationArray;
+			Location location;
+			for (String singleLocationString : locationsArray) {
+				singleLocationArray = singleLocationString.split(",");
+				location =  new Location(world, Integer.parseInt(singleLocationArray[1].trim()), 64, Integer.parseInt(singleLocationArray[2].trim()));
+				result.put(singleLocationArray[0], location);
+			}
+		}
+		return result;
+	}
 }

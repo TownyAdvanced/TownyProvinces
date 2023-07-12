@@ -45,10 +45,11 @@ public class PaintRegionAction {
 	private final Location bottomRightRegionCorner;
 	private final int averageProvinceSize;
 	private final int maxBrushMoves;
-	private final double newTownCostPerChunk;
-	private final double upkeepTownCostPerChunk;
+	private final Map<String, Location> protectedLocations;
 	
 	public PaintRegionAction(String regionName, Map<TPCoord,TPCoord> unclaimedCoordsMap) {
+		TownyProvinces.info("-------------------------------");
+		TownyProvinces.info("Now Painting Provinces In Region: " + regionName);
 		this.regionName = regionName;
 		this.unclaimedCoordsMap = unclaimedCoordsMap;
 		this.brushSquareRadiusInChunks = TownyProvincesSettings.getBrushSquareRadiusInChunks(regionName);
@@ -70,13 +71,10 @@ public class PaintRegionAction {
 		this.bottomRightRegionCorner = TownyProvincesSettings.getBottomRightCornerLocation(regionName);
 		this.averageProvinceSize = TownyProvincesSettings.getAverageProvinceSize(regionName);
 		this.maxBrushMoves = TownyProvincesSettings.getMaxBrushMoves(regionName);
-		this.newTownCostPerChunk = TownyProvincesSettings.getNewTownCostPerChunk(regionName);
-		this.upkeepTownCostPerChunk = TownyProvincesSettings.getUpkeepTownCostPerChunk(regionName);
+		this.protectedLocations = TownyProvincesSettings.getProtectedLocations(regionName);
 	}
 	
 	boolean executeAction(boolean deleteExistingProvincesInRegion) {
-		TownyProvinces.info("Now Painting Provinces In Region: " + regionName);
-
 		//Delete most provinces in the region, except those which are mostly outside
 		if(deleteExistingProvincesInRegion) {
 			if(!deleteExistingProvincesWhichAreMostlyInSpecifiedArea()) {
@@ -85,10 +83,9 @@ public class PaintRegionAction {
 		}
 
 		/*
-		 * Create province objects - empty except for the homeblocks
-		 * This is the start point for the paint brushes
+		 * Create provinces including the initial claimed area
 		 */
-		if(!generateProvinceObjects()) {
+		if(!generateProvinces()) {
 			return false;
 		}
 
@@ -144,26 +141,39 @@ public class PaintRegionAction {
 	}
 
 	/**
-	 * Generate province objects, including
+	 * Generate provinces, including
 	 * - Homeblocks
-	 * - New town costs
-	 * - Upkeep town costs
+	 * - Initial claimed area
 	 *
 	 * @return false if we failed to create sufficient province objects
 	 */
-	private boolean generateProvinceObjects() {
+	private boolean generateProvinces() {
 		TownyProvinces.info("Now generating province objects");
 		Province province;
 		int maxNumProvinces = calculateMaxNumberOfProvinces();
+		int maxNumRandomProvinces = maxNumProvinces - protectedLocations.size();
 		int provincesCreated = 0;
-		for (int provinceIndex = 0; provinceIndex < maxNumProvinces; provinceIndex++) {
-			province = generateProvinceObject();
-			if(province != null) {
+		//Generate provinces at protected locations
+		for(Map.Entry<String,Location> mapEntry: protectedLocations.entrySet()) {
+			TownyProvinces.info("Now generating province at protected location: " + mapEntry.getKey());
+			province = generateProtectedProvince(mapEntry.getValue());
+			if(province == null) {
+				TownyProvinces.severe("Could not generate province at protected location: " + mapEntry.getKey());
+				return false;
+			} else {
+				TownyProvincesDataHolder.getInstance().addProvince(province);
+				provincesCreated++;
+			}
+		}
+		//Generate provinces at random locations
+		for (int randomProvinceIndex = 0; randomProvinceIndex < maxNumRandomProvinces; randomProvinceIndex++) {
+			province = generateRandomlyPlacedProvince();
+			if(province == null) {
+				break; //We created as many as we could in this region
+			} else {
 				//Province object created successfully. Add to data holder
 				TownyProvincesDataHolder.getInstance().addProvince(province);
 				provincesCreated++;
-			} else {
-				break; //We created as many as we could in this region
 			}
 		}
 		TownyProvinces.info("" + provincesCreated + " province objects created.");
@@ -186,11 +196,29 @@ public class PaintRegionAction {
 	}
 	
 	/**
-	 * Generate a single province object
-	 *
+	 * Generate a protected province.
+	 * 
+	 * @return the province on success, or null if you fail (usually due to the province location being too close to an existing protected province location)
+	 */
+	private Province generateProtectedProvince(Location location) {
+		Coord coord = Coord.parseCoord(location);
+		TPCoord homeBlockCoord = new TPFinalCoord(coord.getX(), coord.getZ());
+		Province province = new Province(homeBlockCoord);
+		if(validateBrushPosition(homeBlockCoord.getX(), homeBlockCoord.getZ(), province)) {
+			ProvinceClaimBrush brush = new ProvinceClaimBrush(province);
+			claimChunksCoveredByBrush(brush);
+			return province;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Generate a randomly placed province
+	 * 
 	 * @return the province on success, or null if you fail (usually due to map being full)
 	 */
-	private @Nullable Province generateProvinceObject() {
+	private @Nullable Province generateRandomlyPlacedProvince() {
 		//Establish boundaries of where the homeblock might be placed
 		double xLowest = regionMinX + brushSquareRadiusInChunks + 3;
 		double xHighest = regionMaxX - brushSquareRadiusInChunks - 3;
@@ -207,44 +235,23 @@ public class PaintRegionAction {
 			TPCoord homeBlockCoord = new TPFinalCoord(xCoord, zCoord);
 			//Create province object
 			Province province = new Province(homeBlockCoord);
-			//Validate province homeblock position
-			if(validatePositionOfProvinceHomeBlock(province)) {
+			//Validate province position
+			if(validateBrushPosition(homeBlockCoord.getX(), homeBlockCoord.getZ(), province)) {
+				ProvinceClaimBrush brush = new ProvinceClaimBrush(province);
+				claimChunksCoveredByBrush(brush);
 				return province;
 			}
 		}
 		return null;
 	}
 	
-	private boolean validatePositionOfProvinceHomeBlock(Province provinceToValidate) {
-		//Make sure it is far enough from other homeblocks
-		TPCoord homeBlockToValidate = provinceToValidate.getHomeBlock();
-		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			/* 
-			* The minimum allowed distance is:
-			* (province square radius - (brush square radius * 2)) / 2 
-			 */
-			double minAllowedDistance = (int)(((double)provinceSquareRadius - ((double)brushSquareRadiusInChunks * TownyProvincesSettings.getChunkSideLength() * 2)) / 2);
-			int allowedDistanceInChunks = (int)(minAllowedDistance / TownyProvincesSettings.getChunkSideLength());
-			allowedDistanceInChunks = Math.max(allowedDistanceInChunks,1);
-			if(TownyProvincesMathUtil.minecraftDistanceBetweenCoords(homeBlockToValidate, province.getHomeBlock()) < allowedDistanceInChunks) {
-				return false;
-			}
-		}
-		//Make sure that it doesn't overlap existing claims, or go off the map border
-		if(validateBrushPosition(homeBlockToValidate.getX(), homeBlockToValidate.getZ(), provinceToValidate)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	private boolean executeChunkClaimCompetition() {
 		TownyProvinces.info("Chunk Claim Competition Started");
 
 		//Create claim-brush objects
 		List<ProvinceClaimBrush> provinceClaimBrushes = new ArrayList<>();
 		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			provinceClaimBrushes.add(new ProvinceClaimBrush(province, brushSquareRadiusInChunks));
+			provinceClaimBrushes.add(new ProvinceClaimBrush(province));
 		}
 		
 		/*
@@ -339,10 +346,10 @@ public class PaintRegionAction {
 		if(!validateBrushPosition(brush.getCurrentPosition().getX(), brush.getCurrentPosition().getZ(), brush.getProvince()))
 			return;
 			
-		int startX = brush.getCurrentPosition().getX() - brush.getSquareRadius();
-		int endX = brush.getCurrentPosition().getX() + brush.getSquareRadius();
-		int startZ = brush.getCurrentPosition().getZ() - brush.getSquareRadius();
-		int endZ = brush.getCurrentPosition().getZ() + brush.getSquareRadius();
+		int startX = brush.getCurrentPosition().getX() - brushSquareRadiusInChunks;
+		int endX = brush.getCurrentPosition().getX() + brushSquareRadiusInChunks;
+		int startZ = brush.getCurrentPosition().getZ() - brushSquareRadiusInChunks;
+		int endZ = brush.getCurrentPosition().getZ() + brushSquareRadiusInChunks;
 		for(int x = startX; x <= endX; x++) {
 			for(int z = startZ; z <= endZ; z++) {
 				//Claim chunk if not already claimed by the province
@@ -475,6 +482,7 @@ public class PaintRegionAction {
 		}
 		for(Province province: provincesToDelete) {
 			TownyProvincesDataHolder.getInstance().deleteProvince(province, unclaimedCoordsMap);
+			TownyProvinces.info("Province Deleted: " + province.getId());
 		}
 		TownyProvinces.info("Empty Provinces Deleted.");
 		return true;
