@@ -182,7 +182,7 @@ public enum ConfigNodes {
 		""),
 	MAP_REFRESH_PERIOD_MILLISECONDS(
 		"map_integration.refresh_period_seconds",
-		"60",
+		"15",
 		"",
 		"# The period between map refreshes.",
 		"# A high value is softer on your CPU.",
