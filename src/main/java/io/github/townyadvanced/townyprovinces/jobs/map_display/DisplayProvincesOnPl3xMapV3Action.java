@@ -167,7 +167,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 	
 	@Override
 	protected void drawProvinceBorder(Province province) {
-		int borderColour = province.getType().getBorderColour() +
+		int borderColour = province.getType().getBorderColour() |
 			(int)(255*province.getType().getBorderOpacity()) << 24;
 		int borderWeight = province.getType().getBorderWeight();
 		String markerId = province.getId();
@@ -210,7 +210,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 	}
 
 	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
-		int borderColour = province.getType().getBorderColour() +
+		int borderColour = province.getType().getBorderColour() |
 			(int)(255*province.getType().getBorderOpacity()) << 24;
 		int borderWeight = province.getType().getBorderWeight();
 
@@ -278,7 +278,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 		
 		Options markerOptions = Options.builder()
 			.stroke(stroke)
-			.fill(new Fill(false))
+			.fill(new Fill(0))
 			.build();
 		
 		polygonMarker.setOptions(markerOptions);
@@ -324,7 +324,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 				continue;
 			}
 			//Set border colour if needed
-			requiredBorderColour = province.getType().getBorderColour() +
+			requiredBorderColour = province.getType().getBorderColour() |
 				(int) (255 * province.getType().getBorderOpacity()) << 24;
 			requiredBorderWeight = province.getType().getBorderWeight();
 			if (stroke.getColor() != requiredBorderColour) {
@@ -332,7 +332,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 				stroke.setWeight(requiredBorderWeight);
 			}
 			//Set fill colour if needed
-			requiredFillColour = province.getFillColour() +
+			requiredFillColour = province.getFillColour() |
 				(int) (255 * province.getFillOpacity()) << 24;
 			if (fill.getColor() != requiredFillColour) {
 				fill.setColor(requiredFillColour);
