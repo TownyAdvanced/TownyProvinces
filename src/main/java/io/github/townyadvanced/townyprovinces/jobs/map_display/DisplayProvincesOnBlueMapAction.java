@@ -184,13 +184,21 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 				}
 
 				if (fillColor.getRed() != 0 || fillColor.getGreen() != 0 || fillColor.getBlue() != 0) {
-					TownyProvinces.info("DEBUG: Fill color is " + shapeMarker.getFillColor().toString());
-					TownyProvinces.info("DEBUG: It should be " + fillColor);
+					TownyProvinces.info("DEBUG: Fill color is: Red" + shapeMarker.getFillColor().getRed() + " | Green: " + shapeMarker.getFillColor().getGreen() + " | Blue: " + shapeMarker.getFillColor().getBlue() + " | Alpha: " + shapeMarker.getFillColor().getAlpha());
+					TownyProvinces.info("DEBUG: It should be: Red " + fillColor.getRed() + " | Green: " + fillColor.getGreen() + " | Blue: " + fillColor.getBlue() + " | Alpha: " + fillColor.getAlpha());
 				}
 				if(!shapeMarker.getFillColor().equals(fillColor)){
 					TownyProvinces.info("DEBUG: Fill color does not match");
 					shapeMarker.setFillColor(fillColor);
 				}
+				TownyProvinces.info("DEBUG: Constructing a brand new shapemarker");
+				marker = ShapeMarker.builder()
+					.shape(shapeMarker.getShape(), 65)
+					.fillColor(fillColor)
+					.lineColor(borderColor)
+					.label(province.getId())
+					.depthTestEnabled(false)
+					.build();
 			}
 			TownyProvinces.info("DEBUG: Adding the marker back");
 			borderMarkerSet.put(province.getId(), marker);
