@@ -56,6 +56,7 @@
 3. Be aware of known technical issues:
     - The Hexagonal dynmap view does not look right. A fix is ticketed.
     - On very large maps (e.g. 1:500). TownyProvinces tends to "sit" on lots of memory. A fix is in development.
+    - When making a new town, the 'confirmation' message does not show the correct amount. But the correct amount is charged.
 4. Configure
    - Configure as many region definition files as you want, in /region_definitions.
    - Region definition files are evaluated in alpha-numeric order.
