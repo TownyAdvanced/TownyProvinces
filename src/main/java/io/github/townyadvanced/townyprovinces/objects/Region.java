@@ -176,7 +176,7 @@ public class Region {
 		provinces.clear();
 	}
 
-	public double getAverageProvinceNewTownCostWithoutOutliers() {
+	public double getAverageNewTownCostWithoutOutliers() {
 		//Get average cost
 		double averageCost = getAverageNewTownCost(provinces);
 		
@@ -201,7 +201,7 @@ public class Region {
 		return result / provinces.size();
 	}
 
-	public double getAverageProvinceUpkeepTownCostWithoutOutliers() {
+	public double getAverageUpkeepTownCostWithoutOutliers() {
 		//Get average cost
 		double averageCost = getAverageUpkeepTownCost(provinces);
 
@@ -209,7 +209,7 @@ public class Region {
 		double outlierThreshold = averageCost * 3;
 		Set<Province> provincesWithoutOutliers = new HashSet<>();
 		for(Province province: provinces) {
-			if(province.getNewTownCost() < outlierThreshold) {
+			if(province.getUpkeepTownCost() < outlierThreshold) {
 				provincesWithoutOutliers.add(province);
 			}
 		}

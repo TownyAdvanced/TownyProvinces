@@ -2,10 +2,8 @@ package io.github.townyadvanced.townyprovinces.util;
 
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
-import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.Region;
-import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 
 public class MoneyUtil {
@@ -22,22 +20,30 @@ public class MoneyUtil {
 	 */
 	public static void recalculateProvincePrices() {
 		TownyProvinces.info("Recalculating province prices");
-		double provinceCostLimitRatio = TownyProvincesSettings.getProvinceCostLimitProportion();  
 		TownyProvincesSettings.recalculateProvincesInRegions();
+		double townNewCost;
+		double townUpkeepCost;
 		double townNewCostLimit;
 		double townUpkeepCostLimit;
+		int numCoordsInProvince;
 		for(Region region: TownyProvincesSettings.getOrderedRegionsList()) {
-			townNewCostLimit = region.getAverageProvinceNewTownCostWithoutOutliers() * provinceCostLimitRatio;
-			townUpkeepCostLimit = region.getAverageProvinceUpkeepTownCostWithoutOutliers() * provinceCostLimitRatio;
+			//Set standard costs
 			for(Province province: region.getProvinces()) {
-				if(province.getNewTownCost() > townNewCostLimit) {
-					province.setNewTownCost(townNewCostLimit);
-				}
-				if(province.getNewTownCost() > townUpkeepCostLimit) {
-					province.setUpkeepTownCost(townUpkeepCostLimit);
-				}
+				numCoordsInProvince = province.getListOfCoordsInProvince().size();
+				townNewCost = region.getNewTownCostPerChunk() * numCoordsInProvince;
+				townUpkeepCost = region.getUpkeepTownCostPerChunk() * numCoordsInProvince;
+				province.setNewTownCost(townNewCost);
+				province.setUpkeepTownCost(townUpkeepCost);
+			}
+			//Limit costs where required
+			townNewCostLimit = region.getAverageNewTownCostWithoutOutliers() * TownyProvincesSettings.getProvinceCostLimitProportion();
+			townUpkeepCostLimit = region.getAverageUpkeepTownCostWithoutOutliers() * TownyProvincesSettings.getProvinceCostLimitProportion();
+			for(Province province: region.getProvinces()) {
+				province.setNewTownCost(Math.min(province.getNewTownCost(), townNewCostLimit));
+				province.setUpkeepTownCost(Math.min(province.getUpkeepTownCost(), townUpkeepCostLimit));
 			}
 		}
+		//Save data
 		DataHandlerUtil.saveAllData();
 		TownyProvinces.info("Province Prices Recalculated");
 	}
