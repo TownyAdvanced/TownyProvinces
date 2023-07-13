@@ -194,11 +194,10 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 
 	@Override
 	protected void drawProvinceBorder(Province province) {
-		int borderColour = province.getType().getBorderColour();
-		float borderOpacity = (float) province.getType().getBorderOpacity();
+		Color borderColor = new Color(province.getType().getBorderColour(), (float) province.getType().getBorderOpacity());
 		String markerId = province.getId();
-		Marker shapeMarker = borderMarkerSet.get(markerId);
-			if (shapeMarker == null) {
+		Marker marker = borderMarkerSet.get(markerId);
+			if (marker == null) {
 				Set<TPCoord> borderCoords = findAllBorderCoords(province);
 				if (borderCoords.size() > 0) {
 					//Arrange border blocks into drawable line
@@ -212,12 +211,9 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 					}
 				}
 			}
-		if (shapeMarker instanceof ShapeMarker) {
-			if(!((ShapeMarker) shapeMarker).getLineColor().equals(borderColour)){
-				java.awt.Color provinceColor = new java.awt.Color(province.getType().getBorderColour());
-				Color color = new Color(provinceColor.getRed(), provinceColor.getGreen(), provinceColor.getBlue(), borderOpacity);
-				((ShapeMarker) shapeMarker).setLineColor(color);
-			}
+		if (marker instanceof ShapeMarker) {
+			ShapeMarker shapeMarker = (ShapeMarker) marker;
+			shapeMarker.setLineColor(borderColor);
 		}
 	}
 
