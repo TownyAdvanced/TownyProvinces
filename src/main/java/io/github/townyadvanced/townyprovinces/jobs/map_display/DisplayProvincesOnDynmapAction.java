@@ -249,11 +249,11 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		//Cycle provinces
 		AreaMarker areaMarker;
 		for(Province province: new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())) {
-			//Set border colour if needed
+			//Set border colour
 			areaMarker = bordersMarkerSet.findAreaMarker(province.getId());
 			if(areaMarker != null) {
 				areaMarker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
-				//Set fill colour if needed
+				//Set fill colour
 				areaMarker.setFillStyle(province.getFillOpacity(), province.getFillColour());
 			}
 		}
