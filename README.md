@@ -45,23 +45,19 @@
 2. To see the generated provinces, view your website-map. 
 
 ## :arrow_forward: Admin Full Guide
-1. Prepare Playerbase
-   - The main benefit of TownyProvinces is for you, the server owner/staff, because it will reduce both your workload relating to claiming/overclaiming, and the toxicity you have to deal with on your server.
-   - If you have a mature playerbase, they will easily understand this, however if you have a lot of younger players, you can expect them to struggle to understand why the benefit of improving your life is worth the cost of slightly curtailing their freedoms.
-   - Thus take care to keep players informed and bring them along.
-2. Protect Historical Locations
-   - If you are running a "Historical" map (e.g. "Earth"), make sure to protect important historical locations, to ensure border-lines don't run throught them.
-   - Do this by including the co-ordinates of those locations in your region def files. (for an example, see the automatically generate "Europe.yml".
-   - It may be approporiate to ask players which locations they want protected, to help ensure you don't forget any.
-3. Be aware of known technical issues:
+1. Protect Historical Locations
+   - If you are running a "Historical" map (e.g. "Earth"), make sure to protect important historical locations, to ensure border-lines don't cut throught them.
+   - Do this by including the co-ordinates of those locations in your region def files. (for an example, see the automatically generated "Europe.yml".
+   - It may help to ask players which locations they want protected, to ensure you don't forget any, and to get them involved in using the plugin.
+2. Be aware of known technical issues:
     - The Hexagonal dynmap view does not look right. A fix is ticketed.
     - On very large maps (e.g. 1:500). TownyProvinces tends to "sit" on lots of memory. A fix is in development.
     - When making a new town, the 'confirmation' message does not show the correct amount. But the correct amount is charged.
-4. Configure
+3. Configure
    - Configure as many region definition files as you want, in /region_definitions.
    - Region definition files are evaluated in alpha-numeric order.
    - The first region definition file should be the size of the entire map.
-5. Generate Provinces
+4. Generate Provinces
    - Run 'tpra region regenerate all' to regenerate all the regions you have specified.
    - After the Regeneration Job is complete, run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, then will adjust the province type and prices accordingly. Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
    - After the Land Validation Job runs, expect to tweak a few provinces for type, and a few regions for pricing.
