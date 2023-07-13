@@ -32,14 +32,13 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	private MarkerSet homeBlocksMarkersSet;
 	private final TPFreeCoord tpFreeCoord;
 	
-	public DisplayProvincesOnBlueMapAction(){
+	public DisplayProvincesOnBlueMapAction() {
 		TownyProvinces.info("Enabling BlueMap support.");
 
 		tpFreeCoord = new TPFreeCoord(0,0);
-		
+
 		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support BlueMap.");
-			return;
+			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
 		}
 		
 		BlueMapAPI.onEnable(e -> {

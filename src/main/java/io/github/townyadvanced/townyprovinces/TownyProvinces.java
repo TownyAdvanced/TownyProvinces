@@ -112,40 +112,47 @@ public class TownyProvinces extends JavaPlugin {
 	}
 	
 	private boolean loadIntegrations() {
-		try {
-			if (getServer().getPluginManager().isPluginEnabled("Pl3xMap")) {
+		if (getServer().getPluginManager().isPluginEnabled("Pl3xMap")) {
+			try {
 				if (classExists("net.pl3x.map.core.Pl3xMap")) {
 					info("Found Pl3xMap v3. Enabling Pl3xMap integration.");
 					MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnPl3xMapV3Action());
-				}
-				else if (classExists("net.pl3x.map.Pl3xMap")) {
+				} else if (classExists("net.pl3x.map.Pl3xMap")) {
 					//Pl3xMap v2
 					info("Pl3xMap v2 is not supported. Cannot enable Pl3xMap integration.");
-				}
-				else {
+				} else {
 					//Pl3xMap v1
 					info("Pl3xMap v1 is not supported. Cannot enable Pl3xMap integration.");
 				}
+			} catch (RuntimeException e) {
+				Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling Pl3xMap integration: " + e.getMessage());
+				e.printStackTrace();
 			}
-			if(getServer().getPluginManager().isPluginEnabled("bluemap")){
+		}
+		if(getServer().getPluginManager().isPluginEnabled("bluemap")){
+			try {
 				info("Found BlueMap. Enabling BlueMap integration.");
 				MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnBlueMapAction());
+			} catch (RuntimeException e) {
+				Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling BlueMap integration: " + e.getMessage());
+				e.printStackTrace();
 			}
-			if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
+		}
+		if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
+			try {
 				info("Found Dynmap plugin. Enabling Dynmap integration.");
 				MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnDynmapAction());
+			} catch (RuntimeException e) {
+				Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling Dynmap integration: " + e.getMessage());
+				e.printStackTrace();
 			}
-			if (!MapDisplayTaskController.isMapSupported()) {
-				info("Did not find a supported map plugin. Cannot enable map integration.");
-				return false;
-			}
-			MapDisplayTaskController.startTask();
-			return true;
-		} catch (Exception e) {
-			Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling map integration: " + e.getMessage());
-			e.printStackTrace();
+		}
+		if (!MapDisplayTaskController.isMapSupported()) {
+			info("Did not find a supported map plugin. Cannot enable map integration.");
 			return false;
 		}
+		MapDisplayTaskController.startTask();
+		return true;
 	}
 	
 	private boolean checkTownyVersion() {

@@ -8,6 +8,7 @@ import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import net.pl3x.map.core.image.io.IO;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.Marker;
@@ -38,8 +39,7 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		tpFreeCoord = new TPFreeCoord(0,0);
 
 		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Dynmap.");
-			return;
+			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
 		}
 		
 		final MarkerIcon oldMarkerIcon = markerapi.getMarkerIcon("provinces_costs_icon");
@@ -50,16 +50,16 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			ImageIO.write(TownyProvincesSettings.getTownCostsIcon(), "png", outputStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
+		} catch (IOException ex) {
+			TownyProvinces.severe("Failed to write BlueMap Marker Icon as png file!");
+			throw new RuntimeException(ex);
 		}
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 		MarkerIcon markerIcon = markerapi.createMarkerIcon("provinces_costs_icon",
 			"provinces_costs_icon", inputStream);
 
 		if (markerIcon == null) {
-			TownyProvinces.severe("Error registering Town Costs Icon on Dynmap! Unable to support Dynmap.");
+			throw new RuntimeException("Failed to register Town Costs Icon");
 		}
 		TownyProvinces.info("Dynmap support enabled.");
 	}

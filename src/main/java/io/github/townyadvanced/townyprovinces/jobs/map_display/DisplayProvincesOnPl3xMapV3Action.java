@@ -21,6 +21,7 @@ import net.pl3x.map.core.markers.option.Options;
 import net.pl3x.map.core.markers.option.Stroke;
 import net.pl3x.map.core.world.World;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -34,10 +35,9 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 	public DisplayProvincesOnPl3xMapV3Action() {
 		TownyProvinces.info("Enabling Pl3xMap v3 support.");
 		tpFreeCoord = new TPFreeCoord(0,0);
-		
+
 		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Pl3xMap V3.");
-			return;
+			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
 		}
 
 		Pl3xMap.api().getIconRegistry().register(new IconImage(
