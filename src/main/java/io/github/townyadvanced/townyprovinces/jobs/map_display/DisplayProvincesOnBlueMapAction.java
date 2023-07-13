@@ -151,8 +151,9 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	@Override
 	protected void setProvinceMapStyles() {
 		Marker marker;
-		for(Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()){
+		for(Province province : new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())){
 			marker = borderMarkerSet.get(province.getId());
+
 			float borderOpacity = (float) province.getType().getBorderOpacity();
 			float fillOpacity = (float) province.getFillOpacity();
 			java.awt.Color borderColor = new java.awt.Color(province.getType().getBorderColour());
