@@ -45,9 +45,9 @@
 2. To see the generated provinces, view your website-map. 
 
 ## :arrow_forward: Admin Full Guide
-1. Protect Historical Locations
-   - If you are running a "Historical" map (e.g. "Earth"), make sure to protect important historical locations, to ensure border-lines don't cut throught them.
-   - Do this by adding the co-ordinates of those locations to your region def files. (for an example, see the automatically generated "Europe.yml".
+1. Protect Historical Town Locations
+   - If you are running a "Historical" map (e.g. "Earth"), make sure to protect important historical town locations, to ensure border-lines don't cut throught them.
+   - Do this by adding the co-ordinates of those towns to your region def files. (for an example, see the automatically generated "Europe.yml".
    - It may help to ask players which locations they want protected, to ensure you don't forget any, and to get them involved in using the plugin.
 2. Be aware of known technical issues:
     - The Hexagonal dynmap view does not look right. A fix is ticketed.
