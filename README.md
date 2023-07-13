@@ -56,13 +56,12 @@
 3. Be aware of known technical issues:
     - TownyProvinces does not yet support multiple Worlds (*e.g. you can't have provinces in the Nether*). A fix is ticketed.
     - The Hexagonal dynmap view does not look right. A fix is ticketed.
-    - On very large maps. TownyProvinces tends to "sit" on lots of memory. A fix is in development.
-    - On provinces bordering 2 regions, the price can sometimes be too high. A fix is in development. As a workaround, edit the affected province files then run `tpra reload`.
+    - On very large maps (e.g. 1:500). TownyProvinces tends to "sit" on lots of memory. A fix is in development.
 4. Configure
    - Configure as many region definition files as you want, in /region_definitions.
    - Region definition files are evaluated in alpha-numeric order.
    - The first region definition file should be the size of the entire map.
-   - After you have generated your regions, run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, and adjust prices accordingly. It will also set each province type, as either Civilized, Sea, or Wasteland . Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
+   - After you have generated your regions, run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, then will adjust the province type and prices accordingly. Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
    - After the Land Validation Job runs, expect to tweak a few provinces for type, and a few regions for pricing.
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
