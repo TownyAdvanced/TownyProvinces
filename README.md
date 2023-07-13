@@ -65,13 +65,13 @@
    - After the Land Validation Job runs, expect to tweak a few provinces for type, and a few regions for pricing.
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
-- `tpra region [newtowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk new-town-cost for a region.
-- `tpra region [upkeeptowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk upkeep-town-cost for a region.
 - `tpra landvalidationjob [status|start|stop|restart|pause]` -> Control the land validation job.
   - This Job assigns a type to each provinces, either Civilized, Sea, or Wasteland. It also Assesses and records the Biome proportions in each province. These proportions affect the new/upkeep prices.
   - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below commands.* 
 - `tpra province settype [civilized|sea|wasteland] [<x>,<z>]` -> Set the type of a province.
 - `tpra province settype [civilized|sea|wasteland] [<x1>,<z1>] [<2x>,<z2>]` -> Set the type of all provinces in a rectangular area.
+- `tpra region [newtowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk new-town-cost for a region.
+- `tpra region [upkeeptowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk upkeep-town-cost for a region.
 
 ## :brain: Advanced Guide to Region Definitions
 To fully understand how to configure your region definition files, you must understand how provinces are generated:
