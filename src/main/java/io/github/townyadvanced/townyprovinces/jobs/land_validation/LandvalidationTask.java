@@ -21,17 +21,21 @@ public class LandvalidationTask extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		TownyProvinces.info("Acquiring province set change lock.");
-		synchronized (TownyProvinces.PROVINCE_SET_CHANGE_LOCK) {
-			TownyProvinces.info("Province set change lock acquired.");
-			/*
-			 * If there are no requests pending, 
-			 * this is a fresh start, so request all provinces
-			 */
-			if(!areAnyValidationsPending()) {
-				setLandValidationRequestsForAllProvinces(true);
+		TownyProvinces.info("Acquiring synch locks.");
+		synchronized (TownyProvinces.LAND_VALIDATION_JOB_LOCK) {
+			synchronized (TownyProvinces.REGION_REGENERATION_JOB_LOCK) {
+				synchronized (TownyProvinces.PRICE_RECALCULATION_JOB_LOCK) {
+					TownyProvinces.info("Synch locks acquired.");
+					/*
+					 * If there are no requests pending,
+					 * this is a fresh start, so request all provinces
+					 */
+					if (!areAnyValidationsPending()) {
+						setLandValidationRequestsForAllProvinces(true);
+					}
+					executeLandValidation();
+				}
 			}
-			executeLandValidation();
 		}
 	}
 

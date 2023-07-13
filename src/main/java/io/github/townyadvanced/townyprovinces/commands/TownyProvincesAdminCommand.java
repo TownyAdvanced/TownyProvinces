@@ -274,13 +274,13 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 	}
 
 	private void parseProvinceSetTypeCommandByArea(CommandSender sender, String[] args, ProvinceType provinceType) {
-		String[] topLeftCornerAsArray = args[1].split(",");
+		String[] topLeftCornerAsArray = args[2].split(",");
 		if(topLeftCornerAsArray.length != 2) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
 			showHelp(sender);
 			return;
 		}
-		String[] bottomRightCornerAsArray = args[2].split(",");
+		String[] bottomRightCornerAsArray = args[3].split(",");
 		if(bottomRightCornerAsArray.length != 2) {
 			Messaging.sendMsg(sender, Translatable.of("msg_err_invalid_province_location"));
 			showHelp(sender);
@@ -325,94 +325,106 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 	}
 
 	private void parseRegionSetNewTownCostCommand(CommandSender sender, String[] args) {
-		TownyProvinces.info("Getting province set change lock.");
-		synchronized (TownyProvinces.PROVINCE_SET_CHANGE_LOCK) {
-			TownyProvinces.info("Province set change lock acquired.");
-			try {
-				String givenRegionName = args[1];
-				double townCostPerChunk = Double.parseDouble(args[2]);
-				String formattedTownCostPerChunk = TownyEconomyHandler.getFormattedBalance(townCostPerChunk);
-				;
-				double townCost;
-				String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
+		TownyProvinces.info("Getting synch locks.");
+		synchronized (TownyProvinces.MAP_DISPLAY_JOB_LOCK) {
+			synchronized (TownyProvinces.REGION_REGENERATION_JOB_LOCK) {
+				synchronized (TownyProvinces.PRICE_RECALCULATION_JOB_LOCK) {
+					synchronized (TownyProvinces.LAND_VALIDATION_JOB_LOCK) {
+						TownyProvinces.info("Synch locks acquired.");
+						try {
+							String givenRegionName = args[1];
+							double townCostPerChunk = Double.parseDouble(args[2]);
+							String formattedTownCostPerChunk = TownyEconomyHandler.getFormattedBalance(townCostPerChunk);
+							;
+							double townCost;
+							String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 
-				if (givenRegionName.equalsIgnoreCase("all")) {
-					//Set cost for all provinces, regardless of region
-					for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-						townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
-						province.setNewTownCost(townCost);
-						province.saveData();
-					}
-					MoneyUtil.recalculateProvincePrices();
-					MapDisplayTaskController.requestHomeBlocksRefresh();
-					Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_all_regions", formattedTownCostPerChunk));
+							if (givenRegionName.equalsIgnoreCase("all")) {
+								//Set cost for all provinces, regardless of region
+								for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+									townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
+									province.setNewTownCost(townCost);
+									province.saveData();
+								}
+								MoneyUtil.recalculateProvincePrices();
+								MapDisplayTaskController.requestHomeBlocksRefresh();
+								Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_all_regions", formattedTownCostPerChunk));
 
-				} else if (TownyProvincesSettings.getRegions().containsKey(caseCorrectRegionName)) {
-					//Set cost for just one region
-					Region region = TownyProvincesSettings.getRegion(caseCorrectRegionName);
-					for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-						if (TownyProvincesSettings.isProvinceInRegion(province, region)) {
-							townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
-							province.setNewTownCost(townCost);
-							province.saveData();
+							} else if (TownyProvincesSettings.getRegions().containsKey(caseCorrectRegionName)) {
+								//Set cost for just one region
+								Region region = TownyProvincesSettings.getRegion(caseCorrectRegionName);
+								for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+									if (TownyProvincesSettings.isProvinceInRegion(province, region)) {
+										townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
+										province.setNewTownCost(townCost);
+										province.saveData();
+									}
+								}
+								MoneyUtil.recalculateProvincePrices();
+								MapDisplayTaskController.requestHomeBlocksRefresh();
+								Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCostPerChunk));
+
+							} else {
+								Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
+							}
+						} catch (NumberFormatException nfe) {
+							Messaging.sendMsg(sender, Translatable.of("msg_err_value_must_be_and_integer"));
 						}
 					}
-					MoneyUtil.recalculateProvincePrices();
-					MapDisplayTaskController.requestHomeBlocksRefresh();
-					Messaging.sendMsg(sender, Translatable.of("msg_new_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCostPerChunk));
-
-				} else {
-					Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
 				}
-			} catch (NumberFormatException nfe) {
-				Messaging.sendMsg(sender, Translatable.of("msg_err_value_must_be_and_integer"));
 			}
 		}
 	}
 	
 	private void parseRegionSetTownUpkeepCostCommand(CommandSender sender, String[] args) {
-		TownyProvinces.info("Getting province set change lock.");
-		synchronized (TownyProvinces.PROVINCE_SET_CHANGE_LOCK) {
-			TownyProvinces.info("Province set change lock acquired.");
-			try {
-				String givenRegionName = args[1];
-				double townCostPerChunk = Double.parseDouble(args[2]);
-				String formattedTownCostPerChunk = TownyEconomyHandler.getFormattedBalance(townCostPerChunk);
-				;
-				double townCost;
-				String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
+		TownyProvinces.info("Getting synch locks.");
+		synchronized (TownyProvinces.MAP_DISPLAY_JOB_LOCK) {
+			synchronized (TownyProvinces.PRICE_RECALCULATION_JOB_LOCK) {
+				synchronized (TownyProvinces.MAP_DISPLAY_JOB_LOCK) {
+					synchronized (TownyProvinces.LAND_VALIDATION_JOB_LOCK) {
+						TownyProvinces.info("Synch locks acquired.");
+						try {
+							String givenRegionName = args[1];
+							double townCostPerChunk = Double.parseDouble(args[2]);
+							String formattedTownCostPerChunk = TownyEconomyHandler.getFormattedBalance(townCostPerChunk);
+							;
+							double townCost;
+							String caseCorrectRegionName = TownyProvincesSettings.getCaseSensitiveRegionName(givenRegionName);
 
-				if (givenRegionName.equalsIgnoreCase("all")) {
-					//Set cost for all provinces, regardless of region
-					for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-						townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
-						province.setUpkeepTownCost(townCost);
-						province.saveData();
-					}
-					//Recalculated all prices
-					MoneyUtil.recalculateProvincePrices();
-					MapDisplayTaskController.requestHomeBlocksRefresh();
-					Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_all_regions", formattedTownCostPerChunk));
+							if (givenRegionName.equalsIgnoreCase("all")) {
+								//Set cost for all provinces, regardless of region
+								for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+									townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
+									province.setUpkeepTownCost(townCost);
+									province.saveData();
+								}
+								//Recalculated all prices
+								MoneyUtil.recalculateProvincePrices();
+								MapDisplayTaskController.requestHomeBlocksRefresh();
+								Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_all_regions", formattedTownCostPerChunk));
 
-				} else if (TownyProvincesSettings.getRegions().containsKey(caseCorrectRegionName)) {
-					//Set cost for just one region
-					Region region = TownyProvincesSettings.getRegion(caseCorrectRegionName);
-					for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-						if (TownyProvincesSettings.isProvinceInRegion(province, region)) {
-							townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
-							province.setUpkeepTownCost(townCost);
-							province.saveData();
+							} else if (TownyProvincesSettings.getRegions().containsKey(caseCorrectRegionName)) {
+								//Set cost for just one region
+								Region region = TownyProvincesSettings.getRegion(caseCorrectRegionName);
+								for (Province province : TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+									if (TownyProvincesSettings.isProvinceInRegion(province, region)) {
+										townCost = townCostPerChunk * province.getListOfCoordsInProvince().size();
+										province.setUpkeepTownCost(townCost);
+										province.saveData();
+									}
+								}
+								MoneyUtil.recalculateProvincePrices();
+								MapDisplayTaskController.requestHomeBlocksRefresh();
+								Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCostPerChunk));
+
+							} else {
+								Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
+							}
+						} catch (NumberFormatException nfe) {
+							Messaging.sendMsg(sender, Translatable.of("msg_err_value_must_be_and_integer"));
 						}
 					}
-					MoneyUtil.recalculateProvincePrices();
-					MapDisplayTaskController.requestHomeBlocksRefresh();
-					Messaging.sendMsg(sender, Translatable.of("msg_upkeep_town_cost_set_for_one_region", caseCorrectRegionName, formattedTownCostPerChunk));
-
-				} else {
-					Messaging.sendMsg(sender, Translatable.of("msg_err_unknown_region_name"));
 				}
-			} catch (NumberFormatException nfe) {
-				Messaging.sendMsg(sender, Translatable.of("msg_err_value_must_be_and_integer"));
 			}
 		}
 	}

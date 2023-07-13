@@ -35,7 +35,10 @@ public class TownyProvinces extends JavaPlugin {
 	 * A. Change the set of provinces, or
 	 * B. Loop through the set of provinces
 	 */
-	public static final Object PROVINCE_SET_CHANGE_LOCK = new Object();
+	public static final Object LAND_VALIDATION_JOB_LOCK = new Object();
+	public static final Object REGION_REGENERATION_JOB_LOCK = new Object();
+	public static final Object PRICE_RECALCULATION_JOB_LOCK = new Object();
+	public static final Object MAP_DISPLAY_JOB_LOCK = new Object();
 	private static TownyProvinces plugin;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.1.0");
 	
