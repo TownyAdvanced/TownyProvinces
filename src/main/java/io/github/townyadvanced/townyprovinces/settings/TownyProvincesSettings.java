@@ -1,8 +1,10 @@
 package io.github.townyadvanced.townyprovinces.settings;
 
-import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
+import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
+import io.github.townyadvanced.townyprovinces.objects.Region;
+import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,31 +20,34 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class TownyProvincesSettings {
 
-	private static final Map<String, Map<String, String>> regionDefinitions = new HashMap<>();
-	private final static List<String> orderedRegionNames = new ArrayList<>();  //Name in the order of files
+	//private static final Map<String, Map<String, String>> regionDefinitions = new HashMap<>();
+	//private final static List<String> orderedRegionNames = new ArrayList<>();  //Name in the order of files
 
-	public static boolean loadRegionDefinitions() {
-		regionDefinitions.clear();
-		orderedRegionNames.clear();
+	private final static Map<String, Region> regions = new HashMap<>();
+	private final static List<Region> orderedRegionsList = new ArrayList<>();  //In the order of files on the disk
+
+	public static Map<String, Region> getRegions() {
+		return regions;
+	}
+	
+	public static boolean loadRegionsDefinitions() {
+		regions.clear();
+		orderedRegionsList.clear();
 		List<File> regionDefinitionFiles = FileUtil.readRegionDefinitionFiles();
-		Collections.sort(regionDefinitionFiles);
-		Map<String, String> regionDefinitions;
-		String regionName;
+		Collections.sort(regionDefinitionFiles); //Orders the regions by filename
+		Region region;
 		for (File regionDefinitionFile : regionDefinitionFiles) {
-			regionDefinitions = FileMgmt.loadFileIntoHashMap(regionDefinitionFile);
-			regionName = regionDefinitions.get("region_name");
-			TownyProvincesSettings.regionDefinitions.put(regionName, regionDefinitions);
-			orderedRegionNames.add(regionName);
+			region = new Region(regionDefinitionFile);
+			regions.put(region.getName(), region);
+			orderedRegionsList.add(region);
 		}
 		//Ensure none of them are titled "ALL"
-		for (String name : TownyProvincesSettings.getRegionDefinitions().keySet()) {
+		for (String name : TownyProvincesSettings.getRegions().keySet()) {
 			if (name.equalsIgnoreCase("all")) {
 				TownyProvinces.severe("Error: One region was named 'All'. This is not allowed");
 				return false;
@@ -51,14 +56,14 @@ public class TownyProvincesSettings {
 		return true;
 	}
 
-	public static Map<String, String> getRegionDefinitions(String regionName) {
-		return regionDefinitions.get(regionName);
+	public static Region getRegion(String regionName) {
+		return regions.get(regionName);
 	}
 
-	public static Map<String, Map<String, String>> getRegionDefinitions() {
-		return regionDefinitions;
+	public static Region getFirstRegion() {
+		return orderedRegionsList.get(0);
 	}
-
+	
 	public static boolean isTownyProvincesEnabled() {
 		return Settings.getBoolean(ConfigNodes.ENABLED);
 	}
@@ -72,22 +77,23 @@ public class TownyProvincesSettings {
 		return Settings.getString(ConfigNodes.WORLD_NAME);
 	}
 
-	public static Location getTopLeftCornerLocation(String regionName) {
-		Map<String, String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+	public static String getRegionName(Map<String, String> regionDefinitions) {
+		return regionDefinitions.get("region_name");
+	}
+
+	public static Location getTopLeftCornerLocation(Map<String, String> regionDefinitions) {
 		String locationString = regionDefinitions.get("top_left_corner_location");
 		String[] locationArray = locationString.split(",");
 		return new Location(getWorld(), Integer.parseInt(locationArray[0].trim()), 0, Integer.parseInt(locationArray[1].trim()));
 	}
 
-	public static Location getBottomRightCornerLocation(String regionName) {
-		Map<String, String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+	public static Location getBottomRightCornerLocation(Map<String, String> regionDefinitions) {
 		String locationString = regionDefinitions.get("bottom_right_corner_location");
 		String[] locationArray = locationString.split(",");
 		return new Location(getWorld(), Integer.parseInt(locationArray[0].trim()), 0, Integer.parseInt(locationArray[1].trim()));
 	}
 
-	public static int getAverageProvinceSize(String regionName) {
-		Map<String, String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+	public static int getAverageProvinceSize(Map<String, String> regionDefinitions) {
 		String numString = regionDefinitions.get("average_province_size");
 		return Integer.parseInt(numString);
 	}
@@ -96,72 +102,83 @@ public class TownyProvincesSettings {
 		return 16;
 	}
 
-	public static int getMaxBrushMoves(String regionName) {
-		Map<String, String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+	public static int getMaxBrushMoves(Map<String, String> regionDefinitions) {
 		String numString = regionDefinitions.get("max_brush_moves");
 		return Integer.parseInt(numString);
 	}
 
-	public static int getBrushSquareRadiusInChunks(String regionName) {
-		double provinceSquareRadius = calculateProvinceSquareRadius(regionName);
-		double brushSquareRadiusPercent = getBrushSquareRadiusAsPercentageOfProvinceSquareRadius(regionName);
+	public static int getBrushSquareRadiusInChunks(Map<String, String> regionDefinitions) {
+		double provinceSquareRadius = calculateProvinceSquareRadius(regionDefinitions);
+		double brushSquareRadiusPercent = getBrushSquareRadiusAsPercentageOfProvinceSquareRadius(regionDefinitions);
 		double brushSquareRadius = provinceSquareRadius / 100 * brushSquareRadiusPercent;
 		int brushSquareRadiusInChunks = (int)((brushSquareRadius / getChunkSideLength()) + 0.5);
 		brushSquareRadiusInChunks = Math.max(brushSquareRadiusInChunks, 1);
 		return brushSquareRadiusInChunks;
 	}
 	
-	public static int getMaxBrushMoveInChunks(String regionName) {
-		double brushSquareRadius = getBrushSquareRadiusInChunks(regionName) * getChunkSideLength();
-		double brushMaxMovePercent = getBrushMaxMoveAsPercentageOfBrushSquareRadius(regionName);
+	public static int getMaxBrushMoveInChunks(Map<String, String> regionDefinitions) {
+		double brushSquareRadius = getBrushSquareRadiusInChunks(regionDefinitions) * getChunkSideLength();
+		double brushMaxMovePercent = getBrushMaxMoveAsPercentageOfBrushSquareRadius(regionDefinitions);
 		double brushMaxMove = brushSquareRadius / 100 * brushMaxMovePercent;
 		int brushMaxMoveInChunks = (int)((brushMaxMove / getChunkSideLength()) + 0.5);
 		brushMaxMoveInChunks = Math.max(brushMaxMoveInChunks, 1);
 		return brushMaxMoveInChunks;
 	}
 
-	public static int getMinBrushMoveInChunks(String regionName) {
-		double brushMaxMove = getMaxBrushMoveInChunks(regionName) * getChunkSideLength();
-		double brushMinMovePercent = getBrushMinMoveAsPercentageOfBrushMaxMove(regionName);
+	public static int getMinBrushMoveInChunks(Map<String, String> regionDefinitions) {
+		double brushMaxMove = getMaxBrushMoveInChunks(regionDefinitions) * getChunkSideLength();
+		double brushMinMovePercent = getBrushMinMoveAsPercentageOfBrushMaxMove(regionDefinitions);
 		double brushMinMove = brushMaxMove / 100 * brushMinMovePercent;
 		int brushMinMoveInChunks = (int)((brushMinMove / getChunkSideLength()) + 0.5);
 		brushMinMoveInChunks = Math.max(brushMinMoveInChunks, 1);
 		return brushMinMoveInChunks;
 	}
 	
-	private static int getBrushSquareRadiusAsPercentageOfProvinceSquareRadius(String regionName) {
-		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+	private static int getBrushSquareRadiusAsPercentageOfProvinceSquareRadius(Map<String, String> regionDefinitions) {
 		String numString =  regionDefinitions.get("brush_square_radius_as_percentage_of_province_square_radius");
 		return Integer.parseInt(numString);
 	}
 
-	private static int getBrushMaxMoveAsPercentageOfBrushSquareRadius(String regionName) {
-		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+	private static int getBrushMaxMoveAsPercentageOfBrushSquareRadius(Map<String, String> regionDefinitions) {
 		String numString =  regionDefinitions.get("brush_max_move_as_percentage_of_brush_square_radius");
 		return Integer.parseInt(numString);
 	}
 
-	private static int getBrushMinMoveAsPercentageOfBrushMaxMove(String regionName) {
-		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+	private static int getBrushMinMoveAsPercentageOfBrushMaxMove(Map<String, String> regionDefinitions) {
 		String numString =  regionDefinitions.get("brush_min_move_as_percentage_of_brush_max_move");
 		return Integer.parseInt(numString);
 	}
 
-	public static int calculateProvinceSquareRadius(String regionName) {
-		double averageProvinceSize = getAverageProvinceSize(regionName);
+	public static int calculateProvinceSquareRadius(Map<String, String> regionDefinitions) {
+		double averageProvinceSize = getAverageProvinceSize(regionDefinitions);
 		return (int)((Math.sqrt(averageProvinceSize)) / 2);
 	}
 
-	public static double getNewTownCostPerChunk(String regionName) {
-		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+	public static double getNewTownCostPerChunk(Map<String, String> regionDefinitions) {
 		String numberString = regionDefinitions.get("new_town_cost_per_chunk");
 		return Double.parseDouble(numberString);
 	}
 
-	public static double getUpkeepTownCostPerChunk(String regionName) {
-		Map<String,String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
+	public static double getUpkeepTownCostPerChunk(Map<String, String> regionDefinitions) {
 		String numberString = regionDefinitions.get("upkeep_town_cost_per_chunk");
 		return Double.parseDouble(numberString);
+	}
+
+	public static Map<String,Location> getProtectedLocations(Map<String, String> regionDefinitions) {
+		Map<String, Location> result = new HashMap<>();
+		String locationsString = regionDefinitions.get("protected_locations");
+		if(locationsString != null) {
+			World world = getWorld();
+			String[] locationsArray = locationsString.split("\\|");
+			String[] singleLocationArray;
+			Location location;
+			for (String singleLocationString : locationsArray) {
+				singleLocationArray = singleLocationString.split(",");
+				location =  new Location(world, Integer.parseInt(singleLocationArray[1].trim()), 64, Integer.parseInt(singleLocationArray[2].trim()));
+				result.put(singleLocationArray[0], location);
+			}
+		}
+		return result;
 	}
 	
 	public static int getCivilizedProvinceBorderWeight() {
@@ -204,16 +221,12 @@ public class TownyProvincesSettings {
 		return Settings.getInt(ConfigNodes.PAUSE_MILLISECONDS_BETWEEN_BIOME_LOOKUPS);
 	}
 
-	public static List<String> getOrderedRegionNames() {
-		return orderedRegionNames;
+	public static List<Region> getOrderedRegionsList() {
+		return orderedRegionsList;
 	}
-	
-	public static String getNameOfFirstRegion() {
-		return orderedRegionNames.get(0);
-	}
-	
+
 	public static @Nullable String getCaseSensitiveRegionName(String givenRegionName) {
-		for(String regionName: regionDefinitions.keySet()) {
+		for(String regionName: regions.keySet()) {
 			if(regionName.equalsIgnoreCase(givenRegionName)) {
 				return regionName;
 			}
@@ -221,16 +234,14 @@ public class TownyProvincesSettings {
 		return null;
 	}
 
-	public static boolean isProvinceInRegion(Province province, String regionName) {
-		Location topLeftCornerLocation = getTopLeftCornerLocation(regionName);
-		Location bottomRightCornerLocation = getBottomRightCornerLocation(regionName);
+	public static boolean isProvinceInRegion(Province province, Region region) {
 		int homeBlockRealX = province.getHomeBlock().getX() * getChunkSideLength();
 		int homeBlockRealZ = province.getHomeBlock().getZ() * getChunkSideLength();
 		
-		if(homeBlockRealX  > topLeftCornerLocation.getBlockX()
-				&& homeBlockRealZ > topLeftCornerLocation.getBlockZ()
-				&& homeBlockRealX < bottomRightCornerLocation.getBlockX()
-				&& homeBlockRealZ < bottomRightCornerLocation.getBlockZ()) {
+		if(homeBlockRealX  > region.getTopLeftRegionCorner().getBlockX()
+				&& homeBlockRealZ > region.getTopLeftRegionCorner().getBlockZ()
+				&& homeBlockRealX < region.getBottomRightRegionCorner().getBlockX()
+				&& homeBlockRealZ < region.getBottomRightRegionCorner().getBlockZ()) {
 			return true;
 		} else {
 			return false;
@@ -299,21 +310,31 @@ public class TownyProvincesSettings {
 		return Settings.getDouble(ConfigNodes.MAP_NATION_COLOURS_OPACITY);
 	}
 
-	public static Map<String,Location> getProtectedLocations(String regionName) {
-		Map<String, Location> result = new HashMap<>();
-		Map<String, String> regionDefinitions = TownyProvincesSettings.getRegionDefinitions(regionName);
-		String locationsString = regionDefinitions.get("protected_locations");
-		if(locationsString != null) {
-			World world = getWorld();
-			String[] locationsArray = locationsString.split("\\|");
-			String[] singleLocationArray;
-			Location location;
-			for (String singleLocationString : locationsArray) {
-				singleLocationArray = singleLocationString.split(",");
-				location =  new Location(world, Integer.parseInt(singleLocationArray[1].trim()), 64, Integer.parseInt(singleLocationArray[2].trim()));
-				result.put(singleLocationArray[0], location);
+
+	public static double getProvinceCostLimitProportion() {
+		return Settings.getDouble(ConfigNodes.PROVINCE_COST_LIMIT_PROPORTION);
+	}
+	
+	public static void recalculateProvincesInRegions() {
+		//Clear provinces
+		for(Region region: orderedRegionsList) {
+			region.clearProvinces();
+		}
+		//Assign provinces
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+			findRegion(province.getHomeBlock()).addProvince(province);	
+		}
+	}
+
+	public static Region findRegion(TPCoord coord) {
+		Region region;
+		for(int i = orderedRegionsList.size()-1; i >= 0; i--) {
+			region = orderedRegionsList.get(i);
+			if(region.containsCoord(coord)) {
+				return region;
 			}
 		}
-		return result;
+		throw new RuntimeException("No region was found");
 	}
+
 }

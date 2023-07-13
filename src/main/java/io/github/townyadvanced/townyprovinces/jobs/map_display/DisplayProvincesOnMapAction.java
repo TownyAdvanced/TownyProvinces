@@ -24,7 +24,7 @@ public abstract class DisplayProvincesOnMapAction {
 
 	protected void drawProvinceBorders() {
 		//Find and draw the borders around each province
-		for (Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+		for (Province province: new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())) {
 			try {
 				drawProvinceBorder(province);
 			} catch (Throwable t) {

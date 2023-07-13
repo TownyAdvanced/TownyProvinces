@@ -30,11 +30,12 @@ import static com.palmergames.util.JavaUtil.classExists;
 
 public class TownyProvinces extends JavaPlugin {
 	/**
-	 * Lock this if you want to change or display the map,
-	 * to avoid concurrent modification problems
+	 * To avoid concurrent modification problems, 
+	 * synchronize this object when you want to:
+	 * A. Change the set of provinces, or
+	 * B. Loop through the set of provinces
 	 */
-	public static final Object MAP_DISPLAY_LOCK = new Object();
-	public static final Object LAND_VALIDATION_LOCK = new Object();
+	public static final Object PROVINCE_SET_CHANGE_LOCK = new Object();
 	private static TownyProvinces plugin;
 	private static final Version requiredTownyVersion = Version.fromString("0.99.1.0");
 	

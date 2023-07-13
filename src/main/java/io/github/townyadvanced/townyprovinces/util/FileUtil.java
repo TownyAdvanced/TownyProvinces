@@ -94,7 +94,7 @@ public class FileUtil {
 				fileEntries.add("brush_min_move_as_percentage_of_brush_max_move: 50");
 				fileEntries.add("max_brush_moves: 100");
 				fileEntries.add("new_town_cost_per_chunk: 0.8");
-				fileEntries.add("upkeep_town_cost_per_chunk: 0.08");
+				fileEntries.add("upkeep_town_cost_per_chunk: 0.04");
 				String folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(FileUtil.REGION_DEFINITIONS_FOLDER_PATH).toString();
 				String filePath = folderPath + "/" + fileName;
 				saveListIntoFile(fileEntries, filePath);
@@ -110,8 +110,8 @@ public class FileUtil {
 				fileEntries.add("brush_max_move_as_percentage_of_brush_square_radius: 50");
 				fileEntries.add("brush_min_move_as_percentage_of_brush_max_move: 50");
 				fileEntries.add("max_brush_moves: 100");
-				fileEntries.add("new_town_cost_per_chunk: 7.2");
-				fileEntries.add("upkeep_town_cost_per_chunk: 0.72");
+				fileEntries.add("new_town_cost_per_chunk: 15.0");
+				fileEntries.add("upkeep_town_cost_per_chunk: 0.75");
 				fileEntries.add("protected_locations: london,-2,-1172|paris,37,-1090|rome,282,-952");
 				folderPath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(FileUtil.REGION_DEFINITIONS_FOLDER_PATH).toString();
 				filePath = folderPath + "/" + fileName;

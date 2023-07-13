@@ -112,8 +112,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 	protected void drawProvinceHomeBlocks() {
 		String border_icon_id = "provinces_costs_icon";
 		boolean biomeCostAdjustmentsEnabled = TownyProvincesSettings.isBiomeCostAdjustmentsEnabled();
-		Set<Province> copyOfProvincesSet = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet());
-		for (Province province : copyOfProvincesSet) {
+		for (Province province : new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())) {
 			try {
 				TPCoord homeBlock = province.getHomeBlock();
 				String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
@@ -294,7 +293,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 		Fill fill;
 		String markerId;
 		//Cycle provinces
-		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+		for(Province province: new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())) {
 			//Set styles if needed
 			markerId = province.getId();
 			Marker<?> polyLineMarker = bordersLayer.registeredMarkers().get(markerId);

@@ -1,13 +1,10 @@
 package io.github.townyadvanced.townyprovinces.jobs.map_display;
 
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
-import com.palmergames.bukkit.towny.object.Nation;
-import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.Translatable;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
-import io.github.townyadvanced.townyprovinces.objects.ProvinceType;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -22,7 +19,6 @@ import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -122,8 +118,7 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		String border_icon_id = TownyProvincesSettings.getDynmapUsesTownCostsIcon() ? "provinces_costs_icon" : "coins";
 		boolean biomeCostAdjustmentsEnabled = TownyProvincesSettings.isBiomeCostAdjustmentsEnabled();
 		MarkerIcon homeBlockIcon = markerapi.getMarkerIcon(border_icon_id);
-		Set<Province> copyOfProvincesSet = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet());
-		for (Province province : copyOfProvincesSet) {
+		for (Province province : new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())) {
 			try {
 				TPCoord homeBlock = province.getHomeBlock();
 				String homeBlockMarkerId = "province_homeblock_" + homeBlock.getX() + "-" + homeBlock.getZ();
@@ -257,7 +252,7 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 	protected void setProvinceMapStyles() {
 		//Cycle provinces
 		AreaMarker areaMarker;
-		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+		for(Province province: new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())) {
 			//Set border colour if needed
 			areaMarker = bordersMarkerSet.findAreaMarker(province.getId());
 			if(areaMarker != null) {
