@@ -17,12 +17,15 @@ import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.List;
 
 public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction{
 	private MarkerSet borderMarkerSet;
@@ -42,7 +45,17 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		BlueMapAPI.onEnable(e -> {
 			Path assetsFolder = e.getWebApp().getWebRoot().resolve("assets");
 			try (OutputStream out = Files.newOutputStream(assetsFolder.resolve("province.png"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-				ImageIO.write(TownyProvincesSettings.getTownCostsIcon(), "png", out);
+				BufferedImage configIcon = TownyProvincesSettings.getTownCostsIcon();
+				BufferedImage resizedIcon = new BufferedImage(
+					TownyProvincesSettings.getTownCostsIconWidth(),
+					TownyProvincesSettings.getTownCostsIconHeight(),
+					configIcon.getType()
+				);
+				Graphics2D g2d = resizedIcon.createGraphics();
+				g2d.drawImage(configIcon, 0, 0, 35, 35, null);
+				g2d.dispose();
+				
+				ImageIO.write(resizedIcon, "png", out);
 			} catch (IOException ex) {
 				TownyProvinces.severe("Failed to put BlueMap Marker Icon as png file!");
 				throw new RuntimeException(ex);
