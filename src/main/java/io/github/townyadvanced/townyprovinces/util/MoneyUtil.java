@@ -13,27 +13,30 @@ public class MoneyUtil {
 	/**
 	 * Recalculate province prices
 	 *
-	 * 1. Cycle each provinces
-	 * 2. In each province, cycle each coord
-	 * 3. For each coord, determine what is the relevant region
-	 * 4. Whatever it is, add the total province costs
-	 * 5. When all chunks are cycled, set the province costs
+	 * Step 1: Assign provinces to regions
+	 * Step 2: Cycle regions
+	 * Step 3: For each region, calculate the average cost per province, excluding outliers (anything over x3 the simple average)
+	 * Step 4. For each region, Calculate the cost limit per province. This will be averageCostWithoutOutliers x (configured)provinceCostLimitRation
+	 * Step 5: Cycle provinces in the region
+	 * Step 6: For each province, if the cost is above the limit, limit it to the limit.
 	 */
 	public static void recalculateProvincePrices() {
 		TownyProvinces.info("Recalculating province prices");
-		double newTownCost;
-		double upkeepTownCost;
-		Region region;
-		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
-			newTownCost = 0;
-			upkeepTownCost = 0;
-			for(TPCoord coord: province.getListOfCoordsInProvince()) {
-				region = TownyProvincesSettings.findPriceGoverningRegion(coord);
-				newTownCost += region.getNewTownCostPerChunk();
-				upkeepTownCost += region.getUpkeepTownCostPerChunk();
+		double provinceCostLimitRatio = TownyProvincesSettings.getProvinceCostLimitProportion();  
+		TownyProvincesSettings.recalculateProvincesInRegions();
+		double townNewCostLimit;
+		double townUpkeepCostLimit;
+		for(Region region: TownyProvincesSettings.getOrderedRegionsList()) {
+			townNewCostLimit = region.getAverageProvinceNewTownCostWithoutOutliers() * provinceCostLimitRatio;
+			townUpkeepCostLimit = region.getAverageProvinceUpkeepTownCostWithoutOutliers() * provinceCostLimitRatio;
+			for(Province province: region.getProvinces()) {
+				if(province.getNewTownCost() > townNewCostLimit) {
+					province.setNewTownCost(townNewCostLimit);
+				}
+				if(province.getNewTownCost() > townUpkeepCostLimit) {
+					province.setUpkeepTownCost(townUpkeepCostLimit);
+				}
 			}
-			province.setNewTownCost(newTownCost);
-			province.setUpkeepTownCost(upkeepTownCost);
 		}
 		DataHandlerUtil.saveAllData();
 		TownyProvinces.info("Province Prices Recalculated");

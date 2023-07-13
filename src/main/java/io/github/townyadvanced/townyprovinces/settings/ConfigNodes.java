@@ -35,6 +35,14 @@ public enum ConfigNodes {
 		"",
 		"# Determines how many townblocks a town can have in each foreign province.",
 		"# These townblocks can only be unlocked by building an outpost in a sea or wasteland province."),
+	PROVINCE_COST_LIMIT_PROPORTION(
+		"province_cost_limit_proportion",
+		"1.7",
+		"",
+		"# This value determines the cost limit of each province.",
+		"# The value to both newTownCost and upkeepTownCost.",
+		"# The value is a proportion of the 'average regional province price without outliers', if you know what I mean....",
+		"# If you don't know what I mean, use caution when adjusting."),
 	BIOME_COST_ADJUSTMENTS(
 		"biome_cost_adjustments",
 		"",

@@ -1,6 +1,7 @@
 package io.github.townyadvanced.townyprovinces.settings;
 
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
+import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.Region;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
@@ -309,7 +310,23 @@ public class TownyProvincesSettings {
 		return Settings.getDouble(ConfigNodes.MAP_NATION_COLOURS_OPACITY);
 	}
 
-	public static Region findPriceGoverningRegion(TPCoord coord) {
+
+	public static double getProvinceCostLimitProportion() {
+		return Settings.getDouble(ConfigNodes.PROVINCE_COST_LIMIT_PROPORTION);
+	}
+	
+	public static void recalculateProvincesInRegions() {
+		//Clear provinces
+		for(Region region: orderedRegionsList) {
+			region.clearProvinces();
+		}
+		//Assign provinces
+		for(Province province: TownyProvincesDataHolder.getInstance().getProvincesSet()) {
+			findRegion(province.getHomeBlock()).addProvince(province);	
+		}
+	}
+
+	public static Region findRegion(TPCoord coord) {
 		Region region;
 		for(int i = orderedRegionsList.size()-1; i >= 0; i--) {
 			region = orderedRegionsList.get(i);
@@ -317,6 +334,7 @@ public class TownyProvincesSettings {
 				return region;
 			}
 		}
-		throw new RuntimeException("No price governing region was found");
+		throw new RuntimeException("No region was found");
 	}
+
 }
