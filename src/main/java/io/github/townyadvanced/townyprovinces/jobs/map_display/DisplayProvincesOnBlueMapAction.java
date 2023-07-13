@@ -218,12 +218,8 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	}
 
 	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
-		float borderOpacity = (float) province.getType().getBorderOpacity();
-		float fillOpacity = (float) province.getFillOpacity();
-		java.awt.Color borderColor = new java.awt.Color(province.getType().getBorderColour());
-		Color color = new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), borderOpacity);
-		java.awt.Color fillColor = new java.awt.Color(province.getFillColour());
-		Color color1 = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), fillOpacity);
+		Color borderColor = new Color(province.getType().getBorderColour(), (float) province.getType().getBorderOpacity());
+		Color fillColor = new Color(province.getFillColour(), (float) province.getFillOpacity());
 		List<Vector2d> points = new ArrayList<>();
 		for(TPCoord drawableLineOfBorderCoord : drawableLineOfBorderCoords){
 			int x = (drawableLineOfBorderCoord.getX() * TownyProvincesSettings.getChunkSideLength());
@@ -247,8 +243,8 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		Shape shape = new Shape(points);
 		ShapeMarker marker = ShapeMarker.builder()
 			.shape(shape, 65)
-			.fillColor(color1)
-			.lineColor(color)
+			.fillColor(fillColor)
+			.lineColor(borderColor)
 			.label(province.getId())
 			.depthTestEnabled(false)
 			.build();
