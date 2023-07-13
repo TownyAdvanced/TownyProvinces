@@ -52,7 +52,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 					configIcon.getType()
 				);
 				Graphics2D g2d = resizedIcon.createGraphics();
-				g2d.drawImage(configIcon, 0, 0, 35, 35, null);
+				g2d.drawImage(configIcon, 0, 0, TownyProvincesSettings.getTownCostsIconWidth(), TownyProvincesSettings.getTownCostsIconHeight(), null);
 				g2d.dispose();
 				
 				ImageIO.write(resizedIcon, "png", out);

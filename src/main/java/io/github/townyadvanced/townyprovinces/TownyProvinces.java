@@ -108,8 +108,8 @@ public class TownyProvinces extends JavaPlugin {
 			}
 			if(getServer().getPluginManager().isPluginEnabled("bluemap")){
 				info("Found BlueMap. Enabling BlueMap integration.");
-					MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnBlueMapAction());
-				}
+				MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnBlueMapAction());
+			}
 			if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
 				info("Found Dynmap plugin. Enabling Dynmap integration.");
 				MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnDynmapAction());
