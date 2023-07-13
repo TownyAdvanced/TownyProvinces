@@ -173,7 +173,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	protected void setProvinceMapStyles() {
 		Marker marker;
 		for(Province province : new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())){
-			marker = borderMarkerSet.remove(province.getId());
+			marker = borderMarkerSet.get(province.getId());
 			
 			Color borderColor = new Color(province.getType().getBorderColour(), (float) province.getType().getBorderOpacity());
 			Color fillColor = new Color(province.getFillColour(), (float) province.getFillOpacity());
@@ -188,7 +188,6 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 				shapeMarker.setLineColor(borderColor);
 				shapeMarker.setFillColor(fillColor);
 			}
-			borderMarkerSet.put(province.getId(), marker);
 		}
 	}
 
