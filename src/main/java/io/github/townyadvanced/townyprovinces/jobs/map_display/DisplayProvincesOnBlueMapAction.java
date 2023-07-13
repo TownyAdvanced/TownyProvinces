@@ -34,7 +34,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 
 		tpFreeCoord = new TPFreeCoord(0,0);
 		
-		BlueMapAPI.getInstance().ifPresent(e -> {
+		BlueMapAPI.onEnable(e -> {
 			Path assetsFolder = e.getWebApp().getWebRoot().resolve("assets");
 			try (OutputStream out = Files.newOutputStream(assetsFolder.resolve("province.png"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
 				ImageIO.write(TownyProvincesSettings.getTownCostsIcon(), "png", out);
@@ -58,6 +58,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 			Optional<BlueMapWorld> world = api.getWorld(TownyProvincesSettings.getWorld());
 			homeBlocksMarkersSet = MarkerSet.builder()
 				.label("TownyProvinces - Town Costs")
+				.defaultHidden(true)
 				.build();
 			borderMarkerSet = MarkerSet.builder()
 				.label("TownyProvinces - Borders")
@@ -230,10 +231,11 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		}
 		Shape shape = new Shape(points);
 		ShapeMarker marker = ShapeMarker.builder()
-			.shape(shape, 130)
+			.shape(shape, 65)
 			.fillColor(color1)
 			.lineColor(color)
 			.label(province.getId())
+			.depthTestEnabled(false)
 			.build();
 		borderMarkerSet.put(markerId, marker);
 	}
