@@ -21,7 +21,7 @@
 - :santa: ***Hermits***: Upkeep can be lowered in unpopular regions, supporting players with isolationist styles of play.
 
 ## :eye: Map View
-- ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/b0778012-7023-4372-b599-b5de6a336d4f)
+- ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/7570eb88-6ea9-487a-9045-2c85710ecc76)
 
 ## :floppy_disk: Installation Guide
 1. Ensure your server has *Towny 0.99.1.0* or newer.
