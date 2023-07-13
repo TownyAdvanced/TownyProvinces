@@ -21,7 +21,7 @@
 - :santa: ***Hermits***: Upkeep can be lowered in unpopular regions, supporting players with isolationist styles of play.
 
 ## :eye: Map View
-- ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/b0778012-7023-4372-b599-b5de6a336d4f)
+- ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/7570eb88-6ea9-487a-9045-2c85710ecc76)
 
 ## :floppy_disk: Installation Guide
 1. Ensure your server has *Towny 0.99.1.0* or newer.
@@ -48,21 +48,19 @@
 1. Prepare Playerbase
    - The main benefit of TownyProvinces is for you, the server owner/staff, because it will reduce both your workload relating to claiming/overclaiming, and the toxicity you have to deal with on your server.
    - If you have a mature playerbase, they will easily understand this, however if you have a lot of younger players, you can expect them to struggle to understand why the benefit of improving your life is worth the cost of slightly curtailing their freedoms.
-   - Thus take care to keep players informed and bring them along, or you may face revolt!
+   - Thus take care to keep players informed and bring them along.
 2. Protect Historical Locations
    - If you are running a "Historical" map (e.g. "Earth"), make sure to protect important historical locations, to ensure border-lines don't run throught them.
    - Do this by including the co-ordinates of those locations in your region def files. (for an example, see the automatically generate "Europe.yml".
    - It may be approporiate to ask players which locations they want protected, to help ensure you don't forget any.
 3. Be aware of known technical issues:
-    - TownyProvinces does not yet support multiple Worlds (*e.g. you can't have provinces in the Nether*). A fix is ticketed.
     - The Hexagonal dynmap view does not look right. A fix is ticketed.
-    - On very large maps. TownyProvinces tends to "sit" on lots of memory. A fix is in development.
-    - On provinces bordering 2 regions, the price can sometimes be too high. A fix is in development. As a workaround, edit the affected province files then run `tpra reload`.
+    - On very large maps (e.g. 1:500). TownyProvinces tends to "sit" on lots of memory. A fix is in development.
 4. Configure
    - Configure as many region definition files as you want, in /region_definitions.
    - Region definition files are evaluated in alpha-numeric order.
    - The first region definition file should be the size of the entire map.
-   - After you have generated your regions, run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, and adjust prices accordingly. It will also set each province type, as either Civilized, Sea, or Wasteland . Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
+   - After you have generated your regions, run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, then will adjust the province type and prices accordingly. Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
    - After the Land Validation Job runs, expect to tweak a few provinces for type, and a few regions for pricing.
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
@@ -70,7 +68,7 @@
 - `tpra region [upkeeptowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk upkeep-town-cost for a region.
 - `tpra landvalidationjob [status|start|stop|restart|pause]` -> Control the land validation job.
   - This Job assigns a type to each provinces, either Civilized, Sea, or Wasteland. It also Assesses and records the Biome proportions in each province. These proportions affect the new/upkeep prices.
-  - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below command.* 
+  - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below commands.* 
 - `tpra province settype [civilized|sea|wasteland] [<x>,<z>]` -> Set the type of a province.
 - `tpra province settype [civilized|sea|wasteland] [<x1>,<z1>] [<2x>,<z2>]` -> Set the type of all provinces in a rectangular area.
 
