@@ -84,7 +84,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 
 			if (bordersRefreshRequested) {
 				if (borderMarkerSet != null) {
-					world.get().getMaps().forEach(e -> e.getMarkerSets().remove("townyprovinces.markersets.borders"));
+					world.get().getMaps().forEach(e -> e.getMarkerSets().remove("townyprovinces.markerset.borders"));
 				}
 				for (BlueMapMap map : world.get().getMaps()) {
 					map.getMarkerSets().put("townyprovinces.markerset.borders", borderMarkerSet);
