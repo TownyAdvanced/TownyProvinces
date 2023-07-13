@@ -70,7 +70,7 @@
 - `tpra province settype [civilized|sea|wasteland] [<x1>,<z1>] [<2x>,<z2>]` -> Set the type of all provinces in a rectangular area.
 - `tpra region [newtowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk new-town-cost for a region.
 - `tpra region [upkeeptowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk upkeep-town-cost for a region.
-- `tpra reload -> Reload Config and Language files, and refresh map.
+- `tpra reload` -> Reload Config and Language files, and refresh map.
 
 ## :brain: Advanced Guide to Region Definitions
 To fully understand how to configure your region definition files, you must understand how provinces are generated:
