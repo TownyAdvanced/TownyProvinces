@@ -61,7 +61,9 @@
    - Configure as many region definition files as you want, in /region_definitions.
    - Region definition files are evaluated in alpha-numeric order.
    - The first region definition file should be the size of the entire map.
-   - After you have generated your regions, run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, then will adjust the province type and prices accordingly. Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
+5. Generate Provinces
+   - Run 'tpra region regenerate all' to regenerate all the regions you have specified.
+   - After the Regeneration Job is complete, run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, then will adjust the province type and prices accordingly. Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
    - After the Land Validation Job runs, expect to tweak a few provinces for type, and a few regions for pricing.
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
