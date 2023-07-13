@@ -48,7 +48,7 @@
 1. Prepare Playerbase
    - The main benefit of TownyProvinces is for you, the server owner/staff, because it will reduce both your workload relating to claiming/overclaiming, and the toxicity you have to deal with on your server.
    - If you have a mature playerbase, they will easily understand this, however if you have a lot of younger players, you can expect them to struggle to understand why the benefit of improving your life is worth the cost of slightly curtailing their freedoms.
-   - Thus take care to keep players informed and bring them along, or you may face revolt!
+   - Thus take care to keep players informed and bring them along.
 2. Protect Historical Locations
    - If you are running a "Historical" map (e.g. "Earth"), make sure to protect important historical locations, to ensure border-lines don't run throught them.
    - Do this by including the co-ordinates of those locations in your region def files. (for an example, see the automatically generate "Europe.yml".
