@@ -97,9 +97,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	protected void drawProvinceHomeBlocks() {
 		String border_icon_id = "provinces_costs_icon";
 		boolean biomeCostAdjustmentsEnabled = TownyProvincesSettings.isBiomeCostAdjustmentsEnabled();
-		Set<Province> provinceSet = TownyProvincesDataHolder.getInstance().getProvincesSet();
-
-
+		Set<Province> provinceSet = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet());
 		
 		for(Province province : provinceSet){
 			try{
