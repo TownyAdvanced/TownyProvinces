@@ -21,7 +21,6 @@ import net.pl3x.map.core.markers.option.Options;
 import net.pl3x.map.core.markers.option.Stroke;
 import net.pl3x.map.core.world.World;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -195,16 +194,9 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 				return;
 			}
 			Stroke stroke = polyLineMarker.getOptions().getStroke();
-			if (stroke.getColor() == null) {
-				TownyProvinces.severe("WARNING: Marker stroke color is null for province border marker " + markerId + ".");
-				return;
-			}
 			//Re-evaluate colour
-			if (!stroke.getColor().equals(borderColour)) {
-				//Change colour of marker
-				stroke.setColor(borderColour);
-				stroke.setWeight(borderWeight);
-			}
+			stroke.setColor(borderColour);
+			stroke.setWeight(borderWeight);
 		} 
 	}
 
@@ -322,20 +314,16 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 				TownyProvinces.severe("WARNING: Marker fill color is null for province border marker " + markerId + ".");
 				continue;
 			}
-			//Set border colour if needed
+			//Set border colour
 			requiredBorderColour = province.getType().getBorderColour() |
 				(int) (255 * province.getType().getBorderOpacity()) << 24;
 			requiredBorderWeight = province.getType().getBorderWeight();
-			if (stroke.getColor() != requiredBorderColour) {
-				stroke.setColor(requiredBorderColour);
-				stroke.setWeight(requiredBorderWeight);
-			}
-			//Set fill colour if needed
+			stroke.setColor(requiredBorderColour);
+			stroke.setWeight(requiredBorderWeight);
+			//Set fill colour
 			requiredFillColour = province.getFillColour() |
 				(int) (255 * province.getFillOpacity()) << 24;
-			if (fill.getColor() != requiredFillColour) {
-				fill.setColor(requiredFillColour);
-			}
+			fill.setColor(requiredFillColour);
 		}
 	}
 }
