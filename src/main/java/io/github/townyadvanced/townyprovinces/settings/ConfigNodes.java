@@ -198,8 +198,11 @@ public enum ConfigNodes {
 		""),
 	MAP_TOWN_COSTS_ICON_URL(
 		"map_integration.town_costs_icon.url",
-		"https://cdn.discordapp.com/attachments/761101311545573420/1128291824683974686/coins.png",
-		""),
+		"https://cdn-icons-png.flaticon.com/512/9729/9729309.png", "",
+		"# Icon for the town costs. This must be a valid image URL.",
+		"# Default coin icon created by Md Tanvirul Haque - Flaticon",
+		"# https://www.flaticon.com/free-icon/dollar_9729309"
+		),
 	MAP_TOWN_COSTS_ICON_HEIGHT(
 		"map_integration.town_costs_icon.height",
 		"35",
