@@ -164,25 +164,36 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	protected void setProvinceMapStyles() {
 		Marker marker;
 		for(Province province : new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())){
-			marker = borderMarkerSet.get(province.getId());
+			TownyProvinces.info("DEBUG: Province marker " + province.getId() + " being styled");
+			marker = borderMarkerSet.remove(province.getId());
+			
+			Color borderColor = new Color(province.getType().getBorderColour(), (float) province.getType().getBorderOpacity());
+			Color fillColor = new Color(province.getFillColour(), (float) province.getFillOpacity());
+			
+			if (marker == null) {
+				TownyProvinces.severe("ERROR: Province marker for styling is null");
+				continue;
+			}
+			
+			if (marker instanceof ShapeMarker) {
+				TownyProvinces.info("DEBUG: Province marker is a ShapeMarker");
+				ShapeMarker shapeMarker = (ShapeMarker) marker;
+				if(!shapeMarker.getLineColor().equals(borderColor)){
+					TownyProvinces.info("DEBUG: Line color does not match");
+					shapeMarker.setLineColor(borderColor);
+				}
 
-			float borderOpacity = (float) province.getType().getBorderOpacity();
-			float fillOpacity = (float) province.getFillOpacity();
-			java.awt.Color borderColor = new java.awt.Color(province.getType().getBorderColour());
-			Color color = new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), borderOpacity);
-			java.awt.Color fillColor = new java.awt.Color(province.getFillColour());
-			Color color1 = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), fillOpacity);
-			if(marker != null){
-			  if(marker instanceof ShapeMarker){
-					if(!((ShapeMarker) marker).getLineColor().equals(color)){
-						((ShapeMarker) marker).setLineColor(color);
-					}
-					
-					if(!((ShapeMarker) marker).getFillColor().equals(color1)){
-						((ShapeMarker) marker).setFillColor(color1);
-					}
+				if (fillColor.getRed() != 0 || fillColor.getGreen() != 0 || fillColor.getBlue() != 0) {
+					TownyProvinces.info("DEBUG: Fill color is " + shapeMarker.getFillColor().toString());
+					TownyProvinces.info("DEBUG: It should be " + fillColor);
+				}
+				if(!shapeMarker.getFillColor().equals(fillColor)){
+					TownyProvinces.info("DEBUG: Fill color does not match");
+					shapeMarker.setFillColor(fillColor);
 				}
 			}
+			TownyProvinces.info("DEBUG: Adding the marker back");
+			borderMarkerSet.put(province.getId(), marker);
 		}
 	}
 
