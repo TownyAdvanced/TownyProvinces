@@ -54,7 +54,6 @@
    - Do this by including the co-ordinates of those locations in your region def files. (for an example, see the automatically generate "Europe.yml".
    - It may be approporiate to ask players which locations they want protected, to help ensure you don't forget any.
 3. Be aware of known technical issues:
-    - TownyProvinces does not yet support multiple Worlds (*e.g. you can't have provinces in the Nether*). A fix is ticketed.
     - The Hexagonal dynmap view does not look right. A fix is ticketed.
     - On very large maps (e.g. 1:500). TownyProvinces tends to "sit" on lots of memory. A fix is in development.
 4. Configure
