@@ -69,13 +69,6 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	void executeAction(boolean bordersRefreshRequested, boolean homeBlocksRefreshRequested) {
 		BlueMapAPI.getInstance().ifPresent( api -> {
 			Optional<BlueMapWorld> world = api.getWorld(TownyProvincesSettings.getWorld());
-			homeBlocksMarkersSet = MarkerSet.builder()
-				.label("TownyProvinces - Town Costs")
-				.defaultHidden(true)
-				.build();
-			borderMarkerSet = MarkerSet.builder()
-				.label("TownyProvinces - Borders")
-				.build();
 
 			if (!world.isPresent()) {
 				TownyProvinces.severe("World is not in BlueMap registry!");
@@ -86,18 +79,14 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 				if (borderMarkerSet != null) {
 					world.get().getMaps().forEach(e -> e.getMarkerSets().remove("townyprovinces.markerset.borders"));
 				}
-				for (BlueMapMap map : world.get().getMaps()) {
-					map.getMarkerSets().put("townyprovinces.markerset.borders", borderMarkerSet);
-				}
+				addProvinceBordersMarkerSet();
 			}
 
 			if (homeBlocksRefreshRequested) {
 				if (homeBlocksMarkersSet != null) {
 					world.get().getMaps().forEach(e -> e.getMarkerSets().remove("townyprovinces.markerset.homeblocks"));
 				}
-				for (BlueMapMap map : world.get().getMaps()) {
-					map.getMarkerSets().put("townyprovinces.markerset.homeblocks", homeBlocksMarkersSet);
-				}
+				addProvinceHomeBlocksMarkerSet();
 			}
 			drawProvinceHomeBlocks();
 			drawProvinceBorders();
@@ -105,11 +94,31 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		);
 	}
 
-	
+	private void addProvinceHomeBlocksMarkerSet() {
+		BlueMapWorld world = BlueMapAPI.getInstance().get().getWorld(TownyProvincesSettings.getWorld()).get();
+		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_town_costs").translate(Locale.ROOT);
+		homeBlocksMarkersSet = MarkerSet.builder()
+			.label(name)
+			.defaultHidden(true)
+			.build();
+		for (BlueMapMap map : world.getMaps()) {
+			map.getMarkerSets().put("townyprovinces.markerset.homeblocks", homeBlocksMarkersSet);
+		}
+	}
+
+	private void addProvinceBordersMarkerSet() {
+		BlueMapWorld world = BlueMapAPI.getInstance().get().getWorld(TownyProvincesSettings.getWorld()).get();
+		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_borders").translate(Locale.ROOT);
+		borderMarkerSet = MarkerSet.builder()
+			.label(name)
+			.build();
+		for (BlueMapMap map : world.getMaps()) {
+			map.getMarkerSets().put("townyprovinces.markerset.borders", borderMarkerSet);
+		}
+	}
 
 	@Override
 	protected void drawProvinceHomeBlocks() {
-		String border_icon_id = "provinces_costs_icon";
 		boolean biomeCostAdjustmentsEnabled = TownyProvincesSettings.isBiomeCostAdjustmentsEnabled();
 		Set<Province> provinceSet = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet());
 		
@@ -164,7 +173,6 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	protected void setProvinceMapStyles() {
 		Marker marker;
 		for(Province province : new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())){
-			TownyProvinces.info("DEBUG: Province marker " + province.getId() + " being styled");
 			marker = borderMarkerSet.remove(province.getId());
 			
 			Color borderColor = new Color(province.getType().getBorderColour(), (float) province.getType().getBorderOpacity());
@@ -176,31 +184,10 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 			}
 			
 			if (marker instanceof ShapeMarker) {
-				TownyProvinces.info("DEBUG: Province marker is a ShapeMarker");
 				ShapeMarker shapeMarker = (ShapeMarker) marker;
-				if(!shapeMarker.getLineColor().equals(borderColor)){
-					TownyProvinces.info("DEBUG: Line color does not match");
-					shapeMarker.setLineColor(borderColor);
-				}
-
-				if (fillColor.getRed() != 0 || fillColor.getGreen() != 0 || fillColor.getBlue() != 0) {
-					TownyProvinces.info("DEBUG: Fill color is: Red" + shapeMarker.getFillColor().getRed() + " | Green: " + shapeMarker.getFillColor().getGreen() + " | Blue: " + shapeMarker.getFillColor().getBlue() + " | Alpha: " + shapeMarker.getFillColor().getAlpha());
-					TownyProvinces.info("DEBUG: It should be: Red " + fillColor.getRed() + " | Green: " + fillColor.getGreen() + " | Blue: " + fillColor.getBlue() + " | Alpha: " + fillColor.getAlpha());
-				}
-				if(!shapeMarker.getFillColor().equals(fillColor)){
-					TownyProvinces.info("DEBUG: Fill color does not match");
-					shapeMarker.setFillColor(fillColor);
-				}
-				TownyProvinces.info("DEBUG: Constructing a brand new shapemarker");
-				marker = ShapeMarker.builder()
-					.shape(shapeMarker.getShape(), 65)
-					.fillColor(fillColor)
-					.lineColor(borderColor)
-					.label(province.getId())
-					.depthTestEnabled(false)
-					.build();
+				shapeMarker.setLineColor(borderColor);
+				shapeMarker.setFillColor(fillColor);
 			}
-			TownyProvinces.info("DEBUG: Adding the marker back");
 			borderMarkerSet.put(province.getId(), marker);
 		}
 	}
