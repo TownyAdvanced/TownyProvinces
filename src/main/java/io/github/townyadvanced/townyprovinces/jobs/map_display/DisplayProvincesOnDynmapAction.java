@@ -8,7 +8,6 @@ import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
-import net.pl3x.map.core.image.io.IO;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.Marker;
@@ -181,10 +180,7 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 			}
 		} else {
 			//Re-evaluate province border colour
-			if (marker.getLineColor() != province.getType().getBorderColour()) {
-				//Change colour of marker
-				marker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
-			}
+			marker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
 		} 
 	}
 
@@ -256,13 +252,9 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 			//Set border colour if needed
 			areaMarker = bordersMarkerSet.findAreaMarker(province.getId());
 			if(areaMarker != null) {
-				if (areaMarker.getLineColor() != province.getType().getBorderColour()) {
-					areaMarker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
-				}
+				areaMarker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
 				//Set fill colour if needed
-				if (areaMarker.getFillOpacity() != province.getFillOpacity() || areaMarker.getFillColor() != province.getFillColour()) {
-					areaMarker.setFillStyle(province.getFillOpacity(), province.getFillColour());
-				}
+				areaMarker.setFillStyle(province.getFillOpacity(), province.getFillColour());
 			}
 		}
 	}
