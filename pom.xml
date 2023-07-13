@@ -15,6 +15,10 @@
   </properties>
 
   <repositories>
+      <repository>
+          <id>jitpack.io</id>
+          <url>https://jitpack.io</url>
+      </repository>
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
@@ -34,6 +38,7 @@
   </repositories>
 
   <dependencies>
+
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
@@ -64,6 +69,12 @@
           <groupId>maven.modrinth</groupId>
           <artifactId>pl3xmap</artifactId>
           <version>1.20.1-468</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>com.github.BlueMap-Minecraft</groupId>
+          <artifactId>BlueMapAPI</artifactId>
+          <version>v2.5.1</version>
           <scope>provided</scope>
       </dependency>
   </dependencies>

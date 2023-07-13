@@ -8,6 +8,7 @@ import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnBlueMapAction;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnDynmapAction;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnPl3xMapV3Action;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
@@ -109,6 +110,10 @@ public class TownyProvinces extends JavaPlugin {
 					info("Pl3xMap v1 is not supported. Cannot enable Pl3xMap integration.");
 				}
 			}
+			if(getServer().getPluginManager().isPluginEnabled("bluemap")){
+				info("Found BlueMap. Enabling BlueMap integration.");
+				MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnBlueMapAction());
+			}
 			if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
 				info("Found Dynmap plugin. Enabling Dynmap integration.");
 				MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnDynmapAction());
@@ -128,7 +133,7 @@ public class TownyProvinces extends JavaPlugin {
 	
 	private boolean checkTownyVersion() {
 		if (!townyVersionCheck()) {
-			severe("Towny version does not meet required minimum version: " + requiredTownyVersion.toString());
+			severe("Towny version does not meet required minimum version: " + requiredTownyVersion);
 			return false;
 		} else {
 			info("Towny version " + getTownyVersion() + " found.");
