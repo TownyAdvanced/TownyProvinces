@@ -25,7 +25,7 @@
 
 ## :floppy_disk: Installation Guide
 1. Ensure your server has *Towny 0.99.1.0* or newer.
-2. Ensure your server has a map-display plugin: Either *Pl3xmap* or *Dynmap*.
+2. Ensure your server has a map-display plugin: Either *Dynmap*, *Pl3xmap* or *BlueMap*.
 3. Download the *TownyProvinces* plugin jar file from [here](https://github.com/TownyAdvanced/TownyProvinces/releases), and drop it into your server plugins folder.
 4. Stop your server.
 5. Start your server with plenty of memory (*especially for big maps*).
@@ -45,32 +45,32 @@
 2. To see the generated provinces, view your website-map. 
 
 ## :arrow_forward: Admin Full Guide
-1. Prepare Playerbase
-   - The main benefit of TownyProvinces is for you, the server owner/staff, because it will reduce both your workload relating to claiming/overclaiming, and the toxicity you have to deal with on your server.
-   - If you have a mature playerbase, they will easily understand this, however if you have a lot of younger players, you can expect them to struggle to understand why the benefit of improving your life is worth the cost of slightly curtailing their freedoms.
-   - Thus take care to keep players informed and bring them along.
-2. Protect Historical Locations
-   - If you are running a "Historical" map (e.g. "Earth"), make sure to protect important historical locations, to ensure border-lines don't run throught them.
-   - Do this by including the co-ordinates of those locations in your region def files. (for an example, see the automatically generate "Europe.yml".
-   - It may be approporiate to ask players which locations they want protected, to help ensure you don't forget any.
-3. Be aware of known technical issues:
+1. Protect Historical Town Locations
+   - If you are running a "Historical" map (e.g. "Earth"), make sure to protect important historical town locations, to ensure border-lines don't cut throught them.
+   - To do this, adding the co-ordinates of those locations to your region def files. (for an example, see the automatically generated "Europe.yml".
+   - It may help to ask players which locations they want protected, to ensure you don't forget any, and to get them involved in using the plugin.
+2. Be aware of known technical issues:
     - The Hexagonal dynmap view does not look right. A fix is ticketed.
     - On very large maps (e.g. 1:500). TownyProvinces tends to "sit" on lots of memory. A fix is in development.
-4. Configure
+    - When making a new town, the 'confirmation' message does not show the correct amount. But the correct amount is charged.
+3. Configure
    - Configure as many region definition files as you want, in /region_definitions.
    - Region definition files are evaluated in alpha-numeric order.
    - The first region definition file should be the size of the entire map.
-   - After you have generated your regions, run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, then will adjust the province type and prices accordingly. Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
+4. Generate Provinces
+   - Run 'tpra region regenerate all' to regenerate all the regions you have specified.
+   - After the Regeneration Job is complete, run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, then will adjust the province type and prices accordingly. Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
    - After the Land Validation Job runs, expect to tweak a few provinces for type, and a few regions for pricing.
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
-- `tpra region [newtowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk new-town-cost for a region.
-- `tpra region [upkeeptowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk upkeep-town-cost for a region.
 - `tpra landvalidationjob [status|start|stop|restart|pause]` -> Control the land validation job.
   - This Job assigns a type to each provinces, either Civilized, Sea, or Wasteland. It also Assesses and records the Biome proportions in each province. These proportions affect the new/upkeep prices.
   - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below commands.* 
 - `tpra province settype [civilized|sea|wasteland] [<x>,<z>]` -> Set the type of a province.
 - `tpra province settype [civilized|sea|wasteland] [<x1>,<z1>] [<2x>,<z2>]` -> Set the type of all provinces in a rectangular area.
+- `tpra region [newtowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk new-town-cost for a region.
+- `tpra region [upkeeptowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk upkeep-town-cost for a region.
+- `tpra reload` -> Reload Config and Language files, and refresh map.
 
 ## :brain: Advanced Guide to Region Definitions
 To fully understand how to configure your region definition files, you must understand how provinces are generated:
