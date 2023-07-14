@@ -11,6 +11,7 @@ import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.image.IconImage;
 import net.pl3x.map.core.markers.Point;
+import net.pl3x.map.core.markers.layer.Layer;
 import net.pl3x.map.core.markers.layer.SimpleLayer;
 import net.pl3x.map.core.markers.marker.Icon;
 import net.pl3x.map.core.markers.marker.Marker;
@@ -51,16 +52,13 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 			return;
 		}
 		
-		bordersLayer = (SimpleLayer) world.getLayerRegistry().get("townyprovinces.layer.borders");
-		homeBlocksLayer = (SimpleLayer) world.getLayerRegistry().get("townyprovinces.layer.homeblocks");
-		
-		if(bordersRefreshRequested) {
+		if (bordersRefreshRequested) {
 			if(bordersLayer != null) {
 				bordersLayer.clearMarkers();
 			}
 			addProvinceBordersLayer();
 		}
-		if(homeBlocksRefreshRequested) {
+		if (homeBlocksRefreshRequested) {
 			if(homeBlocksLayer != null) {
 				homeBlocksLayer.clearMarkers();
 			}
@@ -88,19 +86,23 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 	
 	private SimpleLayer createLayer(String layerKey, String layerName, boolean hideByDefault, int priority, int zIndex, boolean showControls) {
 		//Create simple layer
-		if (world.getLayerRegistry().get(layerKey) != null)
-			return (SimpleLayer)world.getLayerRegistry().get(layerKey);
+		Layer layer = world.getLayerRegistry().get(layerKey);
+		SimpleLayer simpleLayer = null;
+		if (layer instanceof SimpleLayer) {
+			simpleLayer = (SimpleLayer) layer;
+		}
 		
-		SimpleLayer layer = new SimpleLayer(layerKey, layerName::toString);
+		if (simpleLayer == null) {
+			simpleLayer = new SimpleLayer(layerKey, layerName::toString);
+			world.getLayerRegistry().register(simpleLayer);
+		}
 
-		layer.setDefaultHidden(hideByDefault);
-		layer.setPriority(priority);
-		layer.setZIndex(zIndex);
-		layer.setShowControls(showControls);
+		simpleLayer.setDefaultHidden(hideByDefault);
+		simpleLayer.setPriority(priority);
+		simpleLayer.setZIndex(zIndex);
+		simpleLayer.setShowControls(showControls);
 
-		world.getLayerRegistry().register(layer);
-
-		return layer;
+		return simpleLayer;
 	}
 	
 	@Override
