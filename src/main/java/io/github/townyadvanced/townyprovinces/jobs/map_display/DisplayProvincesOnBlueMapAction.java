@@ -174,7 +174,8 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		Marker marker;
 		for(Province province : new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())){
 			marker = borderMarkerSet.get(province.getId());
-			
+
+			int borderWeight = province.getType().getBorderWeight();
 			Color borderColor = new Color(province.getType().getBorderColour(), (float) province.getType().getBorderOpacity());
 			Color fillColor = new Color(province.getFillColour(), (float) province.getFillOpacity());
 			
@@ -186,6 +187,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 			if (marker instanceof ShapeMarker) {
 				ShapeMarker shapeMarker = (ShapeMarker) marker;
 				shapeMarker.setLineColor(borderColor);
+				shapeMarker.setLineWidth(borderWeight);
 				shapeMarker.setFillColor(fillColor);
 			}
 		}
@@ -193,6 +195,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 
 	@Override
 	protected void drawProvinceBorder(Province province) {
+		int borderWeight = province.getType().getBorderWeight();
 		Color borderColor = new Color(province.getType().getBorderColour(), (float) province.getType().getBorderOpacity());
 		String markerId = province.getId();
 		Marker marker = borderMarkerSet.get(markerId);
@@ -213,10 +216,12 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		if (marker instanceof ShapeMarker) {
 			ShapeMarker shapeMarker = (ShapeMarker) marker;
 			shapeMarker.setLineColor(borderColor);
+			shapeMarker.setLineWidth(borderWeight);
 		}
 	}
 
 	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
+		int borderWeight = province.getType().getBorderWeight();
 		Color borderColor = new Color(province.getType().getBorderColour(), (float) province.getType().getBorderOpacity());
 		Color fillColor = new Color(province.getFillColour(), (float) province.getFillOpacity());
 		List<Vector2d> points = new ArrayList<>();
@@ -244,6 +249,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 			.shape(shape, 65)
 			.fillColor(fillColor)
 			.lineColor(borderColor)
+			.lineWidth(borderWeight)
 			.label(province.getId())
 			.depthTestEnabled(false)
 			.build();
