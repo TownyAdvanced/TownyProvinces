@@ -43,6 +43,8 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		}
 		
 		BlueMapAPI.onEnable(e -> {
+			addProvinceBordersMarkerSet();
+			addProvinceHomeBlocksMarkerSet();
 			Path assetsFolder = e.getWebApp().getWebRoot().resolve("assets");
 			try (OutputStream out = Files.newOutputStream(assetsFolder.resolve("province.png"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
 				BufferedImage configIcon = TownyProvincesSettings.getTownCostsIcon();
