@@ -9,6 +9,10 @@ import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import net.pl3x.map.core.Pl3xMap;
+import net.pl3x.map.core.event.EventHandler;
+import net.pl3x.map.core.event.EventListener;
+import net.pl3x.map.core.event.server.Pl3xMapEnabledEvent;
+import net.pl3x.map.core.event.world.WorldLoadedEvent;
 import net.pl3x.map.core.image.IconImage;
 import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.layer.Layer;
@@ -25,7 +29,7 @@ import net.pl3x.map.core.world.World;
 import java.util.*;
 import java.util.List;
 
-public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapAction {
+public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapAction implements EventListener {
 	
 	private SimpleLayer bordersLayer;
 	private SimpleLayer homeBlocksLayer;
@@ -38,8 +42,24 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 		tpFreeCoord = new TPFreeCoord(0,0);
 		
 		reloadAction();
+
+		Pl3xMap.api().getEventRegistry().register(this);
 		
 		TownyProvinces.info("Pl3xMap v3 support enabled.");
+	}
+
+	@EventHandler
+	public void onPl3xMapEnabled(Pl3xMapEnabledEvent event) {
+		reloadAction();
+	}
+	
+	@EventHandler
+	public void onPl3xMapWorldLoaded(WorldLoadedEvent event) {
+		if (event.getWorld().getName().equals(TownyProvincesSettings.getWorldName())) {
+			world = event.getWorld();
+			world.getLayerRegistry().register(homeBlocksLayer);
+			world.getLayerRegistry().register(bordersLayer);
+		}
 	}
 
 	/**
@@ -86,8 +106,8 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 	
 	private SimpleLayer createLayer(String layerKey, String layerName, boolean hideByDefault, int priority, int zIndex, boolean showControls) {
 		//Create simple layer
-		Layer layer = world.getLayerRegistry().get(layerKey);
 		SimpleLayer simpleLayer = null;
+		Layer layer = world.getLayerRegistry().get(layerKey);
 		if (layer instanceof SimpleLayer) {
 			simpleLayer = (SimpleLayer) layer;
 		}
@@ -101,7 +121,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 		simpleLayer.setPriority(priority);
 		simpleLayer.setZIndex(zIndex);
 		simpleLayer.setShowControls(showControls);
-
+		
 		return simpleLayer;
 	}
 	
