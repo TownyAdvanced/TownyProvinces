@@ -37,7 +37,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 
 		tpFreeCoord = new TPFreeCoord(0,0);
 		
-		reloadAction();
+		BlueMapAPI.onEnable(e -> reloadAction());
 		
 		TownyProvinces.info("BlueMap support enabled.");
 	  }
@@ -49,7 +49,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
 		}
 
-		BlueMapAPI.onEnable(e -> {
+		BlueMapAPI.getInstance().ifPresent(e -> {
 			Path assetsFolder = e.getWebApp().getWebRoot().resolve("assets");
 			try (OutputStream out = Files.newOutputStream(assetsFolder.resolve("province.png"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
 				BufferedImage configIcon = TownyProvincesSettings.getTownCostsIcon();
@@ -73,7 +73,7 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	  
 	@Override
 	void executeAction(boolean bordersRefreshRequested, boolean homeBlocksRefreshRequested) {
-		BlueMapAPI.getInstance().ifPresent( api -> {
+		BlueMapAPI.getInstance().ifPresent(api -> {
 			Optional<BlueMapWorld> world = api.getWorld(TownyProvincesSettings.getWorld());
 			homeBlocksMarkersSet = MarkerSet.builder()
 				.label("TownyProvinces - Town Costs")
