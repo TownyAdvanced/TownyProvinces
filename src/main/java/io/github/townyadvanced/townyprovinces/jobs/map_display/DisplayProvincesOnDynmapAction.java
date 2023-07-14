@@ -108,9 +108,10 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		MarkerSet markerSet = markerapi.getMarkerSet(markerSetId);
 		if (markerSet == null) {
 			markerSet = markerapi.createMarkerSet(markerSetId, markerSetName, null, false);
-			markerSet.setHideByDefault(hideByDefault);
-			markerSet.setLabelShow(labelShow);
 		}
+
+		markerSet.setHideByDefault(hideByDefault);
+		markerSet.setLabelShow(labelShow);
 
 		if (markerSet == null) {
 			TownyProvinces.severe("Error creating Dynmap marker set!");
