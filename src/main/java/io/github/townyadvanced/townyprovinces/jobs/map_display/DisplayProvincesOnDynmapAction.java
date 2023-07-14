@@ -33,15 +33,23 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 
 	public DisplayProvincesOnDynmapAction() {
 		TownyProvinces.info("Enabling dynmap support.");
+		
 		DynmapAPI dynmapAPI = (DynmapAPI) TownyProvinces.getPlugin().getServer().getPluginManager().getPlugin("dynmap");
 		markerapi = dynmapAPI.getMarkerAPI();
 		tpFreeCoord = new TPFreeCoord(0,0);
 
+		reloadAction();
+		
+		TownyProvinces.info("Dynmap support enabled.");
+	}
+	
+	@Override
+	void reloadAction() {
 		if (TownyProvincesSettings.getTownCostsIcon() == null) {
 			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Dynmap.");
 			return;
 		}
-		
+
 		final MarkerIcon oldMarkerIcon = markerapi.getMarkerIcon("provinces_costs_icon");
 		if (oldMarkerIcon != null) {
 			oldMarkerIcon.deleteIcon();
@@ -61,7 +69,6 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		if (markerIcon == null) {
 			TownyProvinces.severe("Error registering Town Costs Icon on Dynmap! Unable to support Dynmap.");
 		}
-		TownyProvinces.info("Dynmap support enabled.");
 	}
 	
 	@Override

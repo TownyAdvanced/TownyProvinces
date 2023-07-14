@@ -37,11 +37,18 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 
 		tpFreeCoord = new TPFreeCoord(0,0);
 		
+		reloadAction();
+		
+		TownyProvinces.info("BlueMap support enabled.");
+	  }
+	  
+	@Override
+	void reloadAction() {
 		if (TownyProvincesSettings.getTownCostsIcon() == null) {
 			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support BlueMap.");
 			return;
 		}
-		
+
 		BlueMapAPI.onEnable(e -> {
 			Path assetsFolder = e.getWebApp().getWebRoot().resolve("assets");
 			try (OutputStream out = Files.newOutputStream(assetsFolder.resolve("province.png"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
@@ -54,16 +61,15 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 				Graphics2D g2d = resizedIcon.createGraphics();
 				g2d.drawImage(configIcon, 0, 0, TownyProvincesSettings.getTownCostsIconWidth(), TownyProvincesSettings.getTownCostsIconHeight(), null);
 				g2d.dispose();
-				
+
 				ImageIO.write(resizedIcon, "png", out);
 			} catch (IOException ex) {
 				TownyProvinces.severe("Failed to put BlueMap Marker Icon as png file!");
 				throw new RuntimeException(ex);
 			}
 		});
-		
-		TownyProvinces.info("BlueMap support enabled.");
-	  }
+	}
+	  
 	  
 	@Override
 	void executeAction(boolean bordersRefreshRequested, boolean homeBlocksRefreshRequested) {

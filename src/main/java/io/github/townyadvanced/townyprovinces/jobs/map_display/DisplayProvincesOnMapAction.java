@@ -19,6 +19,8 @@ public abstract class DisplayProvincesOnMapAction {
 	 * Display all TownyProvinces items
 	 */
 	abstract void executeAction(boolean bordersRefreshRequested, boolean homeBlocksRefreshRequested);
+	
+	abstract void reloadAction();
 
 	abstract protected void drawProvinceHomeBlocks();
 

@@ -33,15 +33,10 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 
 	public DisplayProvincesOnPl3xMapV3Action() {
 		TownyProvinces.info("Enabling Pl3xMap v3 support.");
+		
 		tpFreeCoord = new TPFreeCoord(0,0);
 		
-		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Pl3xMap V3.");
-			return;
-		}
-
-		Pl3xMap.api().getIconRegistry().register(new IconImage(
-			"provinces_costs_icon", TownyProvincesSettings.getTownCostsIcon(), "png"));
+		reloadAction();
 		
 		TownyProvinces.info("Pl3xMap v3 support enabled.");
 	}
@@ -106,6 +101,17 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 		world.getLayerRegistry().register(layer);
 
 		return layer;
+	}
+	
+	@Override
+	void reloadAction() {
+		if (TownyProvincesSettings.getTownCostsIcon() == null) {
+			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Pl3xMap V3.");
+			return;
+		}
+
+		Pl3xMap.api().getIconRegistry().register(new IconImage(
+			"provinces_costs_icon", TownyProvincesSettings.getTownCostsIcon(), "png"));
 	}
 	
 	@Override
