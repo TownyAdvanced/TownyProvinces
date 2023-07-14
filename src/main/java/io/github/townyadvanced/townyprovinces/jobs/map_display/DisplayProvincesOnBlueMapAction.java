@@ -37,7 +37,9 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 
 		tpFreeCoord = new TPFreeCoord(0,0);
 		
-		BlueMapAPI.onEnable(e -> reloadAction());
+		BlueMapAPI.onEnable(e -> {
+			reloadAction();
+		});
 		
 		TownyProvinces.info("BlueMap support enabled.");
 	  }
