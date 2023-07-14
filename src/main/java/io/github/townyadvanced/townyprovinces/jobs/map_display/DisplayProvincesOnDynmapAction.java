@@ -46,8 +46,7 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 	@Override
 	void reloadAction() {
 		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Dynmap.");
-			return;
+			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
 		}
 
 		final MarkerIcon oldMarkerIcon = markerapi.getMarkerIcon("provinces_costs_icon");
@@ -58,16 +57,16 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			ImageIO.write(TownyProvincesSettings.getTownCostsIcon(), "png", outputStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
+		} catch (IOException ex) {
+			TownyProvinces.severe("Failed to write BlueMap Marker Icon as png file!");
+			throw new RuntimeException(ex);
 		}
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 		MarkerIcon markerIcon = markerapi.createMarkerIcon("provinces_costs_icon",
 			"provinces_costs_icon", inputStream);
 
 		if (markerIcon == null) {
-			TownyProvinces.severe("Error registering Town Costs Icon on Dynmap! Unable to support Dynmap.");
+			throw new RuntimeException("Failed to register Town Costs Icon");
 		}
 	}
 	
@@ -188,10 +187,7 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 			}
 		} else {
 			//Re-evaluate province border colour
-			if (marker.getLineColor() != province.getType().getBorderColour()) {
-				//Change colour of marker
-				marker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
-			}
+			marker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
 		} 
 	}
 
@@ -260,16 +256,12 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		//Cycle provinces
 		AreaMarker areaMarker;
 		for(Province province: new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())) {
-			//Set border colour if needed
+			//Set border colour
 			areaMarker = bordersMarkerSet.findAreaMarker(province.getId());
 			if(areaMarker != null) {
-				if (areaMarker.getLineColor() != province.getType().getBorderColour()) {
-					areaMarker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
-				}
-				//Set fill colour if needed
-				if (areaMarker.getFillOpacity() != province.getFillOpacity() || areaMarker.getFillColor() != province.getFillColour()) {
-					areaMarker.setFillStyle(province.getFillOpacity(), province.getFillColour());
-				}
+				areaMarker.setLineStyle(province.getType().getBorderWeight(), province.getType().getBorderOpacity(), province.getType().getBorderColour());
+				//Set fill colour
+				areaMarker.setFillStyle(province.getFillOpacity(), province.getFillColour());
 			}
 		}
 	}
