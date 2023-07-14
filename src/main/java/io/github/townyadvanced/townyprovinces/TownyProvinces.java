@@ -102,7 +102,7 @@ public class TownyProvinces extends JavaPlugin {
 		}
 
 		//Refresh 
-		MapDisplayTaskController.requestFullMapRefresh();
+		MapDisplayTaskController.reloadIntegrations();
 		info("TownyProvinces Reloaded Successfully");
 	}
 
