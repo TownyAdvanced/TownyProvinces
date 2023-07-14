@@ -37,9 +37,9 @@ public class MapDisplayTaskController {
 				}
 			}
 		}
-		mapDisplayTask.runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, TownyProvincesSettings.getMapRefreshPeriodMilliseconds() * 20);
-		
 		requestFullMapRefresh();
+		mapDisplayTask = new MapDisplayTask();
+		mapDisplayTask.runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, TownyProvincesSettings.getMapRefreshPeriodMilliseconds() * 20);
 	}
 
 	public static void requestFullMapRefresh() {
