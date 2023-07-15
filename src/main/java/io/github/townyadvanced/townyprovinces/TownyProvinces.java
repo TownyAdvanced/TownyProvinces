@@ -9,10 +9,7 @@ import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnBlueMapAction;
-import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnDynmapAction;
-import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnPl3xMapV3Action;
-import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.map_display.*;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
@@ -126,6 +123,10 @@ public class TownyProvinces extends JavaPlugin {
 					//Pl3xMap v1
 					info("Pl3xMap v1 is not supported. Cannot enable Pl3xMap integration.");
 				}
+			}
+			if (getServer().getPluginManager().isPluginEnabled("squaremap")) {
+				info("Found Squaremap. Enabling Squaremap integration.");
+				MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnSquaremapAction());
 			}
 			if(getServer().getPluginManager().isPluginEnabled("bluemap")){
 				info("Found BlueMap. Enabling BlueMap integration.");
