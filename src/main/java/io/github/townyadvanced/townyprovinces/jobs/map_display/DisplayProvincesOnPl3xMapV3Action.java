@@ -9,8 +9,13 @@ import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.objects.TPFreeCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import net.pl3x.map.core.Pl3xMap;
+import net.pl3x.map.core.event.EventHandler;
+import net.pl3x.map.core.event.EventListener;
+import net.pl3x.map.core.event.server.Pl3xMapEnabledEvent;
+import net.pl3x.map.core.event.world.WorldLoadedEvent;
 import net.pl3x.map.core.image.IconImage;
 import net.pl3x.map.core.markers.Point;
+import net.pl3x.map.core.markers.layer.Layer;
 import net.pl3x.map.core.markers.layer.SimpleLayer;
 import net.pl3x.map.core.markers.marker.Icon;
 import net.pl3x.map.core.markers.marker.Marker;
@@ -24,7 +29,7 @@ import net.pl3x.map.core.world.World;
 import java.util.*;
 import java.util.List;
 
-public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapAction {
+public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapAction implements EventListener {
 	
 	private SimpleLayer bordersLayer;
 	private SimpleLayer homeBlocksLayer;
@@ -33,17 +38,28 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 
 	public DisplayProvincesOnPl3xMapV3Action() {
 		TownyProvinces.info("Enabling Pl3xMap v3 support.");
+		
 		tpFreeCoord = new TPFreeCoord(0,0);
 		
-		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Pl3xMap V3.");
-			return;
-		}
+		reloadAction();
 
-		Pl3xMap.api().getIconRegistry().register(new IconImage(
-			"provinces_costs_icon", TownyProvincesSettings.getTownCostsIcon(), "png"));
+		Pl3xMap.api().getEventRegistry().register(this);
 		
 		TownyProvinces.info("Pl3xMap v3 support enabled.");
+	}
+
+	@EventHandler
+	public void onPl3xMapEnabled(Pl3xMapEnabledEvent event) {
+		reloadAction();
+	}
+	
+	@EventHandler
+	public void onPl3xMapWorldLoaded(WorldLoadedEvent event) {
+		if (event.getWorld().getName().equals(TownyProvincesSettings.getWorldName())) {
+			world = event.getWorld();
+			world.getLayerRegistry().register(homeBlocksLayer);
+			world.getLayerRegistry().register(bordersLayer);
+		}
 	}
 
 	/**
@@ -56,16 +72,13 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 			return;
 		}
 		
-		bordersLayer = (SimpleLayer) world.getLayerRegistry().get("townyprovinces.layer.borders");
-		homeBlocksLayer = (SimpleLayer) world.getLayerRegistry().get("townyprovinces.layer.homeblocks");
-		
-		if(bordersRefreshRequested) {
+		if (bordersRefreshRequested) {
 			if(bordersLayer != null) {
 				bordersLayer.clearMarkers();
 			}
 			addProvinceBordersLayer();
 		}
-		if(homeBlocksRefreshRequested) {
+		if (homeBlocksRefreshRequested) {
 			if(homeBlocksLayer != null) {
 				homeBlocksLayer.clearMarkers();
 			}
@@ -93,19 +106,33 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 	
 	private SimpleLayer createLayer(String layerKey, String layerName, boolean hideByDefault, int priority, int zIndex, boolean showControls) {
 		//Create simple layer
-		if (world.getLayerRegistry().get(layerKey) != null)
-			return (SimpleLayer)world.getLayerRegistry().get(layerKey);
+		SimpleLayer simpleLayer = null;
+		Layer layer = world.getLayerRegistry().get(layerKey);
+		if (layer instanceof SimpleLayer) {
+			simpleLayer = (SimpleLayer) layer;
+		}
 		
-		SimpleLayer layer = new SimpleLayer(layerKey, layerName::toString);
+		if (simpleLayer == null) {
+			simpleLayer = new SimpleLayer(layerKey, layerName::toString);
+			world.getLayerRegistry().register(simpleLayer);
+		}
 
-		layer.setDefaultHidden(hideByDefault);
-		layer.setPriority(priority);
-		layer.setZIndex(zIndex);
-		layer.setShowControls(showControls);
+		simpleLayer.setDefaultHidden(hideByDefault);
+		simpleLayer.setPriority(priority);
+		simpleLayer.setZIndex(zIndex);
+		simpleLayer.setShowControls(showControls);
+		
+		return simpleLayer;
+	}
+	
+	@Override
+	void reloadAction() {
+		if (TownyProvincesSettings.getTownCostsIcon() == null) {
+			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
+		}
 
-		world.getLayerRegistry().register(layer);
-
-		return layer;
+		Pl3xMap.api().getIconRegistry().register(new IconImage(
+			"provinces_costs_icon", TownyProvincesSettings.getTownCostsIcon(), "png"));
 	}
 	
 	@Override
@@ -195,16 +222,9 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 				return;
 			}
 			Stroke stroke = polyLineMarker.getOptions().getStroke();
-			if (stroke.getColor() == null) {
-				TownyProvinces.severe("WARNING: Marker stroke color is null for province border marker " + markerId + ".");
-				return;
-			}
 			//Re-evaluate colour
-			if (!stroke.getColor().equals(borderColour)) {
-				//Change colour of marker
-				stroke.setColor(borderColour);
-				stroke.setWeight(borderWeight);
-			}
+			stroke.setColor(borderColour);
+			stroke.setWeight(borderWeight);
 		} 
 	}
 
@@ -322,20 +342,16 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 				TownyProvinces.severe("WARNING: Marker fill color is null for province border marker " + markerId + ".");
 				continue;
 			}
-			//Set border colour if needed
+			//Set border colour
 			requiredBorderColour = province.getType().getBorderColour() |
 				(int) (255 * province.getType().getBorderOpacity()) << 24;
 			requiredBorderWeight = province.getType().getBorderWeight();
-			if (stroke.getColor() != requiredBorderColour) {
-				stroke.setColor(requiredBorderColour);
-				stroke.setWeight(requiredBorderWeight);
-			}
-			//Set fill colour if needed
+			stroke.setColor(requiredBorderColour);
+			stroke.setWeight(requiredBorderWeight);
+			//Set fill colour
 			requiredFillColour = province.getFillColour() |
 				(int) (255 * province.getFillOpacity()) << 24;
-			if (fill.getColor() != requiredFillColour) {
-				fill.setColor(requiredFillColour);
-			}
+			fill.setColor(requiredFillColour);
 		}
 	}
 }

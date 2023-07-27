@@ -32,17 +32,26 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	private MarkerSet homeBlocksMarkersSet;
 	private final TPFreeCoord tpFreeCoord;
 	
-	public DisplayProvincesOnBlueMapAction(){
+	public DisplayProvincesOnBlueMapAction() {
 		TownyProvinces.info("Enabling BlueMap support.");
 
 		tpFreeCoord = new TPFreeCoord(0,0);
 		
-		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support BlueMap.");
-			return;
-		}
-		
 		BlueMapAPI.onEnable(e -> {
+			reloadAction();
+		});
+		
+		TownyProvinces.info("BlueMap support enabled.");
+	  }
+	  
+	@Override
+	void reloadAction() {
+
+		if (TownyProvincesSettings.getTownCostsIcon() == null) {
+			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
+		}
+
+		BlueMapAPI.getInstance().ifPresent(e -> {
 			Path assetsFolder = e.getWebApp().getWebRoot().resolve("assets");
 			try (OutputStream out = Files.newOutputStream(assetsFolder.resolve("province.png"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
 				BufferedImage configIcon = TownyProvincesSettings.getTownCostsIcon();
@@ -54,20 +63,19 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 				Graphics2D g2d = resizedIcon.createGraphics();
 				g2d.drawImage(configIcon, 0, 0, TownyProvincesSettings.getTownCostsIconWidth(), TownyProvincesSettings.getTownCostsIconHeight(), null);
 				g2d.dispose();
-				
+
 				ImageIO.write(resizedIcon, "png", out);
 			} catch (IOException ex) {
 				TownyProvinces.severe("Failed to put BlueMap Marker Icon as png file!");
 				throw new RuntimeException(ex);
 			}
 		});
-		
-		TownyProvinces.info("BlueMap support enabled.");
-	  }
+	}
+	  
 	  
 	@Override
 	void executeAction(boolean bordersRefreshRequested, boolean homeBlocksRefreshRequested) {
-		BlueMapAPI.getInstance().ifPresent( api -> {
+		BlueMapAPI.getInstance().ifPresent(api -> {
 			Optional<BlueMapWorld> world = api.getWorld(TownyProvincesSettings.getWorld());
 			homeBlocksMarkersSet = MarkerSet.builder()
 				.label("TownyProvinces - Town Costs")
