@@ -38,6 +38,8 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		tpFreeCoord = new TPFreeCoord(0,0);
 		
 		BlueMapAPI.onEnable(e -> {
+			addProvinceBordersMarkerSet();
+			addProvinceHomeBlocksMarkerSet();
 			reloadAction();
 		});
 		
@@ -77,13 +79,6 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	void executeAction(boolean bordersRefreshRequested, boolean homeBlocksRefreshRequested) {
 		BlueMapAPI.getInstance().ifPresent(api -> {
 			Optional<BlueMapWorld> world = api.getWorld(TownyProvincesSettings.getWorld());
-			homeBlocksMarkersSet = MarkerSet.builder()
-				.label("TownyProvinces - Town Costs")
-				.defaultHidden(true)
-				.build();
-			borderMarkerSet = MarkerSet.builder()
-				.label("TownyProvinces - Borders")
-				.build();
 
 			if (!world.isPresent()) {
 				TownyProvinces.severe("World is not in BlueMap registry!");
@@ -94,18 +89,14 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 				if (borderMarkerSet != null) {
 					world.get().getMaps().forEach(e -> e.getMarkerSets().remove("townyprovinces.markerset.borders"));
 				}
-				for (BlueMapMap map : world.get().getMaps()) {
-					map.getMarkerSets().put("townyprovinces.markerset.borders", borderMarkerSet);
-				}
+				addProvinceBordersMarkerSet();
 			}
 
 			if (homeBlocksRefreshRequested) {
 				if (homeBlocksMarkersSet != null) {
 					world.get().getMaps().forEach(e -> e.getMarkerSets().remove("townyprovinces.markerset.homeblocks"));
 				}
-				for (BlueMapMap map : world.get().getMaps()) {
-					map.getMarkerSets().put("townyprovinces.markerset.homeblocks", homeBlocksMarkersSet);
-				}
+				addProvinceHomeBlocksMarkerSet();
 			}
 			drawProvinceHomeBlocks();
 			drawProvinceBorders();
@@ -113,11 +104,31 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		);
 	}
 
-	
+	private void addProvinceHomeBlocksMarkerSet() {
+		BlueMapWorld world = BlueMapAPI.getInstance().get().getWorld(TownyProvincesSettings.getWorld()).get();
+		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_town_costs").translate(Locale.ROOT);
+		homeBlocksMarkersSet = MarkerSet.builder()
+			.label(name)
+			.defaultHidden(true)
+			.build();
+		for (BlueMapMap map : world.getMaps()) {
+			map.getMarkerSets().put("townyprovinces.markerset.homeblocks", homeBlocksMarkersSet);
+		}
+	}
+
+	private void addProvinceBordersMarkerSet() {
+		BlueMapWorld world = BlueMapAPI.getInstance().get().getWorld(TownyProvincesSettings.getWorld()).get();
+		String name = TownyProvinces.getPlugin().getName() + " - " + Translatable.of("dynmap_layer_label_borders").translate(Locale.ROOT);
+		borderMarkerSet = MarkerSet.builder()
+			.label(name)
+			.build();
+		for (BlueMapMap map : world.getMaps()) {
+			map.getMarkerSets().put("townyprovinces.markerset.borders", borderMarkerSet);
+		}
+	}
 
 	@Override
 	protected void drawProvinceHomeBlocks() {
-		String border_icon_id = "provinces_costs_icon";
 		boolean biomeCostAdjustmentsEnabled = TownyProvincesSettings.isBiomeCostAdjustmentsEnabled();
 		Set<Province> provinceSet = new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet());
 		
@@ -174,33 +185,31 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		for(Province province : new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())){
 			marker = borderMarkerSet.get(province.getId());
 
-			float borderOpacity = (float) province.getType().getBorderOpacity();
-			float fillOpacity = (float) province.getFillOpacity();
-			java.awt.Color borderColor = new java.awt.Color(province.getType().getBorderColour());
-			Color color = new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), borderOpacity);
-			java.awt.Color fillColor = new java.awt.Color(province.getFillColour());
-			Color color1 = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), fillOpacity);
-			if(marker != null){
-			  if(marker instanceof ShapeMarker){
-					if(!((ShapeMarker) marker).getLineColor().equals(color)){
-						((ShapeMarker) marker).setLineColor(color);
-					}
-					
-					if(!((ShapeMarker) marker).getFillColor().equals(color1)){
-						((ShapeMarker) marker).setFillColor(color1);
-					}
-				}
+			int borderWeight = province.getType().getBorderWeight();
+			Color borderColor = new Color(province.getType().getBorderColour(), (float) province.getType().getBorderOpacity());
+			Color fillColor = new Color(province.getFillColour(), (float) province.getFillOpacity());
+			
+			if (marker == null) {
+				TownyProvinces.severe("ERROR: Province marker for styling is null");
+				continue;
+			}
+			
+			if (marker instanceof ShapeMarker) {
+				ShapeMarker shapeMarker = (ShapeMarker) marker;
+				shapeMarker.setLineColor(borderColor);
+				shapeMarker.setLineWidth(borderWeight);
+				shapeMarker.setFillColor(fillColor);
 			}
 		}
 	}
 
 	@Override
 	protected void drawProvinceBorder(Province province) {
-		int borderColour = province.getType().getBorderColour();
-		float borderOpacity = (float) province.getType().getBorderOpacity();
+		int borderWeight = province.getType().getBorderWeight();
+		Color borderColor = new Color(province.getType().getBorderColour(), (float) province.getType().getBorderOpacity());
 		String markerId = province.getId();
-		Marker shapeMarker = borderMarkerSet.get(markerId);
-			if (shapeMarker == null) {
+		Marker marker = borderMarkerSet.get(markerId);
+			if (marker == null) {
 				Set<TPCoord> borderCoords = findAllBorderCoords(province);
 				if (borderCoords.size() > 0) {
 					//Arrange border blocks into drawable line
@@ -214,22 +223,17 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 					}
 				}
 			}
-		if (shapeMarker instanceof ShapeMarker) {
-			if(!((ShapeMarker) shapeMarker).getLineColor().equals(borderColour)){
-				java.awt.Color provinceColor = new java.awt.Color(province.getType().getBorderColour());
-				Color color = new Color(provinceColor.getRed(), provinceColor.getGreen(), provinceColor.getBlue(), borderOpacity);
-				((ShapeMarker) shapeMarker).setLineColor(color);
-			}
+		if (marker instanceof ShapeMarker) {
+			ShapeMarker shapeMarker = (ShapeMarker) marker;
+			shapeMarker.setLineColor(borderColor);
+			shapeMarker.setLineWidth(borderWeight);
 		}
 	}
 
 	private void drawBorderLine(List<TPCoord> drawableLineOfBorderCoords, Province province, String markerId) {
-		float borderOpacity = (float) province.getType().getBorderOpacity();
-		float fillOpacity = (float) province.getFillOpacity();
-		java.awt.Color borderColor = new java.awt.Color(province.getType().getBorderColour());
-		Color color = new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), borderOpacity);
-		java.awt.Color fillColor = new java.awt.Color(province.getFillColour());
-		Color color1 = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), fillOpacity);
+		int borderWeight = province.getType().getBorderWeight();
+		Color borderColor = new Color(province.getType().getBorderColour(), (float) province.getType().getBorderOpacity());
+		Color fillColor = new Color(province.getFillColour(), (float) province.getFillOpacity());
 		List<Vector2d> points = new ArrayList<>();
 		for(TPCoord drawableLineOfBorderCoord : drawableLineOfBorderCoords){
 			int x = (drawableLineOfBorderCoord.getX() * TownyProvincesSettings.getChunkSideLength());
@@ -253,8 +257,9 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 		Shape shape = new Shape(points);
 		ShapeMarker marker = ShapeMarker.builder()
 			.shape(shape, 65)
-			.fillColor(color1)
-			.lineColor(color)
+			.fillColor(fillColor)
+			.lineColor(borderColor)
+			.lineWidth(borderWeight)
 			.label(province.getId())
 			.depthTestEnabled(false)
 			.build();
