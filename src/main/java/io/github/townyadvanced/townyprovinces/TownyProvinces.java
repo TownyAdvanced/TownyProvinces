@@ -132,7 +132,7 @@ public class TownyProvinces extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
-		if(getServer().getPluginManager().isPluginEnabled("bluemap")){
+		if(getServer().getPluginManager().isPluginEnabled("BlueMap")){
 			try {
 				info("Found BlueMap. Enabling BlueMap integration.");
 				try {
