@@ -49,8 +49,8 @@ DataHandlerUtil {
 		fileEntries.put("home_block", "" + province.getHomeBlock().getX() + "," + province.getHomeBlock().getZ());
 		fileEntries.put("type", "" + province.getType().name());
 		fileEntries.put("is_land_validation_requested", "" + province.isLandValidationRequested());
-		fileEntries.put("new_town_cost", "" + province.getNewTownCost());
-		fileEntries.put("upkeep_town_cost", "" + province.getUpkeepTownCost());
+		fileEntries.put("new_town_cost_per_chunk", "" + province.getNewTownCost());
+		fileEntries.put("upkeep_town_cost_per_chunk", "" + province.getUpkeepTownCost());
 		fileEntries.put("estimated_proportion_of_good_land", "" + province.getEstimatedProportionOfGoodLand());
 		fileEntries.put("estimated_proportion_of_water", "" + province.getEstimatedProportionOfWater());
 		fileEntries.put("estimated_proportion_of_hot_land", "" + province.getEstimatedProportionOfHotLand());
@@ -95,10 +95,10 @@ DataHandlerUtil {
 		Province province = new Province(homeBlock);
 		//Read more values
 		if(fileEntries.containsKey("new_town_cost")) {
-			province.setNewTownCost(Double.parseDouble(fileEntries.get("new_town_cost")));
+			province.setNewTownCost(Double.parseDouble(fileEntries.get("new_town_cost_per_chunk")));
 		}
 		if(fileEntries.containsKey("upkeep_town_cost")) {
-			province.setUpkeepTownCost(Double.parseDouble(fileEntries.get("upkeep_town_cost")));
+			province.setUpkeepTownCost(Double.parseDouble(fileEntries.get("upkeep_town_cost_per_chunk")));
 		}
 		if(fileEntries.containsKey("is_land_validation_requested")) {
 			province.setLandValidationRequested(Boolean.parseBoolean(fileEntries.get("is_land_validation_requested")));
