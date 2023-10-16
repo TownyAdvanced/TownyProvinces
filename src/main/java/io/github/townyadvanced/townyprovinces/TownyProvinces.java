@@ -9,10 +9,7 @@ import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnBlueMapAction;
-import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnDynmapAction;
-import io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnPl3xMapV3Action;
-import io.github.townyadvanced.townyprovinces.jobs.map_display.MapDisplayTaskController;
+import io.github.townyadvanced.townyprovinces.jobs.map_display.*;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.settings.Settings;
@@ -116,7 +113,13 @@ public class TownyProvinces extends JavaPlugin {
 			try {
 				if (classExists("net.pl3x.map.core.Pl3xMap")) {
 					info("Found Pl3xMap v3. Enabling Pl3xMap integration.");
-					MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnPl3xMapV3Action());
+					try {
+						Class<?> mapClass = Class.forName("io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnPl3xMapV3Action");
+						MapDisplayTaskController.addMapDisplayAction((DisplayProvincesOnMapAction) mapClass.getConstructor().newInstance());
+					} catch (ReflectiveOperationException e) {
+						Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem loading Pl3xMap integration: " + e.getMessage());
+						e.printStackTrace();
+					}
 				} else if (classExists("net.pl3x.map.Pl3xMap")) {
 					//Pl3xMap v2
 					info("Pl3xMap v2 is not supported. Cannot enable Pl3xMap integration.");
@@ -129,10 +132,16 @@ public class TownyProvinces extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
-		if(getServer().getPluginManager().isPluginEnabled("bluemap")){
+		if(getServer().getPluginManager().isPluginEnabled("BlueMap")){
 			try {
 				info("Found BlueMap. Enabling BlueMap integration.");
-				MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnBlueMapAction());
+				try {
+					Class<?> mapClass = Class.forName("io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnBlueMapAction");
+					MapDisplayTaskController.addMapDisplayAction((DisplayProvincesOnMapAction) mapClass.getConstructor().newInstance());
+				} catch (ReflectiveOperationException e) {
+					Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem loading BlueMap integration: " + e.getMessage());
+					e.printStackTrace();
+				}
 			} catch (RuntimeException e) {
 				Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling BlueMap integration: " + e.getMessage());
 				e.printStackTrace();
@@ -141,7 +150,13 @@ public class TownyProvinces extends JavaPlugin {
 		if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
 			try {
 				info("Found Dynmap plugin. Enabling Dynmap integration.");
-				MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnDynmapAction());
+				try {
+					Class<?> mapClass = Class.forName("io.github.townyadvanced.townyprovinces.jobs.map_display.DisplayProvincesOnDynmapAction");
+					MapDisplayTaskController.addMapDisplayAction((DisplayProvincesOnMapAction) mapClass.getConstructor().newInstance());
+				} catch (ReflectiveOperationException e) {
+					Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem loading Dynmap integration: " + e.getMessage());
+					e.printStackTrace();
+				}
 			} catch (RuntimeException e) {
 				Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling Dynmap integration: " + e.getMessage());
 				e.printStackTrace();
