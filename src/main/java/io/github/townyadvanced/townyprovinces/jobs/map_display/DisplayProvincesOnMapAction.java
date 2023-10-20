@@ -51,7 +51,7 @@ public abstract class DisplayProvincesOnMapAction {
 	 */
 	public static Set<TPCoord> findAllBorderCoords(Province province) {
 		Set<TPCoord> resultSet = new HashSet<>();
-		for(TPCoord provinceCoord: province.getListOfCoordsInProvince()) {
+		for(TPCoord provinceCoord: new ArrayList<>(province.getListOfCoordsInProvince())) {
 			resultSet.addAll(province.getAdjacentBorderCoords(provinceCoord));
 		}
 		return resultSet;
