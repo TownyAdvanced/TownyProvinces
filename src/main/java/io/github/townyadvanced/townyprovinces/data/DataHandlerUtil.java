@@ -94,10 +94,10 @@ DataHandlerUtil {
 		//Create province object
 		Province province = new Province(homeBlock);
 		//Read more values
-		if(fileEntries.containsKey("new_town_cost")) {
+		if(fileEntries.containsKey("new_town_cost_per_chunk")) {
 			province.setNewTownCost(Double.parseDouble(fileEntries.get("new_town_cost_per_chunk")));
 		}
-		if(fileEntries.containsKey("upkeep_town_cost")) {
+		if(fileEntries.containsKey("upkeep_town_cost_per_chunk")) {
 			province.setUpkeepTownCost(Double.parseDouble(fileEntries.get("upkeep_town_cost_per_chunk")));
 		}
 		if(fileEntries.containsKey("is_land_validation_requested")) {
