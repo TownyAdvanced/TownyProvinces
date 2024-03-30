@@ -1,16 +1,9 @@
 package io.github.townyadvanced.townyprovinces.jobs.map_display;
-import com.palmergames.bukkit.towny.object.Nation;
-import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
-import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MapDisplayTaskController {
 	private static final List<DisplayProvincesOnMapAction> mapDisplayActions = new ArrayList<>();
@@ -30,6 +23,23 @@ public class MapDisplayTaskController {
 			TownyProvinces.info("Map Display Job Started");
 			return true;
 		}
+	}
+	
+	public static void reloadIntegrations() {
+		
+		mapDisplayTask.cancel();
+		synchronized (TownyProvinces.MAP_DISPLAY_JOB_LOCK) {
+			synchronized (TownyProvinces.REGION_REGENERATION_JOB_LOCK) {
+				synchronized (TownyProvinces.PRICE_RECALCULATION_JOB_LOCK) {
+					for (DisplayProvincesOnMapAction mapDisplayAction : getMapDisplayActions()) {
+						mapDisplayAction.reloadAction();
+					}
+				}
+			}
+		}
+		requestFullMapRefresh();
+		mapDisplayTask = new MapDisplayTask();
+		mapDisplayTask.runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, TownyProvincesSettings.getMapRefreshPeriodMilliseconds() * 20);
 	}
 
 	public static void requestFullMapRefresh() {
