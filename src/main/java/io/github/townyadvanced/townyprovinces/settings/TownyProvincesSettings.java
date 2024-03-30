@@ -15,8 +15,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -256,18 +259,46 @@ public class TownyProvincesSettings {
 	public static double getBiomeCostAdjustmentsHotLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_HOT_LAND); }
 	public static double getBiomeCostAdjustmentsColdLand() { return Settings.getDouble(ConfigNodes.BIOME_COST_ADJUSTMENTS_COLD_LAND); }
 	
-	public static @Nullable BufferedImage getTownCostsIcon() {
-		URL imageURL;
+	private static BufferedImage getFallbackTownCostsIcon() {
 		try {
-			imageURL = new URL(Settings.getString(ConfigNodes.MAP_TOWN_COSTS_ICON_URL));
-			return ImageIO.read(imageURL);
-		} catch (MalformedURLException e) {
-			TownyProvinces.severe("Error: Invalid Town Costs Icon URL in configuration file.");
-			return null;
+			InputStream imageStream = TownyProvinces.getPlugin().getResource("coin.png");
+			if (imageStream == null) {
+				TownyProvinces.severe("Error: Fallback Town Costs Icon is missing from plugin jar file.");
+				return null;
+			}
+			return ImageIO.read(imageStream);
 		} catch (IOException e) {
-			TownyProvinces.severe("Error: Failed to load Town Costs Icon from URL provided in configuration file.");
+			TownyProvinces.severe("Error: Failed to load fallback Town Costs Icon from plugin jar file.");
 			return null;
 		}
+	}
+	
+	public static @Nullable BufferedImage getTownCostsIcon() {
+		String imageString = Settings.getString(ConfigNodes.MAP_TOWN_COSTS_ICON_URL);
+		if (imageString.startsWith("https://") || imageString.startsWith("http://")) {
+			URL imageURL;
+			try {
+				imageURL = new URL(Settings.getString(ConfigNodes.MAP_TOWN_COSTS_ICON_URL));
+				return ImageIO.read(imageURL);
+			} catch (MalformedURLException e) {
+				TownyProvinces.severe("Error: Invalid Town Costs Icon URL in configuration file.");
+				return getFallbackTownCostsIcon();
+			} catch (IOException e) {
+				TownyProvinces.severe("Error: Failed to load Town Costs Icon from URL provided in configuration file.");
+				return getFallbackTownCostsIcon();
+			}
+		} else {
+			try {
+				Path imagePath = TownyProvinces.getPlugin().getDataFolder().toPath().resolve(imageString);
+				return ImageIO.read(imagePath.toFile());
+			} catch (InvalidPathException e) {
+				TownyProvinces.severe("Error: Invalid Town Costs Icon filepath in configuration file.");
+				return getFallbackTownCostsIcon();
+			} catch (IOException e) {
+				TownyProvinces.severe("Error: Failed to load Town Costs Icon from filepath provided in configuration file.");
+				return getFallbackTownCostsIcon();
+			}
+        }
 	}
 	
 	public static int getTownCostsIconWidth() { return Settings.getInt(ConfigNodes.MAP_TOWN_COSTS_ICON_WIDTH); }

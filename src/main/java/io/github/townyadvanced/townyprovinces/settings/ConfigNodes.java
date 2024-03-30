@@ -206,8 +206,8 @@ public enum ConfigNodes {
 		""),
 	MAP_TOWN_COSTS_ICON_URL(
 		"map_integration.town_costs_icon.url",
-		"https://cdn-icons-png.flaticon.com/512/9729/9729309.png", "",
-		"# Icon for the town costs. This must be a valid image URL.",
+		"coin.png", "",
+		"# Icon for the town costs. This must be a valid URL or filepath.",
 		"# Default coin icon created by Md Tanvirul Haque - Flaticon",
 		"# https://www.flaticon.com/free-icon/dollar_9729309"
 		),
