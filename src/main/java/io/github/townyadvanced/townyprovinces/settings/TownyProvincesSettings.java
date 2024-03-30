@@ -279,7 +279,7 @@ public class TownyProvincesSettings {
 		if (imageString.startsWith("https://") || imageString.startsWith("http://")) {
 			URL imageURL;
 			try {
-				imageURL = new URL(Settings.getString(ConfigNodes.MAP_TOWN_COSTS_ICON_URL));
+				imageURL = new URL(imageString);
 				return ImageIO.read(imageURL);
 			} catch (MalformedURLException e) {
 				TownyProvinces.severe("Error: Invalid Town Costs Icon URL in configuration file.");
