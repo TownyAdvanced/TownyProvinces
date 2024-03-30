@@ -274,7 +274,7 @@ public class TownyProvincesSettings {
 	}
 	
 	public static @Nullable BufferedImage getTownCostsIcon() {
-		String imageString = Settings.getString(ConfigNodes.MAP_TOWN_COSTS_ICON_URL);
+		String imageString = Settings.getString(ConfigNodes.MAP_TOWN_COSTS_ICON_PATH);
 		if (imageString.isEmpty()) return getFallbackTownCostsIcon();
 		if (imageString.startsWith("https://") || imageString.startsWith("http://")) {
 			URL imageURL;
