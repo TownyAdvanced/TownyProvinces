@@ -2,7 +2,7 @@
 
 ## :information_source: Overview
 - :world_map: An add-on plugin for *Towny*, which makes claiming more organized, reducing staff workload and server toxicity.
-  
+
 ## :gift: Features
 - :globe_with_meridians: **Divides The Map Automatically into Provinces:**
   - :tophat: Civilised Provinces: 1 town only, no foreign outposts allowed.
@@ -25,11 +25,11 @@
 
 ## :floppy_disk: Installation Guide
 1. Ensure your server has *Towny 0.99.1.0* or newer.
-2. Ensure your server has a map-display plugin: Either *Dynmap*, *Pl3xmap* or *BlueMap*.
+2. Ensure your server has a map-display plugin: Either *Dynmap*, *Pl3xMap*, *BlueMap* or *squaremap*.
 3. Download the *TownyProvinces* plugin jar file from [here](https://github.com/TownyAdvanced/TownyProvinces/releases), and drop it into your server plugins folder.
 4. Stop your server.
 5. Start your server with plenty of memory (*especially for big maps*).
-   - Example: With Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.19.4.jar nogui`.
+   - Example: With Spigot you might run: `java -Xms1G -Xmx3G -XX:+UseG1GC -jar spigot-1.20.4.jar nogui`.
 
 ## :football: Player Guide
 - :cityscape: Towns:
@@ -42,7 +42,7 @@
 
 ## :fast_forward: Admin Quick-Start Guide
 1. Run `tpra region regenerate all`. This will generate 2 small sample regions.
-2. To see the generated provinces, view your website-map. 
+2. To see the generated provinces, view your website-map.
 
 ## :arrow_forward: Admin Full Guide
 1. Protect Historical Town Locations
@@ -65,7 +65,7 @@
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
 - `tpra landvalidationjob [status|start|stop|restart|pause]` -> Control the land validation job.
   - This Job assigns a type to each provinces, either Civilized, Sea, or Wasteland. It also Assesses and records the Biome proportions in each province. These proportions affect the new/upkeep prices.
-  - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below commands.* 
+  - *NOTE: The automatic validation is not perfect, so expect to convert a few provinces afterwards using the below commands.*
 - `tpra province settype [civilized|sea|wasteland] [<x>,<z>]` -> Set the type of a province.
 - `tpra province settype [civilized|sea|wasteland] [<x1>,<z1>] [<2x>,<z2>]` -> Set the type of all provinces in a rectangular area.
 - `tpra region [newtowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk new-town-cost for a region.
