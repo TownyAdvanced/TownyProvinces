@@ -46,7 +46,7 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 	@Override
 	void reloadAction() {
 		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
+			throw new RuntimeException("Town Costs Icon is not a valid image");
 		}
 
 		final MarkerIcon oldMarkerIcon = markerapi.getMarkerIcon("provinces_costs_icon");

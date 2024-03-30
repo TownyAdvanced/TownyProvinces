@@ -128,7 +128,7 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 	@Override
 	void reloadAction() {
 		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
+			throw new RuntimeException("Town Costs Icon is not a valid image");
 		}
 
 		Pl3xMap.api().getIconRegistry().register(new IconImage(
