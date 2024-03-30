@@ -207,7 +207,8 @@ public enum ConfigNodes {
 	MAP_TOWN_COSTS_ICON_URL(
 		"map_integration.town_costs_icon.url",
 		"", "",
-		"# Icon for the town costs. This must be a valid URL or filepath.",
+		"# Custom icon for the town costs. This must be a valid URL, or a filepath in TownyProvinces folder.",
+		"# Leave this empty to use the default coin icon.",
 		"# Default coin icon created by Md Tanvirul Haque - Flaticon",
 		"# https://www.flaticon.com/free-icon/dollar_9729309"
 		),
