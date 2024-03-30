@@ -16,6 +16,7 @@ import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,7 +46,9 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 	
 	@Override
 	void reloadAction() {
-		if (TownyProvincesSettings.getTownCostsIcon() == null) {
+		BufferedImage configIcon = TownyProvincesSettings.getTownCostsIcon();
+		
+		if (configIcon == null) {
 			throw new RuntimeException("Town Costs Icon is not a valid image");
 		}
 
@@ -56,7 +59,7 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
-			ImageIO.write(TownyProvincesSettings.getTownCostsIcon(), "png", outputStream);
+			ImageIO.write(configIcon, "png", outputStream);
 		} catch (IOException ex) {
 			TownyProvinces.severe("Failed to write BlueMap Marker Icon as png file!");
 			throw new RuntimeException(ex);

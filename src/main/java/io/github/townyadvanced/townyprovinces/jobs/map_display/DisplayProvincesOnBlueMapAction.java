@@ -48,15 +48,15 @@ public class DisplayProvincesOnBlueMapAction extends DisplayProvincesOnMapAction
 	  
 	@Override
 	void reloadAction() {
+		BufferedImage configIcon = TownyProvincesSettings.getTownCostsIcon();
 
-		if (TownyProvincesSettings.getTownCostsIcon() == null) {
+		if (configIcon == null) {
 			throw new RuntimeException("Town Costs Icon is not a valid image");
 		}
 
 		BlueMapAPI.getInstance().ifPresent(e -> {
 			Path assetsFolder = e.getWebApp().getWebRoot().resolve("assets");
 			try (OutputStream out = Files.newOutputStream(assetsFolder.resolve("province.png"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-				BufferedImage configIcon = TownyProvincesSettings.getTownCostsIcon();
 				BufferedImage resizedIcon = new BufferedImage(
 					TownyProvincesSettings.getTownCostsIconWidth(),
 					TownyProvincesSettings.getTownCostsIconHeight(),

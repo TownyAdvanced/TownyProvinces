@@ -26,6 +26,7 @@ import net.pl3x.map.core.markers.option.Options;
 import net.pl3x.map.core.markers.option.Stroke;
 import net.pl3x.map.core.world.World;
 
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
@@ -127,12 +128,14 @@ public class DisplayProvincesOnPl3xMapV3Action extends DisplayProvincesOnMapActi
 	
 	@Override
 	void reloadAction() {
-		if (TownyProvincesSettings.getTownCostsIcon() == null) {
+		BufferedImage configIcon = TownyProvincesSettings.getTownCostsIcon();
+		
+		if (configIcon == null) {
 			throw new RuntimeException("Town Costs Icon is not a valid image");
 		}
 
 		Pl3xMap.api().getIconRegistry().register(new IconImage(
-			"provinces_costs_icon", TownyProvincesSettings.getTownCostsIcon(), "png"));
+			"provinces_costs_icon", configIcon, "png"));
 	}
 	
 	@Override
