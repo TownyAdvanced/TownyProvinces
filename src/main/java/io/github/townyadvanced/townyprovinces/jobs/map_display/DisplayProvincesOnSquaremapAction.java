@@ -36,13 +36,8 @@ public class DisplayProvincesOnSquaremapAction extends DisplayProvincesOnMapActi
 		
 		api = SquaremapProvider.get();
 		tpFreeCoord = new TPFreeCoord(0,0);
-		
-		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			TownyProvinces.severe("Error: Town Costs Icon is not valid. Unable to support Squaremap.");
-			return;
-		}
 
-		api.iconRegistry().register(iconKey, TownyProvincesSettings.getTownCostsIcon());
+		reloadAction();
 				
 		TownyProvinces.info("Squaremap support enabled.");
 	}
@@ -115,6 +110,15 @@ public class DisplayProvincesOnSquaremapAction extends DisplayProvincesOnMapActi
 		world.layerRegistry().register(layerKey, layer);
 
 		return layer;
+	}
+
+	@Override
+	void reloadAction() {
+		if (TownyProvincesSettings.getTownCostsIcon() == null) {
+			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
+		}
+
+		api.iconRegistry().register(iconKey, TownyProvincesSettings.getTownCostsIcon());
 	}
 	
 	@Override
