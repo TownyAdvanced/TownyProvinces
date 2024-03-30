@@ -117,7 +117,8 @@ public class DisplayProvincesOnSquaremapAction extends DisplayProvincesOnMapActi
 		if (TownyProvincesSettings.getTownCostsIcon() == null) {
 			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
 		}
-
+		
+		if (api.iconRegistry().hasEntry(iconKey)) api.iconRegistry().unregister(iconKey);
 		api.iconRegistry().register(iconKey, TownyProvincesSettings.getTownCostsIcon());
 	}
 	
