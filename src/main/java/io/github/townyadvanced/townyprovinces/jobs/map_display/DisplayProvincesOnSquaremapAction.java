@@ -17,6 +17,7 @@ import xyz.jpenilla.squaremap.api.marker.MarkerOptions;
 import xyz.jpenilla.squaremap.api.marker.Polygon;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
@@ -114,12 +115,14 @@ public class DisplayProvincesOnSquaremapAction extends DisplayProvincesOnMapActi
 
 	@Override
 	void reloadAction() {
-		if (TownyProvincesSettings.getTownCostsIcon() == null) {
-			throw new RuntimeException("Town Costs Icon URL is not a valid image link");
+		BufferedImage configIcon = TownyProvincesSettings.getTownCostsIcon();
+		
+		if (configIcon == null) {
+			throw new RuntimeException("Town Costs Icon is not a valid image");
 		}
 		
 		if (api.iconRegistry().hasEntry(iconKey)) api.iconRegistry().unregister(iconKey);
-		api.iconRegistry().register(iconKey, TownyProvincesSettings.getTownCostsIcon());
+		api.iconRegistry().register(iconKey, configIcon);
 	}
 	
 	@Override
