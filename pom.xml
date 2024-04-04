@@ -68,13 +68,19 @@
       <dependency>
           <groupId>maven.modrinth</groupId>
           <artifactId>pl3xmap</artifactId>
-          <version>1.20.1-468</version>
+          <version>1.20.4-476</version>
           <scope>provided</scope>
       </dependency>
       <dependency>
           <groupId>com.github.BlueMap-Minecraft</groupId>
           <artifactId>BlueMapAPI</artifactId>
           <version>v2.5.1</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>xyz.jpenilla</groupId>
+          <artifactId>squaremap-api</artifactId>
+          <version>1.1.12</version>
           <scope>provided</scope>
       </dependency>
   </dependencies>

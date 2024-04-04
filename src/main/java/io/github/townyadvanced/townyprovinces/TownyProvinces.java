@@ -132,6 +132,10 @@ public class TownyProvinces extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
+		if (getServer().getPluginManager().isPluginEnabled("squaremap")) {
+			info("Found Squaremap. Enabling Squaremap integration.");
+			MapDisplayTaskController.addMapDisplayAction(new DisplayProvincesOnSquaremapAction());
+		}
 		if(getServer().getPluginManager().isPluginEnabled("BlueMap")){
 			try {
 				info("Found BlueMap. Enabling BlueMap integration.");
