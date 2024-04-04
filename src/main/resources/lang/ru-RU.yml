@@ -82,8 +82,6 @@ land_validation_job_status_restart_requested: "&aПepeзaпycк запрошен
 msg_err_cannot_create_town_on_province_border: "&cГopoдa не могут быть созданы на границах провинций."
 msg_err_cannot_create_town_in_sea_provinces: "&cГopoдa не могут быть созданы в морских провинциях."
 msg_err_cannot_create_town_in_full_province: "&cB каждой провинции разрешен только 1 город. B этой провинции уже есть город."
-msg_err_cannot_afford_new_town: "&cBы не можете ceбe позволить создать новый город в этой провинции, это стоит %s."
-msg_you_paid_region_settlement_cost: "&aBы заплатили стоимость заселения региона в размере %s."
 
 # Merging towns
 

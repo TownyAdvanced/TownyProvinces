@@ -85,8 +85,6 @@ land_validation_job_status_restart_requested: "&aRestart Requested"
 msg_err_cannot_create_town_on_province_border: "&cTowns cannot be created on province borders."
 msg_err_cannot_create_town_in_province_type: "&cTowns cannot be created in %s provinces."
 msg_err_cannot_create_town_in_full_province: "&cOnly 1 town is allowed in each province. This province already contains a town."
-msg_err_cannot_afford_new_town: "&cYou can't afford to settle a new town in this province, which costs %s."
-msg_you_paid_region_settlement_cost: "&aYou paid the region settlement cost of %s."
 
 # Merging towns
 
