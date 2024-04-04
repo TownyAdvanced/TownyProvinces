@@ -1,7 +1,6 @@
 package io.github.townyadvanced.townyprovinces.jobs.map_display;
 
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
-import io.github.townyadvanced.townyprovinces.objects.Province;
 import org.bukkit.scheduler.BukkitRunnable;
 
 

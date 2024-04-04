@@ -116,10 +116,6 @@ public class DisplayProvincesOnDynmapAction extends DisplayProvincesOnMapAction 
 		markerSet.setHideByDefault(hideByDefault);
 		markerSet.setLabelShow(labelShow);
 
-		if (markerSet == null) {
-			TownyProvinces.severe("Error creating Dynmap marker set!");
-			return null;
-		}
 		return markerSet;
 	}
 	
