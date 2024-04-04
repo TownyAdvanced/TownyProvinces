@@ -13,7 +13,6 @@
 - :money_with_wings: ***Overclaiming***: Each town has a reserved claiming area; No need to throw away money on overclaiming.
 - :no_entry_sign: ***Claim Blocking***: No town can block the claiming plans of another town.
 - :snake: ***Snake Claiming***: Snake claiming is irrelevant.
-- :doughnut: ***Doughnut Claiming***: Doughnut claiming is irrelevant.
 - :hamburger: ***Town Surrounding***: A town cannot surrounded itself with another town (*e.g. to become un-attackable*).
 - :no_pedestrians: ***Travel Blocking***: Travel cannot be blocked by claims, because province borders are always wilderness.
 - :tent: ***Inactive towns in popular areas***: Upkeep can be raised in popular regions, discouraging inactive towns.
@@ -24,7 +23,7 @@
 - ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/7570eb88-6ea9-487a-9045-2c85710ecc76)
 
 ## :floppy_disk: Installation Guide
-1. Ensure your server has *Towny 0.99.1.0* or newer.
+1. Ensure your server has *Towny 0.100.2.0* or newer.
 2. Ensure your server has a map-display plugin: Either *Dynmap*, *Pl3xMap*, *BlueMap* or *squaremap*.
 3. Download the *TownyProvinces* plugin jar file from [here](https://github.com/TownyAdvanced/TownyProvinces/releases), and drop it into your server plugins folder.
 4. Stop your server.
