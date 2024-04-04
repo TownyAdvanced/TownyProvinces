@@ -1,7 +1,6 @@
 package io.github.townyadvanced.townyprovinces.listeners;
 
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.event.PreNewTownEvent;
 import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
@@ -12,14 +11,12 @@ import com.palmergames.bukkit.towny.event.town.TownMapColourLocalCalculationEven
 import com.palmergames.bukkit.towny.event.town.TownPreMergeEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreSetHomeBlockEvent;
 import com.palmergames.bukkit.towny.object.Coord;
-import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.object.Translation;
 import com.palmergames.bukkit.towny.object.TranslationLoader;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
-import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.TPCoord;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
@@ -104,25 +101,11 @@ public class TownyListener implements Listener {
 			event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_create_town_in_full_province").translate(Locale.ROOT));
 			return;
 		}
-		/*
-		 * Check if the player has enough money
-		 * If the player does, pay the region settlement cost
-		 */
+		// Set the Town's creation cost to the value dictated by TownyProvines.
 		if (TownySettings.isUsingEconomy() && province.getNewTownCost() > 0) {
 			int regionSettlementCost = (int)(TownyProvincesSettings.isBiomeCostAdjustmentsEnabled() ? province.getBiomeAdjustedNewTownCost() : province.getNewTownCost());
 			double totalNewTownCost = TownySettings.getNewTownPrice() + regionSettlementCost;
-			Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
-			if (resident != null && resident.getAccountOrNull() != null) {
-				if (resident.getAccountOrNull().canPayFromHoldings(totalNewTownCost)) {
-					//Pay the region settlement cost
-					resident.getAccountOrNull().withdraw(regionSettlementCost, "Region Settlement Cost");
-					Messaging.sendMsg(event.getPlayer(), Translatable.of("msg_you_paid_region_settlement_cost", TownyEconomyHandler.getFormattedBalance(regionSettlementCost)));
-				} else {
-					//Cancel the event
-					event.setCancelled(true);
-					event.setCancelMessage(TownyProvinces.getTranslatedPrefix() + Translatable.of("msg_err_cannot_afford_new_town", TownyEconomyHandler.getFormattedBalance(totalNewTownCost)).translate(Locale.ROOT));
-				}
-			}
+			event.setPrice(totalNewTownCost);
 		}
 	}
 

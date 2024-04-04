@@ -84,8 +84,6 @@ land_validation_job_status_restart_requested: "&aRedémarrage Demandé"
 msg_err_cannot_create_town_on_province_border: "&cLes villes ne peuvent pas être crées sur les frontières des provinces."
 msg_err_cannot_create_town_in_sea_provinces: "&cLes villes ne peuvent pas être crées dans des provinces marines."
 msg_err_cannot_create_town_in_full_province: "&cUne seule ville est autorisée pas province. Cette province contient déjà une ville."
-msg_err_cannot_afford_new_town: "&cVous ne pouvez pas vous permettre de créer une nouvelle dans cette province, cela coute %s."
-msg_you_paid_region_settlement_cost: "&aVous avez payé le prix pour l'établissement dans cette région de %s."
 
 # Merging towns
 
