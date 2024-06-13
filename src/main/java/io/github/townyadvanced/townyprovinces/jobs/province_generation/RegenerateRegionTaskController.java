@@ -16,7 +16,7 @@ public class RegenerateRegionTaskController {
 		} else {
 			TownyProvinces.info("Region Regeneration Job Starting");
 			regenerateRegionTask = new RegenerateRegionTask(caseCorrectRegionName);
-			regenerateRegionTask.runTaskAsynchronously(TownyProvinces.getPlugin());
+			TownyProvinces.getPlugin().getScheduler().runAsync(regenerateRegionTask);
 			Messaging.sendMsg(sender, Translatable.of("msg_region_regeneration_job_started", caseCorrectRegionName));
 			return true;
 		}

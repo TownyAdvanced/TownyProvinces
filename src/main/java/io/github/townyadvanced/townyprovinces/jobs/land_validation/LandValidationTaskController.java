@@ -16,7 +16,8 @@ public class LandValidationTaskController {
 	private static LandvalidationTask landValidationTask = null;
 	public static void startTask() {
 		landValidationTask = new LandvalidationTask();
-		landValidationTask.runTaskAsynchronously(TownyProvinces.getPlugin());
+		TownyProvinces.getPlugin().getScheduler().runAsync(landValidationTask);
+//		landValidationTask.runTaskAsynchronously(TownyProvinces.getPlugin());
 		landValidationJobStatus = LandValidationJobStatus.STARTED;
 		Messaging.sendGlobalMessage(Translatable.of("msg_land_validation_job_started"));
 	}
