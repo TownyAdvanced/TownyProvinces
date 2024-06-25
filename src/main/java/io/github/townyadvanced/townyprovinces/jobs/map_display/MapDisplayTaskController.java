@@ -19,7 +19,7 @@ public class MapDisplayTaskController {
 			fullProvinceColoursRefreshRequested = true;
 			fullHomeBlockIconsRefreshRequest = true;
 			mapDisplayTask = new MapDisplayTask();
-			mapDisplayTask.runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, TownyProvincesSettings.getMapRefreshPeriodMilliseconds() * 20);
+			TownyProvinces.getPlugin().getScheduler().runAsyncRepeating(mapDisplayTask, 40, TownyProvincesSettings.getMapRefreshPeriodMilliseconds() * 20);
 			TownyProvinces.info("Map Display Job Started");
 			return true;
 		}
@@ -39,7 +39,7 @@ public class MapDisplayTaskController {
 		}
 		requestFullMapRefresh();
 		mapDisplayTask = new MapDisplayTask();
-		mapDisplayTask.runTaskTimerAsynchronously(TownyProvinces.getPlugin(), 40, TownyProvincesSettings.getMapRefreshPeriodMilliseconds() * 20);
+		TownyProvinces.getPlugin().getScheduler().runAsyncRepeating(mapDisplayTask, 40, TownyProvincesSettings.getMapRefreshPeriodMilliseconds() * 20);
 	}
 
 	public static void requestFullMapRefresh() {

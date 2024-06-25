@@ -159,9 +159,9 @@ public class TownyProvincesAdminCommand implements TabExecutor {
 		if (args[0].equalsIgnoreCase("regenerate")) {
 			parseRegionRegenerateCommand(sender, args);
 		} else if (args[0].equalsIgnoreCase("newtowncostperchunk")) {
-			Bukkit.getScheduler().runTaskAsynchronously(TownyProvinces.getPlugin(), () -> parseRegionSetNewTownCostCommand(sender, args));
+			TownyProvinces.getPlugin().getScheduler().runAsync(() -> parseRegionSetNewTownCostCommand(sender, args));
 		} else if (args[0].equalsIgnoreCase("upkeeptowncostperchunk")) {
-			Bukkit.getScheduler().runTaskAsynchronously(TownyProvinces.getPlugin(), () -> parseRegionSetTownUpkeepCostCommand(sender, args));
+			TownyProvinces.getPlugin().getScheduler().runAsync(() -> parseRegionSetTownUpkeepCostCommand(sender, args));
 		} else {
 			showHelp(sender);
 		}
