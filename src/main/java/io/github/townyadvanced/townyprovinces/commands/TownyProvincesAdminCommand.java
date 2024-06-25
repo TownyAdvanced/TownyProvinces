@@ -22,7 +22,6 @@ import io.github.townyadvanced.townyprovinces.settings.TownyProvincesPermissionN
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import io.github.townyadvanced.townyprovinces.util.FileUtil;
 import io.github.townyadvanced.townyprovinces.util.MoneyUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
