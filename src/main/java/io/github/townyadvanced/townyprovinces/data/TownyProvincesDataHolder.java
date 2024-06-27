@@ -287,7 +287,7 @@ public class TownyProvincesDataHolder {
 					if (provinceTownHashMap.containsKey(province)) {
 						//Town present
 						nation = provinceTownHashMap.get(province).getNationOrNull();
-						if (nation == null) {
+						if (nation == null || nation.getMapColorHexCode().isEmpty()) {
 							province.setFillOpacity(0);
 							province.setFillColour(0);
 						} else {
