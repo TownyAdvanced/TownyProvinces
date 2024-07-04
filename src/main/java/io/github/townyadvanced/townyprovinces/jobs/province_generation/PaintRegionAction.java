@@ -87,24 +87,19 @@ public class PaintRegionAction {
 		TownyProvinces.info("Now deleting provinces which are mostly in the specified area.");
 		int numProvincesDeleted = 0;
 		int minX = region.getTopLeftRegionCorner().getBlockX() / TownyProvincesSettings.getChunkSideLength();
-		int maxX  = region.getBottomRightRegionCorner().getBlockX() / TownyProvincesSettings.getChunkSideLength();
+		int maxX = region.getBottomRightRegionCorner().getBlockX() / TownyProvincesSettings.getChunkSideLength();
 		int minZ = region.getTopLeftRegionCorner().getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		int maxZ  = region.getBottomRightRegionCorner().getBlockZ() / TownyProvincesSettings.getChunkSideLength();
-		for(Province province: (new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet()))) {
+		int maxZ = region.getBottomRightRegionCorner().getBlockZ() / TownyProvincesSettings.getChunkSideLength();
+		for (Province province : new HashSet<>(TownyProvincesDataHolder.getInstance().getProvincesSet())) {
 			List<TPCoord> coordsInProvince = province.getListOfCoordsInProvince();
 			int numProvinceBlocksInSpecifiedArea = 0;
 			for (TPCoord coordInProvince : coordsInProvince) {
-				if (coordInProvince.getX() < minX)
+				if (coordInProvince.getX() < minX || coordInProvince.getX() > maxX || coordInProvince.getZ() < minZ || coordInProvince.getZ() > maxZ) {
 					continue;
-				else if (coordInProvince.getX() > maxX)
-					continue;
-				else if (coordInProvince.getZ() < minZ)
-					continue;
-				else if (coordInProvince.getZ() > maxZ)
-					continue;
+				}
 				numProvinceBlocksInSpecifiedArea++;
 			}
-			if(numProvinceBlocksInSpecifiedArea > (coordsInProvince.size() / 2)) {
+			if (numProvinceBlocksInSpecifiedArea > (coordsInProvince.size() / 2)) {
 				TownyProvincesDataHolder.getInstance().deleteProvince(province, unclaimedCoordsMap);
 				numProvincesDeleted++;
 			}
@@ -152,12 +147,12 @@ public class PaintRegionAction {
 		TownyProvinces.info("" + provincesCreated + " province objects created.");
 		return true;
 	}
-	
+
 	private int calculateMaxNumberOfProvinces() {
 		double regionAreaSquareMetres = calculateRegionAreaSquareMetres();
-		int maxNumProvincesProvinces = (int)(regionAreaSquareMetres / region.getAverageProvinceSize());
-		TownyProvinces.info("Max num provinces: " + maxNumProvincesProvinces);
-		return maxNumProvincesProvinces;
+		int maxNumProvinces = (int) (regionAreaSquareMetres / region.getAverageProvinceSize());
+		TownyProvinces.info("Max num provinces: " + maxNumProvinces);
+		return maxNumProvinces;
 	}
 
 	private double calculateRegionAreaSquareMetres() {
@@ -192,24 +187,19 @@ public class PaintRegionAction {
 	 * @return the province on success, or null if you fail (usually due to map being full)
 	 */
 	private @Nullable Province generateRandomlyPlacedProvince() {
-		//Establish boundaries of where the homeblock might be placed
 		double xLowest = region.getRegionMinX() + region.getBrushSquareRadiusInChunks() + 3;
 		double xHighest = region.getRegionMaxX() - region.getBrushSquareRadiusInChunks() - 3;
 		double zLowest = region.getRegionMinZ() + region.getBrushSquareRadiusInChunks() + 3;
 		double zHighest = region.getRegionMaxZ() - region.getBrushSquareRadiusInChunks() - 3;
-		//Try a few times to place the homeblock
-		for(int i = 0; i < 100; i++) {
-			//Pick a random location
+		for (int i = 0; i < 100; i++) {
 			double x = xLowest + (Math.random() * (xHighest - xLowest));
 			double z = zLowest + (Math.random() * (zHighest - zLowest));
-			Coord coord = Coord.parseCoord((int)x,(int)z);
+			Coord coord = Coord.parseCoord((int) x, (int) z);
 			int xCoord = coord.getX();
 			int zCoord = coord.getZ();
 			TPCoord homeBlockCoord = new TPFinalCoord(xCoord, zCoord);
-			//Create province object
 			Province province = new Province(homeBlockCoord);
-			//Validate province position
-			if(validateBrushPosition(homeBlockCoord.getX(), homeBlockCoord.getZ(), province)) {
+			if (validateBrushPosition(homeBlockCoord.getX(), homeBlockCoord.getZ(), province)) {
 				ProvinceClaimBrush brush = new ProvinceClaimBrush(province);
 				claimChunksCoveredByBrush(brush);
 				return province;
