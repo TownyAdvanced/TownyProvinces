@@ -59,8 +59,6 @@ public class TownyProvincesDataHolder {
 	 * needs to be created to do a search of the map
 	 */
 	private final TPFreeCoord searchCoord;
-
-
 	private final Map<Province, List<TPCoord>> coordsInProvinceMap;
 	
 	private TownyProvincesDataHolder() {
@@ -117,11 +115,11 @@ public class TownyProvincesDataHolder {
 	public void deleteProvince(Province province, Map<TPCoord, TPCoord> unclaimedCoordsMap) {
 		List<TPCoord> coordsInProvince = coordsInProvinceMap.get(province);
 		TownyProvinces.info("Deleting province: " + province.getId() + " with " + coordsInProvince.size() + " coordinates.");
-        for (TPCoord coord : coordsInProvince) {
-            coordProvinceMap.remove(coord);
-            unclaimedCoordsMap.put(coord, coord);
-        }
-        provincesSet.remove(province);
+		for(TPCoord coord: coordsInProvince) {
+			coordProvinceMap.remove(coord);
+			unclaimedCoordsMap.put(coord,coord);
+		}
+		provincesSet.remove(province);
 		coordsInProvinceMap.remove(province);
 		TownyProvinces.info("Province " + province.getId() + " deleted.");
 	}
