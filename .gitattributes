@@ -1,0 +1,5 @@
+* text=auto
+
+*.sh text eol=lf
+*.java text eol=crlf
+*.{yml,yaml,md,xml} text eol=crlf
