@@ -1,108 +1,107 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>io.github.townyadvanced</groupId>
-  <artifactId>TownyProvinces</artifactId>
-  <version>2.2.0</version>
-  <name>townyprovinces</name> <!-- Leave lower-cased -->
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.github.townyadvanced</groupId>
+    <artifactId>TownyProvinces</artifactId>
+    <version>2.2.1</version>
+    <name>townyprovinces</name> <!-- Leave lower-cased -->
 
-  <properties>
-    <java.version>1.16</java.version>
-    <project.bukkitAPIVersion>1.15</project.bukkitAPIVersion>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <towny.version>0.100.2.0</towny.version>
-  </properties>
+    <properties>
+        <java.version>17</java.version>
+        <project.bukkitAPIVersion>1.21</project.bukkitAPIVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <towny.version>0.100.4.0</towny.version>
+        <dynmapapi.version>3.6</dynmapapi.version>
+    </properties>
 
-  <repositories>
-      <repository>
-          <id>jitpack.io</id>
-          <url>https://jitpack.io</url>
-      </repository>
-    <repository>
-      <id>spigot-repo</id>
-      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-    </repository>
-    <repository>
-      <id>glaremasters repo</id>
-      <url>https://repo.glaremasters.me/repository/towny/</url>
-    </repository>
-      <repository>
-          <id>dynmap-repo</id>
-          <url>https://repo.mikeprimm.com/</url>
-      </repository>
-      <repository>
-          <id>Modrinth</id>
-          <url>https://api.modrinth.com/maven</url>
-      </repository>
-  </repositories>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>glaremasters repo</id>
+            <url>https://repo.glaremasters.me/repository/towny/</url>
+        </repository>
+        <repository>
+            <id>dynmap-repo</id>
+            <url>https://repo.mikeprimm.com/</url>
+        </repository>
+        <repository>
+            <id>Modrinth</id>
+            <url>https://api.modrinth.com/maven</url>
+        </repository>
+    </repositories>
 
-  <dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.20.4-R0.1-SNAPSHOT</version>
+            <scope>provided</scope> <!-- Spigot API -->
+        </dependency>
+        <dependency>
+            <groupId>com.palmergames.bukkit.towny</groupId>
+            <artifactId>towny</artifactId>
+            <version>${towny.version}</version>
+            <scope>provided</scope>
+        </dependency> <!-- Towny API -->
+        <dependency>
+            <groupId>us.dynmap</groupId>
+            <artifactId>dynmap-api</artifactId>
+            <version>${dynmapapi.version}</version>
+            <scope>provided</scope>
+        </dependency> <!-- Dynmap API: Bukkit-Specifics -->
+        <dependency>
+            <groupId>us.dynmap</groupId>
+            <artifactId>DynmapCoreAPI</artifactId>
+            <version>${dynmapapi.version}</version>
+            <scope>provided</scope>
+        </dependency> <!-- DynmapCoreAPI -->
+        <dependency>
+            <groupId>maven.modrinth</groupId>
+            <artifactId>pl3xmap</artifactId>
+            <version>1.20.4-492</version>
+            <scope>provided</scope>
+        </dependency> <!-- Pl3xmap API -->
+        <dependency>
+            <groupId>com.github.BlueMap-Minecraft</groupId>
+            <artifactId>BlueMapAPI</artifactId>
+            <version>2.7.0</version>
+            <scope>provided</scope>
+        </dependency> <!-- BlueMapAPI -->
+        <dependency>
+            <groupId>xyz.jpenilla</groupId>
+            <artifactId>squaremap-api</artifactId>
+            <version>1.3.2</version>
+            <scope>provided</scope>
+        </dependency> <!-- squaremap API-->
+    </dependencies>
 
-    <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
-      <version>1.16.5-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.palmergames.bukkit.towny</groupId>
-      <artifactId>towny</artifactId>
-      <version>0.100.2.0</version>
-      <scope>provided</scope>
-    </dependency>
-      <!--
-      <dependency>
-          <groupId>us.dynmap</groupId>
-          <artifactId>dynmap-api</artifactId>
-          <version>2.5</version>
-          <scope>provided</scope>
-      </dependency>
-      -->
-      <dependency>
-          <groupId>us.dynmap</groupId>
-          <artifactId>dynmap-api</artifactId>
-          <version>3.0-SNAPSHOT</version>
-          <scope>provided</scope>
-      </dependency>
-      <dependency>
-          <groupId>maven.modrinth</groupId>
-          <artifactId>pl3xmap</artifactId>
-          <version>1.20.4-476</version>
-          <scope>provided</scope>
-      </dependency>
-      <dependency>
-          <groupId>com.github.BlueMap-Minecraft</groupId>
-          <artifactId>BlueMapAPI</artifactId>
-          <version>v2.5.1</version>
-          <scope>provided</scope>
-      </dependency>
-      <dependency>
-          <groupId>xyz.jpenilla</groupId>
-          <artifactId>squaremap-api</artifactId>
-          <version>1.1.12</version>
-          <scope>provided</scope>
-      </dependency>
-  </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-  </build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
 
 </project>
