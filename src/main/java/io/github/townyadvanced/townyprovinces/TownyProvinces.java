@@ -42,7 +42,7 @@ public class TownyProvinces extends JavaPlugin {
 	public static final Object PRICE_RECALCULATION_JOB_LOCK = new Object();
 	public static final Object MAP_DISPLAY_JOB_LOCK = new Object();
 	private static TownyProvinces plugin;
-	private static final Version requiredTownyVersion = Version.fromString("0.100.2.0");
+	private static final Version requiredTownyVersion = Version.fromString("0.100.4.0");
 	private final TaskScheduler scheduler;
 
 	public TownyProvinces() {
