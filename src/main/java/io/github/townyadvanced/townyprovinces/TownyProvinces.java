@@ -42,7 +42,7 @@ public class TownyProvinces extends JavaPlugin {
 	public static final Object PRICE_RECALCULATION_JOB_LOCK = new Object();
 	public static final Object MAP_DISPLAY_JOB_LOCK = new Object();
 	private static TownyProvinces plugin;
-	private static final Version requiredTownyVersion = Version.fromString("0.100.2.0");
+	private static final Version requiredTownyVersion = Version.fromString("0.101.2.5");
 	private final TaskScheduler scheduler;
 
 	public TownyProvinces() {
@@ -239,7 +239,7 @@ public class TownyProvinces extends JavaPlugin {
 		return true;
 	}
 	public String getVersion() {
-		return this.getDescription().getVersion();
+		return this.getPluginMeta().getVersion();
 	}
 
 	public static TownyProvinces getPlugin() {
@@ -259,7 +259,7 @@ public class TownyProvinces extends JavaPlugin {
 	}
 
 	private String getTownyVersion() {
-		return Bukkit.getPluginManager().getPlugin("Towny").getDescription().getVersion();
+		return Bukkit.getPluginManager().getPlugin("Towny").getPluginMeta().getVersion();
 	}
 
 	public static void info(String message) {

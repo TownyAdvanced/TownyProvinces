@@ -4,14 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.townyadvanced</groupId>
   <artifactId>TownyProvinces</artifactId>
-  <version>2.2.0</version>
+  <version>2.3.0</version>
   <name>townyprovinces</name> <!-- Leave lower-cased -->
 
   <properties>
     <java.version>1.16</java.version>
     <project.bukkitAPIVersion>1.15</project.bukkitAPIVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <towny.version>0.100.2.0</towny.version>
+    <towny.version>0.101.2.5</towny.version>
   </properties>
 
   <repositories>
@@ -20,8 +20,8 @@
           <url>https://jitpack.io</url>
       </repository>
     <repository>
-      <id>spigot-repo</id>
-      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+      <id>papermc</id>
+      <url>https://repo.papermc.io/repository/maven-public/</url>
     </repository>
     <repository>
       <id>glaremasters repo</id>
@@ -40,17 +40,22 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
-      <version>1.16.5-R0.1-SNAPSHOT</version>
+      <groupId>io.papermc.paper</groupId>
+      <artifactId>paper-api</artifactId>
+      <version>1.21.8-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
+<!--    <dependency>
       <groupId>com.palmergames.bukkit.towny</groupId>
       <artifactId>towny</artifactId>
-      <version>0.100.2.0</version>
+      <version>${towny.version}</version>
       <scope>provided</scope>
-    </dependency>
+    </dependency>-->
+    <dependency>
+      <groupId>com.github.TownyAdvanced.Towny</groupId>
+      <artifactId>towny</artifactId>
+      <version>master-4907b3123a-1</version>
+	</dependency>
       <!--
       <dependency>
           <groupId>us.dynmap</groupId>
