@@ -27,7 +27,8 @@ public class MapDisplayTaskController {
 	
 	public static void reloadIntegrations() {
 		
-		mapDisplayTask.cancel();
+		if (mapDisplayTask != null)
+			mapDisplayTask.cancel();
 		synchronized (TownyProvinces.MAP_DISPLAY_JOB_LOCK) {
 			synchronized (TownyProvinces.REGION_REGENERATION_JOB_LOCK) {
 				synchronized (TownyProvinces.PRICE_RECALCULATION_JOB_LOCK) {
