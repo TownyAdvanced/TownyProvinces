@@ -3,7 +3,7 @@
 ## :information_source: Overview
 - :globe_with_meridians: An add-on plugin for *Towny*, which automatically divides the game-world into **Provinces**.
 - :european_castle: Each Province can have just 1 town.
-- :cake: Thus, every town gets a fair slice of land, and player conflicts caused by "overclaiming" are reduced.
+- :cake: Every town gets a fair slice of land, thus player conflicts caused by "overclaiming" are reduced.
 
 ## :gift: Features
 - :tophat: Civilised Provinces: 1 town only, no foreign outposts allowed.
