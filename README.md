@@ -1,13 +1,14 @@
 # TownyProvinces
 
 ## :information_source: Overview
-- :world_map: An add-on plugin for *Towny*, which divides the game-world into multiple 1-town-only "Provinces", thus giving every town a fair share of land, and reducing player conflicts caused by "overclaiming".
+- :globe_with_meridians: An add-on plugin for *Towny*, which automatically divides the game-world into **Provinces**.
+- :european_castle: Each Province can have just 1 town.
+- :cake: Thus, every town gets a fair slice of land, and player conflicts caused by "overclaiming" are reduced.
 
 ## :gift: Features
-- :globe_with_meridians: **Divides The Map Automatically into Provinces:**
-  - :tophat: Civilised Provinces: 1 town only, no foreign outposts allowed.
-  - :ocean: Sea Provinces: No towns, outposts allowed
-  - :desert: Wasteland Provinces: No towns, outposts allowed
+- :tophat: Civilised Provinces: 1 town only, no foreign outposts allowed.
+- :ocean: Sea Provinces: No towns, outposts allowed
+- :desert: Wasteland Provinces: No towns, outposts allowed
 
 ## :hammer_and_wrench: Solves
 - :money_with_wings: ***Overclaiming***: Each town has a reserved claiming area; No need to throw away money on overclaiming.
@@ -23,7 +24,7 @@
 - ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/7570eb88-6ea9-487a-9045-2c85710ecc76)
 
 ## :floppy_disk: Installation Guide
-1. Ensure your server has *Towny 0.100.2.0* or newer.
+1. Ensure your server has *Towny 0.102.0.0* or newer.
 2. Ensure your server has a map-display plugin: Either *Dynmap*, *Pl3xMap*, *BlueMap* or *squaremap*.
 3. Download the *TownyProvinces* plugin jar file from [here](https://github.com/TownyAdvanced/TownyProvinces/releases), and drop it into your server plugins folder.
 4. Stop your server.
@@ -43,23 +44,24 @@
 1. Run `tpra region regenerate all`. This will generate 2 small sample regions.
 2. To see the generated provinces, view your website-map.
 
-## :arrow_forward: Admin Full Guide
-1. Protect Historical Town Locations
+## :arrow_forward: Admin Guide
+1. Configure Regions
+   - Configure as many region files as you want, in /region_definitions.
+   - Region definition files are evaluated in alpha-numeric order.
+   - The first region definition file should be a "catch-all", the size of the entire map.
+2. Protect Historical Town Locations
    - If you are running a "Historical" map (e.g. "Earth"), make sure to protect important historical town locations, to ensure border-lines don't cut throught them.
    - To do this, add the co-ordinates of those locations to your region def files. (for an example, see the automatically generated "Europe.yml".
    - It may help to ask players which locations they want protected, to ensure you don't forget any, and to get them involved in using the plugin.
-2. Be aware of known technical issues:
-    - The Hexagonal dynmap view does not look right. A fix is ticketed.
-    - On very large maps (e.g. 1:500). TownyProvinces tends to "sit" on lots of memory. A fix is in development.
-    - When making a new town, the 'confirmation' message does not show the correct amount. But the correct amount is charged.
-3. Configure
-   - Configure as many region definition files as you want, in /region_definitions.
-   - Region definition files are evaluated in alpha-numeric order.
-   - The first region definition file should be the size of the entire map.
-4. Generate Provinces
-   - Run 'tpra region regenerate all' to regenerate all the regions you have specified.
-   - After the Regeneration Job is complete, run `tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, then will adjust the province type and prices accordingly. Expect this to take a while; you can adjust the milliseconds before lookup in `config.yml`.
+3. Generate Provinces
+   - Run '/tpra region regenerate all' to regenerate all the regions you have specified.
+   - After the Regeneration Job is complete, run `/tpra landvalidationjob start`. This will automatically identify the biome constituents in the province, then will adjust the province type and prices accordingly. Expect this to take a few minutes; you can adjust the milliseconds before lookup in `config.yml`.
    - After the Land Validation Job runs, expect to tweak a few provinces for type, and a few regions for pricing.
+4. Be aware of known technical issues:
+  - The Hexagonal dynmap view does not look right. A fix is ticketed.
+  - When making a new town, the 'confirmation' message does not show the correct amount. But the correct amount is charged.
+  - On very large maps (e.g. 1:500). TownyProvinces tends to "sit" on lots of memory. A fix is in development.
+  
 ## :keyboard: Admin Commands *(best run from console)*
 - `tpra region [regenerate] [<Region Name>]` -> Regenerate a region.
 - `tpra landvalidationjob [status|start|stop|restart|pause]` -> Control the land validation job.
@@ -71,8 +73,8 @@
 - `tpra region [upkeeptowncostperchunk] [<Region Name>] [amount]` -> Set the per-chunk upkeep-town-cost for a region.
 - `tpra reload` -> Reload Config and Language files, and refresh map.
 
-## :brain: Advanced Guide to Region Definitions
-To fully understand how to configure your region definition files, you must understand how provinces are generated:
+## :brain: Advanced Guide to Region Definition Files
+Here is a technical explanation of how provinces are generated from region definition files:
    * **STEP 1:** "Claim Brushes" are created and placed in the given region
      * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/1770c063-8cc2-453e-9b91-e169fd0bb5d5)
    * **STEP 2:** Each claim brush then moves in a random direction
