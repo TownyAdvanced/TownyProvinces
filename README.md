@@ -1,7 +1,7 @@
 # TownyProvinces
 
 ## :information_source: Overview
-- :world_map: An add-on plugin for *Towny*, which makes claiming more organized, reducing staff workload and server toxicity.
+- :world_map: An add-on plugin for *Towny*, which divides the game-world into multiple 1-town-only "Provinces", thus giving every town a fair share of land, and reducing player conflicts caused by "overclaiming".
 
 ## :gift: Features
 - :globe_with_meridians: **Divides The Map Automatically into Provinces:**
@@ -14,7 +14,7 @@
 - :no_entry_sign: ***Claim Blocking***: No town can block the claiming plans of another town.
 - :snake: ***Snake Claiming***: Snake claiming is irrelevant.
 - :hamburger: ***Town Surrounding***: A town cannot surrounded itself with another town (*e.g. to become un-attackable*).
-- :no_pedestrians: ***Travel Blocking***: Travel cannot be blocked by claims, because province borders are always wilderness.
+- :no_pedestrians: ***Travel Blocking***: Travel cannot be blocked by claims, because province borders are wilderness.
 - :tent: ***Inactive towns in popular areas***: Upkeep can be raised in popular regions, discouraging inactive towns.
 - :merman: ***Sea Peoples***: Founding towns in the open sea can be prevented, if a server so chooses.
 - :santa: ***Hermits***: Upkeep can be lowered in unpopular regions, supporting players with isolationist styles of play.
