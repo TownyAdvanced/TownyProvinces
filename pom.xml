@@ -11,7 +11,7 @@
     <java.version>1.16</java.version>
     <project.bukkitAPIVersion>1.15</project.bukkitAPIVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <towny.version>0.101.2.5</towny.version>
+    <towny.version>0.102.0.0</towny.version>
   </properties>
 
   <repositories>
@@ -38,32 +38,18 @@
   </repositories>
 
   <dependencies>
-
-    <dependency>
-      <groupId>io.papermc.paper</groupId>
-      <artifactId>paper-api</artifactId>
-      <version>1.21.8-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-<!--    <dependency>
-      <groupId>com.palmergames.bukkit.towny</groupId>
-      <artifactId>towny</artifactId>
-      <version>${towny.version}</version>
-      <scope>provided</scope>
-    </dependency>-->
-    <dependency>
-      <groupId>com.github.TownyAdvanced.Towny</groupId>
-      <artifactId>towny</artifactId>
-      <version>master-4907b3123a-1</version>
-	</dependency>
-      <!--
       <dependency>
-          <groupId>us.dynmap</groupId>
-          <artifactId>dynmap-api</artifactId>
-          <version>2.5</version>
+          <groupId>io.papermc.paper</groupId>
+          <artifactId>paper-api</artifactId>
+          <version>1.21.8-R0.1-SNAPSHOT</version>
           <scope>provided</scope>
       </dependency>
-      -->
+      <dependency>
+          <groupId>com.palmergames.bukkit.towny</groupId>
+          <artifactId>towny</artifactId>
+          <version>${towny.version}</version>
+          <scope>provided</scope>
+      </dependency>
       <dependency>
           <groupId>us.dynmap</groupId>
           <artifactId>dynmap-api</artifactId>
