@@ -90,7 +90,12 @@ DataHandlerUtil {
 	public static void loadProvince(File provinceFile) {
 		//Read values from province file
 		Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(provinceFile);
-		TPCoord homeBlock = unpackCoord(fileEntries.get("home_block"));
+		String homeblockEntry = fileEntries.get("home_block");
+		if (homeblockEntry == null) {
+			TownyProvinces.severe("Could not read home_block value in " + provinceFile.getPath().toString() + ", this province file will not be loaded.");
+			return;
+		}
+		TPCoord homeBlock = unpackCoord(homeblockEntry);
 		//Create province object
 		Province province = new Province(homeBlock);
 		//Read more values
