@@ -1,6 +1,5 @@
 package io.github.townyadvanced.townyprovinces.util;
 
-import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
@@ -147,23 +146,5 @@ public class FileUtil {
 			e.printStackTrace();
 			return false;
 		}
-	}
-
-	public static HashMap<String, String> loadFileIntoHashMap(File file) {
-
-		HashMap<String, String> keys = new HashMap<>();
-		try (FileInputStream fis = new FileInputStream(file);
-			InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8)) {
-			Properties properties = new Properties();
-			properties.load(isr);
-			for (String key : properties.stringPropertyNames()) {
-				String value = properties.getProperty(key);
-				keys.put(key, String.valueOf(value));
-			}
-		} catch (IOException e) {
-			Towny.getPlugin().getLogger().log(Level.WARNING, "An exception occurred while reading file " + file.getName(), e);
-		}
-		return keys;
-
 	}
 }
