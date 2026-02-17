@@ -1,6 +1,5 @@
 package io.github.townyadvanced.townyprovinces.data;
 
-import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.objects.ProvinceType;
@@ -89,7 +88,7 @@ DataHandlerUtil {
 
 	public static void loadProvince(File provinceFile) {
 		//Read values from province file
-		Map<String,String> fileEntries = FileMgmt.loadFileIntoHashMap(provinceFile);
+		Map<String,String> fileEntries = FileUtil.loadFileIntoHashMap(provinceFile);
 		String homeblockEntry = fileEntries.get("home_block");
 		if (homeblockEntry == null) {
 			TownyProvinces.severe("Could not read home_block value in " + provinceFile.getPath().toString() + ", this province file will not be loaded.");
@@ -154,8 +153,8 @@ DataHandlerUtil {
 	
 	private static TPCoord unpackCoord(String coordAsString) {
 		String[] coordAsArray = coordAsString.split(",");
-		int x = Integer.parseInt(coordAsArray[0]);
-		int z = Integer.parseInt(coordAsArray[1]);
+		int x = Integer.parseInt(coordAsArray[0].trim());
+		int z = Integer.parseInt(coordAsArray[1].trim());
 		return new TPFinalCoord(x,z);
 	}
 

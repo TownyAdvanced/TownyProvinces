@@ -1,8 +1,9 @@
 package io.github.townyadvanced.townyprovinces.objects;
 
 import com.palmergames.bukkit.towny.object.Coord;
-import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
+import io.github.townyadvanced.townyprovinces.util.FileUtil;
+
 import org.bukkit.Location;
 
 import java.io.File;
@@ -36,7 +37,7 @@ public class Region {
 	private Set<Province> provinces; //Set of provinces. Assigned when required
 	
 	public Region(File regionDefinitionFile) {
-		Map<String, String> regionDefinitions = FileMgmt.loadFileIntoHashMap(regionDefinitionFile);
+		Map<String, String> regionDefinitions = FileUtil.loadFileIntoHashMap(regionDefinitionFile);
 		this.name = TownyProvincesSettings.getRegionName(regionDefinitions);
 		this.brushSquareRadiusInChunks = TownyProvincesSettings.getBrushSquareRadiusInChunks(regionDefinitions);
 		this.provinceSquareRadius = TownyProvincesSettings.calculateProvinceSquareRadius(regionDefinitions);
