@@ -42,22 +42,17 @@ public class RegenerateRegionTask extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		try {
-			TownyProvinces.info("Regeneration Job Started");
-			TownyProvinces.info("Regeneration Job: Getting synch locks");
-			synchronized (TownyProvinces.LAND_VALIDATION_JOB_LOCK) {
-				synchronized (TownyProvinces.MAP_DISPLAY_JOB_LOCK) {
-					synchronized (TownyProvinces.REGION_REGENERATION_JOB_LOCK) {
-						synchronized (TownyProvinces.PRICE_RECALCULATION_JOB_LOCK) {
-							TownyProvinces.info("Regeneration Job: Synch locks acquired");
-							executeRegionRegenerationJob();
-						}
+		TownyProvinces.info("Regeneration Job Started");
+		TownyProvinces.info("Regeneration Job: Getting synch locks");
+		synchronized (TownyProvinces.LAND_VALIDATION_JOB_LOCK) {
+			synchronized (TownyProvinces.MAP_DISPLAY_JOB_LOCK) {
+				synchronized (TownyProvinces.REGION_REGENERATION_JOB_LOCK) {
+					synchronized (TownyProvinces.PRICE_RECALCULATION_JOB_LOCK) {
+						TownyProvinces.info("Regeneration Job: Synch locks acquired");
+						executeRegionRegenerationJob();
 					}
 				}
 			}
-		} finally {
-			RegenerateRegionTaskController.endTask();
-			TownyProvinces.info("Regeneration Job Completed");
 		}
 	}
 	

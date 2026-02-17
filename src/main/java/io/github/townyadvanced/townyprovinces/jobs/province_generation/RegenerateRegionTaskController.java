@@ -21,14 +21,6 @@ public class RegenerateRegionTaskController {
 			return true;
 		}
 	}
-
-	public static void endTask() {
-		if(regenerateRegionTask != null) {
-			regenerateRegionTask.cancel();
-			regenerateRegionTask = null;
-		}
-	}
-
 }
 
  
