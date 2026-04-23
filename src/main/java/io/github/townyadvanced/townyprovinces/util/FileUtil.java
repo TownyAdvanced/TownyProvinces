@@ -1,6 +1,5 @@
 package io.github.townyadvanced.townyprovinces.util;
 
-import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.util.FileMgmt;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.logging.Level;
 
 public class FileUtil {
 
@@ -79,6 +77,24 @@ public class FileUtil {
 		}
 	}
 
+	public static HashMap<String, String> loadFileIntoHashMap(File file) {
+
+		HashMap<String, String> keys = new HashMap<>();
+		try (FileInputStream fis = new FileInputStream(file);
+			 InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8)) {
+			Properties properties = new Properties();
+			properties.load(isr);
+			for (String key : properties.stringPropertyNames()) {
+				String value = properties.getProperty(key);
+				keys.put(key, String.valueOf(value));
+			}
+		} catch (IOException e) {
+			TownyProvinces.severe("An exception occurred while reading file " + file.getName());
+			e.printStackTrace();
+		}
+		return keys;
+	}
+	
 	public static List<File> readRegionDefinitionFiles() {
 		return readListOfFiles(REGION_DEFINITIONS_FOLDER_PATH);
 	}
@@ -130,23 +146,5 @@ public class FileUtil {
 			e.printStackTrace();
 			return false;
 		}
-	}
-
-	public static HashMap<String, String> loadFileIntoHashMap(File file) {
-
-		HashMap<String, String> keys = new HashMap<>();
-		try (FileInputStream fis = new FileInputStream(file);
-			InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8)) {
-			Properties properties = new Properties();
-			properties.load(isr);
-			for (String key : properties.stringPropertyNames()) {
-				String value = properties.getProperty(key);
-				keys.put(key, String.valueOf(value));
-			}
-		} catch (IOException e) {
-			Towny.getPlugin().getLogger().log(Level.WARNING, "An exception occurred while reading file " + file.getName(), e);
-		}
-		return keys;
-
 	}
 }
