@@ -1,6 +1,7 @@
 package io.github.townyadvanced.townyprovinces.jobs.land_validation;
 
 import com.palmergames.bukkit.towny.object.Translatable;
+import com.palmergames.bukkit.towny.scheduling.ScheduledTask;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
 import io.github.townyadvanced.townyprovinces.messaging.Messaging;
 
@@ -14,9 +15,10 @@ public class LandValidationTaskController {
 	}
 
 	private static LandvalidationTask landValidationTask = null;
+	private static ScheduledTask landValidationScheduledTask = null;
 	public static void startTask() {
 		landValidationTask = new LandvalidationTask();
-		TownyProvinces.getPlugin().getScheduler().runAsync(landValidationTask);
+		landValidationScheduledTask = TownyProvinces.getPlugin().getScheduler().runAsync(landValidationTask);
 //		landValidationTask.runTaskAsynchronously(TownyProvinces.getPlugin());
 		landValidationJobStatus = LandValidationJobStatus.STARTED;
 		Messaging.sendGlobalMessage(Translatable.of("msg_land_validation_job_started"));
@@ -24,8 +26,10 @@ public class LandValidationTaskController {
 	
 	public static void stopTask() {
 		if(landValidationTask != null) {
-			landValidationTask.cancel();
+			if (landValidationScheduledTask != null)
+				landValidationScheduledTask.cancel();
 			landValidationTask = null;
+			landValidationScheduledTask = null;
 			landValidationJobStatus = LandValidationJobStatus.STOPPED;
 			Messaging.sendGlobalMessage(Translatable.of("msg_land_validation_job_stopped"));
 		}
@@ -33,8 +37,10 @@ public class LandValidationTaskController {
 
 	public static void pauseTask() {
 		if(landValidationTask != null) {
-			landValidationTask.cancel();
+			if (landValidationScheduledTask != null)
+				landValidationScheduledTask.cancel();
 			landValidationTask = null;
+			landValidationScheduledTask = null;
 			landValidationJobStatus = LandValidationJobStatus.PAUSED;
 			Messaging.sendGlobalMessage(Translatable.of("msg_land_validation_job_paused"));
 		}
