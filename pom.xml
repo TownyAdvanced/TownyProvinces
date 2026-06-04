@@ -35,6 +35,10 @@
           <id>Modrinth</id>
           <url>https://api.modrinth.com/maven</url>
       </repository>
+      <repository>
+          <id>placeholderapi</id>
+          <url>https://repo.extendedclip.com/releases/</url>
+      </repository>
   </repositories>
 
   <dependencies>
@@ -72,6 +76,12 @@
           <groupId>xyz.jpenilla</groupId>
           <artifactId>squaremap-api</artifactId>
           <version>1.1.12</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>me.clip</groupId>
+          <artifactId>placeholderapi</artifactId>
+          <version>2.11.6</version>
           <scope>provided</scope>
       </dependency>
   </dependencies>
