@@ -1,14 +1,11 @@
 package io.github.townyadvanced.townyprovinces.integrations;
 
 import com.palmergames.bukkit.towny.TownySettings;
-import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Town;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
-import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
 import io.github.townyadvanced.townyprovinces.objects.Province;
 import io.github.townyadvanced.townyprovinces.settings.TownyProvincesSettings;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,9 +20,10 @@ import java.util.Locale;
  * config.yml - these report the real, region-set province cost (the same value
  * TownyProvinces charges and shows on the map).
  * <p>
- * All placeholders resolve by the player's location and return an empty string
- * when the player is not standing inside a province (e.g. on a border, or
- * outside the TownyProvinces world).
+ * Placeholders resolve from a per-player cache maintained by
+ * {@link PlayerProvinceTracker} (so they are safe to query off the main thread)
+ * and return an empty string when the player is not standing inside a province
+ * (e.g. on a border, or outside the TownyProvinces world).
  *
  * <ul>
  *   <li>{@code %townyprovinces_is_province%} - true/false</li>
@@ -74,13 +72,10 @@ public class TownyProvincesPlaceholders extends PlaceholderExpansion {
 		if (player == null || !TownyProvincesSettings.isTownyProvincesEnabled()) {
 			return "";
 		}
-		//Province data only exists in the TownyProvinces world
-		World tpWorld = TownyProvincesSettings.getWorld();
-		if (tpWorld == null || !player.getWorld().equals(tpWorld)) {
-			return "";
-		}
-		Coord coord = Coord.parseCoord(player.getLocation());
-		Province province = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(coord.getX(), coord.getZ());
+		//Resolved from a thread-safe cache rather than the player's live location:
+		//PlaceholderAPI is frequently queried off the main thread, where Bukkit
+		//entity/world access is unsafe (and illegal on Folia). See PlayerProvinceTracker.
+		Province province = PlayerProvinceTracker.getProvince(player.getUniqueId());
 		boolean inProvince = province != null;
 
 		switch (params.toLowerCase(Locale.ROOT)) {
@@ -93,7 +88,9 @@ public class TownyProvincesPlaceholders extends PlaceholderExpansion {
 			case "new_town_cost":
 				return inProvince ? formatCost(getEffectiveNewTownCost(province)) : "";
 			case "total_new_town_cost":
-				return inProvince ? formatCost(TownySettings.getNewTownPrice() + getEffectiveNewTownCost(province)) : "";
+				//Mirror TownyListener: the province component is truncated to a whole
+				//number first, then added to Towny's base new-town price.
+				return inProvince ? formatCost(TownySettings.getNewTownPrice() + (int) getEffectiveNewTownCost(province)) : "";
 			case "upkeep_cost":
 				return inProvince ? formatCost(getEffectiveUpkeepCost(province)) : "";
 			case "town":
@@ -121,8 +118,9 @@ public class TownyProvincesPlaceholders extends PlaceholderExpansion {
 	}
 
 	/**
-	 * Costs are charged as whole numbers (see TownyListener), so report them the
-	 * same way.
+	 * Province costs are charged as whole numbers - TownyListener casts them to int
+	 * (regionSettlementCost / regionUpkeepCost) - so the placeholders report them
+	 * the same way.
 	 */
 	private String formatCost(double cost) {
 		return String.valueOf((int) cost);

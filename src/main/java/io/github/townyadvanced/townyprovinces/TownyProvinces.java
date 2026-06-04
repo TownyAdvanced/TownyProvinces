@@ -12,6 +12,7 @@ import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.townyprovinces.commands.TownyProvincesAdminCommand;
 import io.github.townyadvanced.townyprovinces.data.DataHandlerUtil;
 import io.github.townyadvanced.townyprovinces.data.TownyProvincesDataHolder;
+import io.github.townyadvanced.townyprovinces.integrations.PlayerProvinceTracker;
 import io.github.townyadvanced.townyprovinces.integrations.TownyProvincesPlaceholders;
 import io.github.townyadvanced.townyprovinces.jobs.map_display.*;
 import io.github.townyadvanced.townyprovinces.listeners.TownyListener;
@@ -28,6 +29,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
+import java.util.logging.Level;
 
 import static com.palmergames.util.JavaUtil.classExists;
 
@@ -89,10 +91,10 @@ public class TownyProvinces extends JavaPlugin {
 		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			try {
 				new TownyProvincesPlaceholders(this).register();
+				getServer().getPluginManager().registerEvents(new PlayerProvinceTracker(), this);
 				info("Found PlaceholderAPI. Enabling PlaceholderAPI integration.");
-			} catch (Throwable t) {
-				Messaging.sendErrorMsg(Bukkit.getConsoleSender(), "Problem enabling PlaceholderAPI integration: " + t.getMessage());
-				t.printStackTrace();
+			} catch (Exception e) {
+				getLogger().log(Level.SEVERE, "Problem enabling PlaceholderAPI integration", e);
 			}
 		}
 	}
