@@ -102,7 +102,8 @@ public class TownyListener implements Listener {
 			return;
 		}
 		// Set the Town's creation cost to the value dictated by TownyProvines.
-		if (TownySettings.isUsingEconomy() && province.getNewTownCost() > 0) {
+		// (skipped if province pricing is disabled - Towny's own price then applies)
+		if (TownySettings.isUsingEconomy() && TownyProvincesSettings.isProvincePricesEnabled() && province.getNewTownCost() > 0) {
 			int regionSettlementCost = (int)(TownyProvincesSettings.isBiomeCostAdjustmentsEnabled() ? province.getBiomeAdjustedNewTownCost() : province.getNewTownCost());
 			double totalNewTownCost = TownySettings.getNewTownPrice() + regionSettlementCost;
 			event.setPrice(totalNewTownCost);
@@ -111,7 +112,8 @@ public class TownyListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void on(TownUpkeepCalculationEvent event) {
-		if (!TownyProvincesSettings.isTownyProvincesEnabled() || !TownySettings.isUsingEconomy()) {
+		if (!TownyProvincesSettings.isTownyProvincesEnabled() || !TownySettings.isUsingEconomy()
+				|| !TownyProvincesSettings.isProvincePricesEnabled()) {
 			return;
 		}
 		//Can't work it if the town has no homeblock

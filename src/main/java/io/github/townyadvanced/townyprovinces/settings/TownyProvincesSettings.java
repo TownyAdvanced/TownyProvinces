@@ -251,6 +251,10 @@ public class TownyProvincesSettings {
 		}
 	}
 	
+	public static boolean isProvincePricesEnabled() {
+		return Settings.getBoolean(ConfigNodes.PROVINCE_PRICES_ENABLED);
+	}
+
 	public static boolean isBiomeCostAdjustmentsEnabled() {
 		return Settings.getBoolean(ConfigNodes.BIOME_COST_ADJUSTMENTS_ENABLED);
 	}

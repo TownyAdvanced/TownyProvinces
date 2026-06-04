@@ -43,6 +43,15 @@ public enum ConfigNodes {
 		"# The value to both newTownCost and upkeepTownCost.",
 		"# The value is a proportion of the 'average regional province price without outliers', if you know what I mean....",
 		"# If you don't know what I mean, use caution when adjusting."),
+	PROVINCE_PRICES_ENABLED(
+		"province_prices_enabled",
+		"true",
+		"",
+		"# If true, TownyProvinces applies a per-province new-town cost and upkeep,",
+		"# on top of Towny's own pricing.",
+		"# If false, TownyProvinces does not touch town pricing at all - Towny's",
+		"# own new-town price and upkeep apply instead. Use this if you want",
+		"# province shapes/biomes without TownyProvinces rewriting your economy."),
 	BIOME_COST_ADJUSTMENTS(
 		"biome_cost_adjustments",
 		"",
