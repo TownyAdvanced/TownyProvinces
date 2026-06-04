@@ -131,7 +131,10 @@ public class PaintRegionAction {
 			TownyProvinces.info("Now generating province at protected location: " + mapEntry.getKey());
 			province = generateProtectedProvince(mapEntry.getValue());
 			if(province == null) {
-				TownyProvinces.severe("Could not generate province at protected location: " + mapEntry.getKey());
+				Coord coord = Coord.parseCoord(mapEntry.getValue());
+				String reason = describeInvalidBrushPosition(coord.getX(), coord.getZ(), null);
+				TownyProvinces.severe("Could not generate province at protected location '" + mapEntry.getKey() + "': "
+						+ (reason != null ? reason : "unknown reason"));
 				return false;
 			} else {
 				TownyProvincesDataHolder.getInstance().addProvince(province);
@@ -306,6 +309,64 @@ public class PaintRegionAction {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Explain why a brush (province) cannot be placed at the given position.
+	 * Mirrors the checks in {@link #validateBrushPosition}, but returns a
+	 * human-readable reason instead of a bare boolean. Used to enrich the error
+	 * shown when a configured protected_location fails to generate (#98).
+	 * <p>
+	 * Only called on the (rare) failure path, so - unlike validateBrushPosition,
+	 * which runs in the generation hot loop - it can afford to build a message.
+	 *
+	 * @return the reason the position is invalid, or null if it is actually valid
+	 */
+	private String describeInvalidBrushPosition(int brushPositionCoordX, int brushPositionCoordZ, Province provinceBeingPainted) {
+		//Off the edge of the map / region
+		if (brushPositionCoordX < mapMinXCoord
+				|| brushPositionCoordX > mapMaxXCoord
+				|| brushPositionCoordZ < mapMinZCoord
+				|| brushPositionCoordZ > mapMaxZCoord) {
+			return "it is outside the region bounds - homeblock chunk " + brushPositionCoordX + "," + brushPositionCoordZ
+					+ " is not within x[" + mapMinXCoord + ".." + mapMaxXCoord + "] z[" + mapMinZCoord + ".." + mapMaxZCoord + "]";
+		}
+		//Overlapping, or too close to, another province
+		int brushMinCoordX = brushPositionCoordX - region.getBrushSquareRadiusInChunks();
+		int brushMaxCoordX = brushPositionCoordX + region.getBrushSquareRadiusInChunks();
+		int brushMinCoordZ = brushPositionCoordZ - region.getBrushSquareRadiusInChunks();
+		int brushMaxCoordZ = brushPositionCoordZ + region.getBrushSquareRadiusInChunks();
+		for(int x = brushMinCoordX -1; x <= (brushMaxCoordX +1); x++) {
+			for(int z = brushMinCoordZ -1; z <= (brushMaxCoordZ +1); z++) {
+				Province province = TownyProvincesDataHolder.getInstance().getProvinceAtCoord(x,z);
+				if(province != null && province != provinceBeingPainted) {
+					String conflictName = getProtectedLocationNameAt(province.getHomeBlock());
+					if (conflictName != null) {
+						return "it is too close to another protected location ('" + conflictName
+								+ "') - their claim areas overlap at chunk " + x + "," + z
+								+ ". Move them further apart or reduce the brush size.";
+					} else {
+						return "it is too close to an existing province - claim areas overlap at chunk " + x + "," + z
+								+ ". Move it further into open space or reduce the brush size.";
+					}
+				}
+			}
+		}
+		return null; //Position is actually valid
+	}
+
+	/**
+	 * @return the name of the configured protected_location whose homeblock sits
+	 *         at the given coord, or null if none does.
+	 */
+	private String getProtectedLocationNameAt(TPCoord homeBlockCoord) {
+		for (Map.Entry<String, Location> mapEntry : region.getProtectedLocations().entrySet()) {
+			Coord coord = Coord.parseCoord(mapEntry.getValue());
+			if (coord.getX() == homeBlockCoord.getX() && coord.getZ() == homeBlockCoord.getZ()) {
+				return mapEntry.getKey();
+			}
+		}
+		return null;
 	}
 
 	/**
