@@ -15,6 +15,7 @@ import org.bukkit.Location;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -361,8 +362,17 @@ public class PaintRegionAction {
 			/*
 			 * Do all the pending assignments
 			 * Except those which are no longer valid when you get to them
+			 *
+			 * Shuffle the processing order first (#28). Where two provinces both
+			 * want the same frontier coord, whichever is processed first claims it
+			 * and the other is re-verified into a border. Iterating in fixed
+			 * hashmap order always lets the same side win, which biases growth in
+			 * one direction (the "everything runs NW" bug) - especially at small
+			 * brush sizes. A random order makes that competition fair.
 			 */
-			for(Map.Entry<TPCoord,Province> mapEntry: pendingCoordProvinceAssignments.entrySet()) {
+			List<Map.Entry<TPCoord,Province>> shuffledAssignments = new ArrayList<>(pendingCoordProvinceAssignments.entrySet());
+			Collections.shuffle(shuffledAssignments);
+			for(Map.Entry<TPCoord,Province> mapEntry: shuffledAssignments) {
 				if(verifyCoordEligibilityForProvinceAssignment(mapEntry.getKey())) {
 					TownyProvincesDataHolder.getInstance().claimCoordForProvince(mapEntry.getKey(), mapEntry.getValue());
 					unclaimedCoordsMap.remove(mapEntry.getKey());
