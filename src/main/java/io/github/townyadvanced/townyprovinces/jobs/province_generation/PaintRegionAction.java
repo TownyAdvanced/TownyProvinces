@@ -312,10 +312,13 @@ public class PaintRegionAction {
 	}
 
 	/**
-	 * Explain why a brush (province) cannot be placed at the given position.
-	 * Mirrors the checks in {@link #validateBrushPosition}, but returns a
-	 * human-readable reason instead of a bare boolean. Used to enrich the error
-	 * shown when a configured protected_location fails to generate (#98).
+	 * Explain why a brush (province) cannot be placed at the given position, to
+	 * enrich the error shown when a configured protected_location fails to
+	 * generate (#98).
+	 * <p>
+	 * The verdict (valid vs invalid) is taken from {@link #validateBrushPosition},
+	 * so the two can never disagree; this method only classifies an already-failed
+	 * position into a human-readable reason.
 	 * <p>
 	 * Only called on the (rare) failure path, so - unlike validateBrushPosition,
 	 * which runs in the generation hot loop - it can afford to build a message.
@@ -323,6 +326,12 @@ public class PaintRegionAction {
 	 * @return the reason the position is invalid, or null if it is actually valid
 	 */
 	private String describeInvalidBrushPosition(int brushPositionCoordX, int brushPositionCoordZ, Province provinceBeingPainted) {
+		//Single source of truth for the verdict: defer to validateBrushPosition, so the
+		//explanation can never disagree with the actual check - even if that check gains
+		//a new rejection rule, we still correctly report the position as invalid.
+		if (validateBrushPosition(brushPositionCoordX, brushPositionCoordZ, provinceBeingPainted)) {
+			return null;
+		}
 		//Off the edge of the map / region
 		if (brushPositionCoordX < mapMinXCoord
 				|| brushPositionCoordX > mapMaxXCoord
@@ -352,7 +361,10 @@ public class PaintRegionAction {
 				}
 			}
 		}
-		return null; //Position is actually valid
+		//validateBrushPosition rejected the position for a reason this explainer does
+		//not recognise (e.g. a rule added to it since). Report that honestly rather
+		//than guessing a wrong reason or claiming the position is valid.
+		return "it failed brush-placement validation (no specific reason could be determined)";
 	}
 
 	/**
