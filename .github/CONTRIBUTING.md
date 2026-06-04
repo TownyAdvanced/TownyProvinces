@@ -1,0 +1,56 @@
+# Contributing to TownyProvinces
+Thanks for deciding to contribute to TownyProvinces! We really appreciate contributions, but to keep everything running smoothly and get contributions merged in a timely manner, we need to enforce some guidelines. :shipit:
+
+Contributions made by humans are welcome via GitHub Pull Requests.
+You must fork this repository and then open it via your IDE.
+When making a pull request, please do not make your modifications to the master branch, please create a new branch.
+You can always ask for help on your contribution in the [Towny Discord](https://discord.gg/gnpVs5m).    
+
+## Before contributing
+- Make sure to read the [TownyProvinces license](https://github.com/TownyAdvanced/TownyProvinces/blob/master/LICENSE.md).
+- By opening an pull request, you:
+    - represent that you have the right to waive copyright and related rights to your contributions,
+    - agree that all copyright and related rights in your contributions will be waived,
+    - acknowledge that the TownyAdvanced organization has the copyright to use and modify your contributions under the [TownyProvinces license](https://github.com/TownyAdvanced/TownyProvinces/blob/master/LICENSE.md) for perpetuity.
+
+If you do not agree with the terms of our license, do not contribute to the Towny project.
+
+# About pull requests
+> Pull requests will have their commits squashed upon merge, and your various commits' messages will be used in the squashed commit. Take this into account when making your commits.
+
+1. Keep your commit messages self-explanatory. Keep them short but informative!
+2. Pull requests should address a single topic, or be as closed in scope as you can reasonably make it. Small pull requests are easier to review and thus, can result in a faster merge.
+3. Pull request forms should be filled out to the best of your abilities; describe your changes and reference issues/pull requests whenever applicable.
+4. Test your changes before sending them in! You should look for bugs, test configuration values, commands, and anything you've touched!
+
+# About Java code
+    
+1. You must use tabs for indentation. 
+2. Keep your environment in Java 21.
+3. Do not use wildcard imports.
+4. Do not make unnecessary changes.[^changes]
+   - All IDEs are different, we do this to keep consistency in the codebase.
+   - This keeps code differences in GitHub clean and simple.
+5. Do not use NMS (`net.minecraft.server`)[^nms], or reflection. We aim at only using the Spigot API.
+6. Do not directly interact with the Minecraft protocol.
+   - This includes the usage of ProtocolLib or Netty.
+
+# About dependencies
+For the sanity of the rest of us, and the maintainability of the project, please adhere to the following guidelines when attempting to include a dependency or an third party library.
+
+1. Libraries need to be approved by the maintainer before being merged. We recommend you ask before commiting.     
+2. Prevent `ClassNotFound` exceptions.
+   - Do not reference a plugin in a loaded class, unless that plugin is enabled.
+3. Do not embed dependencies directly into TownyProvinces.
+   - All dependencies should use the `provided` scope instead. This means that the dependency will be provided by the plugin JAR (e.g. Vault), or the server JAR (e.g. Adventure).
+4. Do not add closed source dependencies.
+   - All dependencies should have open and auditable source code.
+
+# About translation
+All translation on the core TownyProvinces plugin is done via the en_US.yml file. Please add new language strings too this file. If you can supply strings for other languages you may do so.
+
+Strings are formatted using [Java's `java.util.Formatter`](https://docs.oracle.com/en/java/javase/18/docs/api/java.base/java/util/Formatter.html) allowing specification of variable order, and more. This means that if you find that a line has multiple variables which would be in a different order in your language, you can change them to `%NUMBER$s` (replacing `NUMBER` with the variable index) to change their order. 
+
+[^changes]: This includes formatting and whitespace changes.
+
+[^nms]: The `net.minecraft.server` is the Minecraft server source package. While this allows for "lower-level" coding, it's also pretty hard to maintain due to its obfuscation, no cross-version compatibility, and possibility to corrupt data.
