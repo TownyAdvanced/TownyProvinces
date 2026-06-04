@@ -84,6 +84,15 @@ Here is a technical explanation of how provinces are generated from region defin
    * **STEP 4**: The gaps between each province are filled in, except for a 1 chunk border
      * ![image](https://github.com/TownyAdvanced/TownyProvinces/assets/50219223/570039a4-7a5b-4280-ad32-debc0f1110db)
 
+## :scroll: Contributing
+If you'd like to contribute to the TownyProvinces code, see the [CONTRIBUTING.md](https://github.com/TownyAdvanced/TownyProvinces/blob/master/.github/CONTRIBUTING.MD).
+
+## :scroll: Licensing
+TownyProvinces is licensed under the [Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported (CC BY-NC-ND 3.0) License ](https://creativecommons.org/licenses/by-nc-nd/3.0/)
+
+We don't object to you making your own forks and builds but we do object to people being selfish, which is why we specify No Derivative Works.
+If you want to modify the code to add some nice feature the least you can do is ask and submit a pull request to allow everyone to benefit from it.
+
 ## :scroll: Credits
 - *TownyProvinces* was developed by Goosius in Summer 2023.
 - Special thanks to Valoria Earth, who were very supportive and helpful during the development of the plugin.
