@@ -55,12 +55,13 @@ public class MapDisplayTaskController {
 	}
 
 	public static void endTask() {
-		if(mapDisplayTask != null) {
-			if (mapDisplayScheduledTask != null)
-				mapDisplayScheduledTask.cancel();
-			mapDisplayTask = null;
-			mapDisplayScheduledTask = null;
+		//Cancellation is driven by the scheduled task handle, so guard on it
+		//(can't be skipped if the runnable ref and the handle ever diverge).
+		if (mapDisplayScheduledTask != null) {
+			mapDisplayScheduledTask.cancel();
 		}
+		mapDisplayTask = null;
+		mapDisplayScheduledTask = null;
 	}
 
 	static void setFullProvinceColoursRefreshRequested(boolean b) {

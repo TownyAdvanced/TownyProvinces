@@ -17,6 +17,11 @@ public class LandValidationTaskController {
 	private static LandvalidationTask landValidationTask = null;
 	private static ScheduledTask landValidationScheduledTask = null;
 	public static void startTask() {
+		//Cancel any existing scheduled task first, so a double start can't orphan
+		//a running async job whose handle we'd otherwise lose.
+		if (landValidationScheduledTask != null) {
+			landValidationScheduledTask.cancel();
+		}
 		landValidationTask = new LandvalidationTask();
 		landValidationScheduledTask = TownyProvinces.getPlugin().getScheduler().runAsync(landValidationTask);
 //		landValidationTask.runTaskAsynchronously(TownyProvinces.getPlugin());
