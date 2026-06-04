@@ -365,10 +365,13 @@ public class PaintRegionAction {
 			 *
 			 * Shuffle the processing order first (#28). Where two provinces both
 			 * want the same frontier coord, whichever is processed first claims it
-			 * and the other is re-verified into a border. Iterating in fixed
-			 * hashmap order always lets the same side win, which biases growth in
-			 * one direction (the "everything runs NW" bug) - especially at small
-			 * brush sizes. A random order makes that competition fair.
+			 * and the other is re-verified into a border. Walking the map in its own
+			 * iteration order visits the contested coords in a consistent,
+			 * position-correlated sequence, so the same side keeps winning and growth
+			 * is biased one way (the "everything runs NW" bug) - especially at small
+			 * brush sizes. Shuffling makes that competition fair. (Province generation
+			 * is already non-deterministic - random homeblock placement and brush
+			 * moves above - so this adds no new run-to-run variation.)
 			 */
 			List<Map.Entry<TPCoord,Province>> shuffledAssignments = new ArrayList<>(pendingCoordProvinceAssignments.entrySet());
 			Collections.shuffle(shuffledAssignments);
