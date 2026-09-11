@@ -1,6 +1,7 @@
 package io.github.townyadvanced.townyprovinces.messaging;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.util.Colors;
 import io.github.townyadvanced.townyprovinces.TownyProvinces;
@@ -17,13 +18,13 @@ public class Messaging {
     public static void sendErrorMsg(CommandSender sender, String message) {
         //Ensure the sender is not null (i.e. is an online player who is not an npc)
         if(sender != null)
-            sender.sendMessage(prefix + Colors.Red + message);
+            TownyMessaging.sendMessage(sender, prefix + Colors.RED + message);
     }
 
     public static void sendMsg(CommandSender sender, String message) {
         //Ensure the sender is not null (i.e. is an online player who is not an npc)
         if(sender != null)
-            sender.sendMessage(prefix + Colors.White + message);
+        	TownyMessaging.sendMessage(sender, prefix + Colors.WHITE + message);
     }
     
     public static void sendGlobalMessage(String message) {
@@ -37,13 +38,13 @@ public class Messaging {
 	public static void sendErrorMsg(CommandSender sender, Translatable message) {
 		// Ensure the sender is not null (i.e. is an online player who is not an npc)
 		if (sender != null)
-			sender.sendMessage(prefix + Colors.Red + message.forLocale(sender));
+			TownyMessaging.sendMessage(sender, Translatable.of("townyprovinces_plugin_prefix").append(Colors.RED).append(message.forLocale(sender)));
 	}
 
 	public static void sendMsg(CommandSender sender, Translatable message) {
 		// Ensure the sender is not null (i.e. is an online player who is not an npc)
 		if (sender != null)
-			sender.sendMessage(prefix + Colors.White + message.forLocale(sender));
+			TownyMessaging.sendMessage(sender, Translatable.of("townyprovinces_plugin_prefix").append(Colors.WHITE).append(message.forLocale(sender)));
 	}
 
 	public static void sendGlobalMessage(Translatable message) {
