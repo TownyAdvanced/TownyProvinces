@@ -26,9 +26,7 @@ public class MapDisplayTaskController {
 	}
 	
 	public static void reloadIntegrations() {
-		
-		if (mapDisplayTask != null)
-			mapDisplayTask.cancel();
+		endTask();
 		synchronized (TownyProvinces.MAP_DISPLAY_JOB_LOCK) {
 			synchronized (TownyProvinces.REGION_REGENERATION_JOB_LOCK) {
 				synchronized (TownyProvinces.PRICE_RECALCULATION_JOB_LOCK) {
@@ -54,7 +52,13 @@ public class MapDisplayTaskController {
 
 	public static void endTask() {
 		if(mapDisplayTask != null) {
-			mapDisplayTask.cancel();
+			try {
+				if (mapDisplayTask.getTaskId() > 0) {
+					mapDisplayTask.cancel();
+				}
+			} catch (IllegalStateException e) {
+				TownyProvinces.info("Map Display task was found to be in a non-ideal state. Map Display task has been set to null to correct this.");
+			}
 			mapDisplayTask = null;
 		}
 	}
@@ -76,7 +80,7 @@ public class MapDisplayTaskController {
 	}
 	
 	public static boolean isMapSupported() {
-		return mapDisplayActions.size() > 0;
+		return !mapDisplayActions.isEmpty();
 	}
 	
 	public static void addMapDisplayAction(DisplayProvincesOnMapAction action) {
