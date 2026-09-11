@@ -17,13 +17,13 @@ public class Messaging {
     public static void sendErrorMsg(CommandSender sender, String message) {
         //Ensure the sender is not null (i.e. is an online player who is not an npc)
         if(sender != null)
-            sender.sendMessage(prefix + Colors.RED + message);
+            sender.sendMessage(prefix + Colors.Red + message);
     }
 
     public static void sendMsg(CommandSender sender, String message) {
         //Ensure the sender is not null (i.e. is an online player who is not an npc)
         if(sender != null)
-            sender.sendMessage(prefix + Colors.WHITE + message);
+            sender.sendMessage(prefix + Colors.White + message);
     }
     
     public static void sendGlobalMessage(String message) {
@@ -37,13 +37,13 @@ public class Messaging {
 	public static void sendErrorMsg(CommandSender sender, Translatable message) {
 		// Ensure the sender is not null (i.e. is an online player who is not an npc)
 		if (sender != null)
-			sender.sendMessage(prefix + Colors.RED + message.forLocale(sender));
+			sender.sendMessage(prefix + Colors.Red + message.forLocale(sender));
 	}
 
 	public static void sendMsg(CommandSender sender, Translatable message) {
 		// Ensure the sender is not null (i.e. is an online player who is not an npc)
 		if (sender != null)
-			sender.sendMessage(prefix + Colors.WHITE + message.forLocale(sender));
+			sender.sendMessage(prefix + Colors.White + message.forLocale(sender));
 	}
 
 	public static void sendGlobalMessage(Translatable message) {
