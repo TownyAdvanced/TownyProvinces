@@ -134,7 +134,7 @@ DataHandlerUtil {
 		//Add coords to coord-province map
 		Set<TPCoord> coords = unpackCoords(fileEntries.get("coords"));
 		for(TPCoord coord: coords) {
-			TownyProvincesDataHolder.getInstance().getCoordProvinceMap().put(coord, province);
+			TownyProvincesDataHolder.getInstance().claimCoordForProvince(coord, province);
 		}
 	}
 
